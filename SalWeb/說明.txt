@@ -1,0 +1,52 @@
+● 測試機頁面 (wps03t)
+行政管理→Spring範例
+
+● ExampleController
+呈現首頁，帶入登入者資訊
+提供簡單呼叫ajax 回傳中文的方式
+
+● PluginController
+呈現DataTables的寫法
+隨機產生病人名單，組成JSON格式，透過ajax傳送到前端
+
+● Spring MVC所需jar檔
+spring-aop.jar
+spring-beans.jar
+spring-context.jar
+spring-core.jar
+spring-expression.jar
+spring-tx.jar
+spring-web.jar
+spring-webmvc.jar
+
+● JSONObject所需jar檔
+commons-beanutils.jar
+commons-lang.jar
+ezmorph.jar
+json-lib.jar
+(如果專案有使用JSONObect JSONArray，才需要引用)
+
+● Jackson2所需jar檔 
+jackson-annotations.jar
+jackson-core.jar
+jackson-databind.jar
+(如果專案有需要使用RestTemplate呼叫Restful Service，才需要引用)
+
+●ResourceReader.java
+	private ResourceReader() {
+        resourceBundle = ResourceBundle.getBundle("gov.vghks.xxx.resources.ApplicationResources");
+    }
+
+● ApplicationResources.properties 
+SpringExample\src\gov\vghks\xx\resources\ApplicationResources.properties
+ldap.loginID的cn=apXXX01 需改成自己專案的AP帳號
+ldap.loginPwd=XXXX       需改成自己專案的AP帳號密碼
+才可以正確登入LDAP取得使用者資訊
+●web.xml
+<context:component-scan base-package="gov.vghks.ops.controller" />
+●OpsController
+/** 範例主頁面 */
+	public static final String main				=	"example/main";
+	轉換成　/jsp/example/main.jsp <== 對應的jsp要符合路徑
+	
+●jcifs-1.3.19.jar 要載入	

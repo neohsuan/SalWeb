@@ -1,0 +1,368 @@
+@charset "UTF-8";
+
+/*------------首頁設定------------*/
+.big-size{
+	font-size:20px;
+}
+#agentnm{
+	font-family:標楷體;
+	font-size:18px;
+}
+/*------------首頁設定------------*/
+
+/*------------申請單內部調整------------*/
+/*簽核者*/
+#chief_title {
+	background-color: #fffbc9;
+}
+
+.title2 {
+	vertical-align: middle;
+}
+.title3 {
+	vertical-align: middle;
+	text-align: center;
+	background-color: #fffbc9;
+/* 	background-color: #abd8ff; */
+}
+
+/*陸-表格title文字置中和輸入置中*/
+.table-title {
+    text-align: center;
+    vertical-align: middle;
+}
+/*------------申請單內部調整------------*/
+/*---------------表格調整---------------*/
+td:first-child{
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+td:last-child{
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+/*---------------表格調整---------------*/
+/*------------內部簽核和簽核流程畫面調整------------*/
+#homebtn {
+    float: right;
+}
+.sign-title {
+    background-color: #a3f5d3;
+    font-size: 17px;
+    min-width:200px;
+    text-align:center;
+}
+#sign-btn {
+    text-align: center;
+}
+.sign-tool {
+    padding-left: 5px; 
+    padding-right: 5px;
+}
+
+/*------------內簽/審核流程人員設定------------*/
+.costid {
+	display:none;
+}
+.edit {
+	text-align:left;
+}
+
+/*------------內部簽核和簽核流程畫面調整-----------*/
+
+.tab-pane{
+  max-height:550px;
+/*   overflow-y:scroll; */
+  width:100%;
+}
+
+textarea {
+	resize : none; /* 關閉自動高度 */
+}
+
+/* 金額靠右顯示 */
+	.classCount { text-align: right; }
+	.thousandClass { text-align: right; }
+	/* 總額 */
+	.totalCount { text-align: right; font-weight: bold; color:blue;}
+	
+	/*壹 title顏色*/
+	.title {
+	    background-color: #a3f5d3;
+	    font-size: 17px;
+	    min-width:240px;
+	    text-align:left;
+	}
+	/*壹 title顏色*/
+	.title-yellow{
+		background-color: #faf69c;
+		font-size: 17px;
+	    min-width:240px;
+	    text-align:left;
+	}
+
+/* modal */	
+	
+	/* 設定padding不移動，解決modal位置跑掉的問題 */
+	body { padding-right: 0 !important }
+	.modal-open {
+	  overflow:auto;
+	  padding-right:0 !important;
+	}
+/* %modal% */
+	
+/* div顯示設定 */
+	.div-green-only {
+		color:#FFF;
+		background: #5CADAD;
+		margin:5px;
+		border-radius: 2px;
+		border: 1px solid #BEBEBE;
+		text-align:center;
+	}
+	.div-gray-only {
+		display: inline-block;
+		height: auto;
+		line-height:1;
+		vertical-align: middle;
+
+		margin:5px;
+		border-radius: 2px;
+		border: 2px solid #F0F0F0;
+		text-align:center;
+		line-height:  40px;
+	}
+	.div-green {
+		width: 140px;
+		color:#FFF;
+		background: #5CADAD;
+	}
+	.div-purple {
+		color:#FFF;
+		background: #6F00D2;
+	}
+	.div-yellow {
+		color:#FFF;
+		background: #C6A300;
+	}
+	
+	/* 表格title設定 */
+	.div-mebetitle {
+		width: 140px;
+		color:#000;
+		font-size: 16px;
+		font-weight:bold;
+		background: linear-gradient(to bottom, rgba(254,255,255,1) 0%,rgba(210,235,249,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	}
+	.div-mebetitle-title {
+		width: 140px;
+		color:#000;
+		font-size: 16px;
+		font-weight:bold;
+		background: linear-gradient(to bottom, rgba(254,255,255,1) 0%,rgba(210,235,249,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+		text-align:center;
+	}
+	.div-mebetitle-content {
+		display: inline-block; 	/* 整個block */
+		height: auto;			/* 自動調整高度 */
+		line-height:1;
+		vertical-align: middle;
+	}
+	
+	.table-bordered > tbody> input{
+		border-radius: 2px;
+	}
+	
+	.quyInput {
+		background:#FFF4C1 !important;
+	}
+	
+	
+	/* %表格title設定% */
+	
+	.panel-body .input-group {
+		width:99.9%;
+		margin-top:5px;
+		margin-botton:5px;
+	}
+	
+	
+	
+/* 動態表格欄位設定 */
+	#DA8_1 td:first-child 	{width:5%}
+	#DA8_1 td:nth-child(2) 	{width:100px;}
+	#DA8_1 td:nth-child(3)	{width:200px;}
+	
+	#DA8_5 td:first-child 	{width:5%}
+	#DA8_5 td:nth-child(2) {width:20%}
+	#DA8_5 td:nth-child(3) {width:30%}
+	#DA8_5 td:nth-child(4) {width:15%}
+	#DA8_5 td:nth-child(5) {width:15%}
+	#DA8_5 td:nth-child(6) {width:5%}
+	#DA8_5 td:nth-child(7) {width:10%}
+	
+	#DA9_1 td:first-child 	{width:5%}
+	#DA9_1 td:nth-child(2) {width:20%}
+	#DA9_1 td:nth-child(3) {width:20%}
+	#DA9_1 td:nth-child(4) {width:10%}
+	#DA9_1 td:nth-child(5) {width:10%}
+	#DA9_1 td:nth-child(6) {width:10%}
+	#DA9_1 td:nth-child(7) {width:20%}
+	#DA9_1 td:nth-child(8) {width:10%}
+	#DA9_1 td:nth-child(9) {width:10%}
+	
+/* %動態表格欄位設定% */
+
+/* div顯示設定 */
+
+/*------------內簽和審核人員設定畫面調整-----------*/
+#signTable.costid.costnm.ausort.person {
+	vertical-align: middle;
+}
+
+#changeTable.costnm {
+	vertical-align: middle;
+}
+/*------------內簽和審核人員設定畫面調整-----------*/
+
+/* 表格調整 */
+	/* 設定字型大小  */
+	#div_sign input[type="text"], #div_sign table, #div_sign button, #div_sign legend {
+	    font-size:16px;
+	}
+	
+	.formTable {
+	    width: 100%;
+	    border:2px #8E8E8E solid;
+	    padding:5px;
+	    border-spacing: 5px;
+	    border-collapse: separate;
+	}
+	.formTable th, .formTable td {
+		border : 1px solid #ddd;
+	}
+	.formTable tr:hover {
+		//background:#FFF4C1; /* 淡黃色背景 */
+	}
+	.formTable td {
+		/* vertical-align:bottom; TD內所有內容全部置底 */
+	}	
+	.formTable input[type="text"]{
+		border: 0;
+	    outline: 0;
+	    background: transparent;
+	    border-bottom: 2px solid black; /* 底線 */
+	    width : 99%;
+	    vertical-align:bottom; /* TD內所有內容全部置底 */
+	}
+	
+	.title {
+	    background-color: #46A3FF;
+	    color: white;
+	    text-align: left;
+	}
+	.title1 {
+	    background-color: #8E8E8E;
+	    color: white;
+	   /* text-align: right; */
+	}
+	.title2 {
+	    background-color: #DFFFDF;
+	    vertical-align:top; /* 置頂 */
+	    /* text-align: right; */
+	}
+	.title3 {
+	    background-color: #DEFFAC;
+	}
+	.content1 {
+	    background-color: #8E8E8E;
+	    color: white;
+	}
+/* 表格調整 */
+
+/* loading dialog設定 */
+
+.modal-spinner .modal-dialog{
+    display: table;
+    position: relative;
+    margin: 0 auto;
+    top: calc(50% - 24px);
+  }
+
+.modal-spinner .modal-dialog .modal-content{
+    background-color: transparent;
+    border: none;
+  }
+  
+.loader {
+  color: #ffffff;
+  font-size: 20px;
+  margin: 100px auto;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  position: relative;
+  text-indent: -9999em;
+  -webkit-animation: load4 1.3s infinite linear;
+  animation: load4 1.3s infinite linear;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+}
+@-webkit-keyframes load4 {
+  0%,
+  100% {
+    box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+  }
+  12.5% {
+    box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+  }
+  25% {
+    box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+  }
+  37.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+  50% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+  62.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+  }
+  75% {
+    box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+  }
+  87.5% {
+    box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+  }
+}
+@keyframes load4 {
+  0%,
+  100% {
+    box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+  }
+  12.5% {
+    box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+  }
+  25% {
+    box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+  }
+  37.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+  50% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+  62.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+  }
+  75% {
+    box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+  }
+  87.5% {
+    box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+  }
+}
+
+/* %loading dialog設定% */

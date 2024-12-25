@@ -1,0 +1,18 @@
+﻿{
+      
+      "sProcessing": "<img src='${pageContext.request.contextPath}/resources/components/datatables/images/loading.gif' />",
+      "sLengthMenu": "顯示 _MENU_ 筆記錄",
+      "sZeroRecords": "無符合資料",
+      "sInfo": "目前記錄：_START_ 至 _END_, 總筆數：_TOTAL_",
+      "sInfoEmpty": "無任何資料",
+      "sInfoFiltered": "(過濾總筆數 _MAX_)",
+      "sInfoPostFix": "",
+      "sSearch": "找尋",
+      "sUrl": "",
+      "oPaginate": {
+          "sFirst":    "首頁",
+          "sPrevious": "上頁",
+          "sNext":     "下頁",
+          "sLast":     "末頁"
+      }
+  }

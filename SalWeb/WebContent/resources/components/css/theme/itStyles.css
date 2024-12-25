@@ -1,0 +1,1014 @@
+form {
+	PADDING-RIGHT: 0pt;
+	PADDING-LEFT: 0pt;
+	PADDING-BOTTOM: 0pt;
+	margin: 0px auto;
+	PADDING-TOP: 0pt;
+}
+
+BODY {
+	COLOR: black;
+	BORDER: 0px;
+	padding: 0px;
+}
+
+DIV {
+	SCROLLBAR-FACE-COLOR: gainsboro;
+	SCROLLBAR-HIGHLIGHT-COLOR: gray;
+	SCROLLBAR-SHADOW-COLOR: gray;
+	SCROLLBAR-3DLIGHT-COLOR: gainsboro;
+	SCROLLBAR-ARROW-COLOR: gray;
+	SCROLLBAR-DARKSHADOW-COLOR: gainsboro
+}
+
+fieldset {
+	border-style: solid;
+	border-color: #408080;
+	border-width: 1px;
+	text-align: left;
+	margin-left: 10px;
+	margin-right: 10px
+}
+
+span.message {
+	font-size: 15px;
+	color: #FF0000;
+}
+
+/* datalistTbl 資料表格 */
+table.sortable {
+	text-align: center;
+	font-family: Verdana;
+	font-weight: normal;
+	font-size: 11pt;
+	color: #333333;
+	background-color: #EFEFCF;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	border-cellpadding: 1;
+	border-width: 1px;
+	border-color: #9485D6;
+	border-style: solid
+}
+
+table.sortable td { /*width:auto;*/
+	border-top: 0px;
+	border-right: 0px;
+	text-align: left;
+	text-indent: 1px;
+	font-family: Verdana, sans-serif, Arial;
+	font-weight: normal;
+	font-size: 13px;
+	white-space: nowrap;;
+	border-left-color: #8080ff;
+	/*	color: #404040;
+	background-color: #fafafa;*/
+	border-left-style: solid;
+	border-bottom-color: #8080ff;
+	border-bottom-style: solid;
+	border-top-width: 1px;
+	border-bottom-width: 2px;
+	border-right-width: 1px;
+	border-left-width: 2px
+}
+
+table.sortable th {
+	background-color: #339999; /*#99CC66;*/
+	text-align: center;
+	text-indent: 0px;
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 13px;
+	color: #fff; /*#660000;*/
+	white-space: nowrap;;
+	border-left-color: #8080ff;
+	border-top-width: 2px;
+	border-left-style: solid;
+	border-bottom-width: 2px;
+	border-right-width: 2px;
+	border-left-width: 2px;
+	border-bottom-color: #5b5bff;
+	border-bottom-style: solid
+}
+
+table.datalistTbl {
+	text-align: center;
+	font-family: Verdana;
+	font-weight: normal;
+	font-size: 11pt;
+	color: #404040;
+	background-color: #fafafa;
+	border: 2px #55BB55 solid;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	border-cellpadding: 1;
+}
+
+table.datalistTbl td {
+	border-bottom: 1px solid #8F8;
+	border-top: 0px;
+	border-left: 1px solid #8F8;
+	border-right: 0px;
+	text-align: left;
+	text-indent: 0px;
+	font-family: sans-serif, Verdana, Arial;
+	font-weight: normal;
+	font-size: 11pt;
+	line-height: 24px;
+	white-space: nowrap;
+}
+
+table.datalistTbl th {
+	border-bottom: 2px solid #5B5;
+	border-left: 1px solid #5B5;
+	background-color: #ADA;
+	text-align: center;
+	text-indent: 0px;
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 11pt;
+	color: #404040;
+	white-space: nowrap;
+	line-height: 20px
+}
+
+table.multiLeft {
+	text-align: left;
+	font-family: Courier New CYR, Arial, 新細明體;
+	font-weight: normal;
+	font-size: 13px;
+	color: #404040;
+	background-color: #fafafa;
+	border: 2px #6699CC solid;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	border-cellpadding: 1;
+}
+
+table.multiLeft td {
+	border-bottom: 1px solid #9CF;
+	border-top: 0px;
+	border-left: 1px solid #9CF;
+	border-right: 0px;
+	text-align: left;
+	font-family: Courier New CYR, Arial, 新細明體;
+	font-weight: normal;
+	font-size: 13px;
+	white-space: normal;
+	margin: 2px;
+	padding-right: 1px;
+	padding-left: 1px;
+}
+
+table.multiLeft th {
+	border-bottom: 2px solid #6699CC;
+	border-left: 1px solid #6699CC;
+	background-color: #BEC8D1;
+	text-align: center;
+	text-indent: 0px;
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 13px;
+	color: #404040;
+	white-space: nowrap;
+	padding: 0px;
+}
+
+table.multiLeft caption {
+	color: #80ffff;
+	background-color: #004040;
+	text-align: left;
+	font-weight: bold;
+	font-size: 14px
+}
+
+table.datalistTbl CAPTION {
+	text-align: center;
+	font-family: Courier New CYR;
+	font-size: 18px;
+	color: blue;;
+	line-height: 25px;
+	font-weight: bold
+}
+
+/* multiTbl 動態列數表格 置中margin: 0px auto;*/
+table.multiTbl {
+	text-align: left;
+	font-family: Courier New CYR, Arial, 新細明體;
+	font-weight: normal;
+	font-size: 13px;
+	color: #404040;
+	background-color: #fafafa;
+	border: 2px #6699CC solid;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	border-cellpadding: 1;
+	margin: 0px auto;
+}
+
+table.multiTbl td {
+	border-bottom: 1px solid #9CF;
+	border-top: 0px;
+	border-left: 1px solid #9CF;
+	border-right: 0px;
+	text-align: left;
+	font-family: Courier New CYR, Arial, 新細明體;
+	font-weight: normal;
+	font-size: 13px;
+	white-space: normal;
+	margin: 2px;
+	padding-right: 1px;
+	padding-left: 1px;
+}
+
+table.multiTbl th {
+	border-bottom: 2px solid #6699CC;
+	border-left: 1px solid #6699CC;
+	background-color: #BEC8D1;
+	text-align: center;
+	text-indent: 0px;
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 13px;
+	color: #404040;
+	white-space: nowrap;
+	padding: 0px;
+}
+
+table.multiTbl caption {
+	color: #80ffff;
+	background-color: #004040;
+	text-align: left;
+	font-weight: bold;
+	font-size: 14px
+}
+
+/* multiA 動態列數表格 */
+table.multiA {
+	text-align: left;
+	font-family: Verdana, Courier New CYR, Arial, 新細明體;
+	font-weight: normal;
+	font-size: 12px;
+	color: #404040;
+	background-color: #fafafa;
+	border: 2px #5a8e26 solid;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	border-cellpadding: 1;
+}
+
+table.multiA td {
+	border-bottom: 1px solid #a0d81f;
+	border-top: 0px;
+	border-left: 1px solid #a0d81f;
+	border-right: 0px;
+	text-align: left;
+	font-family: Verdana, Courier New CYR, Arial, 新細明體;
+	font-weight: normal;
+	font-size: 12px;
+	white-space: normal;
+	margin: 2px;
+	padding-right: 1px;
+	padding-left: 1px;
+}
+
+table.multiA th {
+	border-bottom: 2px solid #5a8e26;
+	border-left: 1px solid #5a8e26;
+	background-color: #bee399;
+	text-align: center;
+	text-indent: 0px;
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 12px;
+	color: #404040;
+	white-space: nowrap;
+	padding: 0px;
+}
+
+table.multiA caption {
+	color: #93e00b;
+	background-color: #004040;
+	text-align: left;
+	font-weight: bold;
+	font-size: 14px;
+	margin-left: 5;
+	margin-right: 2
+}
+/* multiTbl 動態列數表格*/
+
+select.focus {
+/* 	text-transform: uppercase; */
+	font: 10pt monospace;
+	border: 1px #ff0000 solid;
+	border-bottom: 3px #ff0000 double;
+	background: #eeeeee;
+}
+/*inputtextarea,,*/
+select {
+	border: slategray 1px solid #0066ff;
+	PADDING-RIGHT: 2pt;
+	PADDING-LEFT: 2pt;
+	PADDING-BOTTOM: 1pt;
+	PADDING-TOP: 1pt;
+	FONT-SIZE: 14px;
+	FONT-FAMILY: Verdana, Tahoma, Arial, Helvetica, Geneva, sans-serif;
+	/*HEIGHT: auto*/
+}
+
+LI.message {
+	font-size: 15px;
+	list-style-type: square;
+	color: blue;
+}
+
+LI.error {
+	font-size: 15px;
+	list-style-type: disc;
+	list-style-position: outside;
+	color: #ff0000;;
+	line-height: 20px;
+	letter-spacing: normal
+}
+
+UL {
+	MARGIN-TOP: 3px;
+	MARGIN-BOTTOM: 3px;
+	MARGIN-LEFT: 20px
+}
+
+fieldset.item {
+	margin-left: 10px;
+	background-color: #f9ffde;
+	text-align: left;
+	font-weight: bold;;
+	color: #400000
+}
+
+legend.item {
+	font-size: 15px;
+	font-weight: bold;
+	color: #004080;
+	margin-top: 0px;
+	vertical-align: text-bottom;
+	margin: 0px;
+	padding: 0px;
+}
+
+LEGEND.UP {
+	color: #006633;
+	font-size: 12pt;
+	font-weight: bold;
+	text-align: left;
+	vertical-align: text-bottom;
+	margin: auto;
+	padding: 0px;
+}
+
+LEGEND.out {
+	font-weight: bold;
+	background-color: #8dfab0;
+	color: maroon;
+	vertical-align: text-bottom;
+	padding: 0px;
+	margin-top: 3px;
+	margin-left: 0px;
+	margin-bottom: 0px;
+	margin-right: 0px;
+	border-style: solid;
+	border-color: #55BB55;
+	border-width: 1px;
+	font-size: 12pt
+}
+
+FIELDSET.OUT {
+	width: 100%;
+	background-color: #FAFAFA;
+	padding: 0px;
+	border: 2px #55BB55 solid;
+	margin: 0px;
+}
+
+FIELDSET.UP {
+	width: 70%;
+	border: 1px #55BB55 solid;
+	vertical-align: text-top;
+	padding: 8px;
+}
+
+FIELDSET.bitem {
+	width: 80%;
+	vertical-align: text-top;
+	border-style: solid;
+	border-color: #408080;
+	border-width: 1px;
+	padding-right: 10px;
+	padding-left: 10px;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	margin-left: 10px;
+}
+
+legend.bitem {
+	font-size: 15px;
+	font-weight: normal;
+	color: blue;
+	margin-top: 10px;
+	vertical-align: text-bottom;
+	padding-right: 0px;
+	padding-left: 0px;
+	padding-bottom: 0px;
+	padding-top: 0px;
+	margin-left: 0px;
+	margin-bottom: 0px;
+	margin-right: 0px
+}
+
+a.button,input.button,input.buttonOn,input.buttonOver {
+	font-weight: bold;
+	font-size: 18px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	padding: 4px 8px;
+	border-top: 3px solid #CFF1C8;
+	border-right: 3px solid #446E3B;
+	border-bottom: 3px solid #446E3B;
+	border-left: 3px solid #CFF1C8;
+	text-align: center;
+	/*min-width: 100px;
+	width:80px;*/
+	text-transform: uppercase;
+}
+/*=========================================*/
+a.button:link,input.button {
+	color: #000;
+	background-color: #6A3;
+	text-decoration: none;
+}
+
+a.button:visited {
+	color: #000;
+	background-color: #6A3; /*#0C9*/
+	text-decoration: none;
+}
+
+a.button:hover,input.buttonOver {
+	color: #FFF;
+	background-color: #C30;
+	border-color: #EAADAD #7A1E1E #661919 #F3CFCF;
+	text-decoration: none;
+}
+
+a.button:active,input.buttonOn {
+	color: #030;
+	background-color: #FE6;
+	border-width: 3px;
+	border-color: #807733 #FFFFFF #FFF8C1 #99813D;
+	text-decoration: none;
+}
+
+.gclsText {
+	COLOR: green;
+	FONT-FAMILY: normal;
+	FONT-SIZE: 14px;
+	weight: normal;
+	MARGIN-TOP: 5px;
+}
+
+SELECT.gclsComboShort {
+	FONT-SIZE: 13px;
+	WIDTH: 120px;
+	font-family: Courier New CYR;
+}
+
+SELECT.gclsComboMid {
+	FONT-SIZE: 13px;
+	WIDTH: 200px
+}
+
+SELECT.gclsComboLong {
+	FONT-SIZE: 13px;
+	WIDTH: 550px
+}
+
+.fontColorBlue {
+	color: blue;
+	text-align: left;
+	font-family: Verdana, Gautami;
+	FONT-SIZE: 13px;
+}
+
+.fontBigBlackBold {
+	color: black;
+	text-align: left;
+	font-family: Verdana, Gautami;
+	FONT-SIZE: 18px;
+	font-weight: bold
+}
+
+.fontColorRed {
+	color: red;
+	font-family: Verdana, Gautami;
+	text-align: left;
+	FONT-SIZE: 13px;
+}
+
+.fontStarRed {
+	color: red;
+	font-family: Verdana, Gautami;
+	letter-spacing: 0px;
+	font-size: 9px;
+	text-align: left;
+}
+
+TABLE.OUT {
+	width: 100%;
+	margin: 0px;
+	text-align: left;
+	border-cellspacing: 0pt;
+	border-cellpadding: 0pt;
+	border: 1 px solid #8f8;
+	font-size: 11pt;
+	color: #404040;
+	font-family: sans-serif, Verdana, Arial;
+}
+
+TABLE.OUT td {
+	border-top: 1px solid #8F8;
+	border-left: 1px solid #8F8;
+	text-align: left;
+	text-indent: 0px;
+	font-family: sans-serif, Verdana, Arial;
+	font-size: 15px;
+	white-space: nowrap;
+	border-color: #8F8;
+	border-width: 1px;
+	border-style: solid;
+}
+
+table.OUT th {
+	border-bottom: 2px solid #5B5;
+	border-left: 1px solid #5B5;
+	background-color: #ADA;
+	text-align: left;
+	text-indent: 0px;
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 15px;
+	color: #404040;
+	white-space: nowrap;
+}
+
+TABLE.Head {
+	font-size: 15px;
+}
+
+TABLE.Head td {
+	padding-right: 5px;
+	padding-left: 5px;
+}
+
+table.Head th {
+	color: #FFF;
+	background-color: #339999;
+	/*font-weight:normal;*/
+	padding-right: 5px;
+	padding-left: 5px;
+}
+
+.textbox_000 {
+	border: slategray 1px solid #d79900;
+	FONT-FAMILY: Courier New CYR, Verdana, Tahoma, Arial, Helvetica, Geneva,
+		sans-serif, 細明體;
+	padding: 1pt;
+	color: blue;
+	text-align: left;
+	font-size: 11pt;
+}
+
+.textbox_001 {
+	PADDING-RIGHT: 1pt;
+	PADDING-LEFT: 1pt;
+	FONT-SIZE: 13px;
+	PADDING-BOTTOM: 0pt;
+	PADDING-TOP: 1px;
+	FONT-FAMILY: "Courier New CYR", Helvetica, Geneva, sans-serif, 細明體;
+	/*LETTER-SPACING: 1pt;*/
+	background-color: #fff2ba;
+	border-style: solid;
+	border-color: #d79900;
+	border-width: 1px;
+}
+
+.textbox_002 {
+	FONT-FAMILY: Verdana, Tahoma, Arial, Helvetica, Geneva, sans-serif, 細明體;
+	padding: 1pt;
+	color: teal;
+	text-align: left;
+	font-size: 11pt;
+	border-color: #1be776;
+	border-style: solid;
+	border-width: 1px;
+}
+
+.textbox_003 {
+	font-family: "Courier New CYR", Helvetica, Geneva, sans-serif, Verdana,
+		sans-serif, Arial;
+	font-weight: normal;
+	font-size: 13px;
+	color: blue;
+	text-align: left;
+}
+
+.textbox_004 {
+	border: slategray 2px solid #d79900;
+	PADDING-RIGHT: 2pt;
+	PADDING-LEFT: 2pt;
+	FONT-SIZE: 12px;
+	PADDING-BOTTOM: 2pt;
+	PADDING-TOP: 2pt;
+	FONT-FAMILY: "·s2OcuAe", "2OcuAe";
+	LETTER-SPACING: 1pt;
+	background-color: #fff2ba;
+	color: green;
+}
+
+.textbox_010 {
+	FONT-SIZE: 15px;
+	background-color: #d4d0c8;
+	color: black;
+	border-color: teal;
+	border-style: solid;
+	border-width: 1px;
+	text-align: left;
+	vertical-align: middle;
+	line-height: normal;
+	font-weight: bold;
+	padding: 0px;
+	margin: 1px;
+}
+
+.textbox_012 {
+	FONT-SIZE: 15px;
+	background-color: #d4d0c8;
+	color: black;
+	border-color: teal;
+	border-style: solid;
+	border-width: 1px;
+	text-align: center;
+	vertical-align: middle;
+	line-height: normal;
+	margin: 0px;
+	font-weight: bold;
+	padding: 0px;
+}
+
+.txt_12eb_center {
+	BORDER-RIGHT: maroon;
+	BORDER-TOP: maroon;
+	FONT-WEIGHT: bolder;
+	FONT-SIZE: 12pt;
+	BORDER-LEFT: maroon;
+	BORDER-BOTTOM: maroon thin solid;
+	FONT-FAMILY: Verdana;
+	BACKGROUND-COLOR: transparent;
+	TEXT-ALIGN: center;
+	vertical-align: text-bottom;
+	color: black
+}
+
+.textarea_000 {
+	FONT-FAMILY: "Courier New CYR", Helvetica, Geneva, sans-serif, 細明體;
+	SCROLLBAR-FACE-COLOR: gainsboro;
+	SCROLLBAR-HIGHLIGHT-COLOR: gray;
+	SCROLLBAR-SHADOW-COLOR: gray;
+	SCROLLBAR-3DLIGHT-COLOR: gainsboro;
+	SCROLLBAR-ARROW-COLOR: gray;
+	SCROLLBAR-DARKSHADOW-COLOR: gainsboro;
+	color: blue;
+	font-size: 12pt;
+	line-height: normal;
+}
+
+.textarea_001 {
+	FONT-FAMILY: "Courier New CYR", Helvetica, Geneva, sans-serif, 細明體;
+	SCROLLBAR-FACE-COLOR: gainsboro;
+	SCROLLBAR-HIGHLIGHT-COLOR: gray;
+	SCROLLBAR-SHADOW-COLOR: gray;
+	SCROLLBAR-3DLIGHT-COLOR: gainsboro;
+	SCROLLBAR-ARROW-COLOR: gray;
+	SCROLLBAR-DARKSHADOW-COLOR: gainsboro;
+	color: blue;
+	font-size: 17px;
+	line-height: normal;
+	background-color: #f8ffdd;
+}
+
+.textarea_002 {
+	FONT-FAMILY: "Courier New CYR", Helvetica, Geneva, sans-serif, 細明體;
+	SCROLLBAR-FACE-COLOR: gainsboro;
+	SCROLLBAR-HIGHLIGHT-COLOR: gray;
+	SCROLLBAR-SHADOW-COLOR: gray;
+	SCROLLBAR-3DLIGHT-COLOR: gainsboro;
+	SCROLLBAR-ARROW-COLOR: gray;
+	SCROLLBAR-DARKSHADOW-COLOR: gainsboro;
+	font-size: 12px;
+	line-height: normal;
+	text-align: left;
+	white-space: normal;
+}
+
+.textarea_003 {
+	FONT-FAMILY: "Courier New CYR", Helvetica, Geneva, sans-serif, 細明體;
+	SCROLLBAR-FACE-COLOR: gainsboro;
+	SCROLLBAR-HIGHLIGHT-COLOR: gray;
+	SCROLLBAR-SHADOW-COLOR: gray;
+	SCROLLBAR-3DLIGHT-COLOR: gainsboro;
+	SCROLLBAR-ARROW-COLOR: gray;
+	SCROLLBAR-DARKSHADOW-COLOR: gainsboro;
+	font-size: 15px;
+	color: #400040;
+	line-height: normal;
+	text-align: left;
+	white-space: normal;
+}
+
+.textarea_004 {
+	FONT-FAMILY: "新細明體, Courier New CYR", Helvetica, Geneva, sans-serif;
+	SCROLLBAR-FACE-COLOR: gainsboro;
+	SCROLLBAR-HIGHLIGHT-COLOR: gray;
+	SCROLLBAR-SHADOW-COLOR: gray;
+	SCROLLBAR-3DLIGHT-COLOR: gainsboro;
+	SCROLLBAR-ARROW-COLOR: gray;
+	SCROLLBAR-DARKSHADOW-COLOR: gainsboro;
+	color: blue;
+	font-size: 17px;
+	line-height: normal;
+	background-color: #f8ffdd;
+}
+
+INPUT.gclsSubBtn {
+	CURSOR: hand;
+	FONT-SIZE: 12px;
+	FONT-WEIGHT: normal;
+	TEXT-ALIGN: center
+}
+
+INPUT.gclsCalBtn {
+	CURSOR: hand;
+	FONT-SIZE: 12px;
+	FONT-WEIGHT: normal;
+	HEIGHT: 21px;
+	WIDTH: 21px;
+	TEXT-ALIGN: center
+}
+
+INPUT.ReadOnlyTxt {
+	BORDER: none;
+	border-width: 0px;
+	border-style: none;
+	text-align: left;
+	font-family: Courier New CYR, Arial, 新細明體;
+	font-weight: normal;
+	font-size: 13px;
+	white-space: normal;
+}
+
+INPUT.gclsCalTxt {
+	FONT-SIZE: 12px;
+	TEXT-ALIGN: left;
+}
+
+INPUT.gclsTxtShort {
+	FONT-SIZE: 12px;
+	TEXT-ALIGN: left;
+	WIDTH: 150px
+}
+
+INPUT.gclsTxtMid {
+	FONT-SIZE: 12px;
+	TEXT-ALIGN: left;
+	WIDTH: 300px
+}
+
+INPUT.gclsTxtLong {
+	FONT-SIZE: 12px;
+	TEXT-ALIGN: left;
+	WIDTH: 420px
+}
+input.error { border: 1px dotted red; }
+
+input.actKey {
+	text-transform: uppercase;
+	font: 10pt monospace;
+	border: 1px #0066ff solid;
+	border-bottom: 3px double;
+}
+input.focus {
+/* 	text-transform: uppercase; */
+	font: 10pt monospace;
+	border: 1px #ff0000 solid;
+	border-bottom: 3px #ff0000 double;
+	background: #eeeeee;
+}
+label.error {
+	color: red;
+	font-style: italic
+}
+input.buttonStyle{
+		height:23px;
+		font-size: 11pt;
+		color: #a37663;
+		font-family:Verdana,sans-serif;
+		font-weight: 400;
+		border-bottom-color: #d0bab0;
+		border-bottom-style: dotted;
+		border-bottom-width: 2px;
+		border-left-width: 0px;
+		border-right-width: 0px;
+		border-top-width: 0px;
+		background-color: transparent	
+	}	
+input.buttonStyleB{
+		height:23px;
+		font-size: 11pt;
+		color: #563d32;
+		font-family:Verdana,sans-serif;
+		font-weight: 700;
+		border-bottom-color: #563d32;
+		border-bottom-style: dotted;
+		border-bottom-width: 2px;
+		border-left-width: 0px;
+		border-right-width: 0px;
+		border-top-width: 0px;
+		background-color: transparent;	
+	}
+table.datalistTbl2
+{
+	font-family: Verdana;
+	font-weight: normal;
+	font-size:  10pt;
+	color: #000000;
+	background-color: #BDDA98;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	border-cellpadding: 1;
+	margin: 0px auto;;
+	border-width: 2px;
+	border-color: #ffffff;
+	border-style: solid
+}
+table.datalistTbl2 td
+{
+	width:auto;
+	text-align: left;
+	text-indent: 2px;
+	font-family: Verdana, sans-serif, Arial;
+	font-weight: normal;
+	font-size: 14px;
+	white-space: nowrap;
+	border-left-color: #ffffff;
+	border-left-style: dashed;
+	border-bottom-width: 1px;
+	border-bottom-color: #ffffff;
+	border-left-width: 1px;
+	border-bottom-style: dashed;
+	cursor: pointer
+}
+table.datalistTbl2 th
+{
+	background-color: #ECF5C9;
+	text-align: center;
+	text-indent: 0px;
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 16px;
+	color: #000000;
+	white-space: nowrap;
+	line-height: 20px;
+	border-left-color: #ffffff;
+	border-left-style: solid;
+	border-left-width: 1px;
+	/*border-bottom-color: #ffffff;*/
+	border-bottom-style: solid;
+	border-bottom-width: 2px;
+}
+table.datalist3 {
+	text-align: center;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #333333;
+	border-style: solid;
+	border-color: #ebac38;
+	border-width: 2px;
+	background-color: white;
+}
+table.datalist3 th{
+	text-align: center;
+	text-indent: 0px;
+    color:black;
+	font-size: 11pt;
+	font-weight: 400;
+	font-family: Verdana;
+	background-color: #e6dd75;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	white-space: nowrap;
+	position:relative;
+	border-left-width: 1px;
+	border-left-style: solid;
+	border-top-style: solid;
+	border-top-width: 1px
+}
+table.datalist3 td{
+	width:auto;
+	text-align: left;
+	text-indent: 2px;
+	color: #333333;
+    FONT-SIZE: 14px;
+    FONT-FAMILY:  Verdana, sans-serif, Arial;
+	font-weight: normal;
+	white-space: nowrap;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #F1E769;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	border-left-style: solid;
+	border-right-style: solid
+}
+table.datalist2 {
+	text-align: center;
+	font-family: Verdana;
+	font-size: 11pt;
+	color: #333333;
+	background-color: #fafcf8;
+	border: 1px solid #9485D6;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	border-cellpadding: 1;
+}
+table.datalist2 th {
+	text-align: center;
+	text-indent: 0px;
+    color:black;
+	font-size: 10pt;
+	font-weight: 400;
+	font-family: Verdana;
+	background-color: #BBE8D0;
+	border-bottom-style: solid;
+	border-left: 1px solid #9485D6;
+	border-bottom-width: 1px;
+	white-space: nowrap;
+	position:relative;
+}
+table.datalist2 td{
+	width:auto;
+	border-bottom: 1px solid #9485D6;
+	border-left: 1px solid #9485D6;
+	text-align: left;
+	text-indent: 2px;
+	font-family: Verdana, sans-serif, Arial;
+	font-weight: normal;
+	font-size: 10pt;
+	white-space: nowrap;;
+}
+table.datalistS {
+	text-align: center;
+	font-family: Verdana;
+	font-size: 11pt;
+	color: #333333;
+	border: 1px solid #9485D6;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	border-cellpadding: 1;
+	width:95%;
+}
+table.datalistS th {
+	text-align: center;
+	text-indent: 0px;
+    color: #004080;
+	font-size: 10pt;
+	font-weight: normal;
+	font-family: Verdana;
+	border-bottom-style: solid;
+	border-left: 1px solid #9485D6;
+	border-bottom-width: 1px;
+	white-space: nowrap;
+	position:relative;
+}
+table.datalistS td{
+	width:auto;
+	border-bottom: 1px solid #9485D6;
+	border-left: 1px solid #9485D6;
+	text-align: left;
+	text-indent: 2px;
+	font-family: Verdana, sans-serif, Arial;
+	font-weight: normal;
+	font-size: 10pt;
+	white-space: nowrap;
+	word-break:break-all; 
+	word-wrap:break-word;	
+}
+.odd{background-color: #f8d8f8}  
+.even{background-color: #d7f7d7} 
+.enter{background-color: #0099CC;}
