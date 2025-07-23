@@ -92,6 +92,8 @@ public class Padatpsn implements Serializable{
     private String strempdt;
     /** 新制契約  契約除醫師外,到院日2015/1起為新制*/
     private String contract;
+    /** 投保金額*/
+    private int insuamt;
     
     public int getSalnum() {
 		return salnum;
@@ -310,17 +312,30 @@ public class Padatpsn implements Serializable{
 		return sdf_d.format(this.payempdt);
 	}
 
-	//契約除醫師外,到院日2015/1起為新制Y,舊制N
+	//契約
+	//高榮1A0--醫師:舊制N,契約:到院日2015/1起為新制Y,舊制N
+	//屏榮2A0--醫師:舊制N,契約:新制Y
+	//聯醫3A0--新制Y
 	public String getContract() { 
 		String rtnTmp="";
 		try {
 			String empdt=this.getStrempdt();
-			if (("F".equals(payrank) && !this.paytitlp.contains("醫師"))){
-				if( DateUtil.compareDate(empdt, Globals.gNcontract) )
+			if (this.getHid().equals("3A0"))
+				rtnTmp="Y";
+			else if (this.getHid().equals("2A0")){
+				if (("F".equals(payrank) && !this.paytitlp.contains("醫師")))
 					rtnTmp="N";
 				else
 					rtnTmp="Y";
 			}
+			else if (this.getHid().equals("1A0")){	
+				if (("F".equals(payrank) && !this.paytitlp.contains("醫師"))){
+					if( DateUtil.compareDate(empdt, Globals.gNcontract) )
+						rtnTmp="N";
+					else
+						rtnTmp="Y";
+				}
+			}	
 		} catch (ParseException e) {
 			// TODO 自動產生 catch 區塊
 			e.printStackTrace();
@@ -332,6 +347,12 @@ public class Padatpsn implements Serializable{
 	}
 	public String getStrgovdt() {
 		return sdf_d.format(this.paygovdt);
+	}
+	public int getInsuamt() {
+		return insuamt;
+	}
+	public void setInsuamt(int insuamt) {
+		this.insuamt = insuamt;
 	}
     
         

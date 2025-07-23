@@ -7,6 +7,8 @@ public class Padatpay {
     private int salnum;
     /** 身份證字號*/
     private String payidno;
+    /** 原O/新N */
+    private String paysort;
     /** 支扣代碼*/
     private String paycode;
     /** 金額*/
@@ -91,6 +93,12 @@ public class Padatpay {
 	}
 	public void setPacodnmc(String pacodnmc) {
 		this.pacodnmc = pacodnmc;
+	}
+	public String getPaysort() {
+		return paysort;
+	}
+	public void setPaysort(String paysort) {
+		this.paysort = paysort;
 	}
     
 }

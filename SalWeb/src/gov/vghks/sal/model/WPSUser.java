@@ -30,6 +30,16 @@ public class WPSUser implements Serializable{
 	private String groups;
 	/** 醫院代號 */
 	private String hid;	
+	/** 管理者 */
+	private String pa_adm;
+	/** 編輯者_維護角色 */
+	private String pa_edit;
+	/** 查詢角色 */
+	private String pa_view;
+	/** 編輯者_員工獎金 */
+	private String pa_bones;
+	/** 編輯者_所得稅 */
+	private String pa_tax;
 	/**
 	 * 取得登入者卡號
 	 * @return loginId
@@ -211,5 +221,45 @@ public class WPSUser implements Serializable{
 
 	public void setHid(String hid) {
 		this.hid = hid;
+	}
+
+	public String getPa_adm() {
+		return pa_adm;
+	}
+
+	public void setPa_adm(String pa_adm) {
+		this.pa_adm = pa_adm;
+	}
+
+	public String getPa_edit() {
+		return pa_edit;
+	}
+
+	public void setPa_edit(String pa_edit) {
+		this.pa_edit = pa_edit;
+	}
+
+	public String getPa_view() {
+		return pa_view;
+	}
+
+	public void setPa_view(String pa_view) {
+		this.pa_view = pa_view;
+	}
+
+	public String getPa_bones() {
+		return pa_bones;
+	}
+
+	public void setPa_bones(String pa_bones) {
+		this.pa_bones = pa_bones;
+	}
+
+	public String getPa_tax() {
+		return pa_tax;
+	}
+
+	public void setPa_tax(String pa_tax) {
+		this.pa_tax = pa_tax;
 	}
 }

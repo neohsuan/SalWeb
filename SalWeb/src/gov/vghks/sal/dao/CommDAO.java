@@ -4,6 +4,7 @@ import gov.vghks.common.util.DateUtil;
 import gov.vghks.common.util.StringUtil;
 import gov.vghks.common.util.VGHDataAccess;
 import gov.vghks.sal.Globals;
+import gov.vghks.sal.Tables;
 import gov.vghks.sal.model.Pabaspsn;
 import gov.vghks.sal.model.Pacspf;
 import gov.vghks.sal.model.Padatpay;
@@ -11,6 +12,7 @@ import gov.vghks.sal.model.Padatpay;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,7 +32,7 @@ public class CommDAO {
 	private VGHDataAccess da = null;
 	private static final int META_TYPE = 2; 			//回傳map中欄位名稱是小寫
 	private static boolean connFlg = false;
-	
+	private String hid="";
 	private String tCspfTbl = "PA.PACSPF";					//工作獎金支扣
 	
 	public CommDAO() {
@@ -42,44 +44,74 @@ public class CommDAO {
 		this.da=da1;
 		connFlg = true;
 	}
+	public CommDAO(VGHDataAccess da1,String hid) {
+		super();
+		this.da=da1;
+		this.hid=hid;
+		Tables tabInfo = Tables.getTables(hid);
+		connFlg = true;
+		tCspfTbl=tabInfo.tCspfTbl;
+		/*if ("1A0".equals(hid)){			//高雄榮總
+			tCspfTbl = "PA.PACSPF";
+		}else if ("2A0".equals(hid)){			//屏榮榮總
+			tCspfTbl = "PA.PTCSPF";
+		}else if ("3A0".equals(hid)){			//聯合醫院
+			
+		}*/
+	}
 	/**傳回 績效點數
 	 * @param 
 	 * 		  vRANK3  : 本功別
 '             vTitle  : 職稱
-'             vRANK2  : 權理
+'			  vRANK   : 階別
 '             vRNK2N  : 職等
 '             vDEGR2  : 級別
+'  			  vBANKDT : 發薪日
+'			  vhid    : 醫院別		
 '   @return   vPFKEY  : 實際支領KEY
 '             vPFBAS  : 基本點數
 '             vPFDAT  : 職等點數
 	 * @throws SQLException 
 	 */
 	
-	public HashMap getCsPfByKey(int intRANK3,String vTitle,String vRANK2,String vRNK2N,int intDEGR2,VGHDataAccess da) throws SQLException{
+	public HashMap getCsPfByKey(int vRANK3,String vTitle,String vRANK,String vRNK2N,int intDEGR2,String vBANKDT,String vHid,VGHDataAccess da) throws Exception{
 		String me = getClass().getName() + ".getCsPfByKey()";
 		ArrayList<Object> params = new ArrayList<Object>();
 		HashMap rtnMap=null;
-		String vRANK3="";
 		String vPFKEY="";
 		String vPFBAS="";
 		String vPFDAT="";
 		String vDEGR2="";
-		//本功別
-		vRANK3=String.valueOf(intRANK3);
 		//職稱
 		vTitle=StringUtil.nullToString(vTitle);
-		//權理
-		vRANK2=StringUtil.nullToString(vRANK2);
 		//職等
 		vRNK2N=StringUtil.nullToString(vRNK2N);
+		//階別
+		vRANK=StringUtil.nullToString(vRANK);
 		//級別
 		vDEGR2=String.valueOf(intDEGR2);
 		vDEGR2=StringUtil.fillChar(StringUtil.nullToString(vDEGR2),2,"0",false);
 		//實際支領KEY 本功別=0,表示pfkey組成為職稱+"00000"
-		if (intRANK3==0)
-			vPFKEY=vTitle+"00000";
-		else
-			vPFKEY = vTitle + vRNK2N + vRANK3 + vDEGR2 ;
+		if (vRANK.equals("F") && !vTitle.matches("CG|CH|CK")){
+			if (hid.equals("1A0")){ // >2024-9-1 加級數
+				if ( DateUtil.compareDate( Globals.gPFNew , vBANKDT ) ){
+					vPFKEY=vTitle+"000"+StringUtil.fillChar(vDEGR2,2,"0",false);
+				}else{
+					if (vTitle.matches("DX|DY"))	//DX契約資訊助理工程師  DY契約資訊副工程師
+						vPFKEY=vTitle+"000"+StringUtil.fillChar(vDEGR2,2,"0",false);
+					else
+						vPFKEY=vTitle+"00000";
+				}
+			}else if(hid.equals("2A0")){
+				vPFKEY=vTitle+"00000";
+			}
+		}else{
+			if (vRANK3==0)
+				vPFKEY=vTitle+"00000";
+			else
+				vPFKEY = vTitle + vRNK2N + vRANK3 + StringUtil.fillChar(vDEGR2,2,"0",false) ;
+		}
+		
 		rtnMap=new HashMap();	
 		rtnMap.put("pfkey", vPFKEY);
 		
@@ -106,40 +138,42 @@ public class CommDAO {
 		return rtnMap;
 	}
 	//取得績效點數map	
-	public HashMap getCsPfByAll(VGHDataAccess da) throws SQLException{
+	public HashMap getCsPfByAll(VGHDataAccess da,String hid) throws SQLException{
 		String me = getClass().getName() + ".getCsPfByAll()";
 		ArrayList<Object> params = new ArrayList<Object>();
 		HashMap rtnMap=new HashMap();
 		Pacspf oneObj=null; 
 		String cskey="";
-		sql = "select PACSKEY, PACSBASE, PACSDATA, PACSNAME, COALESCE(PAYUPDID,'') as PAYUPDID,  ZPACSPF "+
+		sql = "select PACSKEY, PACSBASE, PACSDATA, PACSNAME, COALESCE(PAYUPDID,'') as PAYUPDID "+
 		 	    "from "+this.tCspfTbl +
 		 	  "  with ur";
 		
 		Date begin = new Date();
 		log.info(me+"  " + sql+"...params:"+ params.toString());
-		try{
-			result = da.arraylistbyQuery(sql,META_TYPE);
-			log.info(me+"  ...size:"+result.size());
-			if(result.size()>0){
-				for (Map<String,Object> data :result){
-					oneObj=new Pacspf();
-					PropertyUtils.copyProperties(oneObj, data);
-					
-					cskey=StringUtil.nullToString(oneObj.getPacskey());
-					
-					rtnMap.put(cskey, oneObj);
+		if (hid.matches("1A0|2A0")){
+			try{
+				result = da.arraylistbyQuery(sql,META_TYPE);
+				log.info(me+"  ...size:"+result.size());
+				if(result.size()>0){
+					for (Map<String,Object> data :result){
+						oneObj=new Pacspf();
+						PropertyUtils.copyProperties(oneObj, data);
+						
+						cskey=StringUtil.nullToString(oneObj.getPacskey());
+						
+						rtnMap.put(cskey, oneObj);
+					}
 				}
+				Date end = new Date();
+				log.info(me+"(size):" + result.size()+" dataaccess:"+(end.getTime()-begin.getTime()));
 			}
-			Date end = new Date();
-			log.info(me+"(size):" + result.size()+" dataaccess:"+(end.getTime()-begin.getTime()));
-		}
-		catch(Exception e){
-			log.info(me + " fail, " + e);
-			throw new SQLException(me + ", fail!!." + e);
-		}
-		finally{
-		
+			catch(Exception e){
+				log.info(me + " fail, " + e);
+				throw new SQLException(me + ", fail!!." + e);
+			}
+			finally{
+			
+			}
 		}
 		return rtnMap;
 	}
@@ -155,6 +189,9 @@ public class CommDAO {
 '           101.2.6 VP016改成健保獎勵罰扣(從99.10開始有正項),
 '           103.4.22 2014.4生效 VP200加班費 VP437超額獎金--論文補助<==不列所得
 '           109.1.21 讀取PA.PAYITM.PAYIFTAX='Y',因有新增科目,未同步加入
+'           111.1.19 公職退撫基金溯自110年1月1日免納入所得稅
+'           111.5.2 契約主治不扣實物代金及房租
+'           111.11.10 屏榮FD060 FD069自繳退休金 應稅所得要扣除
 '參數說明：
 '           vRank        :階別	
 '           vRnk2N       :職等
@@ -166,9 +203,11 @@ public class CommDAO {
 '           vtaxpay   	 :應稅所得
 '           vnetPay      :淨所得
 '			vduduct      :應支出
+'			vtax         :所得稅
 '*******************************************************************/
 	public HashMap Sum_Pay_Deduct(ArrayList<Padatpay> datpayAry,String vRank,String vRANK2,String vRNK2N,int vDegre,String vGovDt,String vSalDt)throws Exception {
 		String me = getClass().getName() + ".Sum_Pay_Deduct()";
+		log.info(me+"  vRank:" + vRank+" vRANK2:"+ vRANK2+" vRNK2N:"+ vRNK2N+" vDegre:"+ vDegre+" vGovDt:"+ vGovDt+" vSalDt:"+ vSalDt);
 		ArrayList<Object> params = new ArrayList<Object>();
 		HashMap rtnMap=new HashMap();	
 		int vrent_house =0;  //房租
@@ -176,18 +215,19 @@ public class CommDAO {
 		int vpay =0;        //總收入
 		int vduduct =0;     //總支出
 		int vnetpay=0;		//淨所得
-		int vtaxPay_Y =0;         //應稅所得,列Y部分
+		int vtaxPay_Y =0;   //應稅所得,列Y部分
 		int vtaxpay=0;		//應稅所得,扣除實物代金及房租
-		
+		int vPension = 0;	//退撫基金
+				
 		int vchief =0;      //主管加給
 		int vnon_rest =0;   //不休假獎金
 		int vtraffic =0;    //交通費
 		int vWelfare =0;    //福利互助金
-		int vPapers =0;            //超額獎金_論文補助 2014.4.1生效 2014.4.22改
-		int vOvertime =0;           //加班費2014.4.1生效 2014.4.22改
+		int vPapers =0;         //VP437超額獎金_論文補助 2014.4.1生效 2014.4.22改
+		int vOvertime =0;       //VP200加班費2014.4.1生效 2014.4.22改
 		int vDuty =0;           //VP455總值日值班費
-		int vSelfRetire =0; //勞工自繳退休金
-		
+		int vSelfRetire =0; 	//VD06|FD06勞工自繳退休金
+		int vtax=0;				//FD050 VD030所得稅
 		String vRank_P ="";     //職等
 		
 		Boolean vflag =false;    //有本薪才計算應稅所得
@@ -212,24 +252,31 @@ public class CommDAO {
 			}else if ("D".equals(datpayObj.getPaycode().substring(1, 2))){
 				vduduct+=datpayObj.getPayamt();
 			}
-			//'主管加給 年終獎金--主管特支  考績獎金--主管特支
+			//主管加給 年終獎金--主管特支  考績獎金--主管特支
 	        if ("FP03".equals(datpayObj.getPaycode().substring(0, 4)) || datpayObj.getPaycode().substring(0, 4).matches("VP124|VP134")){
 	        	vchief += datpayObj.getPayamt();
 	        }
+	        //公職退撫基金溯自110年1月1日免納入所得稅 2023.7.1 FD07退撫離職金自願提撥,免納入所得稅
+	        else if (datpayObj.getPaycode().substring(0, 4).matches("FD04|FD07") ){
+	        	if ( vRank.matches("1|2|3|8|9") && !DateUtil.compareDate(vSalDt,Globals.gPensionFund) ) {
+	        		vPension += datpayObj.getPayamt();
+	        	}	
+	        }
+	        
 	        //不休假獎金
 	        else if("VP11".equals(datpayObj.getPaycode().substring(0, 4))){
 	        	vnon_rest += datpayObj.getPayamt();
 	        }
-	        //交通費    
-	        else if(datpayObj.getPaycode().substring(0, 4).matches("FP06|VP19")){
-	        	vtraffic += datpayObj.getPayamt();
-	        }
+	        //交通費,己廢除    
+//	        else if(datpayObj.getPaycode().substring(0, 4).matches("FP06|VP19")){
+//	        	vtraffic += datpayObj.getPayamt();
+//	        }
 	        //福利互助金   
 	        else if("VP400".equals(datpayObj.getPaycode())){
 	        	vWelfare += datpayObj.getPayamt();
 	        }
-	        //自繳退休金  
-	        else if(datpayObj.getPaycode().substring(0, 4).matches("VD06")){
+	        //自繳退休金  ,2022.11.10 屏榮FD06
+	        else if(datpayObj.getPaycode().substring(0, 4).matches("VD06|FD06")){
 	        	vSelfRetire += datpayObj.getPayamt();
 	        }
 	        //超額獎金_論文補助   
@@ -244,6 +291,10 @@ public class CommDAO {
 	        else if("VP455".equals(datpayObj.getPaycode())){
 	        	vDuty += datpayObj.getPayamt();
 	        }
+	        //所得稅
+	        else if(datpayObj.getPaycode().substring(0, 4).matches("FD05|VD03")){
+	        	vtax += datpayObj.getPayamt();
+	        }
 		}
 		
 	    //房租,實物代金
@@ -256,63 +307,172 @@ public class CommDAO {
 				vRank_P = StringUtil.nullToString(vRNK2N);
 		}
 	    
-	    
-	    if ( DateUtil.compareDate(vSalDt, vSalBgdt) ){	//vSaldt < vSalBgdt '2005-7-20改 2005-7-1開始不計算房租及實物代金
-	    	if (vRank.matches("5|6")){
-	    		vrent_house = 400;
-	    	    vthing_money = 930;
-	    	}else if (vRank_P.matches("01|02|03") || (vRank_P.equals("T1") && vDegre<385 ) || "4".equals(vRank)){
-	    		vrent_house = 500;
-	    	    vthing_money = 930;
-	    	}else if (vRank_P.matches("04|05|06|07|P3") || (vRank_P.equals("T1") && vDegre>=385 )){
-	    		vrent_house = 600;
-	    	    vthing_money = 930;
-	    	}else if (vRank_P.matches("08|09|10|11|12|13|14|P2|P3") ){
-	    		 vrent_house = 700;
-	    		 vthing_money = 930;
-	    	}
-	    }	
-	    else	//2005-8-29改 以84.7.1為基準計算 之前要扣 之後不扣 (初任公職日<基準日,有房租及實物代金)
-	    {
-	    	if (vRank.matches("5|6")){
-	    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
-	    			vrent_house = 400;
-	    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
-	    			vthing_money = 930;
-	    	}else if (vRank_P.matches("01|02|03") || (vRank_P.equals("T1") && vDegre<385 ) || "4".equals(vRank)){
-	    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
-	    			vrent_house = 500;
-	    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
-	    			vthing_money = 930;
-	    	}else if (vRank_P.matches("04|05|06|07|P3") || (vRank_P.equals("T1") && vDegre>=385 )){
-	    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
-	    			vrent_house = 600;
-	    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
-	    			vthing_money = 930;
-	    	}else if (vRank_P.matches("08|09|10|11|12|13|14|P2|P3") ){	
-	    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
-	    			vrent_house = 700;
-	    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
-	    			vthing_money = 930;
-	    	}
+	    if (vflag){	//有本薪才有實物代金 房租
+		    if ( DateUtil.compareDate(vSalDt, vSalBgdt) ){	//vSaldt < vSalBgdt '2005-7-20改 2005-7-1開始不計算房租及實物代金
+		    	if (vRank.matches("5|6")){
+		    		vrent_house = 400;
+		    	    vthing_money = 930;
+		    	}//2022.5.2契約主治沒有房租及實物代金
+		    	else if (!vRank.matches("F")){
+		    		if (vRank_P.matches("01|02|03") || (vRank_P.equals("T1") && vDegre<385 ) || "4".equals(vRank)){
+			    		vrent_house = 500;
+			    	    vthing_money = 930;
+			    	}else if (vRank_P.matches("04|05|06|07|P3") || (vRank_P.equals("T1") && vDegre>=385 )){
+			    		vrent_house = 600;
+			    	    vthing_money = 930;
+			    	}else if (vRank_P.matches("08|09|10|11|12|13|14|P1|P2") ){
+			    		 vrent_house = 700;
+			    		 vthing_money = 930;
+			    	}
+		    	} 
+		    }	
+		    else	//2005-8-29改 以84.7.1為基準計算 之前要扣 之後不扣 (初任公職日<基準日,有房租及實物代金)
+		    {
+		    	if (vRank.matches("5|6")){
+		    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
+		    			vrent_house = 400;
+		    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
+		    			vthing_money = 930;
+		    	}
+		    	//2022.5.2契約主治沒有房租及實物代金
+		    	else if (!vRank.matches("F")){
+		    		if (vRank_P.matches("01|02|03") || (vRank_P.equals("T1") && vDegre<385 ) || "4".equals(vRank)){
+			    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
+			    			vrent_house = 500;
+			    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
+			    			vthing_money = 930;
+			    	}else if (vRank_P.matches("04|05|06|07|P3") || (vRank_P.equals("T1") && vDegre>=385 )){
+			    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
+			    			vrent_house = 600;
+			    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
+			    			vthing_money = 930;
+			    	}else if (vRank_P.matches("08|09|10|11|12|13|14|P1|P2") ){	
+			    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
+			    			vrent_house = 700;
+			    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
+			    			vthing_money = 930;
+			    	}
+		    	} 
+		    }
 	    }
 	    //淨所得=總所得-總支出
 	    vnetpay = vpay - vduduct;
 	    if (vflag){
-			//應稅所得=datpay.getPayiftax()="Y"-實物代金-房租-自繳退休金
-		    vtaxpay = vtaxPay_Y - vrent_house - vthing_money-vSelfRetire;
-		    if (vtaxpay<0)vtaxpay=0;
+			//應稅所得=datpay.getPayiftax()="Y"-實物代金-房租-自繳退休金-公職退撫基金
+		    vtaxpay = vtaxPay_Y - vrent_house - vthing_money - vSelfRetire -vPension;
+		    if (vtaxpay<0) vtaxpay=0;
 	    }else{
 	    	vtaxpay = vtaxPay_Y;
 	    }
-	    
+	    rtnMap.put("tax", vtax);
 	    rtnMap.put("pay", vpay);
 		rtnMap.put("duduct", vduduct); 
 		rtnMap.put("netpay", vnetpay);
-		rtnMap.put("taxpay", vtaxpay); 
+		rtnMap.put("taxpay", vtaxpay); //應稅所得,扣除實物代金及房租
 		rtnMap.put("thing_money", vthing_money); 
-		rtnMap.put("rent_house", vrent_house); 
+		rtnMap.put("rent_house", vrent_house);
+		rtnMap.put("retire", vPension+vSelfRetire);
 		return rtnMap;
+	}
+	
+	//身分證字號與居留證(統一證)編號檢核程式碼 http://experimentrecord.blogspot.tw
+	public static boolean isValidIDorRCNumber(String str) {
+
+	    if (str == null || "".equals(str)) {
+	        return false;
+	    }
+
+	    final char[] pidCharArray = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+
+	    // 原身分證英文字應轉換為10~33，這裡直接作個位數*9+10
+	    final int[] pidIDInt = { 1, 10, 19, 28, 37, 46, 55, 64, 39, 73, 82, 2, 11, 20, 48, 29, 38, 47, 56, 65, 74, 83, 21, 3, 12, 30 };
+
+	    // 原居留證第一碼英文字應轉換為10~33，十位數*1，個位數*9，這裡直接作[(十位數*1) mod 10] + [(個位數*9) mod 10]
+	    final int[] pidResidentFirstInt = { 1, 10, 9, 8, 7, 6, 5, 4, 9, 3, 2, 2, 11, 10, 8, 9, 8, 7, 6, 5, 4, 3, 11, 3, 12, 10 };
+
+	    // 原居留證第二碼英文字應轉換為10~33，並僅取個位數*8，這裡直接取[(個位數*8) mod 10]
+	    final int[] pidResidentSecondInt = {0, 8, 6, 4, 2, 0, 8, 6, 2, 4, 2, 0, 8, 6, 0, 4, 2, 0, 8, 6, 4, 2, 6, 0, 8, 4};
+
+	    str = str.toUpperCase();// 轉換大寫
+	    final char[] strArr = str.toCharArray();// 字串轉成char陣列
+	    int verifyNum = 0;
+
+	    /* 檢查身分證字號 */
+	    if (str.matches("[A-Z]{1}[1-2]{1}[0-9]{8}")) {
+	        // 第一碼
+	        verifyNum = verifyNum + pidIDInt[Arrays.binarySearch(pidCharArray, strArr[0])];
+	        // 第二~九碼
+	        for (int i = 1, j = 8; i < 9; i++, j--) {
+	            verifyNum += Character.digit(strArr[i], 10) * j;
+	        }
+	        // 檢查碼
+	        verifyNum = (10 - (verifyNum % 10)) % 10;
+
+	        return verifyNum == Character.digit(strArr[9], 10);
+	    }
+
+	    /* 檢查統一證(居留證)編號 (2031/1/1停用) 
+	    verifyNum = 0;
+	    if (str.matches("[A-Z]{1}[A-D]{1}[0-9]{8}")) {
+	        // 第一碼
+	        verifyNum += pidResidentFirstInt[Arrays.binarySearch(pidCharArray, strArr[0])];
+	        // 第二碼
+	        verifyNum += pidResidentSecondInt[Arrays.binarySearch(pidCharArray, strArr[1])];
+	        // 第三~八碼
+	        for (int i = 2, j = 7; i < 9; i++, j--) {
+	            verifyNum += Character.digit(strArr[i], 10) * j;
+	        }
+	        // 檢查碼
+	        verifyNum = (10 - (verifyNum % 10)) % 10;
+
+	        return verifyNum == Character.digit(strArr[9], 10);
+	    }
+
+	     檢查統一證(居留證)編號 (2021/1/2實施) 
+	    verifyNum = 0;
+	    if (str.matches("[A-Z]{1}[89]{1}[0-9]{8}")) {
+	        // 第一碼
+	        verifyNum += pidResidentFirstInt[Arrays.binarySearch(pidCharArray, strArr[0])];
+	        // 第二~八碼
+	        for (int i = 1, j = 8; i < 9; i++, j--) {
+	            verifyNum += Character.digit(strArr[i], 10) * j;
+	        }
+	        // 檢查碼
+	        verifyNum = (10 - (verifyNum % 10)) % 10;
+
+	        return verifyNum == Character.digit(strArr[9], 10);
+	    }*/
+	    
+	    return false;
+	}
+	
+	/**傳回 9A 9B 執行業務者業別代號對照表
+	 * @param itm 轉帳項目
+	 * @return 執行業務者業別代號
+	 * Ex: getCatgCd(16) return 10 
+	 */
+	public static String getCatgCd(int itm){		
+		String itmCd = " ";
+		if (itm==16) return "10";	//律師
+		if (itm==17) return "20";	//技師
+		if (itm==18) return "21";	//建築師
+		if (itm==19) return "98";	//稿費 演講費
+		if (itm==28) return "93";	//專利代理人 2011.1.14
+		if (itm==29) return "70";	//表演人 2011.1.17
+		if (itm==34) return "56";	//牙體技術師 2013.1.31
+		if (itm==38) return "76";	//一般經紀人 2013.7.24
+		if (itm==50) return "42";	//醫事檢驗師 2015.1.20
+		if (itm==51) return "13";	//地政士 2017.1.11
+		if (itm==53) return "17";	//不動產估價師 2018.1.22
+		if (itm==54) return "50";	//中醫師 2019.1.22
+		if (itm==55) return "30";	//內科醫師 2020.1.20
+		if (itm==56) return "36";	//牙科醫師 2020.1.20
+		if (itm==61) return "91";	//牙科醫師 2020.1.20
+		if (itm==62) return "18";	//租賃 2024.1.4
+		if (itm==63) return "46";	//支援醫師--醫師經核准至該他醫療機構服務但與該他醫療機構不具僱傭關係者 2024.1.4
+		if (itm==71) return "61";	//書畫家、版畫家 2024.1.27
+		if (itm==72) return "16";	//民間公證人 2024.1.27
+		return itmCd;
 	}
 	/**
 	 * 關閉VGHDataAccess與ResultSet

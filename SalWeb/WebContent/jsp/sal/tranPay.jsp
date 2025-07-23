@@ -48,13 +48,14 @@ $(function(){
 		$('.selectpicker').selectpicker('refresh');
 	});
 	
-	$.getLoadCodeTbl = function(item){		
+	$.getLoadCodeTbl = function(item,flag){		
 		$.ajax({
 			url:"${pageContext.request.contextPath}/salController.do",
 			data:{
 				method  : 'getLoadCodeTbl',
- 				item    : item
-// 				flag    :flag
+ 				item    : item,
+ 				flag    : flag,
+ 				hid     : pahid
 			},
 			type:"POST",			//type:POST, GET(default:GET)
 			dataType:"json",	//dataType: text, xml, html, script, json, jsonp

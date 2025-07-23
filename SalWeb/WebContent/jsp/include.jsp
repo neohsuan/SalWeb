@@ -1,5 +1,6 @@
 <!DOCTYPE HTML><%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+  
 
 <%
     response.setHeader("Cache-Control","no-cache"); //HTTP 1.1
@@ -16,18 +17,17 @@
 <!-- CSS -->
 <%-- <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/theme/itStyles.css" />"> --%>
 <link type="text/css" rel="stylesheet" href="<c:url value="/resources/components/css/theme/iconClass.css" />">
-
+<link type="text/css" rel="stylesheet" href="<c:url value="/resources/components/css/tab.css" />">
 <!-- Jquery -->
 <link type="text/css" rel="stylesheet" href="<c:url value="/resources/components/css/theme/jquery-ui-1.10.4.custom.min.css" />">
-<link type="text/css" rel="stylesheet" href="<c:url value="/resources/components/css/tab.css" />">
-
 <script type="text/javascript" src="<c:url value="/resources/components/js/jquery-1.10.2.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/components/js/jquery.json-2.4.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/components/js/jquery-ui-1.10.4.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/components/js/jquery.formatCurrency-1.4.0.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/components/js/jquery.ui.datepicker-zh-TW-customize.js" />"></script>
-<script type="text/javascript" src="<c:url value="/resources/components/js/jquery.validate.js" />"></script>
+<script type="text/javascript" src="<c:url value="/resources/components/jquery.validate.js" />" charset="UTF-8"></script>
 <script type="text/javascript" src="<c:url value="/resources/components/js/jquery.table2excel.js" />"></script>
+<script type="text/javascript" src="<c:url value="/resources/components/js/jquery.form.js" />"></script>
 
 <%-- <script type="text/javascript" src="<c:url value="/resources/components/popper/src/popper.js" />"></script> --%>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -63,7 +63,7 @@
 <!-- bootstrap -->
 <link type="text/css" rel="stylesheet" href="<c:url value="/resources/components/bootstrap-4.6.0-dist/css/bootstrap.min.css" />">
 <script type="text/javascript" src="<c:url value="/resources/components/bootstrap-4.6.0-dist/js/bootstrap.min.js" />"></script>
-<script type="text/javascript" src="<c:url value="/resources/components/DataTables-1.10.24/js/dataTables.bootstrap4.min.js" />"></script>  
+<%-- <script type="text/javascript" src="<c:url value="/resources/components/DataTables-1.10.24/js/dataTables.bootstrap4.min.js" />"></script>   --%>
 
 <!-- import excel -->
 <%-- <script type="text/javascript" src="<c:url value="/resources/js/xlsx.full.min.js" />"></script>
@@ -89,6 +89,8 @@
 			 url(https://zwac01p.vghks.gov.tw:4436/PUBService/PUB/CORSProxy/OutputStream?url=https://wwwhf.vghks.gov.tw/VGHKH_KAI.TTF) format("truetype");
 		}
 	body { font-family: EUDC; } 
+	thead input {  width: 100%;}
+	
 	.modal-dialog {
 	  max-width: 100%;
 	  height: 100%;
@@ -99,14 +101,17 @@
 /* 	  height: 100%; */
 	  border-radius: 0;
 	}
+	.card-body{
+		padding: 0.25rem;
+	}
  .alignCenter { text-align: center !important;}
  .alignLeft { text-align: left !important;}
-.ui-widget-header{font-size: 11px !important;}
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button{font-size: 14px !important;font-family: Verdana, Arialx !important;}
-/* .dataTables_wrapper {font-family: tahoma;font-size: 12px;} */
-.dataTables_wrapper .ui-toolbar{padding:2px;}
-.dataTables_wrapper .dataTables_paginate .paginate_button{margin-left:0px;padding:0px 0px;}}
-.page-link{line-height:0.5}
+ .ui-widget-header{font-size: 11px !important;}
+ .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button{font-size: 14px !important;font-family: Verdana, Arialx !important;}
+ .dataTables_wrapper {font-size: 16px;} 
+ .dataTables_wrapper .ui-toolbar{padding:2px;}
+ .dataTables_wrapper .dataTables_paginate .paginate_button{margin-left:0px;padding:0px 0px;}}
+ .page-link{line-height:0.5}
  .ui-widget-header a { 
  	color: #222; 
  } 
@@ -125,6 +130,7 @@ form.cmxform label.error,label.error {
 	font-style: italic;
 	font-size: 12px;
 }
+
 /* datatables Scroll - horizontal and vertical */
 th,td {
 	white-space: nowrap;
@@ -206,25 +212,34 @@ div.dataTables_wrapper { /*width: 1000px;*/
 /* } */
 /*---------------menu bar CSS---------------------------------------------  */
 </style>
-<script>	
+<script>
+		
 	var userid ="${sessionScope.user.getLoginId()}";	//使用者卡號
-	var username ="${sessionScope.user.getUserNm()}";         //使用者姓名
-	var hid ="${sessionScope.user.getHid()}";         //醫院代碼
+	var username ="${sessionScope.user.getUserNm()}";   //使用者姓名
+	var hid ="${sessionScope.user.getHid()}";         	//醫院代碼
  	var costid ="${sessionScope.user.getCosId()}";      //使用者成本中心
- 	var ouname ="${sessionScope.user.getDeptName()}";      //使用者單位名稱
-// 	var mail ="${sessionScope.mebeMail}";         		//使用者信箱
-// 	var admin ="${sessionScope.MEBE_ADM}";				//管理者
-	var admin ="Y";				//管理者
+ 	var deptno ="${sessionScope.user.getDeptNo()}";      //使用者登入者單位
+ 	var deptnm ="${sessionScope.user.getDeptName()}";   //使用者單位名稱
+ 	
+ 	var pa_admin ="${sessionScope.user.getPa_adm()}";	//讀取ldap_管理者
+ 	var pa_edit ="${sessionScope.user.getPa_edit()}";	//讀取ldap_維護角色
+ 	var pa_view ="${sessionScope.user.getPa_view()}";	//讀取ldap_查詢角色
+ 	var pa_bones ="${sessionScope.user.getPa_bones()}";	//讀取ldap_員工獎金角色
+ 	var pa_tax ="${sessionScope.user.getPa_tax()}";		//讀取ldap_所得稅角色
 	
 	//代理人資訊
 	var agent="";										//被代理人卡號
 	var agentname="";         							//使用者姓名
 	var agentcostid="";            						//使用者成本中心
-	var agentouname="";         						//使用者單位名稱
-	var agentmail="";         							//使用者信箱
-	/* var agenthospital="";         						//使用者醫院別 */
-	var agenthid="";         						//使用者醫院別
-	
+	var agentdeptno="";         							//使用者成本中心英文
+	var agentdeptnm="";         						//使用者成本中心中文
+	var agenthid="";         							//使用者醫院別
+	var agentpswktypd="";         						//職稱代碼
+	var agentAdmin="";
+	var agentEdit="";
+	var agentView="";
+	var agentBones="";
+	var agentTax="";
 	//dataTable 共用設定-----------------------------------------------------------------------------------------------
 //Datatable樣版設定
 var dataTableConfig = {
@@ -246,6 +261,7 @@ dataTableConfig = $.extend(true, {}, dataTableConfig);
 dataTableConfig.bScrollAutoCss=false;
 dataTableConfig.scrollY = false;
 dataTableConfig.scrollX = true;//產生X scrollbar
+//dataTableConfig.paging= false;
 dataTableConfig.scrollCollapse= true;
 dataTableConfig.destroy = true;
 //金額欄位格式-統一設定
@@ -280,23 +296,23 @@ var numConfig = {
 		});
 		
 		//如果不是管理員隱藏代理人功能
-		if(admin == "N"){
+		if("${sessionScope.user.getPa_adm()}" == "N"){
 			$(".manage").hide();
 		}
-		//如果代理人卡號為空隱藏
+		//如果代理人卡號為空,隱藏
 		if("${sessionScope.agent}" == null || "${sessionScope.agent}" == ""){
-			$("#showAgentDiv").hide();
+			$("#showAgentCol").hide();
 		}
 		
 		//依卡號帶入名子
 	    $("#agentText").on("change keyup", function(){
 	    	if($(this).val() == "") return;
 	    	if ( $(this).val().length == 4 ){
-	    		var setHID =$("#setHID option:selected").val();	//醫院別
-	    		var userName = getNamebyID(setHID,$(this).val());
+	    		$(this).val($(this).val().toUpperCase());
+	    		var xuserName = getNamebyID($(this).val().toUpperCase());
 	    		
-		    	if(userName != ""){
-		    		$(this).parent().find("#agentnm").text(userName);
+		    	if(xuserName != ""){
+		    		$(this).parent().find("#agentnm").text(xuserName);
 		    	}else{
 		    		$("#agentText").val("");
 		    		$("#agentnm").text("");
@@ -312,13 +328,13 @@ var numConfig = {
 	
 	//依卡號帶入人名
 	var agentData;
-	function getNamebyID(sethid,userid){
+	function getNamebyID(xuserid){
 		var foundUserName = "";
 		$.ajax({
-			url: "<c:url value='/mebe/getNamebyID/'/>",
+			url:"${pageContext.request.contextPath}/salController.do",
 			data: {
-				"sethid": sethid,
-				"cardno": userid,
+				method  : 'getNamebyID',
+				cardno  : xuserid,
 			},
 			dataType: "json",
 			async: false,	//逐步執行
@@ -344,22 +360,37 @@ var numConfig = {
 	
 	//設定代理人
 	function setAgent() {
-		//設定代理人資料
-		//var agent = agent;//被代理人卡號
 		agent = $('#agentText').val();
 		if ( "" != agent ) {
 			agentname = agentData.userName;//使用者姓名
-			agentcostid = agentData.strCostId;//使用者成本中心
-			agentouname = agentData.strOuName;//使用者單位名稱
-		}
+			agentcostid = agentData.userCosId;//使用者成本中心
+			agentdeptno = agentData.userDept;//使用者單位名稱_英文
+			agentdeptnm = agentData.userDeptName;//使用者成本中心中文
+			agenthid = agentData.userHid;//使用者醫院別
+			agentpswktypd =agentData.userPsWkTypd;//使用者職稱代碼
+			agentAdmin=agentData.userAdmin;//代理人角色
+			agentEdit=agentData.userEdit;//代理人角色
+			agentView=agentData.userView;//代理人角色
+			agentBones=agentData.userBones;//代理人角色
+			agentTax=agentData.userTax;//代理人角色
+ 		}
+
 		$.ajax({
-				url: "<c:url value='/mebe/setAgent/'/>",
+				url: "${pageContext.request.contextPath}/salController.do",
 				data: {
-					"userid": userid,
-					"agent": agent,
-					"agentname" : agentname,
+					"method"      : 'setAgent',
+					"agent"       : agent,
+					"agentname"   : agentname,
 					"agentcostid" : agentcostid,
-					"agentouname" : agentouname
+					"agentdeptno"   : agentdeptno,
+					"agentdeptnm" : agentdeptnm,
+					"agenthid"    : agenthid,
+					"agentpswktypd" : agentpswktypd,
+					"agentAdmin" : agentAdmin,
+					"agentEdit" : agentEdit,
+					"agentView" : agentView,
+					"agentBones" : agentBones,
+					"agentTax" : agentTax,
 				},
 // 				dataType: "json",
 				async: false,	//逐步執行
@@ -367,8 +398,8 @@ var numConfig = {
 				success: function(data) {
 					$('#agentDialog').modal("hide");
 					if ( "" != agent ) {
-						$("#showAgentDiv").show();
-						$("#agentid").text(agent);
+						$("#showAgentCol").show();
+						$("#agentid").text(agent+agentname);
 					}
 					window.location.reload();
 				},
@@ -449,11 +480,23 @@ var numConfig = {
   <a class="navbar-brand" href="<c:url value="/jsp/index.jsp"/>"><img src="<c:url value="/resources/images/home_48.png"/>" width="35" height="30" >薪資作業首頁</a>
   <!-- Links -->
   <ul class="navbar-nav ml-auto">
-    <li class="nav-item">
+    <li class="manage nav-item">
     	<a class="nav-link" href="#" data-toggle="modal" data-target="#agentDialog"><img src="<c:url value="/resources/images/admin.png"/>" width="35" height="30" >代理</a>    	      
     </li>    
   </ul>
 </nav>
+
+<!-- 顯示目前操作者及代理人 -->
+<div id="showAgentDiv" class='container-fluid'>
+	<div class="row" >
+		<div class="col-3" id="showUserCol">
+		操作者 : <span id="useropid">${sessionScope.user.getHid()} ${sessionScope.user.getLoginId()}${sessionScope.user.getUserNm()}</span>
+		</div>
+		<div class="col-3" id="showAgentCol">
+		代理 : <span id="agentid">${sessionScope.agenthid} ${sessionScope.agent}${sessionScope.agentname}</span>
+		</div>
+	</div>	
+</div>
 
 <!-- 代理人dialog -->
 <div class="modal fade" id="agentDialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -465,12 +508,12 @@ var numConfig = {
       </div>
       <div class="modal-body">
       	<div class="form-inline" role="form">
-      		<select id="setHID"class="form-select form-select-sm" aria-label=".form-select-sm example">
+      		<!-- <select id="setHID"class="form-select form-select-sm" aria-label=".form-select-sm example">
 			  <option selected>醫院代碼</option>
 			  <option value="1A0">高雄榮總</option>
 			  <option value="2A0">屏東榮總</option>
 			  <option value="3A0">聯合醫院</option>
-			</select>
+			</select> -->
         	<label for="title">請輸入卡號:</label>
         	<input type="text" id="agentText" name="agentText" class="form-control" size="8" placeholder="請輸入卡號" />
         	&emsp;<span id="agentnm"></span>
@@ -502,9 +545,5 @@ var numConfig = {
         <div class="loader" style="margin: 0px auto;"></div>
     </div>
 </div>
-
-
-
-
 
 </body>

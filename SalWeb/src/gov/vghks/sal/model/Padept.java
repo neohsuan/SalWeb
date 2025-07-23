@@ -21,6 +21,8 @@ public class Padept implements Serializable{
     private String hid;
     /** 日期時戳 */
     private java.sql.Timestamp zpadept;
+    /** 人事單位代碼*/
+    private String pbwkcode;
     
 	public String getPadepcod() {
 		return padepcod;
@@ -63,6 +65,12 @@ public class Padept implements Serializable{
 	}
 	public void setZpadept(java.sql.Timestamp zpadept) {
 		this.zpadept = zpadept;
+	}
+	public String getPbwkcode() {
+		return pbwkcode;
+	}
+	public void setPbwkcode(String pbwkcode) {
+		this.pbwkcode = pbwkcode;
 	}
     
 }

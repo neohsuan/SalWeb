@@ -42,7 +42,7 @@ public class Pabaspsn implements Serializable{
     /** 保險費比率(1,1/4,1/2,0,上限)*/
     private int payinflg;
     /** 健保數*/
-    private int paydpno;
+    private String paydpno;
     /** PASSWORD*/
     private String paypsw;
     /** 職稱代碼*/
@@ -333,16 +333,29 @@ public class Pabaspsn implements Serializable{
 		return sdf_d.format(this.payempdt);
 	}
 
-	//契約除醫師外,到院日2015/1起為新制Y,舊制N
+	//契約
+	//高榮1A0--醫師:舊制N,契約:到院日2015/1起為新制Y,舊制N
+	//屏榮2A0--醫師:舊制N,契約:新制Y
+	//聯醫3A0--新制Y
 	public String getContract() { 
 		String rtnTmp="";
 		try {
 			String empdt=this.getStrempdt();
-			if (("F".equals(payrank) && !this.paytitlp.contains("醫師"))){
-				if( DateUtil.compareDate(empdt, Globals.gNcontract) )
+			if (this.getHid().equals("3A0"))
+				rtnTmp="Y";
+			else if (this.getHid().equals("2A0")){
+				if (("F".equals(payrank) && !this.paytitlp.contains("醫師")))
 					rtnTmp="N";
 				else
 					rtnTmp="Y";
+			}
+			else if (this.getHid().equals("1A0")){	
+				if (("F".equals(payrank) && !this.paytitlp.contains("醫師"))){
+					if( DateUtil.compareDate(empdt, Globals.gNcontract) )
+						rtnTmp="N";
+					else
+						rtnTmp="Y";
+				}
 			}
 		} catch (ParseException e) {
 			// TODO 自動產生 catch 區塊
@@ -395,15 +408,6 @@ public class Pabaspsn implements Serializable{
 	}
 	public void setPayinflg(int payinflg) {
 		this.payinflg = payinflg;
-	}
-	public int getPaydpno() {
-		return paydpno;
-	}
-	public void setPaydpno(int paydpno) {
-		this.paydpno = paydpno;
-	}
-	public String getPaypsw() {
-		return paypsw;
 	}
 	public void setPaypsw(String paypsw) {
 		this.paypsw = paypsw;
@@ -500,6 +504,12 @@ public class Pabaspsn implements Serializable{
 	}
 	public void setPayexpfkey3(int payexpfkey3) {
 		this.payexpfkey3 = payexpfkey3;
+	}
+	public String getPaydpno() {
+		return paydpno;
+	}
+	public void setPaydpno(String paydpno) {
+		this.paydpno = paydpno;
 	}
     
         

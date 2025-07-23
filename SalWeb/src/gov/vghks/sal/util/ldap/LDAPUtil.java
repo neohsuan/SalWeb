@@ -31,6 +31,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
 //import com.ibm.websphere.security.CustomRegistryException;
 //import com.ibm.websphere.security.EntryNotFoundException;
 //import com.ibm.websphere.security.PasswordCheckFailedException;
@@ -75,7 +76,7 @@ import javax.sql.DataSource;
 	
 
 public class LDAPUtil {
-
+	static Logger log=Logger.getLogger(LDAPUtil.class);  //呼叫log4j
 	/*
 	 * SearchScope=0,只對searchBaseDN的物件做搜尋
 	 * SearchScope=1,只對searchBaseDN的物件的下一層做搜尋,不含searchBaseDN的物件本身
@@ -526,7 +527,51 @@ public class LDAPUtil {
 				")(objectClass=").append(groupOfName).append("))").toString();
 		return find(groupBaseDN, filter);
 	}
-
+	public boolean checkUserinGroup(String userRDN,String groupRDN)
+	throws LDAPUtilException {
+		boolean rtnValue=false;
+		//this.log(getMethodName(Thread.currentThread().getStackTrace()));
+		try{
+			String userDN = findUserDN(userRDN);
+			if (userDN==null) return false;
+			String filter =
+				new StringBuffer()
+					.append("(&(")
+					.append(member)
+					.append("=")
+					.append(userDN)
+					.append(",")
+					.append(userBaseDN)
+					.append(")(cn=")
+					.append(groupRDN)
+					.append(")(objectClass=")
+					.append(groupOfName)
+					.append("))")
+					.toString();
+			
+			SearchResult result = null;
+			NamingEnumeration results = null;
+			long starttime = System.currentTimeMillis();
+			results = findList(groupBaseDN, filter);
+			log.error("groupBaseDN=o=vghksou 共花費："+(System.currentTimeMillis()-starttime)+"毫秒" );
+			//--------在特定的 group 找人, basedn 設成 "ou=ap,o=vghksou" 會快一點-->後來證實,並沒有!
+			//若此人有在特定group內,大約需要290毫秒; 若不在group 內,大約需要47毫秒
+			//long starttime1 = System.currentTimeMillis();
+			//results = findList("ou=ap,o=vghksou", filter);
+			//LogUtil.log("groupBaseDN=ou=ap,o=vghksou", LogUtil.info,"共花費："+(System.currentTimeMillis()-starttime1)+"毫秒" );
+			if (results != null)
+				try {
+					if (results.hasMore()) rtnValue=true;
+				} catch (NamingException e) {
+					log.error("Class Name : LDAPUtil , Method Name : checkUserinGroup, Error Message : "	+ e.getMessage());
+					throw new LDAPUtilException(e);
+				}
+		}catch (Exception e){
+			log.error("Class Name : LDAPUtil , Method Name : checkUserinGroup, Error Message : "	+ e.getMessage());
+		}
+		return rtnValue;
+		
+	}
 	/**
 	 * 由 User DN 查詢群組(單筆)
 	 * 
@@ -1532,7 +1577,7 @@ public class LDAPUtil {
 		PreparedStatement pstmt = null;
 		try {
 			DataSource ds = (DataSource) ServiceLocator.getInstance()
-					.getDataSource("jdbc/salNTds"); // 請修改成為連至MGTDB的JNDI名稱並於Web.xml參照中設定!!
+					.getDataSource("jdbc/salds"); // 請修改成為連至MGTDB的JNDI名稱並於Web.xml參照中設定!!
 			conn = ds.getConnection();
 			pstmt = conn
 					.prepareStatement("insert into wps.ldaplog(userid, methodname, logtime, hostname, programname) values(?, ?, CURRENT_TIMESTAMP, ?, ?)");

@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import gov.vghks.common.util.StringUtil;
 
+import gov.vghks.sal.Globals;
 import gov.vghks.sal.model.WPSUser;
 import gov.vghks.sal.util.ldap.LDAPUtil;
 
@@ -51,6 +52,7 @@ public class WPSAutoLogon extends HttpServlet {
 		String targetURL = request.getParameter("targetURL");
 		/** ㄏノid */
 		String strUsrId = StringUtil.nullToString(request.getParameter("uid"));
+		
 		String ssID = null;
 		String ssIDFromSession = null;
 		boolean flag = true;
@@ -85,7 +87,8 @@ public class WPSAutoLogon extends HttpServlet {
 				try {		
 				    String hostname =request.getServerName();				    
 				    String programName=this.getClass().getName();
-					LDAPUtil ldapUtilObj = LDAPUtil.getInstance() ; 
+					LDAPUtil ldapUtilObj = LDAPUtil.getInstance() ;
+					//strUsrId="LA38";
 					// Θセいみ璣ゅ
 					dept = ldapUtilObj.getDeptNo(strUsrId, hostname, programName);
 					if(dept.length()>=3  && dept.substring(0,3).equals("NUR")) 
@@ -105,6 +108,33 @@ public class WPSAutoLogon extends HttpServlet {
 					user.setHid(userHID);
 					user.setDeptName(strOUName);
 					user.setPayWkTyd(user_psWkTypd);
+					
+					//琩高琌羱戈恨瞶舦
+					boolean pa_admin = ldapUtilObj.checkUserinGroup(strUsrId, Globals.SESSION_SYS_ADMIN);
+					System.out.println("恨瞶" + ":" + pa_admin);
+					String strAdmin = pa_admin ? "Y" : "N";
+					user.setPa_adm(strAdmin);
+					//琩高琌羱戈╰参_蝴臔à︹
+					boolean pa_edit = ldapUtilObj.checkUserinGroup(strUsrId, Globals.SESSION_SYS_EDIT);
+					System.out.println("蝴臔à︹" + ":" + pa_edit);
+					String strEdit = pa_edit ? "Y" : "N";
+					user.setPa_edit(strEdit);
+					//琩高琌羱戈╰参_琩高à︹
+					boolean pa_view = ldapUtilObj.checkUserinGroup(strUsrId, Globals.SESSION_SYS_VIEW);
+					System.out.println("琩高à︹" + ":" + pa_view);
+					String strView = pa_view ? "Y" : "N";
+					user.setPa_view(strView);
+					//琩高琌羱戈╰参_贱à︹
+					boolean pa_bones = ldapUtilObj.checkUserinGroup(strUsrId, Globals.SESSION_SYS_BONES);
+					System.out.println("贱à︹" + ":" + pa_bones);
+					String strBones = pa_bones ? "Y" : "N";
+					user.setPa_bones(strBones);
+					//琩高琌羱戈╰参_┮眔祙à︹
+					boolean pa_tax = ldapUtilObj.checkUserinGroup(strUsrId, Globals.SESSION_SYS_TAX);
+					System.out.println("┮眔祙à︹" + ":" + pa_tax);
+					String strTax = pa_tax ? "Y" : "N";
+					user.setPa_tax(strTax);
+					
 					
 					//眔ㄏノ竤舱︽耞璶ぃ璶ㄏノ
 //					Collection<String> collections = ldapUtilObj.findGroupsRDNByUser(uid);

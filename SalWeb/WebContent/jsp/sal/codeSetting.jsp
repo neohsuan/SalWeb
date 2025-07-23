@@ -27,10 +27,20 @@
     border: 0px solid 000000;}
 </style> -->
 <script>
+//檢查使否有代理人，如有代理人則取代原資料
+var agent = "${sessionScope.agent}";	//代理人卡號
+var paUserid = ("" != agent) ? agent : userid;            //使用者卡號
+var paUsername = ("" != agent) ? "${sessionScope.agentname}" : username;            //使用者姓名
+var pahid = ("" != agent) ? "${sessionScope.agenthid}" : hid;            //醫院別
+var pacostid = ("" != agent) ? "${sessionScope.agentcostid}" : costid;            //使用者成本中心
+var padeptnm = ("" != agent) ? "${sessionScope.agentdeptnm}" : deptnm;            //使用者單位名稱
+var padeptno = ("" != agent) ? "${sessionScope.agentdeptno}" : deptno;            //使用者單位名稱 英文
+
 var oTable;
 var uTable;
 var codeTbl;
 var tr;
+var currentPage;
 var rowIndex;
 var rowData;
 var selCode="1";
@@ -57,6 +67,18 @@ $(function(){
 	  	$("#qryItemstyp").trigger( "change" );
 	  }else if (tabid=="pills-wkpf-tab"){
 	  	$("#qryWkpftyp").trigger( "change" );
+	  }
+	  //查詢角色,將編輯功能隱藏
+	  if (pa_view=="Y"){
+	  	$(".roleQry").addClass("d-none");	
+	  }else{
+	  	$(".roleQry").removeClass("d-none");
+	  }
+	  //編輯角色,將編輯功能show
+	  if ((pa_admin=="Y" && agent =="") || pa_edit=="Y" || (agent !="" && "${sessionScope.agentEdit}"=="Y" )){
+	  	$(".roleQry").removeClass("d-none");	
+	  }else{
+	  	$(".roleQry").addClass("d-none");
 	  }  
 	});
 	//下拉式選單啟動 https://www.py4u.net/discuss/905582
@@ -80,7 +102,8 @@ $(function(){
 			data:{
 				method  : 'getLoadCodeTbl',
 				tbl     :tbl,
-				flag    :flag
+				flag    :flag,
+				hid     :pahid
 			},
 			type:"POST",			//type:POST, GET(default:GET)
 			dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -107,7 +130,7 @@ $(function(){
 						$.each(data.alTitleCodeTbl, function(idx) {   
 						     $('.JTCODE')
 					          .append($('<option>', { value : data.alTitleCodeTbl[idx].paytitlk })
-					          .text(data.alRankCodeTbl[idx].patitsub+"-"+data.alTitleCodeTbl[idx].paytitlk+"-"+data.alTitleCodeTbl[idx].paytitlc)); 
+					          .text(data.alTitleCodeTbl[idx].patitsub+"-"+data.alTitleCodeTbl[idx].paytitlk+"-"+data.alTitleCodeTbl[idx].paytitlc)); 
 						});
 					}
 				}	
@@ -115,12 +138,34 @@ $(function(){
 		});
 	};
 	/*預先載入代碼檔 */
-	<c:if test="${alRankCodeTbl eq null or empty alRankCodeTbl}"> 	
+	<c:if test="${alRankCodeTbl eq null or empty alRankCodeTbl}">
+		console.log("預先載入代碼檔:alRankCodeTbl"); 	
 		$.getLoadCodeTbl("PARANKCODE","N");	
  	</c:if>
  	<c:if test="${alTitleCodeTbl eq null or empty alTitleCodeTbl}">
+ 		console.log("預先載入代碼檔:alTitleCodeTbl");
 		$.getLoadCodeTbl("PATITLE","N");	
  	</c:if>
+ 	// Remove the option with value 'val_1'
+ 	console.log("pa_admin:"+pa_admin+" agent:"+agent+" pahid:"+pahid+" agenthid:"+"${sessionScope.agenthid}"); 	
+ 	if (pa_admin=="Y" && agent ==""){
+ 	
+	}else if (pahid=="2A0" ) {
+		$("#qrycodetyp option[value='7:PAEXPFTBL']").remove();
+       	$("#qrycodetyp option[value='8:PARNK4TBL']").remove();
+		$("#qrycodetyp option[value='9:PATRACODE']").remove();
+		$("#qryWkpftyp option[value='2:PAPFTL']").remove();        	
+	}
+	else if (pahid=="3A0") {
+		$("#qrycodetyp option[value='7:PAEXPFTBL']").remove();
+	    $("#qrycodetyp option[value='8:PARNK4TBL']").remove();
+		$("#qrycodetyp option[value='9:PATRACODE']").remove();        	
+	    $("#pills-wkpf-tab").hide();
+    }   
+    else if (pahid=="1A0") {
+       	$("#qrycodetyp option[value='9:PATRACODE']").remove();
+	}
+	
 	//代碼選單切換
 	$("#qrycodetyp").change(function(){
 		$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
@@ -132,6 +177,7 @@ $(function(){
 		if (typeof(selCode)=="undefined" || '' == selCode){
 			selCode="1";
 		}
+		            
 		tblname=$("#qrycodetyp option:selected").val().split(':')[1];
 		if (tblname=="PATRACODE"){
 			codeTbl="tblCodeTraList";
@@ -238,9 +284,32 @@ $(function(){
  			$(".error").removeClass("error");
  			$('#' + codeTbl ).dataTable().fnClearTable();
 		}	
-		else if(id == 'btn_qryCode'){		//代碼維護_查詢			
+		else if(id == 'btn_qryCode'){		//代碼維護_查詢
+
 			selCode = $('#qrycodetyp').val().split(':')[0];
 			tblname=$("#qrycodetyp option:selected").val().split(':')[1];
+			if (typeof(codeTbl)=="undefined" || '' == codeTbl){
+				if (tblname=="PATRACODE"){
+					codeTbl="tblCodeTraList";
+				}else if (tblname=="PADEPT"){
+					codeTbl="tblCodeDeptList";
+				}else if (tblname=="PARANKCODE"){
+					codeTbl="tblCodeRankList";
+				}else if (tblname=="PACATGTBL"){
+					codeTbl="tblCodeCatgList";
+				}else if (tblname=="PAEXPFTBL"){
+					codeTbl="tblCodeExpfList";
+				}else if (tblname=="PARNK4TBL"){
+					codeTbl="tblCodeRnk4List";
+				}else if (tblname=="PABANK"){
+					codeTbl="tblBankDtList";
+				}else if (tblname=="PATAXTBL"){
+					codeTbl="tblTaxTblList";
+					$("#txtKEY1").show();
+				}else if (tblname=="PATITLE"){
+					codeTbl="tblCodeTitList";
+				}
+			}
 			var txtKEY = $('#txtKEY').val().toUpperCase();
 			var code_data="";
 			if (tblname=="PATAXTBL"){
@@ -273,6 +342,7 @@ $(function(){
 				url:"${pageContext.request.contextPath}/salController.do",
 				data:{
 					method  : 'qryCodeList',
+					hid     : pahid,
 					selCode  :selCode,
 					tblname  :tblname,
 					code_data  :JSON.stringify(code_data)
@@ -295,13 +365,13 @@ $(function(){
 						oTable = $('#' + codeTbl ).dataTable(objCopyD);						
 					}else if (selCode=="5"){	//人工造冊應計轉帳項目代碼 
 						oTable = $('#' + codeTbl ).dataTable(objCopyE);						
-					}else if (selCode=="6"){	//績效額外點數對照表  
+					}else if (selCode=="7"){	//7績效額外點數對照表  
 						oTable = $('#' + codeTbl ).dataTable(objCopyF);						
-					}else if (selCode=="7"){	//適用專業加給對照表 
+					}else if (selCode=="8"){	//8適用專業加給對照表 
 						oTable = $('#' + codeTbl ).dataTable(objCopyG);						
-					}else if (selCode=="8"){	//異動代碼
+					}else if (selCode=="9"){	//9異動代碼
 						oTable = $('#' + codeTbl ).dataTable(objCopyB);						
-					}else if (selCode=="9"){	//薪資所得扣繳稅額表
+					}else if (selCode=="6"){	//6薪資所得扣繳稅額表
 						oTable = $('#' + codeTbl ).dataTable(objCopyI);						
 					}
 					
@@ -310,7 +380,11 @@ $(function(){
 					if (data.codeData!=null && data.codeData.length>0){	
 						oTable.fnAddData(data.codeData);//重新給資料
 					}
-					oTable.fnDraw();					
+					oTable.fnDraw();		
+					//解決標題不一致問題
+					var table = $('#' + codeTbl ).DataTable();
+			 		$('#container').css( 'display', 'block' );
+					table.columns.adjust().draw();			
 				},
 				error: function(xhr){					
 					alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
@@ -325,6 +399,7 @@ $(function(){
 				url:"${pageContext.request.contextPath}/salController.do",
 				data:{
 					method  : 'qryCodeList',
+					hid     : pahid,
 					selCode  :selCode,
 					tblname  :tblname
 				},
@@ -349,7 +424,11 @@ $(function(){
 					if (data.codeData!=null && data.codeData.length>0){	
 						oTable.fnAddData(data.codeData);//重新給資料
 					}
-					oTable.fnDraw();					
+					oTable.fnDraw();
+					//解決標題不一致問題
+					var table = $('#' + codeTbl ).DataTable();
+			 		$('#container').css( 'display', 'block' );
+					table.columns.adjust().draw();					
 				},
 				error: function(xhr){					
 					alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
@@ -370,9 +449,9 @@ $(function(){
 	        	};
 			}else if (tblname=="PARANK"){
 				code_data={
-	        		"paylev1v" :itemsKEY,
-	        		"paylev2v" :itemsKEY1,
-	        		"paydegrv" :itemsKEY2,
+	        		"payrankv" :itemsKEY,
+	        		"paylev1v" :itemsKEY1,
+	        		"paylev2v" :itemsKEY2,
 	        	};
 			}
 			console.log("tblname:"+tblname+" selcode:"+selCode+" codeTbl:"+codeTbl);
@@ -380,6 +459,7 @@ $(function(){
 				url:"${pageContext.request.contextPath}/salController.do",
 				data:{
 					method  : 'qryCodeList',
+					hid     : pahid,
 					selCode  :selCode,
 					tblname  :tblname,
 					code_data  :JSON.stringify(code_data)
@@ -403,7 +483,11 @@ $(function(){
 					if (data.codeData!=null && data.codeData.length>0){	
 						oTable.fnAddData(data.codeData);//重新給資料
 					}
-					oTable.fnDraw();					
+					oTable.fnDraw();
+					//解決標題不一致問題
+					var table = $('#' + codeTbl ).DataTable();
+			 		$('#container').css( 'display', 'block' );
+					table.columns.adjust().draw();				
 				},
 				error: function(xhr){					
 					alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
@@ -415,16 +499,16 @@ $(function(){
 			tblname=$("#qryWkpftyp option:selected").val().split(':')[1];
 			var txtKEY = $('#Wkpf_txtKEY').val().toUpperCase();
 			var blnWkpf=true;
-			if (selCode=="2"){		//工作獎金績分,強制要有值才能查詢 						
+			if (selCode=="1"){		//工作獎金績分,強制要有值才能查詢 						
 				if (txtKEY==""){
 					txtKEY = $('#cspf_jt').val();
 				}	
 				if (txtKEY==""){
+					//alert("請輸入查詢項,不得為空白")
 					blnWkpf=false;
 				}							
 			}
-			if (blnWkpf){
-					
+			if (blnWkpf){					
 				var code_data="";
 				code_data={
 		        		"key":txtKEY
@@ -434,6 +518,7 @@ $(function(){
 					url:"${pageContext.request.contextPath}/salController.do",
 					data:{
 						method  : 'qryCodeList',
+						hid     : pahid,
 						selCode  :selCode,
 						tblname  :tblname,
 						code_data  :JSON.stringify(code_data)
@@ -446,9 +531,9 @@ $(function(){
 						$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
 						$('#'+codeTbl).show();
 						
-						if (selCode=="1"){	//全院績效彙總 
+						if (selCode=="2"){	//全院績效彙總 
 							oTable = $('#' + codeTbl ).dataTable(objWkpfA);					
-						}else if (selCode=="2"){	//工作獎金績分 						
+						}else if (selCode=="1"){	//工作獎金績分 						
 							oTable = $('#' + codeTbl ).dataTable(objWkpfB);						
 						}
 						
@@ -457,7 +542,11 @@ $(function(){
 						if (data.codeData!=null && data.codeData.length>0){	
 							oTable.fnAddData(data.codeData);//重新給資料
 						}
-						oTable.fnDraw();					
+						oTable.fnDraw();
+						//解決標題不一致問題
+						var table = $('#' + codeTbl ).DataTable();
+				 		$('#container').css( 'display', 'block' );
+						table.columns.adjust().draw();								
 					},
 					error: function(xhr){					
 						alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
@@ -517,13 +606,13 @@ $(function(){
 			$("#btn_subTblWkpfUpd").prop("disabled", true);
 			$(".tblEditgrp").hide();
 			if (typeof(selCode)=="undefined"||'' == selCode||'1' == selCode){
+				$("#model_Wkpf_header_title").html("新增[工作獎金績分 ]");
+				$("#PACSPF").show();
+				$("#pacskey").attr("readOnly",false);  //將key.readOnly 取消				
+			}else if ('2' == selCode){
 				$("#model_Wkpf_header_title").html("新增[新增[全院績效彙總]]");
 				$("#PAPFTL").show();
 				$("#paypfmon").attr("readOnly",false);  //將key.readOnly 取消
-			}else if ('2' == selCode){
-				$("#model_Wkpf_header_title").html("新增[工作獎金績分 ]");
-				$("#PACSPF").show();
-				$("#pacskey").attr("readOnly",false);  //將key.readOnly 取消
  			}
  			tblname=$("#qryWkpftyp option:selected").val().split(':')[1];
 		}
@@ -556,22 +645,22 @@ $(function(){
 				$("#model_header_title").html("新增[人工造冊應計轉帳項目]");
 				$("#PACATGTBL").show();
 				$("#paycatg").attr("readOnly",false);  //將key.readOnly 取消				
- 			}else if ('6' == selCode){
-				$("#model_header_title").html("新增[績效額外點數對照表]");
-				$("#PAEXPFTBL").show();
-				$("#expfkey").attr("readOnly",false);  //將key.readOnly 取消				
- 			}else if ('7' == selCode){
+ 			}else if ('8' == selCode){
 				$("#model_header_title").html("新增[適用專業加給對照表]");
 				$("#PARNK4TBL").show();				
 				$("#rnk4key").attr("readOnly",false);  //將key.readOnly 取消
- 			}else if ('8' == selCode){
-				$("#model_header_title").html("新增[異動]");
-				$("#PATRACODE").show();
-				$("#tracode").attr("readOnly",false);  //將key.readOnly 取消								
- 			}else if ('9' == selCode){
+ 			}else if ('6' == selCode){
 				$("#model_header_title").html("新增[薪資所得扣繳稅額表]");
 				$("#PATAXTBL").show();
 				$("#sallow").attr("readOnly",false);  //將key.readOnly 取消				
+ 			}else if ('9' == selCode){
+				$("#model_header_title").html("新增[異動]");
+				$("#PATRACODE").show();
+				$("#tracode").attr("readOnly",false);  //將key.readOnly 取消								
+ 			}else if ('7' == selCode){
+				$("#model_header_title").html("新增[績效額外點數對照表]");
+				$("#PAEXPFTBL").show();
+				$("#expfkey").attr("readOnly",false);  //將key.readOnly 取消				
  			}
  			tblname=$("#qrycodetyp option:selected").val().split(':')[1];
 		}
@@ -587,15 +676,18 @@ $(function(){
 						$('#insuitem').val("insert");
 						
 					oTable = $('#' + codeTbl ).dataTable().api();
-					uTable = $('#' + codeTbl ).dataTable();  	
+					uTable = $('#' + codeTbl ).dataTable();
 					info = oTable.page.info();		//記錄目前頁碼
-					currentPage=info.page;
-					
+					if (info!=null||typeof(info)!="undefined"){
+						currentPage=info.page;
+					}
 					$.ajax({
 						url:"${pageContext.request.contextPath}/salController.do",
 						data:{
 							method  : 'updTblCode',
 							tabJson : jsonString,
+							hid     : pahid,
+							userid  : paUserid,
 							item    : $('#insuitem').val()
 						},
 						type:"POST",			//type:POST, GET(default:GET)
@@ -609,9 +701,10 @@ $(function(){
 								$("#addInsuDialog").modal("hide");
 								uTable.fnClearTable(0);		//清空資料
 								
-								$("#btn_qryInsu").trigger( "click" );  
-								uTable.fnPageChange(currentPage);		//切到原先某碼
-								
+								$("#btn_qryInsu").trigger( "click" );
+								if (currentPage!=null||typeof(currentPage)!="undefined"){  
+									uTable.fnPageChange(currentPage);		//切到原先某碼
+								}
 								if (data.msg!=null){
 									alert(data.msg);
 								}
@@ -639,15 +732,18 @@ $(function(){
 						$('#Itemsitem').val("insert");
 						
 					oTable = $('#' + codeTbl ).dataTable().api();
-					uTable = $('#' + codeTbl ).dataTable();  	
+					uTable = $('#' + codeTbl ).dataTable();
 					info = oTable.page.info();		//記錄目前頁碼
-					currentPage=info.page;
-					
+					if (info!=null||typeof(info)!="undefined"){	
+						currentPage=info.page;
+					}
 					$.ajax({
 						url:"${pageContext.request.contextPath}/salController.do",
 						data:{
 							method  : 'updTblCode',
 							tabJson : jsonString,
+							hid     : pahid,
+							userid  : paUserid,
 							item    : $('#Itemsitem').val()
 						},
 						type:"POST",			//type:POST, GET(default:GET)
@@ -661,9 +757,10 @@ $(function(){
 								$("#addItemsDialog").modal("hide");
 								uTable.fnClearTable(0);		//清空資料
 								
-								$("#btn_qryItems").trigger( "click" );  
-								uTable.fnPageChange(currentPage);		//切到原先某碼
-								
+								$("#btn_qryItems").trigger( "click" );
+								if (currentPage!=null||typeof(currentPage)!="undefined"){  
+									uTable.fnPageChange(currentPage);		//切到原先某碼
+								}
 								if (data.msg!=null){
 									alert(data.msg);
 								}
@@ -691,15 +788,18 @@ $(function(){
 						$('#Wkpfitem').val("insert");
 						
 					oTable = $('#' + codeTbl ).dataTable().api();
-					uTable = $('#' + codeTbl ).dataTable();  	
+					uTable = $('#' + codeTbl ).dataTable();
 					info = oTable.page.info();		//記錄目前頁碼
-					currentPage=info.page;
-					
+					if (info!=null||typeof(info)!="undefined"){	
+						currentPage=info.page;
+					}
 					$.ajax({
 						url:"${pageContext.request.contextPath}/salController.do",
 						data:{
 							method  : 'updTblCode',
 							tabJson : jsonString,
+							hid     : pahid,
+							userid  : paUserid,
 							item    : $('#Wkpfitem').val()
 						},
 						type:"POST",			//type:POST, GET(default:GET)
@@ -713,9 +813,10 @@ $(function(){
 								$("#addWkpfDialog").modal("hide");
 								uTable.fnClearTable(0);		//清空資料
 								
-								$("#btn_qryWkpf").trigger( "click" );  
-								uTable.fnPageChange(currentPage);		//切到原先某碼
-								
+								$("#btn_qryWkpf").trigger( "click" );
+								if (currentPage!=null||typeof(currentPage)!="undefined"){	  
+									uTable.fnPageChange(currentPage);		//切到原先某碼
+								}
 								if (data.msg!=null){
 									alert(data.msg);
 								}
@@ -743,15 +844,18 @@ $(function(){
 						$('#citem').val("insert");
 						
 					oTable = $('#' + codeTbl ).dataTable().api();
-					uTable = $('#' + codeTbl ).dataTable();  	
+					uTable = $('#' + codeTbl ).dataTable();
 					info = oTable.page.info();		//記錄目前頁碼
-					currentPage=info.page;
-					
+					if (info!=null||typeof(info)!="undefined"){
+						currentPage=info.page;
+					}
 					$.ajax({
 						url:"${pageContext.request.contextPath}/salController.do",
 						data:{
 							method  : 'updTblCode',
 							tabJson : jsonString,
+							hid     : pahid,
+							userid  : paUserid,
 							item    : $('#citem').val()
 						},
 						type:"POST",			//type:POST, GET(default:GET)
@@ -765,9 +869,10 @@ $(function(){
 								$("#addCodeDialog").modal("hide");
 								uTable.fnClearTable(0);		//清空資料
 								
-								$("#btn_qryCode").trigger( "click" );  
-								uTable.fnPageChange(currentPage);		//切到原先某碼
-								
+								$("#btn_qryCode").trigger( "click" );
+								if (currentPage!=null||typeof(currentPage)!="undefined"){  
+									uTable.fnPageChange(currentPage);		//切到原先某碼
+								}
 								if (data.msg!=null){
 									alert(data.msg);
 								}
@@ -896,17 +1001,17 @@ $(function(){
 					msg += '[績效額外點數代碼]不得為空白 \n\r';
 				if ($("#expfname").val()=="")
 					msg += '[績效額外點數中文]不得為空白 \n\r';				
-  			}else if (selCode=="7"){
+  			}else if (selCode=="8"){
   				if ($("#rnk4key").val()=="")
 					msg += '[適用專業加給對照代碼]不得為空白 \n\r';
 				if ($("#rnk4name").val()=="")
 					msg += '[適用專業加給對照中文]不得為空白 \n\r';				
-  			}else if (selCode=="8"){	//異動代碼
+  			}else if (selCode=="9"){	//異動代碼
   				if ($("#tracode").val()=="")
 					msg += '[異動代碼]不得為空白 \n\r';
 				if ($("#traname").val()=="")
 					msg += '[異動代碼中文]不得為空白 \n\r';
-  			}else if (selCode=="9"){	//薪資所得扣繳稅額表
+  			}else if (selCode=="6"){	//薪資所得扣繳稅額表
   				if ($("#sallow").val()=="")
 					msg += '[最低薪資所得]不得為空白 \n\r';
 				if ($("#salhigh").val()=="")
@@ -946,6 +1051,8 @@ $(function(){
 						msg += '[月提繳工資]不得為空白 \n\r';
 					if ($("#masteramt").val()=="")
 						msg += '[公提退休金]不得為空白 \n\r';
+					if ($("#assocc").val()=="")
+						msg += '[職業災害保險費]不得為空白 \n\r';	
 	  			}
 	  		}
 	  		else if (btn== 'btn_subTblItemsIns'||id=='btn_subTblItemsUpd'){//支扣項目 新增一筆 更改
@@ -968,12 +1075,12 @@ $(function(){
 	  			}
 	  		}
 	  		else if (btn== 'btn_subTblWkpfUpd'||id=='btn_subTblWkpfUpd'){//工作獎金 新增一筆 更改
-	  			if (selCode=="1"){	//1:PAPFTL">1職等支扣--專業加給及主管加給
+	  			if (selCode=="2"){	//2:PAPFTL">2全院績效彙總
 	  				if ($("#paypfmon").val()=="")
 						msg += '[年度月份]不得為空白 \n\r';
 					if ($("#paypfunt").val()=="")
 						msg += '[績效點數金額]不得為空白 \n\r';					
-	  			}else if (selCode=="2"){	//2:PACSPF">2工作獎金績分 
+	  			}else if (selCode=="1"){	//1:PACSPF">1工作獎金績分 
 	  				if ($("#pacskey").val()=="")
 						msg += '[工作獎金代碼]不得為空白 \n\r';
 					if ($("#pacsbase").val()=="")
@@ -1137,14 +1244,13 @@ $(function(){
 	
 	var objCopyB = $.extend(true, {aaSorting: []}, dataTableConfig);
 	objCopyB.aoColumns = [	
-							{ "mData": "tracode"},		//0異動代碼,"width":"20%"
-							{ "mData": "traname"},		//1異動中文"className": "edit"
-							{ "mData": null}
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"異動代碼","mData": "tracode"},	//0異動代碼,"width":"20%"
+							{ "sTitle":"異動中文","mData": "traname"}		//1異動中文"className": "edit"
 							];
 	objCopyB = $.extend(true,objCopyB, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-// 						$('td:eq(0)', nRow).html( '<a href = "#tblCodeList" class= "tblCodeList">'+aData.id+'</a>' );
- 						$('td:eq(2)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+				 		$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-minus"></i></button>' );
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -1168,6 +1274,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : tblname,
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -1211,24 +1318,24 @@ $(function(){
 				't'+
 				'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
 		buttons: [
-            'copy', 'excelHtml5' 
+            'excelHtml5' 
         ]
 	});	
-	  
+	//單位  
     var objCopyC = $.extend(true, {aaSorting: []}, dataTableConfig);
 	objCopyC.aoColumns = [	
-							{ "mData": "padepcod"},		//"width":"20%"
-							{ "mData": "pacstno"},		//className": "edit"
-							{ "mData": "padepnmc"},
-							{ "mData": "hid"},
-							{ "mData": "payupdid"},
-							{ "mData": "payupdat"},
-							{ "mData": null}
+							{ "sTitle":"", "mData": null},
+							{ "sTitle":"單位代碼", "mData": "padepcod"},		//"width":"20%"
+							{ "sTitle":"成本碼", "mData": "pacstno"},		//className": "edit"
+							{ "sTitle":"單位中文", "mData": "padepnmc"},
+							{ "sTitle":"人事代碼","mData": "pbwkcode"},
+							{ "sTitle":"醫院別","mData": "hid"},
+							{ "sTitle":"更新者","mData": "payupdid"},
+							{ "sTitle":"時戳","mData": "payupdat"}
 							];
 	objCopyC = $.extend(true,objCopyC, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-// 						$('td:eq(0)', nRow).html( '<a href = "#tblCodeList" class= "tblCodeList">'+aData.id+'</a>' );
- 						$('td:eq(6)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+				 		$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-minus"></i></button>' );
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -1249,6 +1356,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : 'PADEPT',
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -1276,6 +1384,7 @@ $(function(){
 					        $("#padepcod").val(rowData.padepcod);
 							$("#pacstno").val(rowData.pacstno);
 							$("#padepnmc").val(rowData.padepnmc);
+							$("#pbwkcode").val(rowData.pbwkcode);
 							$("#padept_hid").val(rowData.hid);
 							$("#paydept_payupdid").val(rowData.payupdid);
 							$("#paydept_payupdat").val(rowData.payupdat);
@@ -1296,21 +1405,23 @@ $(function(){
 				't'+
 				'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
 		buttons: [
-            'copy', 'excelHtml5' 
+            'excelHtml5' 
         ]
 	});
 	
+	//階別代碼
 	var objCopyD = $.extend(true, {aaSorting: []}, dataTableConfig);
 	objCopyD.aoColumns = [	
-							{ "mData": "rankcode"},		
-							{ "mData": "rankname"},		
-							{ "mData": "rankabbr"},		
-							{ "mData": null}
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"階別代碼","mData": "rankcode"},		
+							{ "sTitle":"中文說明","mData": "rankname"},		
+							{ "sTitle":"階別簡稱","mData": "rankabbr"}		
+							
 							];
 	objCopyD = $.extend(true,objCopyD, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 // 						$('td:eq(0)', nRow).html( '<a href = "#tblCodeList" class= "tblCodeList">'+aData.id+'</a>' );
- 						$('td:eq(3)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+ 						$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i></button>');
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -1334,6 +1445,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : tblname,
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -1373,18 +1485,19 @@ $(function(){
 						});	
 				 }							
 		      });
-  	
+  	//轉帳項目代碼
   	var objCopyE = $.extend(true, {aaSorting: []}, dataTableConfig);
 	objCopyE.aoColumns = [	
-							{ "mData": "paycatg"},		
-							{ "mData": "catgname"},		
-							{ "mData": "payupdid"},
-							{ "mData": "payupdat"},		
-							{ "mData": null}
+							{ "sTitle":"", "mData": null},
+							{ "sTitle":"轉帳項目代碼", "mData": "paycatg"},		
+							{ "sTitle":"中文說明", "mData": "catgname"},		
+							{ "sTitle":"更新者", "mData": "payupdid"},
+							{ "sTitle":"時戳", "mData": "payupdat"},		
+							
 							];
 	objCopyE = $.extend(true,objCopyE, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
- 						$('td:eq(4)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+ 						$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i></button>');
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -1408,6 +1521,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : tblname,
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -1448,18 +1562,18 @@ $(function(){
 						});	
 				 }							
 		      });
-
+	//績效額外點數代碼
 	var objCopyF = $.extend(true, {aaSorting: []}, dataTableConfig);
 	objCopyF.aoColumns = [	
-							{ "mData": "expfkey"},		
-							{ "mData": "expfname"},		
-							{ "mData": "payupdid"},
-							{ "mData": "payupdat"},		
-							{ "mData": null}
+							{ "sTitle":"", "mData": null},
+							{ "sTitle":"績效額外點數代碼", "mData": "expfkey"},		
+							{ "sTitle":"中文說明", "mData": "expfname"},		
+							{ "sTitle":"更新者", "mData": "payupdid"},
+							{ "sTitle":"時戳", "mData": "payupdat"},
 							];
 	objCopyF = $.extend(true,objCopyF, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
- 						$('td:eq(4)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+ 						$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i></button>');
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -1483,6 +1597,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : tblname,
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -1523,17 +1638,17 @@ $(function(){
 						});	
 				 }							
 		      });
-
+	//適用專業加給對照表
 	var objCopyG = $.extend(true, {aaSorting: []}, dataTableConfig);
 	objCopyG.aoColumns = [	
-							{ "mData": "rnk4key"},		
-							{ "mData": "rnk4name"},
-							{ "mData": "payupdtm"},		
-							{ "mData": null}
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"適用專業加給對照表","mData": "rnk4key"},		
+							{ "sTitle":"中文說明","mData": "rnk4name"},
+							{ "sTitle":"時戳","mData": "payupdtm"}
 							];
 	objCopyG = $.extend(true,objCopyG, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
- 						$('td:eq(3)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+ 						$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i></button>');
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -1557,6 +1672,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : tblname,
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -1596,19 +1712,20 @@ $(function(){
 						});	
 				 }							
 		      });
-		      
+	//發薪日及入帳日對應檔	      
 	var objCopyH = $.extend(true, {aaSorting: []}, dataTableConfig);
 	objCopyH.aoColumns = [	
-							{ "mData": "salnum"},		
-							{ "mData": "paybank"},
-							{ "mData": "paysaldt"},		
-							{ "mData": "payupdid"},
-							{ "mData": "payupdat"},		
-							{ "mData": null}
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"餉單編號","mData": "salnum"},		
+							{ "sTitle":"發薪日期","mData": "paybank"},
+							{ "sTitle":"入帳日期","mData": "paysaldt"},
+							{ "sTitle":"醫院別","mData": "hid"},		
+							{ "sTitle":"更新者","mData": "payupdid"},
+							{ "sTitle":"時戳","mData": "payupdat"}
 							];
 	objCopyH = $.extend(true,objCopyH, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
- 						$('td:eq(5)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+				 	$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary roleQry" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i></button>'); 						
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -1622,7 +1739,7 @@ $(function(){
 						        rowIndex = oTable.row(tr).index();
 						        rowData = oTable.row(tr).data();//抓取目前點選link這筆row的data
 						        code_data="";
-						        if (tblname=="PABANK"){			//待改,加HID
+						        if (tblname=="PABANK"){			
 						        	code_data={
 						        		"key":rowData.salnum
 						        	};
@@ -1632,6 +1749,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : tblname,
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -1659,6 +1777,7 @@ $(function(){
 					        $("#salnum").val(rowData.salnum);
 							$("#paybank").val(rowData.paybank);
 							$("#paysaldt").val(rowData.paysaldt);
+							$("#pabank_hid").val(rowData.hid);
 							$("#pabank_payupdid").val(rowData.payupdid);
 							$("#pabank_payupdat").val(rowData.payupdat);
 							$("#model_header_title").html("修改[發薪日及入帳日對應檔 ]");
@@ -1673,19 +1792,20 @@ $(function(){
 						});	
 				 	}							
 		      });
+    //薪資所得扣繳稅額表 
 	var objCopyI = $.extend(true, {aaSorting: []}, dataTableConfig);
 	objCopyI.aoColumns = [	
-							{ "mData": "sallow"},		
-							{ "mData": "salhigh"},
-							{ "mData": "kindred"},
-							{ "mData": "taxamt"},		
-							{ "mData": "payupdid"},
-							{ "mData": "payupdat"},		
-							{ "mData": null}
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"最低薪資所得","mData": "sallow"},		
+							{ "sTitle":"最高薪資所得","mData": "salhigh"},
+							{ "sTitle":"扶養人數","mData": "kindred"},
+							{ "sTitle":"扣繳稅額","mData": "taxamt"},		
+							{ "sTitle":"更新者","mData": "payupdid"},
+							{ "sTitle":"時戳","mData": "payupdat"}
 							];
 	objCopyI = $.extend(true,objCopyI, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
- 						$('td:eq(6)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+ 						$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i></button>');
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -1699,7 +1819,7 @@ $(function(){
 						        rowIndex = oTable.row(tr).index();
 						        rowData = oTable.row(tr).data();//抓取目前點選link這筆row的data
 						        code_data="";
-						        if (tblname=="PATAXTBL"){			//待改,加HID
+						        if (tblname=="PATAXTBL"){			
 						        	code_data={
 						        		"sallow":rowData.sallow,
 						        		"kindred":rowData.kindred
@@ -1710,6 +1830,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : tblname,
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -1757,29 +1878,29 @@ $(function(){
 				't'+
 				'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
 		buttons: [
-            'copy', 'excelHtml5' 
+            'excelHtml5' 
         ]
 	});	      
 	
-	
+	//職稱
 	var objCopyK = $.extend(true, {aaSorting: []}, dataTableConfig);
 	objCopyK.aoColumns = [	
-							{ "mData": "paytitlk"},		
-							{ "mData": "patitsub"},		
-							{ "mData": "pachief"},							
-							{ "mData": "paytitlp"},
-							{ "mData": "paytitlc"},
-							{ "mData": "pacoddel"},
-							{ "mData": "hid"},
-							{ "mData": "payupdid"},
-							{ "mData": "payupdat"},
-							{ "mData": null}
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"代碼","mData": "paytitlk"},		
+							{ "sTitle":"分類","mData": "patitsub"},		
+							{ "sTitle":"主管否","mData": "pachief"},							
+							{ "sTitle":"報表用","mData": "paytitlp"},
+							{ "sTitle":"內部用","mData": "paytitlc"},
+							{ "sTitle":"刪除否","mData": "pacoddel"},
+							{ "sTitle":"醫院代碼","mData": "hid"},
+							{ "sTitle":"更新者","mData": "payupdid"},
+							{ "sTitle":"時戳","mData": "payupdat"}
 							];
 	 objCopyK.aoColumnDefs= [
 	 						{ "sClass": "alignLeft", "aTargets": [3,4] },
 						     //分類patitsub
 					         {
-							   'targets': 1,
+							   'targets': 2,
 							   'searchable':false,
 							   'className': 'dt-body-left',
 							   'render': function (data, type, row, meta){
@@ -1807,7 +1928,7 @@ $(function(){
 
 	objCopyK = $.extend(true,objCopyK, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
- 						$('td:eq(9)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+ 						$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i></button>');
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -1828,6 +1949,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : 'PATITLE',
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -1878,24 +2000,24 @@ $(function(){
 				't'+
 				'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
 		buttons: [
-            'copy', 'excelHtml5' 
+            'excelHtml5' 
         ]
 	});	      
-		      
+	//全民健康保險負擔金額表	      
 	var objInsuA = $.extend(true, {aaSorting: []}, dataTableConfig);
 	objInsuA.aoColumns = [	
-							{ "mData": "dpinlow"},		
-							{ "mData": "dpinhigh"},
-							{ "mData": "dpinamt"},
-							{ "mData": "dpindept1"},		
-							{ "mData": "dpindept3"},
-							{ "mData": "payupdid"},
-							{ "mData": "zpadpintbl"},		
-							{ "mData": null}
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"最低","mData": "dpinlow"},		
+							{ "sTitle":"最高","mData": "dpinhigh"},
+							{ "sTitle":"健保費","mData": "dpinamt"},
+							{ "sTitle":"單位_公保","mData": "dpindept1"},		
+							{ "sTitle":"單位_勞保","mData": "dpindept3"},
+							{ "sTitle":"更新者","mData": "payupdid"},
+							{ "sTitle":"時戳","mData": "zpadpintbl"}
 							];
 	objInsuA = $.extend(true,objInsuA, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
- 						$('td:eq(7)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+ 						$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-minus"></i></button>');
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -1919,6 +2041,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : tblname,
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -1967,22 +2090,23 @@ $(function(){
 				't'+
 				'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
 		buttons: [
-            'copy', 'excelHtml5' 
+            'excelHtml5' 
         ]
 	});
-	
+	//勞保投保金額對照表
 	var objInsuB = $.extend(true, {aaSorting: []}, dataTableConfig);
 	objInsuB.aoColumns = [	
-							{ "mData": "lbinlow"},		
-							{ "mData": "lbinhigh"},
-							{ "mData": "lbinamt"},
-							{ "mData": "lbindept"},
-							{ "mData": "zpalbintbl"},		
-							{ "mData": null}
+							{ "sTitle":"","mData": null},	
+							{ "sTitle":"最低","mData": "lbinlow"},		
+							{ "sTitle":"最高","mData": "lbinhigh"},
+							{ "sTitle":"勞保費","mData": "lbinamt"},
+							{ "sTitle":"單位負擔","mData": "lbindept"},
+							{ "sTitle":"時戳","mData": "zpalbintbl"},		
+							
 							];
 	objInsuB = $.extend(true,objInsuB, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
- 						$('td:eq(5)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+ 						$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-minus"></i></button>');
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -2006,6 +2130,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : tblname,
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -2052,22 +2177,23 @@ $(function(){
 				't'+
 				'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
 		buttons: [
-            'copy', 'excelHtml5' 
+            'excelHtml5' 
         ]
 	});	   
-		   
+	//勞工退休金月提繳工資分級表	   
 	var objInsuC = $.extend(true, {aaSorting: []}, dataTableConfig);
-	objInsuC.aoColumns = [	
-							{ "mData": "lbrplow"},		
-							{ "mData": "lbrphigh"},
-							{ "mData": "lbrpamt"},
-							{ "mData": "masteramt"},
-							{ "mData": "zpalbrptbl"},		
-							{ "mData": null}
+	objInsuC.aoColumns = [				
+							{ "sTitle":"","mData": null},	
+							{ "sTitle":"最低","mData": "lbrplow"},		
+							{ "sTitle":"最高","mData": "lbrphigh"},
+							{ "sTitle":"月提繳工資","mData": "lbrpamt"},
+							{ "sTitle":"公提退休金","mData": "masteramt"},
+							{ "sTitle":"職業災害保險費","mData": "assocc"},
+							{ "sTitle":"時戳","mData": "zpalbrptbl"}
 							];
 	objInsuC = $.extend(true,objInsuC, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
- 						$('td:eq(5)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+ 						$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-minus"></button>');
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -2091,6 +2217,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : tblname,
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -2119,6 +2246,7 @@ $(function(){
 					        $("#lbrphigh").val(rowData.lbrphigh);
 							$("#lbrpamt").val(rowData.lbrpamt);
 							$("#masteramt").val(rowData.masteramt);
+							$("#assocc").val(rowData.assocc);
 							$("#zpalbrptbl").val(rowData.zpalbrptbl);
 							$("#model_insu_header_title").html("修改[勞工退休金月提繳工資分級表]");
 							$(".tblEditgrp").hide();
@@ -2137,29 +2265,32 @@ $(function(){
 				't'+
 				'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
 		buttons: [
-            'copy', 'excelHtml5' 
+            'excelHtml5' 
         ]
 	});	   	   
-	
+	//階級支扣
 	var objItemsA = $.extend(true, {aaSorting: []}, dataTableConfig);
 	objItemsA.aoColumns = [	
-							{ "mData": "payrankv"},
-							{ "mData": "paylev1v"},		
-							{ "mData": "paylev2v"},
-							{ "mData": "paydegrv"},
-							{ "mData": "paybasev"},
-							{ "mData": "paygeinf"},		
-							{ "mData": "paylbinf"},
-							{ "mData": "paydpinv"},
-							{ "mData": "payrebef"},
-							{ "mData": "payuseid"},
-							{ "mData": "payupdat"},		
-							{ "mData": null}
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"階級","mData": "payrankv"},
+							{ "sTitle":"級別","mData": "paylev1v"},		
+							{ "sTitle":"俸級","mData": "paylev2v"},
+							{ "sTitle":"俸點","mData": "paydegrv"},
+							{ "sTitle":"本薪","mData": "paybasev"},
+							{ "sTitle":"公保費","mData": "paygeinf"},
+							{ "sTitle":"新_公保費","mData": "paygeinn"},		
+							{ "sTitle":"勞保費","mData": "paylbinf"},
+							{ "sTitle":"健保費","mData": "paydpinv"},
+							{ "sTitle":"退撫","mData": "payrebef"},
+							{ "sTitle":"新_退撫","mData": "payreben"},
+							{ "sTitle":"更新者","mData": "payuseid"},
+							{ "sTitle":"時戳","mData": "payupdat"},		
+							
 							];
 	objItemsA.aoColumnDefs= [
 	 						 //分類payrankv
 					         {
-							   'targets': 0,
+							   'targets': 1,
 							   'searchable':false,
 							   'className': 'dt-body-left',
 							   'render': function (data, type, row, meta){
@@ -2195,7 +2326,7 @@ $(function(){
 						   ]; 
 	objItemsA = $.extend(true,objItemsA, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
- 						$('td:eq(11)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+ 						$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-minus"></button>');
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -2221,6 +2352,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : tblname,
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -2273,30 +2405,29 @@ $(function(){
 				't'+
 				'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
 		buttons: [
-            'copy', 'excelHtml5' 
+            'excelHtml5' 
         ]
 	});
-	
+	//職等支扣--專業加給及主管加給
 	var objItemsB = $.extend(true, {aaSorting: []}, dataTableConfig);
-	objItemsB.aoColumns = [	
-							{ "mData": "payposik"},		
-							{ "mData": "degrlow"},
-							{ "mData": "degrhigh"},
-							{ "mData": "paypsp5"},
-							{ "mData": "paypsp1"},		
-							{ "mData": "paypsp2"},
-							{ "mData": "paypsp3"},		
-							{ "mData": "paypsp4"},
-							{ "mData": "paypsp6"},
-							{ "mData": "paypsp7"},
-							{ "mData": "paypsp8"},
-							{ "mData": "payposid"},
-							{ "mData": "payupdat"},		
-							{ "mData": null}
+	objItemsB.aoColumns = [	{ "sTitle":"","mData": null},
+							{ "sTitle":"職等","mData": "payposik"},		
+							{ "sTitle":"俸點(低)","mData": "degrlow"},
+							{ "sTitle":"俸點(高)","mData": "degrhigh"},
+							{ "sTitle":"主管","mData": "paypsp5"},
+							{ "sTitle":"醫師研究_24-1","mData": "paypsp1"},		
+							{ "sTitle":"醫務技術_26","mData": "paypsp2"},
+							{ "sTitle":"行政_1","mData": "paypsp3"},		
+							{ "sTitle":"資訊_20","mData": "paypsp4"},
+							{ "sTitle":"醫學工程_3","mData": "paypsp6"},
+							{ "sTitle":"工程人員_7","mData": "paypsp7"},
+							{ "sTitle":"社工_2","mData": "paypsp8"},
+							{ "sTitle":"更新者","mData": "payposid"},
+							{ "sTitle":"時戳","mData": "payupdat"}
 							];
 	objItemsB = $.extend(true,objItemsB, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
- 						$('td:eq(13)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+ 						$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-minus"></button>');
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -2321,6 +2452,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : tblname,
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -2375,25 +2507,25 @@ $(function(){
 				't'+
 				'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
 		buttons: [
-            'copy', 'excelHtml5' 
+            'excelHtml5' 
         ]
 	});
 	
 	var objWkpfA = $.extend(true, {aaSorting: []}, dataTableConfig);
 	objWkpfA.aoColumns = [	
-							{ "mData": "paypfmon"},		
-							{ "mData": "paypfpf"},
-							{ "mData": "paypfunt"},		
-							{ "mData": "papfamt"},
-							{ "mData": "paypfrev"},
-							{ "mData": "paypfd"},
-							{ "mData": "paypfe"},
-							{ "mData": "paypfymd"},		
-							{ "mData": null}
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"年度月份","mData": "paypfmon"},		
+							{ "sTitle":"績效總點數","mData": "paypfpf"},
+							{ "sTitle":"契約人員","mData": "paypfunt"},		
+							{ "sTitle":"正職","mData": "papfamt"},
+							{ "sTitle":"住院醫師","mData": "paypfrev"},
+							{ "sTitle":"契約護理","mData": "paypfd"},
+							{ "sTitle":"聘實","mData": "paypfe"},
+							{ "sTitle":"時戳","mData": "paypfymd"}
 							];
 	objWkpfA = $.extend(true,objWkpfA, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
- 						$('td:eq(8)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+ 						$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-minus"></i></button>');
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -2417,6 +2549,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : tblname,
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -2464,16 +2597,16 @@ $(function(){
 		      
 	var objWkpfB = $.extend(true, {aaSorting: []}, dataTableConfig);
 	objWkpfB.aoColumns = [	
-							{ "mData": "pacskey"},		
-							{ "mData": "pacsbase"},
-							{ "mData": "pacsdata"},		
-							{ "mData": "pacsname"},
-							{ "mData": "zpacspf"},		
-							{ "mData": null}
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"工作獎金代碼","mData": "pacskey"},		
+							{ "sTitle":"基本績分","mData": "pacsbase"},
+							{ "sTitle":"俸級績分","mData": "pacsdata"},		
+							{ "sTitle":"職稱中文","mData": "pacsname"},
+							{ "sTitle":"時戳","mData": "zpacspf"}
 							];
 	objWkpfB = $.extend(true,objWkpfB, {
 				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
- 						$('td:eq(5)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i>編輯</button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i>刪除</button>');
+ 						$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-minus"></i></button>');
 				 }, "fnDrawCallback": function () {					 
 				 	//等datatable draw完成後，補上button 初始化 
 				 	//jQuery按鈕圖示，先取消onclick預設的動作
@@ -2497,6 +2630,7 @@ $(function(){
 									url:"${pageContext.request.contextPath}/salController.do",
 									data:{
 											method  : 'delTblCode',
+											hid     : pahid,
 											tblname : tblname,
 											"code_data" : JSON.stringify(code_data)
 									},
@@ -2601,6 +2735,7 @@ $(function(){
 							url:"${pageContext.request.contextPath}/salController.do",
 							data:{
 								method  :"qryCodeList",
+								hid     : pahid,
 								code_data : JSON.stringify(code_data),
 								tblname : tblname						
 							},
@@ -2644,8 +2779,10 @@ $(function(){
   </li>  
 </ul>
 <div class="tab-content" id="pills-tabContent">
+  <!-- 代碼維護 -->
   <div class="tab-pane fade show active" id="byCodeMain" role="tabpanel" aria-labelledby="pills-code-tab">
  		<!-- 輸入 查詢 項目 -->
+ 	<div class="container-sm">	
 		<div class="row">
 	    	<div class="col-md-12">
 				<form class="form-inline"><!-- form-inline 文字在同一行 -->
@@ -2658,10 +2795,10 @@ $(function(){
 							<option value="3:PATITLE">3職稱代碼</option>
 	     					<option value="4:PARANKCODE">4階級代碼</option>
 	     					<option value="5:PACATGTBL">5人工造冊應計轉帳項目代碼</option>
-	     					<option value="6:PAEXPFTBL">6績效額外點數對照表</option>
-	     					<option value="7:PARNK4TBL">7適用專業加給對照表</option>
-	     					<option value="8:PATRACODE">8異動代碼</option>
-	     					<option value="9:PATAXTBL">9薪資所得扣繳稅額表</option>	     					
+	     					<option value="6:PATAXTBL">6薪資所得扣繳稅額表</option>
+	     					<option value="7:PAEXPFTBL">7績效額外點數對照表</option>
+	     					<option value="8:PARNK4TBL">8適用專業加給對照表</option>	     					
+	     					<option value="9:PATRACODE">9異動代碼</option>
 						</select>
 					</div>
 					
@@ -2702,108 +2839,39 @@ $(function(){
 			<div class="col-md-12">
 			<div id="codeIdDiv" class="codeDiv">
 				<table id="tblCodeTraList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
-					<thead>
-						<tr>
-							<th>異動代碼</th>
-							<th>異動中文</th>
-							<th>編輯</th>
-						</tr>
+					<thead>						
 					</thead>
 				</table>
 				<table id="tblCodeDeptList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
-					<thead>
-						<tr>
-							<th>單位代碼</th>
-							<th>成本中心</th>
-							<th>單位中文</th>
-							<th>醫院代碼</th>
-							<th>更新者</th>
-							<th>時戳</th>
-							<th></th>
-						</tr>
+					<thead>						
 					</thead>
 				</table>
 				<table id="tblCodeRankList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
 					<thead>
-						<tr>
-							<th>階別代碼</th>
-							<th>中文說明</th>
-							<th>階別簡稱</th>
-							<th></th>
-						</tr>
 					</thead>
 				</table>
 				<table id="tblCodeCatgList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
 					<thead>
-						<tr>
-							<th>轉帳項目代碼</th>
-							<th>中文說明</th>
-							<th>更新者</th>
-							<th>時戳</th>
-							<th></th>
-						</tr>
 					</thead>
 				</table>
 				<table id="tblCodeExpfList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
-					<thead>
-						<tr>
-							<th>績效額外點數代碼</th>
-							<th>中文說明</th>
-							<th>更新者</th>
-							<th>時戳</th>
-							<th></th>
-						</tr>
+					<thead>						
 					</thead>
 				</table>
 				<table id="tblCodeRnk4List" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
 					<thead>
-						<tr>
-							<th>適用專業加給對照表</th>
-							<th>中文說明</th>
-							<th>時戳</th>
-							<th></th>
-						</tr>
 					</thead>
 				</table>
 				<table id="tblBankDtList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
 					<thead>
-						<tr>
-							<th>餉單編號</th>
-							<th>發薪日期</th>
-							<th>入帳日期</th>
-							<th>更新者</th>
-							<th>時戳</th>
-							<th></th>
-						</tr>
 					</thead>
 				</table>
 				<table id="tblTaxTblList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
 					<thead>
-						<tr>
-							<th>最低薪資所得</th>
-							<th>最高薪資所得</th>
-							<th>扶養人數</th>
-							<th>扣繳稅額</th>
-							<th>更新者</th>
-							<th>時戳</th>
-							<th></th>
-						</tr>
 					</thead>
 				</table>
 				<table id="tblCodeTitList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
 					<thead>
-						<tr>
-							<th>代碼</th>
-							<th>分類</th>
-							<th>主管否</th>
-							<th>報表用</th>
-							<th>內部用</th>
-							<th>刪除否</th>
-							<th>醫院代碼</th>
-							<th>更新者</th>
-							<th>時戳</th>
-							<th></th>
-						</tr>
 					</thead>
 				</table>
 			</div>
@@ -2824,7 +2892,7 @@ $(function(){
 				          <button type="button" class="close" data-dismiss="modal">&times;</button>
 				        </div>	
                        <div class="modal-body">
-                       	<div class="container-fluid">
+                       	<div class="container-sm">
     					<div class="row justify-content-md-center">
                        		<table id="PATRACODE" class="tblEditgrp table table-striped table-bordered table-hover" style="text-align:center;">
 								<thead class="table-primary">
@@ -2846,6 +2914,7 @@ $(function(){
 										<th class="table-title">單位代碼</th>
 										<th class="table-title">成本中心</th>
 										<th class="table-title">單位中文</th>
+										<th class="table-title">人事單位代碼</th>
 										<th class="table-title">醫院代碼</th>
 										<th class="table-title">更新者</th>
 										<th class="table-title">時戳</th>
@@ -2856,6 +2925,7 @@ $(function(){
 										<td><input type="text" id="padepcod" name="padepcod" class="form-control findkey required" value="" size="4" placeholder="請輸入單位代碼" maxlength="4"></input></td>
 										<td><input type="text" id="pacstno" name="pacstno" class="form-control required" value="" size="6" placeholder="請輸入成本代碼" maxlength="6"></input></td>
 										<td><input type="text" id="padepnmc" name="padepnmc" class="form-control required" value="" size="22" placeholder="11中文長度" maxlength="11"></input></td>
+										<td><input type="text" id="pbwkcode" name="pbwkcode" class="form-control" value="" size="6" placeholder="請輸入人事單位代碼" maxlength="6"></input></td>
 										<td><input type="text" id="padept_hid" name="hid" class="form-control" value="" size="3"  maxlength="3" readOnly></input></td>
 										<td><input type="text" id="padept_payupdid" name="payupdid" class="form-control" value="" size="8"  maxlength="8" readOnly></input></td>
 										<td><input type="text" id="padept_payupdat" name="payupdat" class="form-control" value="" size="26"  maxlength="26" readOnly></input></td>
@@ -2936,6 +3006,7 @@ $(function(){
 										<th class="table-title">餉單編號</th>
 										<th class="table-title">發薪日期</th>
 										<th class="table-title">入帳日期</th>
+										<th class="table-title">醫院代碼</th>
 										<th class="table-title">更新者</th>
 										<th class="table-title">時戳</th>
 									</tr>
@@ -2945,6 +3016,7 @@ $(function(){
 										<td><input type="text" id="salnum" name="salnum" class="form-control text-uppercase findkey required" value="" size="4" maxlength="4"></input></td>
 										<td><input type="text" id="paybank" name="paybank" class="form-control datepicker required" value="" size="10"  maxlength="10"></input></td>
 										<td><input type="text" id="paysaldt" name="paysaldt" class="form-control datepicker required" value="" size="10"  maxlength="10" ></input></td>
+										<td><input type="text" id="pabank_hid" name="hid" class="form-control" value="" size="3"  maxlength="3" readOnly></input></td>
 										<td><input type="text" id="pabank_payupdid" name="payupdid" class="form-control" value="" size="8"  maxlength="8" readOnly></input></td>
 										<td><input type="text" id="pabank_payupdat" name="payupdat" class="form-control" value="" size="26"  maxlength="26" readOnly></input></td>
 									</tr>
@@ -3047,10 +3119,12 @@ $(function(){
                    </div>
                </div>
 			</form>
-        </div>  
+        </div>
+     </div>     
   </div>
+  <!-- 保費對照檔 -->
   <div class="tab-pane fade" id="byInsuMain" role="tabpanel" aria-labelledby="pills-insu-tab">
- 		<!-- 輸入 查詢 項目 -->
+ 	<div class="container-sm">
 		<div class="row">
 	    	<div class="col-md-12">
 				<div id="pursign-search">
@@ -3077,40 +3151,14 @@ $(function(){
 			<div id="codeInsuDiv" class="codeDiv">
 				<table id="tblInsuDpinList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
 					<thead>
-						<tr>
-							<th>最低</th>
-							<th>最高</th>
-							<th>健保費</th>
-							<th>單位_公保</th>
-							<th>單位_勞保</th>
-							<th>更新者</th>
-							<th>時戳</th>
-							<th></th>
-						</tr>
 					</thead>
 				</table>
 				<table id="tblInsuLbinList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
 					<thead>
-						<tr>
-							<th>最低</th>
-							<th>最高</th>
-							<th>勞保費</th>
-							<th>單位負擔</th>
-							<th>時戳</th>
-							<th></th>
-						</tr>
 					</thead>
 				</table>
 				<table id="tblInsuLbrpList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
 					<thead>
-						<tr>
-							<th>最低</th>
-							<th>最高</th>
-							<th>月提繳工資</th>
-							<th>公提退休金</th>
-							<th>時戳</th>
-							<th></th>
-						</tr>
 					</thead>
 				</table>
 				</div>
@@ -3205,7 +3253,11 @@ $(function(){
 									<tr>
 										<th class="text-center">公提退休金<br>=月提繳工資*6%</th>
 										<td><input type="text" id="masteramt" name="masteramt" class="form-control required digits" value=""  maxlength="6" size="6"></input></td>
-									</tr>	
+									</tr>
+									<tr>
+										<th class="text-center">職業災害保險費</th>
+										<td><input type="text" id="assocc" name="assocc" class="form-control required digits" value=""  maxlength="6" size="6"></input></td>
+									</tr>		
 									<tr>	
 										<th class="text-center">時戳</th>
 										<td><input type="text" id="zpalbrptbl" name="zpalbrptbl" class="form-control" value="" size="26"  maxlength="26" readOnly></input></td>									
@@ -3224,8 +3276,10 @@ $(function(){
                </div>
 			</form>
         </div>
-		<!-- 新增dialog -->
+     </div>
   </div>
+  
+  <!-- 支扣數 -->
   <div class="tab-pane fade" id="byItemsMain" role="tabpanel" aria-labelledby="pills-items-tab">
   	<div class="container-fluid">
  		<!-- 輸入 查詢 項目 -->
@@ -3258,40 +3312,10 @@ $(function(){
 			<div id="codeItemsDiv" class="codeDiv">
 				<table id="tblPosiList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
 					<thead>
-						<tr>
-							<th>職等</th>
-							<th>俸點(低)</th>
-							<th>俸點(高)</th>
-							<th>主管</th>
-							<th title="醫師研究(24-1 24-2)">24-1</th>
-							<th title="醫務技術(24-2 26)">26</th>
-							<th title="行政">1</th>
-							<th title="資訊">20</th>							
-							<th title="醫學工程">3</th>
-							<th title="工程人員">7</th>
-							<th title="社工">2</th>
-							<th>更新者</th>
-							<th>時戳</th>
-							<th></th>
-						</tr>
 					</thead>
 				</table>
 				<table id="tblRankList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
 					<thead>
-						<tr>
-							<th>階級</th>
-							<th>級別</th>
-							<th>俸級</th>
-							<th>俸點</th>
-							<th>本薪</th>
-							<th>公保費</th>
-							<th>勞保費</th>
-							<th>健保費</th>
-							<th title="退撫基金/離職金">退撫</th>
-							<th>更新者</th>
-							<th>時戳</th>
-							<th></th>
-						</tr>
 					</thead>
 				</table>
 				
@@ -3443,8 +3467,9 @@ $(function(){
 		<!-- 新增dialog -->  
   	</div>
   </div>
+  <!-- 工作獎金 -->
   <div class="tab-pane fade" id="byWkpfMain" role="tabpanel" aria-labelledby="pills-wkpf-tab">
-  	<div class="container-fluid">
+  	<div class="container-sm">
  		<!-- 輸入 查詢 項目 -->
 		<div class="row">
 			<div class="col-12">
@@ -3453,8 +3478,8 @@ $(function(){
 						<div class="input-group">
 							<span class="input-group-text">工作獎金</span>
 							<select id="qryWkpftyp" name="qryWkpftyp">
-								<option value="1:PAPFTL">1全院績效彙總</option>
-								<option value="2:PACSPF">2工作獎金績分</option>		     					
+								<option value="1:PACSPF">1工作獎金績分</option>
+								<option value="2:PAPFTL">2全院績效彙總</option>										     					
 							</select>
 						</div>
 						<input type="text" id="Wkpf_txtKEY" size="4" class="form-control text-uppercase" placeholder="查詢項" >
@@ -3478,29 +3503,10 @@ $(function(){
 			<div id="codeWkpfDiv" class="codeDiv">
 				<table id="tblPftlList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
 					<thead>
-						<tr>
-							<th>年度月份</th>
-							<th>績效總點數</th>
-							<th>契約人員</th>
-							<th>正職</th>
-							<th>住院醫師</th>
-							<th>契約護理</th>
-							<th>聘實</th>
-							<th>時戳</th>
-							<th></th>
-						</tr>
 					</thead>
 				</table>
 				<table id="tblCspfList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
 					<thead>
-						<tr>
-							<th>工作獎金代碼</th>
-							<th>基本績分</th>
-							<th>俸級績分</th>
-							<th>職稱中文</th>
-							<th>時戳</th>
-							<th></th>
-						</tr>
 					</thead>
 				</table>
 				
@@ -3552,7 +3558,7 @@ $(function(){
 								</table>
 							</div>
 							<div class="row justify-content-md-center">
-								<table id="PACSPF" class="tblEditgrp table table-striped table-bordered table-condensed table-responsive table-sm" style="text-align:center;">
+								<table id="PACSPF" class="tblEditgrp table table-striped table table-striped table-bordered" style="text-align:center;">
 									<thead class="table-primary">
 										<tr class="div-green">
 											<th class="table-title">工作獎金代碼</th>
