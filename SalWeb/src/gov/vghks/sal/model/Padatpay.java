@@ -25,6 +25,10 @@ public class Padatpay {
     private String hid;
     /** 日期時戳 */
     private java.sql.Timestamp zpadatpay;
+    /** 日期時戳 */
+    private java.sql.Timestamp zptdatpay;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhdatpay;
     /** 支扣代碼 中文*/
     private String pacodnmc;
     
@@ -99,6 +103,18 @@ public class Padatpay {
 	}
 	public void setPaysort(String paysort) {
 		this.paysort = paysort;
+	}
+	public java.sql.Timestamp getZptdatpay() {
+		return zptdatpay;
+	}
+	public void setZptdatpay(java.sql.Timestamp zptdatpay) {
+		this.zptdatpay = zptdatpay;
+	}
+	public java.sql.Timestamp getZlhdatpay() {
+		return zlhdatpay;
+	}
+	public void setZlhdatpay(java.sql.Timestamp zlhdatpay) {
+		this.zlhdatpay = zlhdatpay;
 	}
     
 }

@@ -125,7 +125,7 @@ public class Patrapsn implements Serializable{
     private int paorank4;
     
     /** 扶養人數*/
-    private int pataxno;
+    private int paytaxno;
     /** 補發繳回月數*/
     private int paymonno;
     /** 補發繳回日數*/
@@ -151,7 +151,10 @@ public class Patrapsn implements Serializable{
     private int insuamt;
     /** 日期時戳 */
     private java.sql.Timestamp zpatrapsn;
-    
+    /** 日期時戳 */
+    private java.sql.Timestamp zpttrapsn;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhtrapsn;
     /** 部門中文*/
     private String padepnmc;
     
@@ -201,6 +204,8 @@ public class Patrapsn implements Serializable{
     
     /** 戶籍地址*/
     private String payaddrs;
+    /** 異動原因中文*/
+    private String traname;
     
 	public String getPayidno() {
 		return payidno;
@@ -221,13 +226,13 @@ public class Patrapsn implements Serializable{
 		this.payempno = payempno;
 	}
 	public String getPaynamec() {
-		return paynamec;
+		return StringUtil.nullToString(paynamec);
 	}
 	public void setPaynamec(String paynamec) {
 		this.paynamec = paynamec;
 	}
 	public String getPaydept() {
-		return paydept;
+		return StringUtil.nullToString(paydept);
 	}
 	public void setPaydept(String paydept) {
 		this.paydept = paydept;
@@ -355,7 +360,7 @@ public class Patrapsn implements Serializable{
 		this.rankname = StringUtil.nullToString(rankname);
 	}
 	public String getRnk4name() {
-		return rnk4name;
+		return StringUtil.nullToString(rnk4name);
 	}
 	public void setRnk4name(String rnk4name) {
 		this.rnk4name = rnk4name;
@@ -529,12 +534,6 @@ public class Patrapsn implements Serializable{
 	}
 	public void setPatradt(java.sql.Date patradt) {
 		this.patradt = patradt;
-	}
-	public int getPataxno() {
-		return pataxno;
-	}
-	public void setPataxno(int pataxno) {
-		this.pataxno = pataxno;
 	}
 	public int getPayexpfkey1() {
 		return payexpfkey1;
@@ -757,7 +756,7 @@ public class Patrapsn implements Serializable{
 		this.patitsub = patitsub;
 	}
 	public String getRanknamo() {
-		return ranknamo;
+		return StringUtil.nullToString(ranknamo);
 	}
 	public void setRanknamo(String ranknamo) {
 		this.ranknamo = ranknamo;
@@ -775,7 +774,7 @@ public class Patrapsn implements Serializable{
 		this.patitsuo = patitsuo;
 	}
 	public String getRnk4namo() {
-		return rnk4namo;
+		return StringUtil.nullToString(rnk4namo);
 	}
 	public void setRnk4namo(String rnk4namo) {
 		this.rnk4namo = rnk4namo;
@@ -787,10 +786,34 @@ public class Patrapsn implements Serializable{
 		this.payaddrs = payaddrs;
 	}
 	public String getPaydpno() {
-		return paydpno;
+		return StringUtil.nullToString(paydpno);
 	}
 	public void setPaydpno(String paydpno) {
 		this.paydpno = paydpno;
+	}
+	public java.sql.Timestamp getZpttrapsn() {
+		return zpttrapsn;
+	}
+	public void setZpttrapsn(java.sql.Timestamp zpttrapsn) {
+		this.zpttrapsn = zpttrapsn;
+	}
+	public java.sql.Timestamp getZlhtrapsn() {
+		return zlhtrapsn;
+	}
+	public void setZlhtrapsn(java.sql.Timestamp zlhtrapsn) {
+		this.zlhtrapsn = zlhtrapsn;
+	}
+	public String getTraname() {
+		return traname;
+	}
+	public void setTraname(String traname) {
+		this.traname = traname;
+	}
+	public int getPaytaxno() {
+		return paytaxno;
+	}
+	public void setPaytaxno(int paytaxno) {
+		this.paytaxno = paytaxno;
 	}
     
         

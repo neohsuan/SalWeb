@@ -10,16 +10,19 @@
 %>
 <head>
 
+
 </head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" > <!-- 強制使用IE Edge -->
 
 <!-- CSS -->
-<%-- <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/theme/itStyles.css" />"> --%>
+<link type="text/css" rel="stylesheet" href="<c:url value="/resources/components/bootstrap-4.6.0-dist/css/bootstrap.min.css" />">
+<link type="text/css" rel="stylesheet" href="<c:url value="/resources/components/bootstrap-select-1.13.14-dist/css/bootstrap-select.css" />">
+<link type="text/css" rel="stylesheet" href="<c:url value="/resources/components/css/itStyles.css" />">
 <link type="text/css" rel="stylesheet" href="<c:url value="/resources/components/css/theme/iconClass.css" />">
 <link type="text/css" rel="stylesheet" href="<c:url value="/resources/components/css/tab.css" />">
-<!-- Jquery -->
 <link type="text/css" rel="stylesheet" href="<c:url value="/resources/components/css/theme/jquery-ui-1.10.4.custom.min.css" />">
+<!-- Jquery -->
 <script type="text/javascript" src="<c:url value="/resources/components/js/jquery-1.10.2.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/components/js/jquery.json-2.4.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/components/js/jquery-ui-1.10.4.min.js" />"></script>
@@ -38,9 +41,9 @@
 <link rel="stylesheet" href="<c:url value="/resources/components/fontawesome/css/solid.min.css"/>">
 
 <!-- datatable -->
+<link type="text/css" rel="stylesheet" href="<c:url value="/resources/components/datatables/dataTables.jqueryui.min.css" />">
 <script type="text/javascript" src="<c:url value="/resources/components/datatables/jquery.dataTables.min.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/components/datatables/dataTables.jqueryui.min.js" />"></script>
-<link type="text/css" rel="stylesheet" href="<c:url value="/resources/components/datatables/dataTables.jqueryui.min.css" />">
 
 <!-- datatable Extensions  -->
 <link type="text/css" rel="stylesheet" href="<c:url value="/resources/components/datatables/Extensions/Buttons-1.7.0/css/buttons.jqueryui.min.css" />">
@@ -61,7 +64,7 @@
 <script type="text/javascript" src="<c:url value="/resources/components/js/MEBEUtil.js" />"></script>
 
 <!-- bootstrap -->
-<link type="text/css" rel="stylesheet" href="<c:url value="/resources/components/bootstrap-4.6.0-dist/css/bootstrap.min.css" />">
+
 <script type="text/javascript" src="<c:url value="/resources/components/bootstrap-4.6.0-dist/js/bootstrap.min.js" />"></script>
 <%-- <script type="text/javascript" src="<c:url value="/resources/components/DataTables-1.10.24/js/dataTables.bootstrap4.min.js" />"></script>   --%>
 
@@ -77,7 +80,7 @@
 <script type="text/javascript" src="<c:url value="/resources/components/bootstrap-fileinput/js/locales/zh-TW.js" />"></script>
 
 <!-- bootstrap-select -->
-<link type="text/css" rel="stylesheet"	href="<c:url value="/resources/components/bootstrap-select-1.13.14-dist/css/bootstrap-select.css" />">
+
 <script type="text/javascript" src="<c:url value="/resources/components/bootstrap-select-1.13.14-dist/js/bootstrap-select.js" />"></script>
 
 
@@ -89,8 +92,12 @@
 			 url(https://zwac01p.vghks.gov.tw:4436/PUBService/PUB/CORSProxy/OutputStream?url=https://wwwhf.vghks.gov.tw/VGHKH_KAI.TTF) format("truetype");
 		}
 	body { font-family: EUDC; } 
-	thead input {  width: 100%;}
 	
+	thead input {  width: 100%;}
+	.table {
+            word-break: break-all;
+            width: 100%;
+        }
 	.modal-dialog {
 	  max-width: 100%;
 	  height: 100%;
@@ -104,11 +111,20 @@
 	.card-body{
 		padding: 0.25rem;
 	}
+	
+	.fixed-table-width {
+	  table-layout: fixed;
+	}
+	.fixed-table-width .table-cell-data {
+	  word-break: break-all;
+	}
+	
  .alignCenter { text-align: center !important;}
  .alignLeft { text-align: left !important;}
  .ui-widget-header{font-size: 11px !important;}
  .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button{font-size: 14px !important;font-family: Verdana, Arialx !important;}
- .dataTables_wrapper {font-size: 16px;} 
+ .dataTables_wrapper {font-size: 13px;}
+ .ui-widget-header{font-size: 11px !important;}
  .dataTables_wrapper .ui-toolbar{padding:2px;}
  .dataTables_wrapper .dataTables_paginate .paginate_button{margin-left:0px;padding:0px 0px;}}
  .page-link{line-height:0.5}
@@ -515,7 +531,7 @@ var numConfig = {
 			  <option value="3A0">聯合醫院</option>
 			</select> -->
         	<label for="title">請輸入卡號:</label>
-        	<input type="text" id="agentText" name="agentText" class="form-control" size="8" placeholder="請輸入卡號" />
+        	<input type="text" id="agentText" name="agentText" class="form-control" size="8" placeholder="請輸入卡號" onkeyup="this.value = this.value.toUpperCase()" />
         	&emsp;<span id="agentnm"></span>
         </div>
       </div>

@@ -13,8 +13,10 @@ public class Pacatgtbl {
     private java.sql.Timestamp payupdat;
     /** 日期時戳 */
     private java.sql.Timestamp zpacatgtbl;
-    
-	
+    /** 日期時戳 */
+    private java.sql.Timestamp zptcatgtbl;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhcatgtbl;
 	
 	public String getPayupdid() {
 		return payupdid;

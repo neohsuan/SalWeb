@@ -15,6 +15,10 @@ public class RankCode implements Serializable{
     private String rankabbr;
     /** 日期時戳 */
     private java.sql.Timestamp zparankcode;
+    /** 日期時戳 */
+    private java.sql.Timestamp zptrankce;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhrankce;
     
 	public String getRankcode() {
 		return rankcode;
@@ -39,6 +43,18 @@ public class RankCode implements Serializable{
 	}
 	public void setZparankcode(java.sql.Timestamp zparankcode) {
 		this.zparankcode = zparankcode;
+	}
+	public java.sql.Timestamp getZptrankce() {
+		return zptrankce;
+	}
+	public void setZptrankce(java.sql.Timestamp zptrankce) {
+		this.zptrankce = zptrankce;
+	}
+	public java.sql.Timestamp getZlhrankce() {
+		return zlhrankce;
+	}
+	public void setZlhrankce(java.sql.Timestamp zlhrankce) {
+		this.zlhrankce = zlhrankce;
 	}
     
     

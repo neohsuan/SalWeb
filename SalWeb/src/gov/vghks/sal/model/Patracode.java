@@ -11,6 +11,11 @@ public class Patracode implements Serializable{
     private String traname;
     /** 日期時戳 */
     private java.sql.Timestamp zpatracode;
+    /** 日期時戳 */
+    private java.sql.Timestamp zpttracode;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhtracode;
+    
 	public int getTracode() {
 		return tracode;
 	}
@@ -28,6 +33,18 @@ public class Patracode implements Serializable{
 	}
 	public void setZpatracode(java.sql.Timestamp zpatracode) {
 		this.zpatracode = zpatracode;
+	}
+	public java.sql.Timestamp getZpttracode() {
+		return zpttracode;
+	}
+	public void setZpttracode(java.sql.Timestamp zpttracode) {
+		this.zpttracode = zpttracode;
+	}
+	public java.sql.Timestamp getZlhtracode() {
+		return zlhtracode;
+	}
+	public void setZlhtracode(java.sql.Timestamp zlhtracode) {
+		this.zlhtracode = zlhtracode;
 	}
     
 	

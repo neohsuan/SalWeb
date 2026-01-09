@@ -25,6 +25,10 @@ public class Pataxtran implements Serializable{
     private String hid;
     /** 日期時戳 */
     private java.sql.Timestamp zpataxtran;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhtaxtran;
+    /** 日期時戳 */
+    private java.sql.Timestamp zpttaxtran;
     
 	public String getPayidno() {
 		return payidno;
@@ -86,6 +90,18 @@ public class Pataxtran implements Serializable{
 	}
 	public void setPaytaxpay(int paytaxpay) {
 		this.paytaxpay = paytaxpay;
+	}
+	public java.sql.Timestamp getZlhtaxtran() {
+		return zlhtaxtran;
+	}
+	public void setZlhtaxtran(java.sql.Timestamp zlhtaxtran) {
+		this.zlhtaxtran = zlhtaxtran;
+	}
+	public java.sql.Timestamp getZpttaxtran() {
+		return zpttaxtran;
+	}
+	public void setZpttaxtran(java.sql.Timestamp zpttaxtran) {
+		this.zpttaxtran = zpttaxtran;
 	}
     
     

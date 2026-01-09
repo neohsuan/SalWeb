@@ -64,6 +64,10 @@ public class Padatpsn implements Serializable{
     private int payrank4;
     /** 日期時戳 */
     private java.sql.Timestamp zpadatpsn;
+    /** 日期時戳 */
+    private java.sql.Timestamp zptdatpsn;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhdatpsn;
     /** 部門中文*/
     private String padepnmc;
     /** 階別中文*/
@@ -353,6 +357,18 @@ public class Padatpsn implements Serializable{
 	}
 	public void setInsuamt(int insuamt) {
 		this.insuamt = insuamt;
+	}
+	public java.sql.Timestamp getZptdatpsn() {
+		return zptdatpsn;
+	}
+	public void setZptdatpsn(java.sql.Timestamp zptdatpsn) {
+		this.zptdatpsn = zptdatpsn;
+	}
+	public java.sql.Timestamp getZlhdatpsn() {
+		return zlhdatpsn;
+	}
+	public void setZlhdatpsn(java.sql.Timestamp zlhdatpsn) {
+		this.zlhdatpsn = zlhdatpsn;
 	}
     
         

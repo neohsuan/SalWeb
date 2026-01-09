@@ -1,5 +1,7 @@
 package gov.vghks.sal.model;
 
+import gov.vghks.common.util.StringUtil;
+
 import java.io.Serializable;
 //支扣代碼 
 public class Papayitm implements Serializable{
@@ -27,6 +29,10 @@ public class Papayitm implements Serializable{
     private String hid;
     /** 日期時戳 */
     private java.sql.Timestamp zpapayitm;
+    /** 日期時戳 */
+    private java.sql.Timestamp zptpayitm;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhpayitm;
     
 	public String getPaycode() {
 		return paycode;
@@ -47,7 +53,7 @@ public class Papayitm implements Serializable{
 		this.pacoddel = pacoddel;
 	}
 	public String getPayauth() {
-		return payauth;
+		return StringUtil.nullToString(payauth);
 	}
 	public void setPayauth(String payauth) {
 		this.payauth = payauth;
@@ -93,6 +99,18 @@ public class Papayitm implements Serializable{
 	}
 	public void setZpapayitm(java.sql.Timestamp zpapayitm) {
 		this.zpapayitm = zpapayitm;
+	}
+	public java.sql.Timestamp getZptpayitm() {
+		return zptpayitm;
+	}
+	public void setZptpayitm(java.sql.Timestamp zptpayitm) {
+		this.zptpayitm = zptpayitm;
+	}
+	public java.sql.Timestamp getZlhpayitm() {
+		return zlhpayitm;
+	}
+	public void setZlhpayitm(java.sql.Timestamp zlhpayitm) {
+		this.zlhpayitm = zlhpayitm;
 	}
 	
 	

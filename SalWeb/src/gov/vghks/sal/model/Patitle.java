@@ -25,9 +25,14 @@ public class Patitle implements Serializable{
     private java.sql.Timestamp payupdat;
     /** 醫院別*/
     private String hid;
+    /** 人事職稱代碼*/
+    private String pbtitcod;
     /** 日期時戳 */
     private java.sql.Timestamp zpatitle;
-    
+    /** 日期時戳 */
+    private java.sql.Timestamp zpttitle;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhtitle;
         
 	public String getPaytitlk() {
 		return paytitlk;
@@ -88,6 +93,24 @@ public class Patitle implements Serializable{
 	}
 	public void setZpatitle(java.sql.Timestamp zpatitle) {
 		this.zpatitle = zpatitle;
+	}
+	public String getPbtitcod() {
+		return pbtitcod;
+	}
+	public void setPbtitcod(String pbtitcod) {
+		this.pbtitcod = pbtitcod;
+	}
+	public java.sql.Timestamp getZpttitle() {
+		return zpttitle;
+	}
+	public void setZpttitle(java.sql.Timestamp zpttitle) {
+		this.zpttitle = zpttitle;
+	}
+	public java.sql.Timestamp getZlhtitle() {
+		return zlhtitle;
+	}
+	public void setZlhtitle(java.sql.Timestamp zlhtitle) {
+		this.zlhtitle = zlhtitle;
 	}
     
 	    }

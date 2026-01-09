@@ -17,8 +17,11 @@ public class Paexpftbl implements Serializable{
     private java.sql.Timestamp payupdat;
     /** 日期時戳 */
     private java.sql.Timestamp zpaexpftbl;
+    /** 日期時戳 */
+    private java.sql.Timestamp zptexpftbl;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhexpftbl;
     
-	
 	public String getExpfname() {
 		return StringUtil.nullToString(expfname);
 	}
@@ -48,6 +51,18 @@ public class Paexpftbl implements Serializable{
 	}
 	public void setExpfkey(int expfkey) {
 		this.expfkey = expfkey;
+	}
+	public java.sql.Timestamp getZptexpftbl() {
+		return zptexpftbl;
+	}
+	public void setZptexpftbl(java.sql.Timestamp zptexpftbl) {
+		this.zptexpftbl = zptexpftbl;
+	}
+	public java.sql.Timestamp getZlhexpftbl() {
+		return zlhexpftbl;
+	}
+	public void setZlhexpftbl(java.sql.Timestamp zlhexpftbl) {
+		this.zlhexpftbl = zlhexpftbl;
 	}
 
     }

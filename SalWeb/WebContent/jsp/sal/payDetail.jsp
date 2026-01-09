@@ -27,10 +27,12 @@ var salnum;
 var cardno;
 var salNm;
 var selEn;
+var selPs;
 var selCode; 
 var hid;
 var patradt;
 var rowData;
+var msg;
 $(function(){
 	$('#collapseOne').collapse('show');	
 	$(".gclsCalTxt").datepicker({ 
@@ -45,7 +47,28 @@ $(function(){
 	$(window).on('load', function() {
 		$('.selectpicker').selectpicker('refresh');
 	});
-	
+	//非1A0刪除比對中Value='2'的Option
+	if (pahid == "2A0" || pahid == "3A0"){
+		$("#bank_cond option[value='2']").remove(); 
+	}	
+	//2A0 銀行媒體傳輸 格式 901 薪轉附言
+	if (pahid == "2A0"){
+		$("#bank_ps").removeClass("d-none");
+	}
+	//代碼選單
+	$("#bank_cond").change(function(){
+		$("#bankUpload,#bank_ps").addClass("d-none");	//隱藏
+		selCode=(typeof($("#bank_cond option:selected").val().split(':')[0]) == "undefined" )? "1":$("#bank_cond option:selected").val().split(':')[0];
+  		console.log(selCode);
+		
+  		if (pahid == "1A0" ){			//1A0 比對,檔案上傳
+			if (selCode == 2){
+				$("#bankUpload").removeClass("d-none");
+				$("#bank_item").removeClass("d-none");
+			}	
+		}	 
+  	});
+  		
 	$.getLoadCodeTbl = function(item,flag){		
 		$.ajax({
 			url:"${pageContext.request.contextPath}/salController.do",
@@ -148,22 +171,9 @@ $(function(){
 			}  
 		});
 	};
-/* 	/*預先載入代碼檔 */
+	/*預先載入代碼檔 */
   	$.getLoadCodeTbl('payDetail','Y');
-/*	//代碼選單切換
-	$("#qryType").change(function(){
-		$("#explan_1,#divfield_1,#divfield_2").addClass("d-none");	//隱藏
-  		selCode=(typeof($("#qryType option:selected").val().split(':')[0]) == "undefined" )? "1":$("#qryType option:selected").val().split(':')[0];
-  		console.log(selCode);
-  		if (selCode=="1" ){			//1[設定]餉單編號設定
-			$("#explan_1").removeClass("d-none");
-			$("#divfield_1").removeClass("d-none");
-		}
-		else if (selCode=="2" ){			//2[產生]發薪明細
-			$("#divfield_2").removeClass("d-none");
-		}	 
-  	});
-*/  	 	
+  	 	
 	//編輯欄位檢查
   	$.checkFields = function(btn){
   		msg = '';
@@ -198,6 +208,23 @@ $(function(){
   			} */
   			if (typeof($("#qry_prt_cond option:selected").val()) == 'undefined' ){
   				msg+=' 請勾選[條件]項目!!';  		
+			}
+  		}
+  		else if (btn== 'btn_prodBank'){	//銀行作業_執行 1媒體傳輸 2比對(高榮)
+  			if($("#prt_SalNum").val()=='')
+  				msg = '銀行作業_執行--[餉單編號]請勿空白';
+			if (typeof($("#qry_prt_cond option:selected").val()) == 'undefined' ){
+  				msg+=' 請勾選[條件]項目!!';  		
+			}
+			if (pahid == '1A0'){
+				selCode=$("#bank_cond option:selected").val();
+				//比對
+				if (selCode=='2'){
+					var file = $("#fileInput").val();			
+					if (file.length == 0) {
+						msg+='請確認是否有選檔案';				
+					}
+				}
 			}
   		}
   		else if (btn== 'btn_prodPayroll'){	//發薪明細_執行
@@ -326,7 +353,8 @@ $(function(){
 					data:{
 						method  : 'getDatPsnList',
 						code_data :JSON.stringify(code_data),
-						hid       : pahid
+						hid     : pahid,
+						userid  : paUserid,
 					},
 					type:"POST",	//type:POST, GET(default:GET)
 					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -384,7 +412,8 @@ $(function(){
 					data:{
 						method    : 'getCheckPayList',
 						code_data :JSON.stringify(code_data),
-						hid       :pahid
+						hid     : pahid,
+						userid  : paUserid,
 					},
 					type:"POST",	//type:POST, GET(default:GET)
 					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -417,7 +446,7 @@ $(function(){
 			if(msg == ''){
 				$("#salnum_select_all").removeClass("d-none");
 				selCode=$("#prod_selCode option:selected").val().split(':')[0];
-				var selEn=$("#prod_selCode option:selected").val().split(':')[2];
+				selEn=$("#prod_selCode option:selected").val().split(':')[2];
 				selNm=$("#prod_selCode option:selected").val().split(':')[1];
 				salnum =$("#qry_set_datyr option:selected").val() == "" ? "0":$("#qry_set_datyr option:selected").val().split(':')[0];
 				cardno=$("#qry_set_Cardno").val().toUpperCase();
@@ -439,7 +468,8 @@ $(function(){
 					data:{
 						method   : 'getSalnumList',
 						in_data  : JSON.stringify(in_data),
-						hid      : pahid
+						hid     : pahid,
+						userid  : paUserid
 					},
 					type:"POST",	//type:POST, GET(default:GET)
 					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -611,7 +641,6 @@ $(function(){
 					url:"${pageContext.request.contextPath}/salController.do",
 					data:{
 						method  : 'handelPrtSal',
-						selNm   : selNm,						
 						in_data : JSON.stringify(in_data),
 						hid     : pahid,
 						userid  : paUserid,
@@ -637,6 +666,97 @@ $(function(){
 							hideLoading(); //隱藏loading
 						}
 				});
+			}	
+			else{
+				alert(msg);
+				return false;
+			}	 
+		}
+		else if(id == 'btn_prodBank'){		//[產生]銀行作業_執行
+			msg = $.checkFields(id);
+			if(msg == ''){
+				showLoading(); //顯示loading
+				selCode=$("#bank_cond option:selected").val().split(':')[0];
+				patradt =$("#prt_SalNum").val().split(':')[1];
+				salnum =$("#prt_SalNum").val().split(':')[0];
+				//媒體傳輸
+				if (selCode == 1){
+					selNm=$("#bank_cond option:selected").val().split(':')[1];
+					selEn=$("#bank_cond option:selected").val().split(':')[2];
+					salnum =$("#prt_SalNum").val().split(':')[0];
+					if (typeof($("#qry_prt_cond option:selected").val()) != 'undefined' ){
+						selPs=$("#bank_ps").val();
+					}					
+					console.log("[產生]銀行作業_執行  selCode:"+selCode+" selEn:"+selEn+" selNm:"+selNm+" salnum:"+salnum+" patradt:"+patradt+" hid:"+pahid+" selPs:"+selPs );
+	
+					in_data="";
+					in_data={
+							selCode :selCode,
+							selNm   :selNm,
+							selEn   :selEn,
+							salnum  :salnum,
+							patradt :patradt,
+							selPs   :selPs
+						   };
+					//return false;				
+					$.ajax({
+						url:"${pageContext.request.contextPath}/salController.do",
+						data:{
+							method  : 'handelPrtSal',
+							in_data : JSON.stringify(in_data),
+							hid     : pahid,
+							userid  : paUserid,
+							fun     : 'bankMedia'
+						},
+						type:"POST",	//type:POST, GET(default:GET)
+						dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+						contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+						success:function(data) {
+							if (data.status!=null||typeof(data.status)!="undefined"){	//show msg,dialog不用關閉
+								alert(data.msg);
+							}else{	
+								if (data.msg!=null){
+									alert(data.msg);
+								}				
+							}
+							
+						},
+						error: function(xhr){					
+							alert("處理_"+selNm+"失敗!!!程式發生錯誤!!!!\nerror code:"+ xhr.status);		
+						},
+						complete: function(data) {
+								hideLoading(); //隱藏loading
+							}
+					});
+				}
+				//比對 1:薪資:Bank_PayC
+				else if (selCode == 2){
+					selEn=$("#bank_item option:selected").val().split(':')[2];
+					url="${pageContext.request.contextPath}/salController.do";
+		        	var param = '?method=uploadFile' +
+								'&selEn=' + selEn +
+								'&patradt=' + patradt +
+								'&salnum=' + salnum +
+								'&userid=' + userid +
+								'&hid=' + pahid;
+		        
+			        console.log(" url+param:"+url+param);
+		        
+					$("#uploadfileForm").ajaxSubmit({
+						type: "post", //提交方式 
+						dataType:"json", //資料型別 
+						url: url + param, //請求url 
+						success: function (data) { //提交成功的回撥函式 
+							alert(data.msg);							
+						},
+						error: function(xhr){
+							alert("檔案上傳過程中，程式發生錯誤!!!\nerror code:"+ xhr.status);							
+						},
+						complete: function(data) {
+							hideLoading(); //隱藏loading
+						}
+					});
+				}
 			}	
 			else{
 				alert(msg);
@@ -677,28 +797,25 @@ $(function(){
 					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
 					contentType: "application/x-www-form-urlencoded;charset=utf-8",  
 					success:function(data) {
-						//更新查詢清單
-						$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
-						$('#TblRepDtlList').show();
-						oTable = $('#TblRepDtlList').dataTable(objCopyF);
-						
-						oTable.fnClearTable(0);		//清空資料
+						 if (data.status!=null||typeof(data.status)!="undefined"){	//show msg,dialog不用關閉
+							alert(data.msg);
+						}else{ 	
+							if (data.msg!=null && data.msg!=""){
+								alert(data.msg);
+							}else{
+								//更新查詢清單
+								$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
+								$('#tblBatPayList').show();
+								oTable = $('#TblRepDtlList').dataTable(objCopyF);
 								
-						if (data.prtDtlList!=null && data.prtDtlList.length>0){	
-							oTable.fnAddData(data.prtDtlList);//重新給資料
+								oTable.fnClearTable(0);		//清空資料
+										
+								if (data.prtDtlList!=null && data.prtDtlList.length>0){	
+									oTable.fnAddData(data.prtDtlList);//重新給資料
+								}
+								oTable.fnDraw();
+							}				
 						}
-						oTable.fnDraw();						
-						
-						//解決標題不一致問題
-						var table = new $('#TblRepDtlList').DataTable();
-				 		$('#container').css( 'display', 'block' );
-						table.columns.adjust().draw();
-												
-						// Hide columns
-						/* if (pahid == "3A0")						
-							table.columns( [16,17,18,19,20,21] ).visible( false );
-						else if (pahid == "1A0" || pahid == "2A0")
-							table.columns( [16,17,18,19,20,21,22,23] ).visible( true ); */
 					},
 					error: function(xhr){					
 						alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
@@ -713,6 +830,7 @@ $(function(){
 		else if(id == 'btn_printPrt'){		//報表檔產生 PDF
 			msg = $.checkFields(id);
 			if(msg == ''){
+				showLoading(); //顯示loading
 				selCode=$("#qry_prt_item option:selected").val().split(':')[0];
 				selNm=$("#qry_prt_item option:selected").val().split(':')[1];
 				selEn=$("#qry_prt_item option:selected").val().split(':')[2];
@@ -734,8 +852,6 @@ $(function(){
 					url:"${pageContext.request.contextPath}/salController.do",
 					data:{
 						method  : 'handelPrtSal',
-						selNm   : selNm,
-						salnum  : salnum,						
 						in_data : JSON.stringify(in_data),
 						hid     : pahid,
 						userid  : paUserid,
@@ -745,32 +861,21 @@ $(function(){
 					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
 					contentType: "application/x-www-form-urlencoded;charset=utf-8",  
 					success:function(data) {
-						//更新查詢清單
-						$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
-						$('#TblRepDtlList').show();
-						oTable = $('#TblRepDtlList').dataTable(objCopyF);
-						
-						oTable.fnClearTable(0);		//清空資料
-								
-						if (data.prtDtlList!=null && data.prtDtlList.length>0){	
-							oTable.fnAddData(data.prtDtlList);//重新給資料
+						if (data.status!=null||typeof(data.status)!="undefined"){	//show msg
+							alert(data.msg);
+						}else{	
+							if (data.msg!=null){
+								alert(data.msg);
+							}				
 						}
-						oTable.fnDraw();						
-						
-						//解決標題不一致問題
-						var table = new $('#TblRepDtlList').DataTable();
-				 		$('#container').css( 'display', 'block' );
-						table.columns.adjust().draw();
-												
-						// Hide columns
-						/* if (pahid == "3A0")						
-							table.columns( [16,17,18,19,20,21] ).visible( false );
-						else if (pahid == "1A0" || pahid == "2A0")
-							table.columns( [16,17,18,19,20,21,22,23] ).visible( true ); */
+						hideLoading(); //隱藏loading
 					},
 					error: function(xhr){					
 						alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
-					}
+					},
+					complete: function(data) {
+							hideLoading(); //隱藏loading
+						}
 				});
 			}
 			else{
@@ -801,7 +906,7 @@ $(function(){
 				obj[String($(this).attr("id"))] = rowData; //名稱+數值			  
 		    });
 		    value.push(obj);   	//以整支table寫入	
-		    array.push( { "tblname": tableID, "value": value } ); 
+		    array.push( { "formnm": tableID, "value": value } ); 
    			
 		}
    		    
@@ -895,7 +1000,8 @@ $(function(){
 			data:{
 				method  : 'getDatPsnByKey',
 				code_data :JSON.stringify(code_data),
-				hid       : pahid
+				hid     : pahid,
+				userid  : paUserid
 			},
 			type:"POST",			//type:POST, GET(default:GET)
 			dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -1159,16 +1265,6 @@ $(function(){
 		            $( api.column( 4 ).footer() ).html(
 		                '總支出:'+dTotal 
 		            );
-		            //總人數
-		            cTotal = api
-		                .column( 5	, { page: 'current'} )
-		                .data()
-		                .reduce( function (a, b) {
-		                    		return intVal(a) + intVal(b);
-		                		}, 0 );
-		            $( api.column( 5 ).footer() ).html(
-		                '總人數:'+cTotal 
-		            ); 
 		        }   							
 			});   
                     
@@ -1228,7 +1324,8 @@ $(function(){
 			data:{
 				method  : 'getDayPayByCode',
 				code_data :JSON.stringify(code_data),
-				hid       :pahid
+				hid     : pahid,
+				userid  : paUserid,
 			},
 			type:"POST",			//type:POST, GET(default:GET)
 			dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -1549,7 +1646,7 @@ $(function(){
                 }						
 		});
 	
-	/*					    
+	/* 量大時,會很慢才出來,不做處理					    
 	objCopyF = $.extend(true,objCopyF, {
 				dom: 'B<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-tl  ui-corner-tr"lfr>'+
 						't'+
@@ -2181,8 +2278,27 @@ $(function(){
 								<option value="1:月報:Prt_M" selected>1:月報</option>
 								<option value="2:年報:Prt_Y">2:年報</option>						
 							</select>
-							<button id="btn_prodPrtSal" class="btn btn-success" type="button" ><i class="fa fa-cog"></i>執行</button>
-						</div>    															
+							<button id="btn_prodPrtSal" class="btn btn-success" type="button" ><i class="fa fa-cog"></i>報表檔</button>
+						</div>
+						<div class="input-group">
+							<span class="input-group-text">銀行</span>	
+							<select id="bank_cond" class="form-control" title="項目">
+								<option value="1:媒體傳輸:Bank_T" selected>1:媒體傳輸</option>
+								<option value="2" >2:比對</option>
+							</select>
+							<select id="bank_item" class="form-control d-none" title="項目">
+								<option value="1:薪資:Bank_PayC" selected>1:薪資</option>
+								<option value="2:公儲:Bank_PayS" >2:公儲</option>
+							</select>	
+							<input type="text" id="bank_ps" size="12" class="form-control d-none" placeholder="薪轉附言" >
+							<div id="bankUpload" class="d-none">	
+								<form id="uploadfileForm">檔案 	
+								    <input type="file" accept=".csv,text/plain"  id="fileInput" name="fileInput">								   
+							    </form>
+							</div>    
+							<button id="btn_prodBank" class="btn btn-success" type="button" ><i class="fa fa-cog"></i>產生</button>
+						</div>
+						     															
 					</div>
 				</div>
 				<div class="col-2">					
@@ -2216,7 +2332,12 @@ $(function(){
 						<div class="input-group">
 							<span class="input-group-text">項目</span>	
 							<select id="qry_prt_item" class="form-control" title="項目">
-								<option value="1:薪資表:Prt_M_1" selected>1:薪資表</option>												
+								<option value="1:薪津表:Prt_M_1" selected>1:薪津表</option>
+								<option value="2:扣款表:Prt_M_2" >2:扣款表</option>
+								<option value="3:薪津表(補發扣):Prt_M_3" >3:薪津表(補發扣)</option>
+								<option value="4:薪津異動明細表:Prt_M_4" >4:薪津異動明細表</option>
+								<option value="5:發薪受款者明細表:Prt_M_5" >5:發薪受款者明細表</option>
+								<option value="6:銀行轉帳明細表:Prt_M_6" >6:銀行轉帳明細表</option>													
 							</select>
 							<button id="btn_printPrt" class="btn btn-success" type="button" ><i class="fa fa-cog"></i>執行</button>
 						</div>    															

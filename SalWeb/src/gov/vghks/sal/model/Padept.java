@@ -21,11 +21,15 @@ public class Padept implements Serializable{
     private String hid;
     /** 日期時戳 */
     private java.sql.Timestamp zpadept;
+    /** 日期時戳 */
+    private java.sql.Timestamp zptdept;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhdept;
     /** 人事單位代碼*/
     private String pbwkcode;
     
 	public String getPadepcod() {
-		return padepcod;
+		return StringUtil.nullToString(padepcod);
 	}
 	public void setPadepcod(String padepcod) {
 		this.padepcod = padepcod;
@@ -71,6 +75,18 @@ public class Padept implements Serializable{
 	}
 	public void setPbwkcode(String pbwkcode) {
 		this.pbwkcode = pbwkcode;
+	}
+	public java.sql.Timestamp getZptdept() {
+		return zptdept;
+	}
+	public void setZptdept(java.sql.Timestamp zptdept) {
+		this.zptdept = zptdept;
+	}
+	public java.sql.Timestamp getZlhdept() {
+		return zlhdept;
+	}
+	public void setZlhdept(java.sql.Timestamp zlhdept) {
+		this.zlhdept = zlhdept;
 	}
     
 }

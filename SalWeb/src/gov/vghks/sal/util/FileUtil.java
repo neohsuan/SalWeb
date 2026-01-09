@@ -35,6 +35,9 @@ import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 
 public class FileUtil {
 	static Logger log=Logger.getLogger(StringUtil.class);  //呼叫log4j
+	//String ttf_kaiu="C:/WINDOWS/Fonts/KAIU.TTF";
+	String ttf_kaiu="font\\VGHKH_KAI.TTF";
+	
 	/**
 	 * 將檔案轉換成SmbFile
 	 * @param path
@@ -46,9 +49,11 @@ public class FileUtil {
 		String pass="";
 		try{
 			//改用列舉
-			//Hospitals hospInfo = Hospitals.getOneHosp(hid);
-			login=Globals.gap_id;
-			pass =Globals.gap_pwd;
+			Hospitals hospInfo = Hospitals.getOneHosp(hid);
+			login=hospInfo.gap_id;
+			pass =hospInfo.gap_pwd;
+			//login=Globals.gap_id;
+			//pass =Globals.gap_pwd;
 			
 			NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication("", login, pass);
 			
@@ -162,8 +167,7 @@ public class FileUtil {
 					PdfImportedPage page0 = copy.getImportedPage(reader0, 1);
 					copy.addPage(page0);
 				}
-				BaseFont bfChinese = BaseFont.createFont(
-						"jsp\\font\\VGHKH_KAI.TTF", BaseFont.IDENTITY_H,
+				BaseFont bfChinese = BaseFont.createFont(ttf_kaiu, BaseFont.IDENTITY_H,
 						BaseFont.NOT_EMBEDDED);
 				Font textN = new Font(bfChinese, 12, Font.NORMAL);
 				int chNum = 1;
@@ -256,13 +260,14 @@ public class FileUtil {
             PdfContentByte pageContent = pdfStamper.getOverContent(iniNo+i);
             pageContent.setGState(this.getPdfGState());
             pageContent.beginText();
-            pageContent.setFontAndSize(BaseFont.createFont("C:/WINDOWS/Fonts/KAIU.TTF",BaseFont.IDENTITY_H, BaseFont.EMBEDDED), 8);
+            //pageContent.setFontAndSize(BaseFont.createFont("C:/WINDOWS/Fonts/KAIU.TTF",BaseFont.IDENTITY_H, BaseFont.EMBEDDED), 8);
+            pageContent.setFontAndSize(BaseFont.createFont(ttf_kaiu,BaseFont.IDENTITY_H, BaseFont.EMBEDDED), 8);
             pageContent.setColorFill(BaseColor.BLUE);
      //     pageContent.showTextAligned(Element.ALIGN_CENTER, waterText , document.getPageSize().getWidth() / 2, 10 , 0); //置中
             pageContent.showTextAligned(Element.ALIGN_CENTER, waterText , 475, 20 , 0);
             //頁碼
             if ("Y".equals(addNum)){
-            	pageContent.setFontAndSize(BaseFont.createFont("C:/WINDOWS/Fonts/KAIU.TTF",BaseFont.IDENTITY_H, BaseFont.EMBEDDED), 14);
+            	pageContent.setFontAndSize(BaseFont.createFont(ttf_kaiu,BaseFont.IDENTITY_H, BaseFont.EMBEDDED), 14);
                 pageContent.setColorFill(BaseColor.DARK_GRAY);
             	pageContent.showTextAligned(Element.ALIGN_CENTER, i + "/" + allPage , document.getPageSize().getWidth() / 2, 10 , 0);
             }
@@ -301,7 +306,7 @@ public class FileUtil {
             PdfContentByte pageContent = pdfStamper.getOverContent(i);
             pageContent.setGState(this.getPdfGState());
             pageContent.beginText();
-            pageContent.setFontAndSize(BaseFont.createFont("C:/WINDOWS/Fonts/KAIU.TTF",BaseFont.IDENTITY_H, BaseFont.EMBEDDED), 8);
+            pageContent.setFontAndSize(BaseFont.createFont(ttf_kaiu,BaseFont.IDENTITY_H, BaseFont.EMBEDDED), 8);
             pageContent.setColorFill(BaseColor.BLUE);
             pageContent.showTextAligned(Element.ALIGN_CENTER, waterText , 475, 10 , 0);
             pageContent.endText();
@@ -315,7 +320,52 @@ public class FileUtil {
 		}      
         return success;
 	}
+	/**
+	 * 每頁右下角標註頁數
+	 * @param userid, dirPath,direction(true:橫,false:直),傳回:總頁數
+	 * @throws Exception
+	 */
 	
+	public boolean markPrtPg(String userid, boolean direction,String dirPath,String hid) throws Exception {	
+		boolean success = false;
+		int allPage=0;
+		try {
+		Document document = new Document(PageSize.A4);
+		document.open();
+		Date date = new Date();
+		SimpleDateFormat Tformat = new SimpleDateFormat("yyyyMMddHHmmss");
+		String strDate = Tformat.format(date);
+        //Read the existing PDF document
+		PdfReader pdfReader = new PdfReader(new SmbFileInputStream(FileToSmbFile(dirPath,hid)));	
+        //Get the PdfStamper object
+        PdfStamper pdfStamper = new PdfStamper(pdfReader, new SmbFileOutputStream(FileToSmbFile(dirPath,hid)));
+        //欲註記文字
+		String waterText = "列印 "+userid +"-"+strDate; //卡號+時戳 
+		//Get the PdfContentByte type by pdfStamper.
+		allPage=pdfReader.getNumberOfPages();
+		for (int i = 1, pdfPageSize = pdfReader.getNumberOfPages(); i <= pdfPageSize; i++) {
+            PdfContentByte pageContent = pdfStamper.getOverContent(i);
+            pageContent.setGState(this.getPdfGState());
+            pageContent.beginText();
+            pageContent.setFontAndSize(BaseFont.createFont(ttf_kaiu,BaseFont.IDENTITY_H, BaseFont.EMBEDDED), 8);
+            pageContent.setColorFill(BaseColor.BLUE);
+            //pageContent.showTextAligned(Element.ALIGN_CENTER, waterText , 475, 10 , 0);
+            //true:橫,false:直
+            if (direction)
+            	pageContent.showTextAligned(Element.ALIGN_CENTER, i + "/" + allPage , document.getPageSize().getHeight() / 2, 10 , 0);
+            else 
+            	pageContent.showTextAligned(Element.ALIGN_CENTER, i + "/" + allPage , document.getPageSize().getWidth() / 2, 10 , 0);
+            pageContent.endText();
+        }
+        pdfStamper.close();
+        success = true;
+        document.close();
+		}catch (IOException e) {
+	           e.printStackTrace();
+	          throw e;
+		}      
+        return success;
+	}
 	private PdfGState getPdfGState() {		 
         PdfGState graphicState = new PdfGState();
         graphicState.setFillOpacity(0.7f);

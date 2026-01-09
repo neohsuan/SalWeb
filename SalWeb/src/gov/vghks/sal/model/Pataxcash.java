@@ -33,6 +33,10 @@ public class Pataxcash implements Serializable{
     private String hid;
     /** 日期時戳 */
     private java.sql.Timestamp zpataxcash;
+    /** 日期時戳 */
+    private java.sql.Timestamp zpttaxcash;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhtaxcash;
     
 	public String getPayidno() {
 		return payidno;
@@ -111,6 +115,18 @@ public class Pataxcash implements Serializable{
 	}
 	public void setPaytaxdeduct(int paytaxdeduct) {
 		this.paytaxdeduct = paytaxdeduct;
+	}
+	public java.sql.Timestamp getZpttaxcash() {
+		return zpttaxcash;
+	}
+	public void setZpttaxcash(java.sql.Timestamp zpttaxcash) {
+		this.zpttaxcash = zpttaxcash;
+	}
+	public java.sql.Timestamp getZlhtaxcash() {
+		return zlhtaxcash;
+	}
+	public void setZlhtaxcash(java.sql.Timestamp zlhtaxcash) {
+		this.zlhtaxcash = zlhtaxcash;
 	}
     
 	

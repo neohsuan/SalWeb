@@ -164,7 +164,7 @@ public class Paprtdtl implements Serializable{
     private int paypark1;
     /** 1A0_眷舍停車費            2A0_保留      3A0_保留*/
     private int paypark2;
-    /** 1A0_體育管理費            2A0_遺孤認養金      3A0_保留*/
+    /** 1A0_體育管理費(公共設施使用費)   2A0_遺孤認養金      3A0_保留*/
     private int paygym;
     /** 清償債款*/
     private int paylien;
@@ -180,7 +180,7 @@ public class Paprtdtl implements Serializable{
     private int paydorm3;
     /** 補充保險費*/
     private int payother1;
-    /** 1A0_保留          		 2A0_高榮代收代付      3A0_保留*/
+    /** 1A0_保留(PGY眷舍管理費) 2A0_高榮代收代付      3A0_保留*/
     private int payother2;
     /** 1A0_醫療糾紛       		  2A0_保留      3A0_保留*/
     private int payother3;
@@ -207,6 +207,22 @@ public class Paprtdtl implements Serializable{
     private String strempdt;
     /** 新制契約  契約除醫師外,到院日2015/1起為新制*/
     private String contract;
+    /**員工薪津**/
+    private int pay;
+    /**應發總金額(一)**/
+    private int nt1;
+    /**應發總金額(二)**/
+    private int nt2;
+    /** 存款別*/
+    private String deposit;
+    /** 帳號*/
+    private String acno;
+    /** 轉帳金額*/
+    private int payamt;
+    /** 銀行回報結果*/
+    private String bankflag;
+    /** 比對結果*/
+    private String comp;
     
     public int getSalnum() {
 		return salnum;
@@ -815,6 +831,54 @@ public class Paprtdtl implements Serializable{
 	}
 	public void setValMap(Map valMap) {
 		this.valMap = valMap;
+	}
+	public int getPay() {
+		return pay;
+	}
+	public void setPay(int pay) {
+		this.pay = pay;
+	}
+	public int getNt1() {
+		return nt1;
+	}
+	public void setNt1(int nt1) {
+		this.nt1 = nt1;
+	}
+	public int getNt2() {
+		return nt2;
+	}
+	public void setNt2(int nt2) {
+		this.nt2 = nt2;
+	}
+	public String getDeposit() {
+		return deposit;
+	}
+	public void setDeposit(String deposit) {
+		this.deposit = deposit;
+	}
+	public String getAcno() {
+		return acno;
+	}
+	public void setAcno(String acno) {
+		this.acno = acno;
+	}
+	public int getPayamt() {
+		return payamt;
+	}
+	public void setPayamt(int payamt) {
+		this.payamt = payamt;
+	}
+	public String getBankflag() {
+		return bankflag;
+	}
+	public void setBankflag(String bankflag) {
+		this.bankflag = bankflag;
+	}
+	public String getComp() {
+		return comp;
+	}
+	public void setComp(String comp) {
+		this.comp = comp;
 	}
  
 }

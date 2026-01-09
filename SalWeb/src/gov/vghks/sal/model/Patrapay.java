@@ -27,6 +27,10 @@ public class Patrapay {
     private String hid;
     /** 日期時戳 */
     private java.sql.Timestamp zpatrapay;
+    /** 日期時戳 */
+    private java.sql.Timestamp zpttrapay;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhtrapay;
     /** 支扣代碼 中文*/
     private String pacodnmc;
     /** 支扣代碼_刪除*/

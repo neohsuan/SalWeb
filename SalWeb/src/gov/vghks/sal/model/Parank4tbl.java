@@ -15,6 +15,10 @@ public class Parank4tbl implements Serializable{
     private java.sql.Timestamp payupdtm;
     /** 日期時戳 */
     private java.sql.Timestamp zparank4tbl;
+    /** 日期時戳 */
+    private java.sql.Timestamp zptrank4tbl;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhrank4tbl;
     
 	public String getRnk4name() {
 		return StringUtil.nullToString(rnk4name);
@@ -39,6 +43,18 @@ public class Parank4tbl implements Serializable{
 	}
 	public void setRnk4key(int rnk4key) {
 		this.rnk4key = rnk4key;
+	}
+	public java.sql.Timestamp getZptrank4tbl() {
+		return zptrank4tbl;
+	}
+	public void setZptrank4tbl(java.sql.Timestamp zptrank4tbl) {
+		this.zptrank4tbl = zptrank4tbl;
+	}
+	public java.sql.Timestamp getZlhrank4tbl() {
+		return zlhrank4tbl;
+	}
+	public void setZlhrank4tbl(java.sql.Timestamp zlhrank4tbl) {
+		this.zlhrank4tbl = zlhrank4tbl;
 	}
 	  
     }

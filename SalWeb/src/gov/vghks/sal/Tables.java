@@ -38,6 +38,8 @@ public enum Tables {
 			"PA.PATRAPAY_DW",
 			"PA.PAREPDETAIL",
 			"PA.PAREPORT",
+			"PA.PANHICAL",
+			"PA.PANHIDET",
 			"ZPATITLE",
 			"ZPARANKCODE",
 			"ZPABANK",
@@ -46,11 +48,17 @@ public enum Tables {
 			"ZPAEXPFTBL",
 			"ZPATRACODE",
 			"ZPABASPSN",
+			"ZPABATPAY",
+			"ZPATRAPSN",
+			"ZPATRAPAY",
 			"ZPAHIST",
 			"ZPADPINTBL",
 			"ZPALBINTBL",
 			"ZPALBRPTBL",
-			"ZPACSPF"
+			"ZPACSPF",
+			"ZPAPAYITM",
+			"ZPATAXTRAN",
+			"ZPATAXCASH"
 	),
 	PTVGH(
 		"2A0", 
@@ -89,6 +97,8 @@ public enum Tables {
 		"PA.PTTR#APAY",
 		"PA.PTRPDTL",
 		"PA.PTREPORT",
+		"PA.PTNHICAL",
+		"PA.PTNHIDET",
 		"ZPTTITLE",
 		"ZPTRANKCE",
 		"ZPTBANK",
@@ -97,11 +107,17 @@ public enum Tables {
 		"ZPTEXPFTBL",
 		"ZPTTRACODE",
 		"ZPTBASPSN",
+		"ZPTBATPAY",
+		"ZPTTRAPSN",
+		"ZPTTRAPAY",
 		"ZPTHIST",
 		"ZPTDPINTBL",
 		"ZPTLBINTBL",
 		"ZPTLBRPTBL",
-		"ZPTCSPF"
+		"ZPTCSPF",
+		"ZPTPAYITM",
+		"ZPTTAXTRAN",
+		"ZPTTAXCASH"
 	),
 	KMUH(
 		"3A0", 
@@ -140,6 +156,8 @@ public enum Tables {
 		"PA.LHTRAPAY",
 		"PA.LHRPDTL",
 		"PA.LHREPORT",
+		"PA.LHNHICAL",
+		"PA.LHNHIDET",
 		"ZLHTITLE",
 		"ZLHRANKCE",
 		"ZLHBANK",
@@ -148,11 +166,17 @@ public enum Tables {
 		"ZLHEXPFTBL",
 		"ZLHTRACODE",
 		"ZLHBASPSN",
+		"ZLHBATPAY",
+		"ZLHTRAPSN",
+		"ZLHTRAPAY",
 		"ZLHHIST",
 		"ZLHDPINTBL",
 		"ZLHLBINTBL",
 		"ZLHLBRPTBL",
-		"ZLHCSPF"
+		"ZLHCSPF",
+		"ZLHPAYITM",
+		"ZLHTAXTRAN",
+		"ZLHTAXCASH"
 	),
 	;
 	
@@ -183,7 +207,7 @@ public enum Tables {
 	public final String tDatPsnDw;					//24月支個人明細_歷史
 	public final String tDatPay;					//25月支支扣明細
 	public final String tDatPayDw;				//26月支支扣明細_歷史
-	public final String tPayIItm;					//27支扣項目彙總
+	public final String tPayItm;					//27支扣項目彙總
 	public final String tBasAdr;					//28地址
 	public final String tHist;					//29歷史檔
 	public final String tTraPsn;					//30異動個人明細
@@ -192,6 +216,8 @@ public enum Tables {
 	public final String tTraPayDw;					//33異動支扣明細_歷史
 	public final String tRPDTL;						//34製作報表明細
 	public final String tRPPRT;						//35報表檔架構
+	public final String tNhiCal;					//二代健保(補充保險費_獎金)
+	public final String tNhiDet;					//二代健保申報扣費明細
 	
 	public final String tmpZtitle ;		//時戳
 	public final String tmpZrankce ;
@@ -201,11 +227,17 @@ public enum Tables {
 	public final String tmpZexpf ;
 	public final String tmpZtracd ;
 	public final String tmpZbaspsn ;
+	public final String tmpZbatpay ;
+	public final String tmpZtrapsn ;
+	public final String tmpZtrapay ;
 	public final String tmpZhist;
 	public final String tmpZdpintbl ;
 	public final String tmpZlbintbl ;
 	public final String tmpZrpintbl ;
 	public final String tmpZcspf  ;
+	public final String tmpZpayitm  ;
+	public final String tmpZtaxtran  ;
+	public final String tmpZtaxcash  ;
 	
 	Tables(
 		final String hid, 
@@ -235,7 +267,7 @@ public enum Tables {
 		final String tDatPsnDw,
 		final String tDatPay,
 		final String tDatPayDw,
-		final String tPayIItm,
+		final String tPayItm,
 		final String tBasAdr,
 		final String tHist,
 		final String tTraPsn,
@@ -244,6 +276,8 @@ public enum Tables {
 		final String tTraPayDw,
 		final String tRPDTL,
 		final String tRPPRT,
+		final String tNhiCal,
+		final String tNhiDet,
 		final String  tmpZtitle ,		
 		final String  tmpZrankce ,
 		final String  tmpZbank ,
@@ -252,11 +286,17 @@ public enum Tables {
 		final String  tmpZexpf ,
 		final String  tmpZtracd ,
 		final String  tmpZbaspsn ,
+		final String  tmpZbatpay ,
+		final String  tmpZtrapsn ,
+		final String  tmpZtrapay ,
 		final String  tmpZhist ,
 		final String  tmpZdpintbl ,
 		final String  tmpZlbintbl ,
 		final String  tmpZrpintbl ,
-		final String  tmpZcspf
+		final String  tmpZcspf,
+		final String  tmpZpayitm,
+		final String  tmpZtaxtran,
+		final String  tmpZtaxcash
 	)
 	{
         this.hid = hid;
@@ -286,7 +326,7 @@ public enum Tables {
     	this.tDatPsnDw= tDatPsnDw ;
     	this.tDatPay=  tDatPay;
     	this.tDatPayDw=  tDatPayDw;
-    	this.tPayIItm= tPayIItm ;
+    	this.tPayItm= tPayItm ;
     	this.tBasAdr= tBasAdr ;
     	this.tHist= tHist ;
     	this.tTraPsn= tTraPsn ;
@@ -295,6 +335,8 @@ public enum Tables {
     	this.tTraPayDw= tTraPayDw ;
     	this.tRPDTL= tRPDTL ;
     	this.tRPPRT=tRPPRT;
+    	this.tNhiCal=tNhiCal;
+    	this.tNhiDet=tNhiDet;
     	this.tmpZtitle= tmpZtitle;		//時戳
     	this.tmpZrankce= tmpZrankce;
     	this.tmpZbank= tmpZbank;
@@ -302,12 +344,18 @@ public enum Tables {
     	this.tmpZrnk4= tmpZrnk4;
     	this.tmpZexpf= tmpZexpf;
     	this.tmpZtracd= tmpZtracd;
-    	this.tmpZbaspsn= tmpZbaspsn;
+    	this.tmpZbaspsn = tmpZbaspsn;
+    	this.tmpZbatpay = tmpZbatpay;
+    	this.tmpZtrapsn= tmpZtrapsn;
+    	this.tmpZtrapay= tmpZtrapay;
     	this.tmpZhist= tmpZhist;
     	this.tmpZdpintbl= tmpZdpintbl;
     	this.tmpZlbintbl= tmpZlbintbl;
     	this.tmpZrpintbl= tmpZrpintbl;
     	this.tmpZcspf= tmpZcspf;
+    	this.tmpZpayitm= tmpZpayitm;
+    	this.tmpZtaxtran= tmpZtaxtran;
+    	this.tmpZtaxcash= tmpZtaxcash;
     }
 	
 	/**

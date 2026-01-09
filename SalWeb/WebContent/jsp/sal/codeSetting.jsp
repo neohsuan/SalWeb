@@ -151,19 +151,19 @@ $(function(){
  	if (pa_admin=="Y" && agent ==""){
  	
 	}else if (pahid=="2A0" ) {
-		$("#qrycodetyp option[value='7:PAEXPFTBL']").remove();
-       	$("#qrycodetyp option[value='8:PARNK4TBL']").remove();
-		$("#qrycodetyp option[value='9:PATRACODE']").remove();
+		$("#qrycodetyp option[value='8:PAEXPFTBL']").remove();
+       	$("#qrycodetyp option[value='9:PARNK4TBL']").remove();
+		$("#qrycodetyp option[value='10:PATRACODE']").remove();
 		$("#qryWkpftyp option[value='2:PAPFTL']").remove();        	
 	}
 	else if (pahid=="3A0") {
-		$("#qrycodetyp option[value='7:PAEXPFTBL']").remove();
-	    $("#qrycodetyp option[value='8:PARNK4TBL']").remove();
-		$("#qrycodetyp option[value='9:PATRACODE']").remove();        	
+		$("#qrycodetyp option[value='8:PAEXPFTBL']").remove();
+	    $("#qrycodetyp option[value='9:PARNK4TBL']").remove();
+		$("#qrycodetyp option[value='10:PATRACODE']").remove();        	
 	    $("#pills-wkpf-tab").hide();
     }   
     else if (pahid=="1A0") {
-       	$("#qrycodetyp option[value='9:PATRACODE']").remove();
+       	$("#qrycodetyp option[value='10:PATRACODE']").remove();
 	}
 	
 	//代碼選單切換
@@ -196,6 +196,10 @@ $(function(){
 		}else if (tblname=="PATAXTBL"){
 			codeTbl="tblTaxTblList";
 			$("#txtKEY1").show();
+		}else if (tblname=="PAPAYITM"){
+			codeTbl="tblPayItmList";
+			$('#coddelKey').selectpicker('show');
+ 			$('#coddelKey').selectpicker('refresh');
 		}else if (tblname=="PATITLE"){
 			codeTbl="tblCodeTitList";
  			$('.qryCodeSelect').selectpicker('show');
@@ -303,7 +307,10 @@ $(function(){
 					codeTbl="tblCodeRnk4List";
 				}else if (tblname=="PABANK"){
 					codeTbl="tblBankDtList";
-				}else if (tblname=="PATAXTBL"){
+				}else if (tblname=="PAPAYITM"){
+					codeTbl="tblPayItmList";
+				}
+				else if (tblname=="PATAXTBL"){
 					codeTbl="tblTaxTblList";
 					$("#txtKEY1").show();
 				}else if (tblname=="PATITLE"){
@@ -332,7 +339,17 @@ $(function(){
 	        		"patitsub":key1,
 	        		"pacoddel":key2
 	        	};
-			}else{
+			}else if (tblname=="PAPAYITM"){
+				if ($('#coddelKey').val()==null){
+					
+				}else
+					key1=$('#coddelKey').val();
+				code_data={
+	        		"paycode" :txtKEY,
+	        		"pacoddel":key1
+	        	};
+			}
+			else{
 				code_data={
 	        		"key":txtKEY
 	        	};
@@ -343,6 +360,7 @@ $(function(){
 				data:{
 					method  : 'qryCodeList',
 					hid     : pahid,
+					userid  : paUserid,
 					selCode  :selCode,
 					tblname  :tblname,
 					code_data  :JSON.stringify(code_data)
@@ -361,18 +379,20 @@ $(function(){
 						oTable = $('#' + codeTbl ).dataTable(objCopyC);						
 					}else if (selCode=="3"){	//職稱代碼codeTitList
 						oTable = $('#' + codeTbl ).dataTable(objCopyK);						
-					}else if (selCode=="4"){	//階別代碼tblCodeRankList
+					}else if (selCode=="4"){	//4.階別代碼tblCodeRankList
 						oTable = $('#' + codeTbl ).dataTable(objCopyD);						
-					}else if (selCode=="5"){	//人工造冊應計轉帳項目代碼 
-						oTable = $('#' + codeTbl ).dataTable(objCopyE);						
-					}else if (selCode=="7"){	//7績效額外點數對照表  
-						oTable = $('#' + codeTbl ).dataTable(objCopyF);						
-					}else if (selCode=="8"){	//8適用專業加給對照表 
-						oTable = $('#' + codeTbl ).dataTable(objCopyG);						
-					}else if (selCode=="9"){	//9異動代碼
-						oTable = $('#' + codeTbl ).dataTable(objCopyB);						
+					}else if (selCode=="5"){	//5.人工造冊應計轉帳項目代碼 
+						oTable = $('#' + codeTbl ).dataTable(objCopyE);
 					}else if (selCode=="6"){	//6薪資所得扣繳稅額表
 						oTable = $('#' + codeTbl ).dataTable(objCopyI);						
+					}else if (selCode=="7"){	//7支扣項目代碼
+						oTable = $('#' + codeTbl ).dataTable(objCopyJ);						
+					}else if (selCode=="8"){	//8績效額外點數對照表  
+						oTable = $('#' + codeTbl ).dataTable(objCopyF);						
+					}else if (selCode=="9"){	//9適用專業加給對照表 
+						oTable = $('#' + codeTbl ).dataTable(objCopyG);						
+					}else if (selCode=="10"){	//10異動代碼
+						oTable = $('#' + codeTbl ).dataTable(objCopyB);						
 					}
 					
 					oTable.fnClearTable(0);		//清空資料
@@ -382,9 +402,9 @@ $(function(){
 					}
 					oTable.fnDraw();		
 					//解決標題不一致問題
-					var table = $('#' + codeTbl ).DataTable();
+					/* var table = $('#' + codeTbl ).DataTable();
 			 		$('#container').css( 'display', 'block' );
-					table.columns.adjust().draw();			
+					table.columns.adjust().draw(false); */			
 				},
 				error: function(xhr){					
 					alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
@@ -400,6 +420,7 @@ $(function(){
 				data:{
 					method  : 'qryCodeList',
 					hid     : pahid,
+					userid  : paUserid,
 					selCode  :selCode,
 					tblname  :tblname
 				},
@@ -426,9 +447,9 @@ $(function(){
 					}
 					oTable.fnDraw();
 					//解決標題不一致問題
-					var table = $('#' + codeTbl ).DataTable();
+					/* var table = $('#' + codeTbl ).DataTable();
 			 		$('#container').css( 'display', 'block' );
-					table.columns.adjust().draw();					
+					table.columns.adjust().draw(false); */					
 				},
 				error: function(xhr){					
 					alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
@@ -460,6 +481,7 @@ $(function(){
 				data:{
 					method  : 'qryCodeList',
 					hid     : pahid,
+					userid  : paUserid,
 					selCode  :selCode,
 					tblname  :tblname,
 					code_data  :JSON.stringify(code_data)
@@ -485,9 +507,9 @@ $(function(){
 					}
 					oTable.fnDraw();
 					//解決標題不一致問題
-					var table = $('#' + codeTbl ).DataTable();
+					/* var table = $('#' + codeTbl ).DataTable();
 			 		$('#container').css( 'display', 'block' );
-					table.columns.adjust().draw();				
+					table.columns.adjust().draw(false); */				
 				},
 				error: function(xhr){					
 					alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
@@ -519,6 +541,7 @@ $(function(){
 					data:{
 						method  : 'qryCodeList',
 						hid     : pahid,
+						userid  : paUserid,
 						selCode  :selCode,
 						tblname  :tblname,
 						code_data  :JSON.stringify(code_data)
@@ -544,9 +567,9 @@ $(function(){
 						}
 						oTable.fnDraw();
 						//解決標題不一致問題
-						var table = $('#' + codeTbl ).DataTable();
+						/* var table = $('#' + codeTbl ).DataTable();
 				 		$('#container').css( 'display', 'block' );
-						table.columns.adjust().draw();								
+						table.columns.adjust().draw(false); */								
 					},
 					error: function(xhr){					
 						alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
@@ -637,6 +660,11 @@ $(function(){
 				$("#PATITLE").show();
 				$("#paytitlk").attr("readOnly",false);  //將key.readOnly 取消				
 				$('.selectpicker').selectpicker('val', [1]);
+ 			}else if ('7' == selCode){
+				$("#model_header_title").html("新增[支扣項目]");
+				$("#PAPAYITM").show();
+				$("#paycode").attr("readOnly",false);  //將key.readOnly 取消				
+				$('.selectpicker').selectpicker('val', [1]);
  			}else if ('4' == selCode){
 				$("#model_header_title").html("新增[階別]");
 				$("#PARANKCODE").show();
@@ -645,7 +673,7 @@ $(function(){
 				$("#model_header_title").html("新增[人工造冊應計轉帳項目]");
 				$("#PACATGTBL").show();
 				$("#paycatg").attr("readOnly",false);  //將key.readOnly 取消				
- 			}else if ('8' == selCode){
+ 			}else if ('9' == selCode){
 				$("#model_header_title").html("新增[適用專業加給對照表]");
 				$("#PARNK4TBL").show();				
 				$("#rnk4key").attr("readOnly",false);  //將key.readOnly 取消
@@ -653,11 +681,11 @@ $(function(){
 				$("#model_header_title").html("新增[薪資所得扣繳稅額表]");
 				$("#PATAXTBL").show();
 				$("#sallow").attr("readOnly",false);  //將key.readOnly 取消				
- 			}else if ('9' == selCode){
+ 			}else if ('10' == selCode){
 				$("#model_header_title").html("新增[異動]");
 				$("#PATRACODE").show();
 				$("#tracode").attr("readOnly",false);  //將key.readOnly 取消								
- 			}else if ('7' == selCode){
+ 			}else if ('8' == selCode){
 				$("#model_header_title").html("新增[績效額外點數對照表]");
 				$("#PAEXPFTBL").show();
 				$("#expfkey").attr("readOnly",false);  //將key.readOnly 取消				
@@ -720,7 +748,7 @@ $(function(){
 				}
 			}
 		}
-		else if(id=='btn_subTblItemsIns'||id=='btn_subTblItemsUpd'){					//支扣項目 新增一筆 更改
+		else if(id=='btn_subTblItemsIns'||id=='btn_subTblItemsUpd'){					//支扣數 新增一筆 更改
 			tblname = $('#qryItemstyp').val().split(':')[1];
 			if ($("#subsalItemsForm").valid()){
 				msg = $.checkFields(id);
@@ -903,6 +931,10 @@ $(function(){
 			$( ':input', '#'+tblname).each(function() {
 		        var name = $(this).attr("name");
 	    		data_id = String($(this).attr("id"));
+	    		//欄名有重名,加tableID區分,取id ex:F_pabank_hid 取hid 
+	    		if (data_id.substring(0,2)=="F_"){
+	    			data_id=data_id.substring(data_id.indexOf( '_', 2 )+1);
+	    		}
 	    		data_val = $(this).val();
 // 	    		var tableID = $(this).closest('table').attr('id'); // 表格名稱
 // 	    		var result = {"tableID": tableID, "value": val};
@@ -938,7 +970,7 @@ $(function(){
 			    
 	   		});*/	
 	   		value.push(obj);   	//以整支table寫入	
-	   		array.push( { "tblname": tblname, "value": value } ); //將動態表格資料轉換為json		    
+	   		array.push( { "formnm": tblname, "value": value } ); //將動態表格資料轉換為json		    
 		    
 // 		}	
   		var jsonArray = JSON.stringify(array); // 轉換成json
@@ -951,12 +983,7 @@ $(function(){
 	//編輯欄位檢查
   	$.checkFields = function(btn){
   		msg = '';
-  		if (btn== 'subopRoleInsbtn'||btn== 'subopRoleUpdbtn'){//手術室角色分派 新增一筆 更改
-  			if (typeof($("#bDEPT option:selected").val())=="undefined")
-				msg += '['+$("#bDEPT").attr('title')+']不得為空白 \n\r';
-			if ($("#bUSERID").val()=="")
-				msg += '[卡號]不得為空白 \n\r';	
-  		}else if (btn== 'btn_subTblCodeIns'||btn== 'btn_subTblCodeIns'){
+  		if (btn== 'btn_subTblCodeIns'||btn== 'btn_subTblCodeIns'){
   			if (selCode=="1"){	
   				if ($("#salnum").val()=="")
 					msg += '[餉單編號]不得為空白 \n\r';
@@ -984,6 +1011,22 @@ $(function(){
 					msg += '[內部用名稱]不得為空白 \n\r';
 				if ($("#pacoddel").val()=="")
 					msg += '[刪除Y/N]不得為空白 \n\r';			
+  			}else if (selCode=="7"){
+  				if ($("#paycode").val()=="")
+					msg += '[代碼]不得為空白 \n\r';
+				if ($("#pacodnmc").val()=="")
+					msg += '[名稱]不得為空白 \n\r';
+				if ($("#papayitm_pacoddel").val()=="")
+					msg += '[刪除Y/N]不得為空白 \n\r';	
+				if ($("#payiftax").val()=="")
+					msg += '[列入所得Y/N]不得為空白 \n\r';
+				if ($("#paupbas").val()=="")
+					msg += '[更新主檔Y/N]不得為空白 \n\r';
+				if ($("#payreward").val()=="")
+					msg += '[列5%稅]不得為空白 \n\r';
+				if ($("#payauth").val()=="")
+					msg += '[二代健保]不得為空白 \n\r';	
+							
   			}else if (selCode=="4"){
   				if ($("#rankcode").val()=="")
 					msg += '[階別代碼]不得為空白 \n\r';
@@ -996,17 +1039,17 @@ $(function(){
 					msg += '[轉帳項目代碼]不得為空白 \n\r';
 				if ($("#catgname").val()=="")
 					msg += '[轉帳項目中文]不得為空白 \n\r';				
-  			}else if (selCode=="6"){
+  			}else if (selCode=="7"){
   				if ($("#expfkey").val()=="")
 					msg += '[績效額外點數代碼]不得為空白 \n\r';
 				if ($("#expfname").val()=="")
 					msg += '[績效額外點數中文]不得為空白 \n\r';				
-  			}else if (selCode=="8"){
+  			}else if (selCode=="9"){
   				if ($("#rnk4key").val()=="")
 					msg += '[適用專業加給對照代碼]不得為空白 \n\r';
 				if ($("#rnk4name").val()=="")
 					msg += '[適用專業加給對照中文]不得為空白 \n\r';				
-  			}else if (selCode=="9"){	//異動代碼
+  			}else if (selCode=="10"){	//異動代碼
   				if ($("#tracode").val()=="")
 					msg += '[異動代碼]不得為空白 \n\r';
 				if ($("#traname").val()=="")
@@ -1385,7 +1428,7 @@ $(function(){
 							$("#pacstno").val(rowData.pacstno);
 							$("#padepnmc").val(rowData.padepnmc);
 							$("#pbwkcode").val(rowData.pbwkcode);
-							$("#padept_hid").val(rowData.hid);
+							$("#F_padept_hid").val(rowData.hid);
 							$("#paydept_payupdid").val(rowData.payupdid);
 							$("#paydept_payupdat").val(rowData.payupdat);
 							$("#model_header_title").html("修改[單位]");
@@ -1777,7 +1820,7 @@ $(function(){
 					        $("#salnum").val(rowData.salnum);
 							$("#paybank").val(rowData.paybank);
 							$("#paysaldt").val(rowData.paysaldt);
-							$("#pabank_hid").val(rowData.hid);
+							$("#F_pabank_hid").val(rowData.hid);
 							$("#pabank_payupdid").val(rowData.payupdid);
 							$("#pabank_payupdat").val(rowData.payupdat);
 							$("#model_header_title").html("修改[發薪日及入帳日對應檔 ]");
@@ -1881,6 +1924,104 @@ $(function(){
             'excelHtml5' 
         ]
 	});	      
+	//7支扣項目代碼 
+	var objCopyJ = $.extend(true, {aaSorting: []}, dataTableConfig);
+	objCopyJ.aoColumns = [	
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"代碼","mData": "paycode"},		
+							{ "sTitle":"名稱","mData": "pacodnmc"},
+							{ "sTitle":"刪除否","mData": "pacoddel"},
+							{ "sTitle":"列入所得","mData": "payiftax"},
+							{ "sTitle":"更新至主檔","mData": "paupbas"},
+							{ "sTitle":"列5%稅","mData": "payreward"},
+							{ "sTitle":"二代健保","mData": "payauth"},
+							{ "sTitle":"更新者","mData": "payupdid"},
+							{ "sTitle":"時戳","mData": "payupdat"}
+							];
+	objCopyJ.aoColumnDefs= [
+							 { "sClass": "alignLeft", "aTargets": [ 2] }							 
+						    ];						
+	objCopyJ = $.extend(true,objCopyJ, {
+				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+ 						$('td:eq(0)', nRow).html( '<button type="button" class="edit btn btn-primary" data-toggle="modal"><i class="fa fa-edit"></i></button>&emsp;<button type="button" class="delCodebtn btn btn-danger"><i class="fa fa-trash-alt"></i></button>');
+				 }, "fnDrawCallback": function () {					 
+				 	//等datatable draw完成後，補上button 初始化 
+				 	//jQuery按鈕圖示，先取消onclick預設的動作
+					//刪除	
+					$(".delCodebtn")
+						.click(function(){
+							delCheck = confirm("請確認是否刪除！！\n\n若是，請按【確定】．\n\n若不是，請按【取消】");
+							if (delCheck) {		
+								oTable = $('#' + codeTbl ).dataTable().api();
+						        tr = $(this).parents('tr');
+						        rowIndex = oTable.row(tr).index();
+						        rowData = oTable.row(tr).data();//抓取目前點選link這筆row的data
+						        code_data="";
+						        if (tblname=="PAPAYITM"){			
+						        	code_data={
+						        		"key":rowData.paycode
+						        	};
+						        }
+						   		    
+						        $.ajax({
+									url:"${pageContext.request.contextPath}/salController.do",
+									data:{
+											method  : 'delTblCode',
+											hid     : pahid,
+											tblname : tblname,
+											"code_data" : JSON.stringify(code_data)
+									},
+									type:"GET",			//type:POST, GET(default:GET)
+									dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+									contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+									success:function(data) {
+										oTable = $('#' + codeTbl ).dataTable();
+										oTable.fnDeleteRow(rowIndex);
+									},
+									error:function(xhr) {
+										alert("刪除失敗，程式發生錯誤!!!\nerror code:"+ xhr.status);  
+									}
+								});
+							}
+						});	
+					//編輯	
+					$(".edit")
+						.click(function(){	
+							oTable = $('#' + codeTbl ).dataTable().api();
+							info = oTable.page.info();		//記錄目前頁碼
+					        tr = $(this).parents('tr');
+					        rowIndex = oTable.row(tr).index();
+					        rowData = oTable.row(tr).data();//抓取目前點選link這筆row的data
+					        $("#paycode").val(rowData.paycode);
+							$("#pacodnmc").val(rowData.pacodnmc);
+							$("#F_papayitm_pacoddel").selectpicker('val',rowData.pacoddel);
+							$("#payiftax").selectpicker('val',rowData.payiftax);
+							$("#paupbas").selectpicker('val',rowData.paupbas);
+							$("#payreward").selectpicker('val',rowData.payreward);
+							$("#payauth").val(rowData.payauth);
+							$("#F_papayitm_payupdid").val(rowData.payupdid);
+							$("#F_papayitm_payupdat").val(rowData.payupdat);
+							$("#F_papayitm_hid").val(rowData.hid);
+							$("#model_header_title").html("修改[支扣項目]");
+							$(".tblEditgrp").hide();
+							$("#PAPAYITM").show();		//把要顯示的table show
+							$("#sallow").attr("readOnly",true);	//將key設成readOnly
+							$("label.error").hide();
+ 							$(".error").removeClass("error");
+					        $("#addCodeDialog").modal("show");
+							$("#btn_subTblCodeIns").prop("disabled", true);
+							$("#btn_subTblCodeUpd").prop("disabled", false);
+						});	
+				 	}							
+		      });
+    objCopyJ = $.extend(true,objCopyJ, {
+		dom: 'B<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-tl  ui-corner-tr"lfr>'+
+				't'+
+				'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
+		buttons: [
+            'excelHtml5' 
+        ]
+	});
 	
 	//職稱
 	var objCopyK = $.extend(true, {aaSorting: []}, dataTableConfig);
@@ -1980,9 +2121,9 @@ $(function(){
 							$("#paytitlp").val(rowData.paytitlp);
 							$("#paytitlc").val(rowData.paytitlc);
 							$("#pacoddel").selectpicker('val',rowData.pacoddel);
-							$("#patitle_hid").val(rowData.hid);
-							$("#patitle_payupdid").val(rowData.payupdid);
-							$("#patitle_payupdat").val(rowData.payupdat);
+							$("#F_patitle_hid").val(rowData.hid);
+							$("#F_patitle_payupdid").val(rowData.payupdid);
+							$("#F_patitle_payupdat").val(rowData.payupdat);
 							$("#model_header_title").html("修改[職稱]");
 							$(".tblEditgrp").hide();
 							$("#paytitlk").attr("readOnly",true);	//將key設成readOnly
@@ -2705,7 +2846,16 @@ $(function(){
 			        		"paytitlk":$('#paytitlk').val()
 			        	}	
 		        	}
-		        }else if (tblname=="PARANK"){						
+		        }else if (tblname=="PAPAYITM"){						
+					if ($('#paycode').val()==""){
+						return false;
+					}else{
+			        	code_data={
+			        		"paycode":$('#paycode').val()
+			        	}	
+		        	}
+		        }
+		        else if (tblname=="PARANK"){						
 					if ($('#paylev1v').val()==""||$('#paylev2v').val()==""||$('#payrankv').val()==""){
 						return false;
 					}else{
@@ -2736,6 +2886,7 @@ $(function(){
 							data:{
 								method  :"qryCodeList",
 								hid     : pahid,
+								userid  : paUserid,
 								code_data : JSON.stringify(code_data),
 								tblname : tblname						
 							},
@@ -2796,9 +2947,10 @@ $(function(){
 	     					<option value="4:PARANKCODE">4階級代碼</option>
 	     					<option value="5:PACATGTBL">5人工造冊應計轉帳項目代碼</option>
 	     					<option value="6:PATAXTBL">6薪資所得扣繳稅額表</option>
-	     					<option value="7:PAEXPFTBL">7績效額外點數對照表</option>
-	     					<option value="8:PARNK4TBL">8適用專業加給對照表</option>	     					
-	     					<option value="9:PATRACODE">9異動代碼</option>
+	     					<option value="7:PAPAYITM">7支扣項目代碼</option>
+	     					<option value="8:PAEXPFTBL">8績效額外點數對照表</option>
+	     					<option value="9:PARNK4TBL">9適用專業加給對照表</option>	     					
+	     					<option value="10:PATRACODE">10異動代碼</option>
 						</select>
 					</div>
 					
@@ -2870,6 +3022,10 @@ $(function(){
 					<thead>
 					</thead>
 				</table>
+				<table id="tblPayItmList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
+					<thead>
+					</thead>
+				</table>
 				<table id="tblCodeTitList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
 					<thead>
 					</thead>
@@ -2926,9 +3082,9 @@ $(function(){
 										<td><input type="text" id="pacstno" name="pacstno" class="form-control required" value="" size="6" placeholder="請輸入成本代碼" maxlength="6"></input></td>
 										<td><input type="text" id="padepnmc" name="padepnmc" class="form-control required" value="" size="22" placeholder="11中文長度" maxlength="11"></input></td>
 										<td><input type="text" id="pbwkcode" name="pbwkcode" class="form-control" value="" size="6" placeholder="請輸入人事單位代碼" maxlength="6"></input></td>
-										<td><input type="text" id="padept_hid" name="hid" class="form-control" value="" size="3"  maxlength="3" readOnly></input></td>
-										<td><input type="text" id="padept_payupdid" name="payupdid" class="form-control" value="" size="8"  maxlength="8" readOnly></input></td>
-										<td><input type="text" id="padept_payupdat" name="payupdat" class="form-control" value="" size="26"  maxlength="26" readOnly></input></td>
+										<td><input type="text" id="F_padept_hid" name="hid" class="form-control" value="" size="3"  maxlength="3" readOnly></input></td>
+										<td><input type="text" id="F_padept_payupdid" name="payupdid" class="form-control" value="" size="8"  maxlength="8" readOnly></input></td>
+										<td><input type="text" id="F_padept_payupdat" name="payupdat" class="form-control" value="" size="26"  maxlength="26" readOnly></input></td>
 									</tr>
 								</tbody>							
 							</table>
@@ -3016,9 +3172,9 @@ $(function(){
 										<td><input type="text" id="salnum" name="salnum" class="form-control text-uppercase findkey required" value="" size="4" maxlength="4"></input></td>
 										<td><input type="text" id="paybank" name="paybank" class="form-control datepicker required" value="" size="10"  maxlength="10"></input></td>
 										<td><input type="text" id="paysaldt" name="paysaldt" class="form-control datepicker required" value="" size="10"  maxlength="10" ></input></td>
-										<td><input type="text" id="pabank_hid" name="hid" class="form-control" value="" size="3"  maxlength="3" readOnly></input></td>
-										<td><input type="text" id="pabank_payupdid" name="payupdid" class="form-control" value="" size="8"  maxlength="8" readOnly></input></td>
-										<td><input type="text" id="pabank_payupdat" name="payupdat" class="form-control" value="" size="26"  maxlength="26" readOnly></input></td>
+										<td><input type="text" id="F_pabank_hid" name="hid" class="form-control" value="" size="3"  maxlength="3" readOnly></input></td>
+										<td><input type="text" id="F_pabank_payupdid" name="payupdid" class="form-control" value="" size="8"  maxlength="8" readOnly></input></td>
+										<td><input type="text" id="F_pabank_payupdat" name="payupdat" class="form-control" value="" size="26"  maxlength="26" readOnly></input></td>
 									</tr>
 								</tbody>							
 							</table>
@@ -3104,10 +3260,65 @@ $(function(){
 									</tr>
 									<tr>	
 										<th class="text-center">醫院別</th>
-										<td><input type="text" id="patitle_hid" name="hid" class="form-control" value=""  maxlength="3" size="3"readOnly></input></td>
+										<td><input type="text" id="F_patitle_hid" name="hid" class="form-control" value=""  maxlength="3" size="3"readOnly></input></td>
 									</tr>						
 								</table>
-						</div>	
+								
+								<table id="PAPAYITM" class="tblEditgrp table-responsive-md table-striped table-bordered table-warning" >
+									<tr>
+										<th class="text-center">代碼</th>
+										<td><input type="text" id="paycode" name="paycode" class="form-control findkey required" value="" size="5" maxlength="5"></input></td>
+									</tr>
+									<tr>
+										<th class="text-center">名稱</th>
+										<td><input type="text" id="pacodnmc" name="pacodnmc" class="form-control required" value=""  maxlength="22" size="11" placeholder="11中文字"></input></td>
+									</tr>	
+									<tr>	
+										<th class="text-center">刪除否</th>
+										<td><select id="F_papayitm_pacoddel" name="pacoddel"class="selectpicker required" >
+											  <option value="N">N</option>
+										      <option value="Y">Y</option>
+										    </select></td>
+									</tr>
+									<tr>	
+										<th class="text-center">列入所得</th>
+										<td><select id="payiftax" name="payiftax"class="selectpicker required" >
+											  <option value="N">N</option>
+										      <option value="Y">Y</option>
+										    </select></td>
+									</tr>
+									<tr>	
+										<th class="text-center">更新主檔</th>
+										<td><select id="paupbas" name="paupbas"class="selectpicker required" >
+											  <option value="N">N</option>
+										      <option value="Y">Y</option>
+										    </select></td>
+									</tr>
+									<tr>	
+										<th class="text-center">列5%稅</th>
+										<td><select id="payreward" name="payreward"class="selectpicker required" >
+											  <option value="N">N</option>
+										      <option value="Y">Y</option>
+										    </select></td>
+									</tr>
+									<tr>	
+										<th class="text-center">二代健保<br>1公保2勞保3兼職</th>
+										<td><input type="text" id="payauth" name="payauth" class="form-control required" value=""  maxlength="3" size="3"></input></td>
+									</tr>	
+									<tr>	
+										<th class="text-center">更新者</th>
+										<td><input type="text" id="F_papayitm_payupdid" name="payupdid" class="form-control" value=""  maxlength="10" size="10"readOnly></input></td>
+									</tr>	
+									<tr>	
+										<th class="text-center">時戳</th>
+										<td><input type="text" id="F_papayitm_payupdat" name="payupdat" class="form-control" value="" size="26"  maxlength="26" readOnly></input></td>									
+									</tr>
+									<tr>	
+										<th class="text-center">醫院別</th>
+										<td><input type="text" id="F_papayitm_hid" name="hid" class="form-control" value=""  maxlength="3" size="3"readOnly></input></td>
+									</tr>					
+								</table>
+							</div>	
 						</div>	
                        </div>
                        <!-- Modal footer -->

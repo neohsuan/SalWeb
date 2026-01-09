@@ -35,6 +35,7 @@ var rowData;
 var typ;
 var paycitation;			
 var payear;
+var payear_old="";
 var paymonth;
 var payformat;
 var cardno;
@@ -55,8 +56,11 @@ var index;
 var jsonArray;
 var selCode="1";
 var url;
+var selEn;
+var selNm;
+
 $(function(){
-	
+
 	$(".gclsCalTxt").datepicker({ 
 		changeMonth: true,
       	changeYear: true,
@@ -66,6 +70,7 @@ $(function(){
 		noneSelectedText : '請選擇'//預設顯示內容
     });
     
+	 
     //初始化重新整理資料
 	$(window).on('load', function() {
 		$('.selectpicker').selectpicker('refresh');
@@ -217,7 +222,7 @@ $(function(){
 		        }
 		    });    
 	    	value.push(obj);   	//以整支table寫入	
-	   		array.push( { "tblname": tableID, "value": value } );
+	   		array.push( { "formnm": tableID, "value": value } );
 		    
 		}	
   		jsonArray = JSON.stringify(array); // 轉換成json
@@ -252,9 +257,9 @@ $(function(){
   				//3[匯入]批次人工入稅
   				else if (selCode=='3'){
   					var file = $("#fileInput").val();			
-						if (file.length == 0) {
-							alert('請確認是否有選檔案');				
-						}
+					if (file.length == 0) {
+						alert('請確認是否有選檔案');				
+					}
   				}
   				//4[刪除]批次人工入稅
   				else if (selCode=='4'){
@@ -290,7 +295,10 @@ $(function(){
 		}
 		else if (btn== 'btn_qryTaxTask'){	//所得稅編輯_查詢
   		
-	 		if(typeof($("#qry_taskYear option:selected").val())=='undefined' && $("#qry_taskTickno").val()=='' && $("#qry_taskId").val()=='' && $("#qry_taskCard").val()=='' && $("#qry_taskNamec").val()==''){
+	 		if ((typeof($("#qry_taskYear option:selected").val())=='undefined' && payear_old == "") && 
+	 		     $("#qry_taskTickno").val()=='' && $("#qry_taskId").val()=='' && 
+	 		     $("#qry_taskCard").val()=='' && 
+	 		     $("#qry_taskNamec").val()=='' ) {
 	 			msg = '請輸入條件值!!';
  			}
 		}
@@ -326,7 +334,8 @@ $(function(){
 		}
 		else if(id == 'btn_clnTaxTask'){
 			cleanTable("byTaxTaskMain");
-			$("#TblTaxPsnList").dataTable().fnClearTable();			
+			$("#TblTaxPsnList").dataTable().fnClearTable();		
+			payear_old="";	
 			return false;
 		}
 		else if(id == 'btn_clnTaxStat'){
@@ -356,8 +365,13 @@ $(function(){
 				cardno=$("#qry_taskCard").val().toUpperCase();
 				idtno=$("#qry_taskId").val().toUpperCase();
 				namec=$("#qry_taskNamec").val();	
-				paycitation=$("#qry_taskTickno").val().toUpperCase();			
+				paycitation=$("#qry_taskTickno").val().toUpperCase();
+				//selectpicker 第2次會清空選的值
 				payear=$.getSelectVals("qry_taskYear");
+				if (payear == ""){
+					payear=payear_old;
+				}
+				payear_old=payear;
 				
  				console.log(" 卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec+" paycitation:"+paycitation+" payear:"+payear);
  				
@@ -376,7 +390,8 @@ $(function(){
 					data:{
 						method  : 'getTaxTaskList',
 						code_data :JSON.stringify(code_data),
-						hid       :pahid
+						hid     : pahid,
+						userid  : paUserid,
 					},
 					type:"POST",	//type:POST, GET(default:GET)
 					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -436,7 +451,8 @@ $(function(){
 					data:{
 						method  : 'getTaxViewList',
 						code_data :JSON.stringify(code_data),
-						hid       :pahid
+						hid     : pahid,
+						userid  : paUserid,
 					},
 					type:"POST",	//type:POST, GET(default:GET)
 					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -490,7 +506,8 @@ $(function(){
 					data:{
 						method  : 'getTaxSumList',
 						code_data :JSON.stringify(code_data),
-						hid       :pahid
+						hid     : pahid,
+						userid  : paUserid,
 					},
 					type:"POST",	//type:POST, GET(default:GET)
 					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -549,7 +566,8 @@ $(function(){
 					data:{
 						method  : 'getTaxStatList',
 						code_data :JSON.stringify(code_data),
-						hid       :pahid
+						hid     : pahid,
+						userid  : paUserid,
 					},
 					type:"POST",	//type:POST, GET(default:GET)
 					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -592,7 +610,7 @@ $(function(){
 		        		payear  : $("#payear option:selected").val(),
 		        		hid		: pahid,
 		        	};
-					return false;
+//					return false;
 					
 					if (id =='subTAXPSN_Updbtn')		
 						$('#tblmethod').val("update");
@@ -651,12 +669,13 @@ $(function(){
 				var yy="";
 				selCode=$("#qryType option:selected").val().split(':')[0];
 				var selNm=$("#qryType option:selected").val().split(':')[1];
+				var selEn=$("#qryType option:selected").val().split(':')[2];
 				//1[入稅]轉帳發薪明細
 				if (selCode == "1"){
 					salnum =$("#handing_Datyr option:selected").val();
 	 				console.log(" 選項:"+selCode+" 餉單編號:"+salnum);
 	 				in_data={
-							selNm     :selNm,
+							selEn     :selEn,
 			        		salnum    :salnum
 			        	};
 			    }
@@ -667,7 +686,7 @@ $(function(){
 		        	var catg =$("#handing_TaxTranyr option:selected").val().split('-')[2];
 	 				console.log(" 選項:"+selCode+" yy:"+yy+" mm:"+mm+" catg:"+catg);
 	 				in_data={
-							selNm:selNm,
+							selEn:selEn,
 			        		yy   :yy,
 			        		mm   : mm,
 			        		catg : catg
@@ -677,7 +696,7 @@ $(function(){
 		        else if (selCode ==3){
 		        	url="${pageContext.request.contextPath}/salController.do";
 		        	var param = '?method=uploadFile' +
-								'&selNm=' + selNm +
+								'&selEn=' + selEn +
 								'&userid=' + userid +
 								'&hid=' + pahid;
 		        
@@ -688,7 +707,7 @@ $(function(){
 		        	var taskTickno=$("#handing_taskTickno").val();
 		        	console.log(" 選項:"+selCode+" handing_taskTickno:"+taskTickno);
 	 				in_data={
-							selNm:selNm,
+							selEn    : selEn,
 			        		citation : taskTickno
 			        };
 		        }
@@ -698,7 +717,7 @@ $(function(){
 		        	yy =$("#handing_Taxyr option:selected").val();
 		        	console.log(" 選項:"+selCode+" yy:"+yy);
 	 				in_data={
-							selNm:selNm,
+							selEn:selEn,
 			        		yy   :yy
 			        };
 		        }	
@@ -729,7 +748,7 @@ $(function(){
 							}
 						},	
 						error: function(xhr){					
-							alert("應稅處理_"+selNm+" 失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
+							alert("應稅處理_"+selEn+" 失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
 						},
 						complete: function(data) {
 							hideLoading(); //隱藏loading
@@ -805,18 +824,20 @@ $(function(){
     	if ($("#" + this_form + "").valid()){    	
 	    	index = $(this).closest('tr').index();
 	    	var row = $(this).closest('tr').index() + 1; //取得所選擇到的列
+	    	
 	    	$(".cashOnly").prop("disabled", false);	//將readOnly->false
 	    	
 	    	$tr = $('#'+table_id+" tbody").find("tr").eq(index);
-			
-	  		$tds = $(tr).find('td');
-	  		
-	  		$.updTblByRow(table_id,$tds,"U");
+ 			//$tds = $(tr).find('td');	    	
+	    	
+	    	console.log("row:"+row+" month:"+$tr.find(':input[name*="cashKpaymonth"]').val());
+	    	
+ 	  		$.updTblByRow(table_id,$tr,"U");
 	    }
 	    	    	
     });
     //列操作_insert/update/delete
-	$.updTblByRow = function(table_id,$tds,item){
+	$.updTblByRow = function(table_id,$tr,item){
 		obj = {};
     	array = new Array();
     	keyobj = {};
@@ -825,7 +846,7 @@ $(function(){
     	var strKey="";
     	data_val="";
     	
-		$tds.find('input:text,input:radio:checked, select, textarea, input:hidden').each(function (i, el) {
+		$tr.find('input:text,input:radio:checked, select, textarea, input:hidden').each(function (i, el) {
   			//取name第6碼後,ex:cash_payidno
   			//key取name第5碼,ex:cashKpayidno
   			data_id = $(this).attr("name").substring(5);
@@ -835,11 +856,12 @@ $(function(){
   			if (strKey == "K"){	//index
   				keyobj[data_id] = data_val; 
   			}
+  			console.log("i:"+i+" data_id:"+data_id+" val:"+data_val);
   		});
   		
 	    if (obj != []  ){
 	    	value.push(obj);
-	    	array.push( { "tblname": table_id, "value": value } ); //將動態表格資料轉換為json
+	    	array.push( { "formnm": table_id, "value": value } ); //將動態表格資料轉換為json
 	    }
   		jsonArray = JSON.stringify(array); // 轉換成json
 	    	    
@@ -854,7 +876,8 @@ $(function(){
 		        		payformat   : $tr.find(':input[name*="cash_payformat"]').val(),
 		        		paycitation : $tr.find(':input[name*="cash_paycitation"]').val(),
 		        	};
-		    console.log("pk_data"+JSON.stringify(pk_data)); */   		
+		    console.log("pk_data"+JSON.stringify(pk_data)); */  
+		//return false;     		
 	    $.ajax({
 				url:"${pageContext.request.contextPath}/salController.do",
 				data:{
@@ -894,8 +917,8 @@ $(function(){
     	
     	//刪除資料庫
     	$tr = $('#'+table_id+" tbody").find("tr").eq(index);
-		$tds = $(tr).find('td');
-	  	$.updTblByRow(table_id,$tds,"D");
+		//$tds = $(tr).find('td');
+	  	$.updTblByRow(table_id,$tr,"D");
 	  	
     	//刪除頁面上
     	var tr_length = $(this).closest('table').find("tbody").find('tr').length; //欄位數量
@@ -919,7 +942,7 @@ $(function(){
 		table_id = this_table.attr("id");
 		var row_html = "<tr>" + this_table.find("tbody").find("tr").eq(0).html() + "</tr>";
 		
-		console.log(row_html);
+		//console.log(row_html);
 		
     	this_table.append(row_html);
     	
@@ -1370,7 +1393,8 @@ $(function(){
 			data:{
 				method  : 'getTaxPsnByKey',
 				code_data :JSON.stringify(code_data),
-				hid       : pahid
+				hid     : pahid,
+				userid  : paUserid,
 			},
 			type:"POST",			//type:POST, GET(default:GET)
 			dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -1451,7 +1475,7 @@ $(function(){
 				tr.find(':input[name*="tran_paytaxdeduct"]').val(mrcontdy[idx].paytaxdeduct);
 				tr.find(':input[name*="tran_payupdtm"]').val(mrcontdy[idx].payupdtm);
 				
-				console.log(row_html);
+				//console.log(row_html);
 			});
 			
 			$(':input[name*="tran_paytaxpay"]').each(function(){		//應稅所得加總
@@ -1492,7 +1516,7 @@ $(function(){
 				tr.find(':input[name*="cashKpaycitation"]').val(mrcontdy[idx].paycitation);
 				tr.find(':input[name*="cash_payupdtm"]').val(mrcontdy[idx].payupdtm); 
 				tr.find(':input[name*="cashKhid"]').val(mrcontdy[idx].hid);
-				console.log(row_html);
+				//console.log(row_html);
 			});
 			
 			$(".cashOnly").prop("disabled", true);	//將key設成readOnly
@@ -1550,7 +1574,8 @@ $(function(){
 							data:{
 								method  : 'getTaxPsnByKey',
 								code_data :JSON.stringify(code_data),
-								hid       : pahid
+								hid     : pahid,
+								userid  : paUserid,
 							},
 			
 							type:"POST",		//type:POST, GET(default:GET)
@@ -1623,12 +1648,12 @@ $(function(){
 							<span class="input-group-text">選單</span>
 			  	
 							<select id="qryType" class="form-control">
-								<option value="1:InTran">1[入稅]轉帳發薪明細</option>
-								<option value="2:DelTran">2[刪除]轉帳發薪明細</option>
-								<option value="3:InBatCash">3[匯入]批次人工入稅</option>
-		     					<option value="4:DelBatCash">4[刪除]批次人工入稅</option>	
-								<option value="5:ChkID">5身分證檢查及流水號編號</option>
-		     					<option value="6:MediaTax">6產生媒體申報檔</option>
+								<option value="1:[入稅]轉帳發薪明細:InTran">1[入稅]轉帳發薪明細</option>
+								<option value="2:[刪除]轉帳發薪明細:DelTran">2[刪除]轉帳發薪明細</option>
+								<option value="3:[匯入]批次人工入稅:InBatCash">3[匯入]批次人工入稅</option>
+		     					<option value="4:[刪除]批次人工入稅:DelBatCash">4[刪除]批次人工入稅</option>	
+								<option value="5:身分證檢查及流水號編號:ChkID">5身分證檢查及流水號編號</option>
+		     					<option value="6:產生媒體申報檔:MediaTax">6產生媒體申報檔</option>
 		     					     					
 							</select>
 						</div>
@@ -1689,10 +1714,10 @@ $(function(){
 			<div class="col-9">
 				<div class="form-inline">
 	    			<select id="qry_taskYear" class="selectpicker selYY" data-width="fit"  data-live-search="true" multiple title="年">
-						<option value=""></option>
-						<c:forEach var="bitem" items="${alTaxYrTbl}" varStatus="loop">
-							<option value="${bitem.paybank}">${bitem.paybank}</option>
-						</c:forEach>
+<!-- 						<option value=""></option> -->
+<%-- 						<c:forEach var="bitem" items="${alTaxYrTbl}" varStatus="loop"> --%>
+<%-- 							<option value="${bitem.paybank}">${bitem.paybank}</option> --%>
+<%-- 						</c:forEach> --%>
 					</select>
 					<input type="text" id="qry_taskTickno" size="9" class="form-control text-uppercase" placeholder="傳票製票號">
 					<input type="text" id="qry_taskId" size="10" class="form-control text-uppercase" placeholder="身分證">
@@ -2245,6 +2270,11 @@ $(function(){
 				        </tfoot>
 					</table>
 				</div>
+			</div>
+			<div class="row">
+			<div class="col-md-12">
+				<div class="text-danger">以所得格式50為統計</div>				
+			</div>
 			</div>
 		</div>	
 	</div>

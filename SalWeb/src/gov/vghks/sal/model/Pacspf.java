@@ -17,6 +17,8 @@ public class Pacspf {
     private java.sql.Timestamp payupdat;
     /** 日期時戳 */
     private java.sql.Timestamp zpacspf;
+    /** 日期時戳 */
+    private java.sql.Timestamp zptcspf;
     
 	public String getPacskey() {
 		return pacskey;
@@ -60,5 +62,11 @@ public class Pacspf {
 	}
 	public void setPacsdata(int pacsdata) {
 		this.pacsdata = pacsdata;
+	}
+	public java.sql.Timestamp getZptcspf() {
+		return zptcspf;
+	}
+	public void setZptcspf(java.sql.Timestamp zptcspf) {
+		this.zptcspf = zptcspf;
 	}
 }

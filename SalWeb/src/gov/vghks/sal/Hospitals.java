@@ -21,17 +21,20 @@ public enum Hospitals {
 		"高",
 		"高榮",
 		"KVGH",
-		"salds",
+		"salMGTds",
 		"salDSNds",
-		"appa01",
+		"appa01",  
 		"pa01ap",
-		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\SAL\\temp\\1A0\\",
+		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\SalProd\\1A0\\",
 		"高雄市左營區大中一路３８６號",
 		"潘麗馡",
 		"07-3422121",		
 		"08261077",
 		"E12",
-		"120300016"
+		"120300016",
+		"123573286",
+		"110005304",
+		"('0','1','2','3','4','A','B','C','D','E','5','6','F','G','H','I','J','K','M','7','U','8')"
 	),
 	PTVGH(
 		"2A0", 
@@ -40,17 +43,20 @@ public enum Hospitals {
 		"屏",
 		"屏榮",		
 		"VHLC",
-		"salds_pt",
+		"salMGTds_pt",
 		"salDSNds_pt",
 		"appa02",
 		"ptpa02ap",
-		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\SAL\\temp\\2A0\\",
+		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\SalProd\\2A0\\",
 		"屏東縣屏東市崇武里榮總東路１號",
 		"王瑞祥",
 		"08-7557885",
 		"92362346",
 		"T90",
-		"900816938"
+		"900816938",
+		"",
+		"",
+		"('P','Q','T','W','X','Y')"
 	),
 	KMUH(
 		"3A0", 
@@ -59,17 +65,20 @@ public enum Hospitals {
 		"聯",
 		"聯醫",		
 		"",
-		"salds_lh",
+		"salMGTds_lh",
 		"salDSNds_lh",
 		"appa04",
 		"lhpa04ap$$--",
-		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\SAL\\temp\\3A0\\",
+		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\SalProd\\3A0\\",
 		"高雄市鼓山區中華一路９７６號",
 		"馬光遠",
 		"07-5552565",
+		"15757714",
+		"E06",
+		"15757714",
 		"",
 		"",
-		""
+		"('L')"
 	),
 	;
 	
@@ -90,6 +99,9 @@ public enum Hospitals {
 	public final String taxNo;			//申報單位統一編號
 	public final String agencyNo;		//稽徵機關代號
 	public final String taxID;			//申報單位稅籍編號
+	public final String healthLabID;	//勞保身分健保 投保單位代號
+	public final String healthCivID;	//公保身分健保 投保單位代號
+	public final String cardGrp;		//卡號群組
 	
 	Hospitals(
 		final String hid, 
@@ -108,7 +120,10 @@ public enum Hospitals {
 		final String tel,
 		final String taxNo,
 		final String agencyNo,
-		final String taxID
+		final String taxID,
+		final String healthLabID,
+		final String healthCivID,
+		final String cardGrp
 	){
         this.hid = hid;
         this.nmFull = nmFull;
@@ -127,6 +142,9 @@ public enum Hospitals {
         this.taxNo = taxNo;
     	this.agencyNo = agencyNo;
     	this.taxID = taxID;
+    	this.healthLabID = healthLabID;
+    	this.healthCivID = healthCivID;
+    	this.cardGrp = cardGrp;
     }
 	/**
 	 * 依hid取得某醫院資訊<br>

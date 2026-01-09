@@ -94,13 +94,13 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 			  	    	<div class="card-body">
 					      	<div class="list-group">
 					      		<a class="list-group-item list-group-item-action" id="basePay" href="<c:url value="/jsp/sal/psnBasic.jsp"/>"><span class="big-size">基本資料</span></a>
-					      		<a class="list-group-item list-group-item-action" id="tranPay" href="<c:url value="/jsp/sal/tranPay.jsp"/>"><span class="big-size">x異動資料</span></a>
-					      		<a class="list-group-item list-group-item-action" id="batchPay" href="<c:url value="/jsp/sal/batchPay.jsp"/>"><span class="big-size">x批次作業</span></a>
+					      		<a class="list-group-item list-group-item-action" id="tranPay" href="<c:url value="/jsp/sal/tranPay.jsp"/>"><span class="big-size">異動資料</span></a>
+					      		<a class="list-group-item list-group-item-action" id="batchPay" href="<c:url value="/jsp/sal/batchPay.jsp"/>"><span class="big-size">批次作業</span></a>
 					      		<a class="list-group-item list-group-item-action" id="denailPay" href="<c:url value="/jsp/sal/payDetail.jsp"/>"><span class="big-size">發薪明細/檢驗</span></a>
-					      		<a class="list-group-item list-group-item-action" id="routinePay" href="<c:url value="/jsp/sal/codeSetting.jsp"/>"><span class="big-size">x相關程序</span></a>
-							  	<a class="list-group-item list-group-item-action" id="paydebt" href="<c:url value="/jsp/sal/paydebt.jsp"/>"><span class="big-size">x清償債款</span></a>
-					      		<a class="list-group-item list-group-item-action" id="paynhi" href="<c:url value="/jsp/sal/paynhi.jsp"/>"><span class="big-size">x二代健保</span></a>
+					      		<a class="list-group-item list-group-item-action" id="paynhi" href="<c:url value="/jsp/sal/paynhi.jsp"/>"><span class="big-size">補充保險費</span></a>
 					      		<a class="list-group-item list-group-item-action" id="labretir" href="<c:url value="/jsp/sal/labretir.jsp"/>"><span class="big-size">x勞工退休金</span></a>
+					      		<a class="list-group-item list-group-item-action" id="paydebt" href="<c:url value="/jsp/sal/paydebt.jsp"/>"><span class="big-size">x清償債款</span></a>
+					      		<a class="list-group-item list-group-item-action" id="routinePay" href="<c:url value="/jsp/sal/codeSetting.jsp"/>"><span class="big-size">x相關程序</span></a>							  	
 							</div>
 				    	</div>
 					</div>
@@ -116,13 +116,14 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 			  	    	<div class="card-body border-success">
 					      	<div class="list-group">
 					      		<a class="list-group-item list-group-item-action" id="basePay" href="<c:url value="/jsp/sal/psnBasic.jsp"/>"><span class="big-size">基本資料</span></a>
-					      		<a class="list-group-item list-group-item-action" id="tranPay" href="<c:url value="/jsp/sal/tranPay.jsp"/>"><span class="big-size">x異動資料</span></a>
-					      		<a class="list-group-item list-group-item-action" id="batchPay" href="<c:url value="/jsp/sal/batchPay.jsp"/>"><span class="big-size">x批次作業</span></a>
+					      		<a class="list-group-item list-group-item-action" id="tranPay" href="<c:url value="/jsp/sal/tranPay.jsp"/>"><span class="big-size">異動資料</span></a>
+					      		<a class="list-group-item list-group-item-action" id="batchPay" href="<c:url value="/jsp/sal/batchPay.jsp"/>"><span class="big-size">批次作業</span></a>
 					      		<a class="list-group-item list-group-item-action" id="detailPay" href="<c:url value="/jsp/sal/payDetail.jsp"/>"><span class="big-size">發薪明細/檢驗</span></a>
-					      		<a class="list-group-item list-group-item-action" id="routinePay" href="<c:url value="/jsp/sal/codeSetting.jsp"/>"><span class="big-size">x相關程序</span></a>
-							  	<a class="list-group-item list-group-item-action" id="paydebt" href="<c:url value="/jsp/sal/paydebt.jsp"/>"><span class="big-size">x清償債款</span></a>
-					      		<a class="list-group-item list-group-item-action" id="paynhi" href="<c:url value="/jsp/sal/paynhi.jsp"/>"><span class="big-size">x二代健保</span></a>
+					      		<a class="list-group-item list-group-item-action" id="paynhi" href="<c:url value="/jsp/sal/paynhi.jsp"/>"><span class="big-size">補充保險費</span></a>
 					      		<a class="list-group-item list-group-item-action" id="labretir" href="<c:url value="/jsp/sal/labretir.jsp"/>"><span class="big-size">x勞工退休金</span></a>
+					      		<a class="list-group-item list-group-item-action" id="paydebt" href="<c:url value="/jsp/sal/paydebt.jsp"/>"><span class="big-size">x清償債款</span></a>
+					      		<a class="list-group-item list-group-item-action" id="routinePay" href="<c:url value="/jsp/sal/codeSetting.jsp"/>"><span class="big-size">x相關程序</span></a>							  	
+					      		
 							</div>
 				    	</div>
 					</div>							               

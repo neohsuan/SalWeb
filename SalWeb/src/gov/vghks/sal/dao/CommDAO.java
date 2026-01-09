@@ -8,7 +8,12 @@ import gov.vghks.sal.Tables;
 import gov.vghks.sal.model.Pabaspsn;
 import gov.vghks.sal.model.Pacspf;
 import gov.vghks.sal.model.Padatpay;
+import gov.vghks.sal.model.Padatpsn;
+import gov.vghks.sal.model.Papayitm;
+import gov.vghks.sal.model.Parank;
+import gov.vghks.sal.model.Patitle;
 
+import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,6 +23,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
@@ -33,7 +41,10 @@ public class CommDAO {
 	private static final int META_TYPE = 2; 			//回傳map中欄位名稱是小寫
 	private static boolean connFlg = false;
 	private String hid="";
-	private String tCspfTbl = "PA.PACSPF";					//工作獎金支扣
+	private String tCspfTbl  = "PA.PACSPF";				//工作獎金支扣
+	private String tTitle    = "PA.PATITLE";					//職稱
+	private String tPayitm   = "PA.PAPAYITM";				//支扣項目
+	private String tRankTbl  = "PA.PARANK";				//階級支扣
 	
 	public CommDAO() {
 		super();
@@ -51,13 +62,186 @@ public class CommDAO {
 		Tables tabInfo = Tables.getTables(hid);
 		connFlg = true;
 		tCspfTbl=tabInfo.tCspfTbl;
-		/*if ("1A0".equals(hid)){			//高雄榮總
-			tCspfTbl = "PA.PACSPF";
-		}else if ("2A0".equals(hid)){			//屏榮榮總
-			tCspfTbl = "PA.PTCSPF";
-		}else if ("3A0".equals(hid)){			//聯合醫院
+		tRankTbl=tabInfo.tRankTbl;
+		tPayitm =tabInfo.tPayItm;
+		tTitle  =tabInfo.tTitle;
+	}
+	/**傳回 俸點
+	 * @param 
+	 * 		  vRANK3  : 本功別
+'             vTitle  : 職稱
+'			  vRANK   : 階別
+'             vRNK2N  : 職等
+'             vDEGR2  : 級別
+'			  vhid    : 醫院別		
+'   @return   Parank : 階級支扣 
+'             
+	 * @throws SQLException 
+	 */
+	
+	public HashMap getDegreByRank(String vRANK3,String vTitle,String vRANK,String vRNK2N,String vDEGR2,String vHid,VGHDataAccess da) throws Exception{
+		String me = getClass().getName() + ".getDegreByRank()";
+		log.info(me +  " vTitle = " + vTitle+" vRANK = " + vRANK+" vRNK2N = " + vRNK2N+" vDEGR2 = " + vDEGR2+ " hid = " + vHid);
+		Parank oneObj=null;
+		Papayitm payitmObj=null;
+		HashMap rtnMap=new HashMap();
+		HashMap<String,Papayitm> payitmMap= new HashMap();	//支扣項目map
+		HashMap<String,Patitle> titleMap= new HashMap();	//職稱map
+		ArrayList<Object> params = new ArrayList<Object>();
+		JSONObject jsonOne =null;
+		JSONArray jsonRtn = new JSONArray();
+		boolean vflag=true;
+		String strvalue="";
+		int intvalue=0;
+		String fieldname="";
+		String vLEVEL1="";
+		String vLEVEL2="";
+		int intDegr2=0;
+		long starttime =0;
+		String strPaycode="";
+		starttime = System.currentTimeMillis();
+		//職稱
+		vTitle=StringUtil.nullToString(vTitle);
+		//職等
+		vRNK2N=StringUtil.nullToString(vRNK2N);
+		//階別
+		vRANK=StringUtil.nullToString(vRANK);
+		//本功別
+		vRANK3=StringUtil.nullToString(vRANK3);
+		//級別
+		vDEGR2=StringUtil.fillChar(StringUtil.nullToString(vDEGR2),2,"0",false);
+		intDegr2 = Integer.parseInt(vDEGR2);
+		
+		vLEVEL1 = vRNK2N;
+		if (vDEGR2.equals("")){
+			vflag=false;
+		}
+		//0無職等、7臨
+		if (vRANK.matches("0|7")){
+			vflag=false;	
+		}
+		//1簡任
+		else if ( vRANK.matches("1")) {
+			if (!vRNK2N.matches("10|11|12|13") )
+				vflag=false;
+		}
+		//2薦任
+		else if ( vRANK.matches("2") ){
+			if ( !vRNK2N.matches("6|7|8|9") )		
+				vflag=false;
+		}
+		//3委任 H警察人員 
+		else if ( vRANK.matches("3|H") ){
+			if (!vRNK2N.matches("1|2|3|4|5") )
+				vflag=false;
+		}
+		//8師 
+		else if ( vRANK.matches("8") ){
+			if ( !vRNK2N.matches("P1|P2|P3") )
+				vflag=false;
+		}	
+		//9士 
+		else if ( vRANK.matches("9") ) {
+			if ( !vRNK2N.matches("T1") )
+				vflag=false;
+		}	
+		//F契約
+		else if ( vRANK.matches("F") ){
+			if ( vTitle.equals("CG") && vHid.matches("1A0|2A0") ){
+				
+			}else if ( !vTitle.equals("") ){
+				//CH契約住院醫師(證書) CI契約住院醫師 CJ二年無證不分科住院醫師 CK二年有證不分科住院醫師 DS半日契約護理 DW半日契約藥師
+				if ( vTitle.matches("CH|CI|CJ|CK|DS|DW"))
+					vLEVEL1 = vTitle;
+				else if (vHid.matches("2A0") && intDegr2 <200)
+					vLEVEL1 = vTitle;
+				else 
+					vLEVEL1 = "ZZ";
+			}else
+				vLEVEL1 = "N"+vRANK;
+		}else{
+			vLEVEL1 = "N"+vRANK;
+		}
+	                
+		if (vflag){
+			if (vHid.equals("1A0")){
+				if (vRANK3.matches("0|1|2") ){
+					vLEVEL2 =vRANK3+vDEGR2;
+				}
+			}else if (vHid.equals("2A0")){
+				if ( intDegr2 >100 ){
+					vLEVEL2 = vDEGR2;
+				}else{
+					vLEVEL2 = vRANK3+vDEGR2;
+				}
+			}else if (vHid.equals("3A0")){
+				if (vRANK.equals("F")){
+					vLEVEL2 = "";
+				}else{
+					vLEVEL2 = vRANK3+vDEGR2;
+				}	
+			}
+		}
+		try{
+			//支扣代碼map
+			payitmMap= this.getPayitmMap("N", vHid, da);
+			//職稱map
+			titleMap= this.getTitleMap(vHid, da);
 			
-		}*/
+			sql = " select PAYLEV1V, PAYLEV2V, PAYDEGRV, PAYRANKV, PAYBASEV, PAYGEINF, PAYLBINF, PAYDPINV, PAYGEINN, PAYREBEF, PAYUSEID, PAYUPDAT, HID, PAYREBEN "+
+					 "from "+this.tRankTbl + 
+				   " where PAYLEV1V=? and PAYLEV2V=? and HID=? WITH UR";
+	
+			params.add(vLEVEL1);
+			params.add(vLEVEL2);
+			params.add(vHid);
+		
+			log.info(me+"  " + sql+"...params:"+ params.toString());
+			result = da.arraylistbyQuery(sql,params,META_TYPE);
+			log.info(me+"  ...size:"+result.size());
+			if(result.size()>0){
+				for (Map<String,Object> data :result){
+					oneObj = new Parank();
+					PropertyUtils.copyProperties(oneObj, data);
+				}
+			}
+			rtnMap.put("rankItem", oneObj);
+			//歷遍parank各項欄位
+			Field[] fields=oneObj.getClass().getDeclaredFields();
+			for (Field field :fields){
+				field.setAccessible(true);
+				if (field.getType()==int.class){
+					intvalue = (Integer) field.get(oneObj);
+				}	
+				fieldname= field.getName();
+				
+
+				jsonOne = new JSONObject();
+				if (fieldname.equals("paybasev")){
+					strPaycode="FP000";
+				}else{
+					strPaycode="";
+				}
+				if (!"".equals(strPaycode)){
+					//取得支扣代碼
+					payitmObj=payitmMap.get(strPaycode);
+					jsonOne.put("paycode", strPaycode);
+					jsonOne.put("pacodnmc", StringUtil.nullToString(payitmObj.getPacodnmc()));
+					jsonOne.put("payamt", intvalue );
+					jsonRtn.add(jsonOne);
+					System.out.println("Field Name: " + field.getName() + ", Type: " + field.getType());
+				}
+			}
+			rtnMap.put("payitm_json", jsonRtn);
+			Date end = new Date();
+			log.info(me+", 共花費："+(System.currentTimeMillis()-starttime)+"毫秒");
+		}catch(Exception e){
+			log.info(me + " fail, " + e);
+			throw new SQLException(me + ", fail!!." + e);
+		}finally{
+			closeAll(da,null,connFlg);			
+		}
+		return rtnMap;
 	}
 	/**傳回 績效點數
 	 * @param 
@@ -76,8 +260,10 @@ public class CommDAO {
 	
 	public HashMap getCsPfByKey(int vRANK3,String vTitle,String vRANK,String vRNK2N,int intDEGR2,String vBANKDT,String vHid,VGHDataAccess da) throws Exception{
 		String me = getClass().getName() + ".getCsPfByKey()";
+		log.info(me +  " vTitle = " + vTitle+" vRANK = " + vRANK+" vRNK2N = " + vRNK2N+" intDEGR2 = " + intDEGR2+" vBANKDT = " + vBANKDT+ " hid = " + vHid);
+		
 		ArrayList<Object> params = new ArrayList<Object>();
-		HashMap rtnMap=null;
+		HashMap rtnMap=new HashMap();
 		String vPFKEY="";
 		String vPFBAS="";
 		String vPFDAT="";
@@ -112,7 +298,6 @@ public class CommDAO {
 				vPFKEY = vTitle + vRNK2N + vRANK3 + StringUtil.fillChar(vDEGR2,2,"0",false) ;
 		}
 		
-		rtnMap=new HashMap();	
 		rtnMap.put("pfkey", vPFKEY);
 		
 		sql = "select  PACSBASE, PACSDATA "+
@@ -128,13 +313,168 @@ public class CommDAO {
 			for (Map<String,Object> data :result){
 				vPFBAS=StringUtil.nullToString(data.get("pacsbase"));
 				vPFDAT=StringUtil.nullToString(data.get("pacsdata"));
-				rtnMap.put("pfbas", vPFBAS);
-				rtnMap.put("pfdat", vPFDAT);
 			}
 		}
+		rtnMap.put("pfbas", vPFBAS);
+		rtnMap.put("pfdat", vPFDAT);
 		Date end = new Date();
 		log.info(me+"(size):" + result.size()+" dataaccess:"+(end.getTime()-begin.getTime()));
 	
+		return rtnMap;
+	}
+	/**傳回 績效點數
+	 * @param 
+	 * 		  vRANK3  : 本功別
+'             vTitle  : 職稱
+'			  vRANK   : 階別
+'             vRNK2N  : 職等
+'             vDEGR2  : 級別
+'  			  vBANKDT : 發薪日
+'			  vCSPF   : map	
+'			  vhid    : 醫院別		
+'   @return   vPFKEY  : 實際支領KEY
+'             vPFBAS  : 基本點數
+'             vPFDAT  : 職等點數
+	 * @throws SQLException 
+	 */
+	
+	public HashMap getCsPfByMap(int vRANK3,String vTitle,String vRANK,String vRNK2N,int intDEGR2,String vBANKDT,String vHid,HashMap vCSPFMap,VGHDataAccess da) throws Exception{
+		String me = getClass().getName() + ".getCsPfByKey()";
+		ArrayList<Object> params = new ArrayList<Object>();
+		HashMap rtnMap=new HashMap();
+		String vPFKEY="";
+		int vpfbas=0;
+		int vpfdat=0;
+		String vDEGR2="";
+		Pacspf cspfObj=null;
+		//職稱
+		vTitle=StringUtil.nullToString(vTitle);
+		//職等
+		vRNK2N=StringUtil.nullToString(vRNK2N);
+		//階別
+		vRANK=StringUtil.nullToString(vRANK);
+		//級別
+		vDEGR2=String.valueOf(intDEGR2);
+		vDEGR2=StringUtil.fillChar(StringUtil.nullToString(vDEGR2),2,"0",false);
+		//實際支領KEY 本功別=0,表示pfkey組成為職稱+"00000"
+		if (vRANK.equals("F") && !vTitle.matches("CG|CH|CK")){
+			if (hid.equals("1A0")){ // >2024-9-1 加級數
+				if ( DateUtil.compareDate( Globals.gPFNew , vBANKDT ) ){
+					vPFKEY=vTitle+"000"+StringUtil.fillChar(vDEGR2,2,"0",false);
+				}else{
+					if (vTitle.matches("DX|DY"))	//DX契約資訊助理工程師  DY契約資訊副工程師
+						vPFKEY=vTitle+"000"+StringUtil.fillChar(vDEGR2,2,"0",false);
+					else
+						vPFKEY=vTitle+"00000";
+				}
+			}else if(hid.equals("2A0")){
+				vPFKEY=vTitle+"00000";
+			}
+		}else{
+			if (vRANK3==0)
+				vPFKEY=vTitle+"00000";
+			else
+				vPFKEY = vTitle + vRNK2N + vRANK3 + StringUtil.fillChar(vDEGR2,2,"0",false) ;
+		}
+		
+		rtnMap.put("pfkey", vPFKEY);
+		
+		cspfObj=(Pacspf) vCSPFMap.get(vPFKEY);
+		if (cspfObj!=null){
+			vpfbas= cspfObj.getPacsbase();
+			vpfdat= cspfObj.getPacsdata();
+		}
+		rtnMap.put("pfbas", vpfbas);
+		rtnMap.put("pfdat", vpfdat);
+		
+		return rtnMap;
+	}
+	/**取得支扣項目map	
+	 * @param 
+	 * 		  vcoddel : 刪除否(Y已刪除/N使用中),空白(全取)
+'             vhid    : 醫院別		
+'   @return   papayitm : map
+	 * @throws SQLException 
+	 */
+	public HashMap<String, Papayitm> getPayitmMap(String vcoddel,String hid,VGHDataAccess da) throws SQLException{
+		String me = getClass().getName() + ".getPayitmMap()";
+		ArrayList<Object> params = new ArrayList<Object>();
+		HashMap<String, Papayitm> rtnMap=new HashMap();
+		Papayitm oneObj=null; 
+		String oneKey="";
+		long starttime =0;
+		sql = "select PAYCODE, PACODNMC, PACODDEL, PAYAUTH, PAYIFTAX, PAUPBAS, PAYREWARD, HID "+
+		 	    "from "+this.tPayitm ;
+		
+		log.info(me+"  " + sql+"...params:"+ params.toString());
+		try{
+			starttime = System.currentTimeMillis();
+			if (!"".equals(vcoddel) ){
+				sql += " PACODNMC='N' ";
+			}
+			sql += " with ur";
+			result = da.arraylistbyQuery(sql,META_TYPE);
+			log.info(me+"  ...size:"+result.size());
+			if(result.size()>0){
+				for (Map<String,Object> data :result){
+					oneObj=new Papayitm();
+					PropertyUtils.copyProperties(oneObj, data);					
+					oneKey=StringUtil.nullToString(oneObj.getPaycode());					
+					rtnMap.put(oneKey, oneObj);
+				}
+			}
+			log.info(me+"(size):" + result.size()+" 共花費："+(System.currentTimeMillis()-starttime)+"毫秒");
+		}
+		catch(Exception e){
+			log.info(me + " fail, " + e);
+			throw new SQLException(me + ", fail!!." + e);
+		}
+		finally{
+		
+		}
+		
+		return rtnMap;
+	}
+	/**取得職稱map	
+	 * @param 
+	 * 		  vhid    : 醫院別		
+'   @return   Patitle : map
+	 * @throws SQLException 
+	 */
+	public HashMap<String, Patitle> getTitleMap(String hid,VGHDataAccess da) throws SQLException{
+		String me = getClass().getName() + ".getTitleMap()";
+		ArrayList<Object> params = new ArrayList<Object>();
+		HashMap<String, Patitle> rtnMap=new HashMap();
+		Patitle oneObj=null; 
+		String oneKey="";
+		long starttime =0;
+		sql = "select PAYTITLK, PATITSUB, PACHIEF, PAYTITLP, PAYTITLC, PACODDEL, HID, PBTITCOD "+
+		 	    "from "+this.tTitle +" with ur";
+		
+		log.info(me+"  " + sql+"...params:"+ params.toString());
+		try{
+			starttime = System.currentTimeMillis();
+			
+			result = da.arraylistbyQuery(sql,META_TYPE);
+			log.info(me+"  ...size:"+result.size());
+			if(result.size()>0){
+				for (Map<String,Object> data :result){
+					oneObj=new Patitle();
+					PropertyUtils.copyProperties(oneObj, data);					
+					oneKey=StringUtil.nullToString(oneObj.getPaytitlk());					
+					rtnMap.put(oneKey, oneObj);
+				}
+			}
+			log.info(me+"(size):" + result.size()+" 共花費："+(System.currentTimeMillis()-starttime)+"毫秒");
+		}
+		catch(Exception e){
+			log.info(me + " fail, " + e);
+			throw new SQLException(me + ", fail!!." + e);
+		}
+		finally{
+		
+		}
+		
 		return rtnMap;
 	}
 	//取得績效點數map	
@@ -207,7 +547,7 @@ public class CommDAO {
 '*******************************************************************/
 	public HashMap Sum_Pay_Deduct(ArrayList<Padatpay> datpayAry,String vRank,String vRANK2,String vRNK2N,int vDegre,String vGovDt,String vSalDt)throws Exception {
 		String me = getClass().getName() + ".Sum_Pay_Deduct()";
-		log.info(me+"  vRank:" + vRank+" vRANK2:"+ vRANK2+" vRNK2N:"+ vRNK2N+" vDegre:"+ vDegre+" vGovDt:"+ vGovDt+" vSalDt:"+ vSalDt);
+		//log.info(me+"  vRank:" + vRank+" vRANK2:"+ vRANK2+" vRNK2N:"+ vRNK2N+" vDegre:"+ vDegre+" vGovDt:"+ vGovDt+" vSalDt:"+ vSalDt);
 		ArrayList<Object> params = new ArrayList<Object>();
 		HashMap rtnMap=new HashMap();	
 		int vrent_house =0;  //房租
@@ -445,7 +785,94 @@ public class CommDAO {
 	    
 	    return false;
 	}
-	
+	/**傳回 薪津表/扣款表/薪津表(補發扣) 對應
+	 * @param selEn 表冊 Prt_M_1薪津表 Prt_M_2扣款表 Prt_M_3薪津表(補發扣) Bank_T銀行媒體傳輸
+	 * @param itm 項目
+	 * @return 報表中文名稱
+	 * Ex: getPrtNmBysal("Prt_M_1",1,"1A0") return 護理_師級 
+	 */
+	public static String getPrtNmBysal(String selEn,int itm,String hid){		
+		String itmCd = " ";
+		if (hid.equals("1A0")){
+			//薪津表/扣款表
+			if (selEn.matches("Prt_M_1|Prt_M_2")){
+				if (itm==0) return "總計";
+				if (itm==1) return "護理_師級";
+				if (itm==2) return "護理_契約";
+				if (itm==3) return "職員_公職";
+				if (itm==4) return "醫事_契約";
+				if (itm==5) return "醫事_師級";
+				if (itm==6) return "醫師_進修,實習";
+				if (itm==7) return "醫師_公職";
+				if (itm==8) return "醫師_師級";
+				if (itm==9) return "醫師_聘用";
+				if (itm==10) return "醫師_契約";
+				if (itm==11) return "不分科";
+				if (itm==12) return "大武";
+				if (itm==13) return "兼職";
+				if (itm==14) return "技工友";
+				if (itm==15) return "計畫";
+				if (itm==16) return "駐衛警";
+				if (itm==17) return "外籍照服員";
+			}	
+			//薪津表(補發扣) 
+			else if (selEn.matches("Prt_M_3")){
+				if (itm==0) return "總計";
+				if (itm==1) return "明細";
+			}
+			//Prt_M_6銀行轉帳明細表 Bank_T銀行轉帳明細表
+			else if (selEn.matches("Prt_M_6|Bank_T")){
+				if (itm==0) return "薪津";
+				if (itm==1) return "公儲";
+				if (itm==2) return "停薪";
+			}
+			
+		}
+		else if (hid.equals("2A0")){
+			//薪津表/扣款表
+			if (selEn.matches("Prt_M_1|Prt_M_2")){
+				if (itm==0) return "總計";
+				if (itm==1) return "護理_師級";
+				if (itm==2) return "護理_約用";
+				if (itm==3) return "職員_公職";
+				if (itm==4) return "醫事_約用";
+				if (itm==5) return "醫事_師級";
+				if (itm==6) return "醫師_師級+聘用";
+				if (itm==7) return "醫師_約用";
+				if (itm==8) return "技工友";
+			}	
+			//薪津表(補發扣)
+			else if (selEn.matches("Prt_M_3")){
+				if (itm==0) return "總計";
+				if (itm==1) return "明細";
+			}
+			//Prt_M_6銀行轉帳明細表 Bank_T銀行轉帳明細表
+			else if (selEn.matches("Prt_M_6|Bank_T")){
+				if (itm==0) return "薪津";
+				if (itm==1) return "公儲";
+			}
+		}
+		else if (hid.equals("3A0")){
+			//薪津表/扣款表
+			if (selEn.matches("Prt_M_1|Prt_M_2")){
+				if (itm==0) return "總計";
+				if (itm==1) return "公職";
+				if (itm==2) return "工級";
+				if (itm==3) return "契約";
+			}
+			//薪津表(補發扣)
+			else if (selEn.matches("Prt_M_3")){
+				if (itm==0) return "總計";
+				if (itm==1) return "明細";
+			}
+			//Prt_M_6銀行轉帳明細表 Bank_T銀行轉帳明細表
+			else if (selEn.matches("Prt_M_6|Bank_T")){
+				if (itm==0) return "薪津";
+				if (itm==1) return "優惠存款";
+			}
+		}
+		return itmCd;
+	}
 	/**傳回 9A 9B 執行業務者業別代號對照表
 	 * @param itm 轉帳項目
 	 * @return 執行業務者業別代號
@@ -462,6 +889,7 @@ public class CommDAO {
 		if (itm==34) return "56";	//牙體技術師 2013.1.31
 		if (itm==38) return "76";	//一般經紀人 2013.7.24
 		if (itm==50) return "42";	//醫事檢驗師 2015.1.20
+		if (itm==49) return "42";	//醫事檢驗師 2025.10.3
 		if (itm==51) return "13";	//地政士 2017.1.11
 		if (itm==53) return "17";	//不動產估價師 2018.1.22
 		if (itm==54) return "50";	//中醫師 2019.1.22
@@ -473,6 +901,56 @@ public class CommDAO {
 		if (itm==71) return "61";	//書畫家、版畫家 2024.1.27
 		if (itm==72) return "16";	//民間公證人 2024.1.27
 		return itmCd;
+	}
+	/**傳回 補充保費保險別
+	 * @param itm 代碼
+	 * @return 保險中文名稱
+	 * Ex: getInsuident(1) return 公保 
+	 */
+	public static String getInsuident(int itm){		
+		String itmCd = " ";
+		if (itm==0) return "無";	
+		if (itm==1) return "公保";
+		if (itm==2) return "勞保";
+		return itmCd;
+	}
+	/**傳回 考勤_假別中文
+	 * @param itm 假況
+	 * @return 中文說明
+	 * Ex: getOfftypNm(01) return 事 
+	 */
+	public static String getOfftypNm(String itm){		
+		String itmCd = " ";
+		if (itm.equals("01")) return "事假";	
+		if (itm.equals("02")) return "病假";
+		if (itm.equals("34")) return "家庭照顧假";
+		if (itm.equals("35")) return "生理假";
+		if (itm.equals("53")) return "公假-居家照護";
+		return itmCd;
+	}
+	/**傳回 考勤_職號第2碼中文
+	 * @param itm 職號第2碼
+	 * @return 中文說明
+	 * Ex: getPosNm('K') return '契約' 
+	 */
+	public static String getPosNm(String itm){		
+		String itmCd = " ";
+		if (itm.equals("K")) return "契約";	
+		if (itm.equals("F")) return "半日契約";
+		if (itm.equals("P")) return "不分科";
+		if (itm.equals("T")) return "研究助理";
+		return itmCd;
+	}
+	/**傳回 考勤_每月有效天數,全日=30,半日=15
+	 * @param itm 職號第2碼
+	 * @return 天數
+	 * Ex: getDayLimByPos('K') return 30 
+	 */
+	public int getDayLimByPos(String itm){		
+		int itmDay = 30;
+		if (itm.equals("K")) return 30;	
+		if (itm.equals("F")) return 15;
+		return itmDay;
 	}
 	/**
 	 * 關閉VGHDataAccess與ResultSet

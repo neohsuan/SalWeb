@@ -19,6 +19,10 @@ public class Pabaspay {
     private String hid;
     /** 日期時戳 */
     private java.sql.Timestamp zpabaspay;
+    /** 日期時戳 */
+    private java.sql.Timestamp zptbaspay;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhbaspay;
     /** 支扣代碼 中文*/
     private String pacodnmc;
     
@@ -75,6 +79,18 @@ public class Pabaspay {
 	}
 	public void setZpabaspay(java.sql.Timestamp zpabaspay) {
 		this.zpabaspay = zpabaspay;
+	}
+	public java.sql.Timestamp getZptbaspay() {
+		return zptbaspay;
+	}
+	public void setZptbaspay(java.sql.Timestamp zptbaspay) {
+		this.zptbaspay = zptbaspay;
+	}
+	public java.sql.Timestamp getZlhbaspay() {
+		return zlhbaspay;
+	}
+	public void setZlhbaspay(java.sql.Timestamp zlhbaspay) {
+		this.zlhbaspay = zlhbaspay;
 	}
     
 }

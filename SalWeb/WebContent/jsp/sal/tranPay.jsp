@@ -7,17 +7,32 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <jsp:include page="../include.jsp"></jsp:include>
 <script>
+//檢查使否有代理人，如有代理人則取代原資料
+var agent = "${sessionScope.agent}";	//代理人卡號
+var paUserid = ("" != agent) ? agent : userid;            //使用者卡號
+var paUsername = ("" != agent) ? "${sessionScope.agentname}" : username;            //使用者姓名
+var pahid = ("" != agent) ? "${sessionScope.agenthid}" : hid;            //醫院別
+var pacostid = ("" != agent) ? "${sessionScope.agentcostid}" : costid;            //使用者成本中心
+var padeptnm = ("" != agent) ? "${sessionScope.agentdeptnm}" : deptnm;            //使用者單位名稱
+var padeptno = ("" != agent) ? "${sessionScope.agentdeptno}" : deptno;            //使用者單位名稱 英文
+var today = new Date();
+
 var tabid="";
 var objCopy;
 var patradt;
 var salnum;
 var patracod;
 var code_data;
+var in_data;
 var itmTbl;
 var oTable;
 var uTable;
 var payTbl;
 var rowData;
+var rowIndex=0;
+var delCheck;
+var pk_data;
+var i;
 //考績獎金月數
 var pflgAOptions = {
     '0' : '0',
@@ -34,12 +49,26 @@ var pflgBOptions = {
     '3' : '1',
     '4' : '3/4'
 };
+//本功別
+var rank3Options = [
+  { val: "0", text: "" },{ val: "1", text: "本" },{ val: "2", text: "功" }
+];
+//職等
+var rnk2nOptions = [
+    { val: "00", text: "00" },{ val: "01", text: "01" },{ val: "02", text: "02" },{ val: "03", text: "03" },{ val: "04", text: "04" }, { val: "05", text: "05" },{ val: "06", text: "06" }, { val: "07", text: "07" },
+    { val: "08", text: "08" },{ val: "09", text: "09" },{ val: "10", text: "10" },{ val: "11", text: "11" },{ val: "12", text: "12" }, { val: "13", text: "13" },{ val: "14", text: "14" }, { val: "P1", text: "P2" },
+    { val: "P2", text: "P2" },{ val: "P3", text: "P3" },{ val: "T1", text: "T1" }
+];
+
 $(function(){
 	$(".gclsCalTxt").datepicker({ 
 		changeMonth: true,
       	changeYear: true,
       	dateFormat:"yy-mm-dd"});
       	
+    $('body').on('focus', '.datepicker', function() { //以此方式才能動態更改頁面datepicker
+          $(this).datepicker( { dateFormat: 'yy-mm-dd' } );
+    });  	
 	$(".selectpicker").selectpicker({
 		noneSelectedText : '請選擇'//預設顯示內容
     });
@@ -91,11 +120,34 @@ $(function(){
 					options = "<option value=''>";
 					select.append(options);
 					$.each(data.alTitleCodeTbl, function(idx) {
-						options = "<option value='" + data.alTitleCodeTbl[idx].paytitlk + "'>" + data.alTitleCodeTbl[idx].patitsub+"-"+data.alTitleCodeTbl[idx].paytitlk+"-"+data.alTitleCodeTbl[idx].paytitlc ;
+						options = "<option value='" + data.alTitleCodeTbl[idx].paytitlk + "'>" + data.alTitleCodeTbl[idx].paytitlk+"-"+data.alTitleCodeTbl[idx].patitsub+"-"+data.alTitleCodeTbl[idx].paytitlc ;
 						select.append(options);
 					});
 					select.selectpicker('refresh');
 					
+				}
+				if (data.alRankCodeTbl[0]!=null){
+					select = $('#payrank,#paorank');
+					select.empty();
+					options = "<option value=''>";
+					select.append(options);
+					$.each(data.alRankCodeTbl, function(idx) {
+						options = "<option value='" + data.alRankCodeTbl[idx].rankcode + "'>" + data.alRankCodeTbl[idx].rankcode+"-"+data.alRankCodeTbl[idx].rankname ;
+						select.append(options);
+					});
+					//select.selectpicker('refresh');
+				}
+				//適用專業加給表
+				if (data.alRnk4Tbl[0]!=null){
+					select = $('#paorank4,#payrank4');
+					select.empty();
+					options = "<option value=''>"; 
+					select.append(options);
+					$.each(data.alRnk4Tbl, function(idx) {
+						options = "<option value='" + data.alRnk4Tbl[idx].rnk4key + "'>" + data.alRnk4Tbl[idx].rnk4name ;
+						select.append(options);
+					});
+					//select.selectpicker('refresh');
 				}
 				if (data.alDeptCodeTbl[0]!=null){
 					select = $('#tran_dept,#filter_dept,#paydept');
@@ -130,22 +182,74 @@ $(function(){
 					select.selectpicker('refresh');
 				}
 				if (data.alpayitmTbl[0]!=null){
+					var payitmHtml ='<option value="">請選擇</option>';
 					select = $('#patrapay_paycode');
 					select.empty();
 					options = "<option value=''>";
 					select.append(options);
 					$.each(data.alpayitmTbl, function(idx) {
 						options = "<option value='" + data.alpayitmTbl[idx].paycode + "'>" + data.alpayitmTbl[idx].paycode+" "+data.alpayitmTbl[idx].pacodnmc ;
-						select.append(options);
+						payitmHtml = payitmHtml + "<option value='" + data.alpayitmTbl[idx].paycode +":"+ data.alpayitmTbl[idx].payauth +":"+data.alpayitmTbl[idx].payiftax + "'>" + data.alpayitmTbl[idx].paycode+" "+data.alpayitmTbl[idx].pacodnmc ;
+ 						select.append(options);
 					});
+					//console.log(payitmHtml);
+ 					$('.paycodeSelect').html( payitmHtml ); //設定支扣代碼
 					select.selectpicker('refresh');
 				}
 				
+				//職等,權理,主管權理
+				select = $('#paornk2n,#payrnk2n,#payrank2,#paorank2,#paorankc,#payrankc');
+				select.empty();
+				options = "<option value=''>請擇擇";
+				$.each(rnk2nOptions, function(index, one) {			    
+				    options += "<option value='" + one.val + "'>" + one.text ;
+				});
+				select.append(options);
+				
+				//本功別
+				select = $('#paorank3,#payrank3');
+				select.empty();
+				options = "<option value=''>請擇擇";
+				$.each(rank3Options, function(index, one) {			    
+				    options += "<option value='" + one.val + "'>" + one.text ;					
+				});
+				select.append(options);
+				//級別
+				select = $('#paodegr2,#paydegr2');
+				select.empty();
+				options = "<option value=''>請擇擇";
+				if (pahid=="1A0" || pahid =="3A0"){
+					for (i=1; i<=40;i++) { //高榮 聯醫1-40  
+						options += "<option value='"+i+"'>"+i+"</option>";						
+					}
+				}else if (pahid=="2A0"){
+					for (i=201; i<=240;i++) { // 屏榮201-240 1-26 103-136 
+						options += "<option value='"+i+"'>"+i+"</option>";						
+					}
+					for (i=1; i<=40;i++) {  
+						options += "<option value='"+i+"'>"+i+"</option>";
+					}
+					for (i=101; i<=140;i++) {  
+						options += "<option value='"+i+"'>"+i+"</option>";
+					}	
+				}
+				select.append(options);
+				//健保投保級距
+				if (data.alDpinTbl[0]!=null){
+					select = $('#insuamt');
+					select.empty();
+					options = "<option value=''>請擇擇";
+					select.append(options);
+					$.each(data.alDpinTbl, function(idx) {
+						options = "<option value='" + data.alDpinTbl[idx].dpinhigh + "'>" + data.alDpinTbl[idx].dpinhigh ;
+						select.append(options);
+					});	
+				}
 			}  
 		});
 	};
  	/*預先載入代碼檔 */
-  	$.getLoadCodeTbl("tranPay");
+  	$.getLoadCodeTbl("tranPay","Y");
  	
 	//編輯欄位檢查
   	$.checkFields = function(btn){
@@ -156,7 +260,7 @@ $(function(){
 	 			msg = '請輸入條件值!!';
 	 		}	
  		}
- 		else if (btn== 'subPATranPsn_Updbtn'){
+ 		else if (btn== 'subPATRAPSN_Updbtn'){
  		
 		}
 		else if (btn== 'btn_qry_filter_TranPsn'){	//異動資料_篩選_查詢
@@ -180,8 +284,9 @@ $(function(){
 		var data_val;
 		var data_id;	 
 
-		$( ':input,:checkbox', '#'+tblname).each(function() {
-	        data_id = String($(this).attr("id")).split('_')[1];
+		$( 'select,:input,:checkbox', '#'+tblname).each(function() {
+	        //data_id = String($(this).attr("id")).split('_')[1];
+	        data_id  = $(this).attr("id");
     		data_val = $(this).val();
     		
     		if (typeof data_id === "undefined" || data_id == "undefined") {
@@ -215,7 +320,44 @@ $(function(){
 	    });
 	    
    		value.push(obj);   	//以整支table寫入	
-   		array.push( { "tblname": tblname, "value": value } ); //將動態表格資料轉換為json		    
+   		array.push( { "formnm": tblname, "value": value } ); //將動態表格資料轉換為json		    
+		 
+		//儲存動態表格中的資料
+	   $( ' .dynamic' ).each(function() {
+	    	tableID = $(this).closest('table').attr('id'); // 表格名稱
+	    	value = [];
+	    	$th = $('#'+ tableID + ' th');
+	    		    	
+	   		$('#' + tableID + ' tbody tr').each(function(i, tr){
+	   			obj = {}, $tds = $(tr).find('td');
+	   			data_val="";
+			    $th.each(function(index, th){
+			    	data_id = $tds.eq(index).children('input:text, select, textarea, input:hidden').attr('id');
+			    	
+			    	//var indexName = (index.toString().length==1) ? "0"+(index) : (index);
+			    	if (typeof data_id === "undefined" || data_id == "undefined" || data_id =='') {
+	        	
+	        		}else{
+	        			//id前加o_(原支扣明細) n_(新支扣明細)
+	        			if (data_id.substring(0,2)=="o_" || data_id.substring(0,2)=="n_")
+	        				data_id=data_id.substring(2);				    	
+				        data_val = $tds.eq(index).children('input[type="text"], select, textarea, input:hidden').val();
+				        if(data_val != null && data_val != "" ) {//只儲存有資料
+				        	data_val=data_val.toUpperCase();//轉大寫
+				        	obj[data_id] = data_val; //名稱+數值
+				        }	
+				     }   
+			    });
+			   
+			    if (data_val !=''  ){
+			    	value.push(obj);
+			    }	
+	   		});
+	   		
+	   		if (data_val !=''){	   		
+	   			array.push( { "formnm": tableID, "value": value } ); //將動態表格資料轉換為json
+	   		}		   		
+	    }); 
 		    
   		var jsonArray = JSON.stringify(array); // 轉換成json
 	    	    
@@ -241,31 +383,20 @@ $(function(){
 	$(".btn").click(function(){
 		var id = $(this).attr('id');
 		
-		if(id == 'btn_cln_tran_TranPsn' || id == 'btn_cln_filter_TranPsn'){
-			$(":text,textarea").val("");
-			$(":checkbox,:radio").prop("checked", false);
+		if(id == 'btn_cln_tran_TranPsn'){
+			cleanTable("byTranDetailMain");
 			
-			//所有select預設選擇第一項			
-// 			$('#qryCheckItem select').each(function() {
-// 				$(this).prop("selectedIndex", 0);
-// 		    });
-		    $('.selectpicker').selectpicker('val', '');
+			$('.selectpicker').selectpicker('val', '');
 			$('.selectpicker').selectpicker('refresh');
-		    $('#tran_lvefg,#filter_lvefg').selectpicker('val', 'N');
-		    
-		    //所有select預設選擇第一項
-		    $('#PATranPsn select').each(function() {
-				$(this).prop("selectedIndex", 0);
-		    });
-		    
-		    $("#subPATranPsn_Updbtn").prop("disabled", true);
-		    		    
-		    $("#TblTranPsnList").dataTable().fnClearTable();
-			$("#TblBasPayList").dataTable().fnClearTable();
-			$("#TblPaHistList").dataTable().fnClearTable();
-			$("#TblTranPsnFilter").dataTable().fnClearTable();
 			
+		    $("#subPATRAPSN_Updbtn,#subPATRAPSN_Delbtn").prop("disabled", true);
+		    $("#tblTranPsnList").dataTable().fnClearTable();
 			return false;
+		}
+		else if( id == 'btn_cln_filter_TranPsn'){
+			cleanTable("byTranFilterMain");			
+			$("#tblTranPsnFilter").dataTable().fnClearTable();
+			return false;			
 		}
 		else if(id == 'btn_qry_tran_TranPsn'){		//異動資料_查詢
 			msg = $.checkFields();
@@ -279,7 +410,7 @@ $(function(){
 				var empno=$("#tran_empno").val().toUpperCase();				
 				var paydept=$.getSelectVals("tran_dept");
 				
- 				console.log("卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec+" 職號:"+empno+" patradt:"+patradt+" salnum:"+salnum+" patracod:"+patracod+" paydept:"+paydept);
+ 				//console.log("卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec+" 職號:"+empno+" patradt:"+patradt+" salnum:"+salnum+" patracod:"+patracod+" paydept:"+paydept);
 				code_data="";
 				code_data={
 						salnum     :salnum,
@@ -291,14 +422,16 @@ $(function(){
 		        		patracod   :patracod,
 		        		paydept    :paydept
 		        	};
-				console.log("異動資料查詢:code_data:"+JSON.stringify(code_data));
+				//console.log("異動資料查詢:code_data:"+JSON.stringify(code_data));
 				
 				$.ajax({
 					url:"${pageContext.request.contextPath}/salController.do",
 					data:{
 						method  : 'getTranPsnList',
 						item    : '1',
-						code_data :JSON.stringify(code_data)
+						code_data :JSON.stringify(code_data),
+						hid     : pahid,
+						userid  : paUserid
 					},
 					type:"POST",	//type:POST, GET(default:GET)
 					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -306,8 +439,8 @@ $(function(){
 					success:function(data) {
 						//更新查詢清單
 						$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
-						$('#TblTranPsnList').show();
-						oTable = $('#TblTranPsnList').dataTable(objCopyA);
+						$('#tblTranPsnList').show();
+						oTable = $('#tblTranPsnList').dataTable(objCopyA);
 						
 						oTable.fnClearTable(0);		//清空資料
 								
@@ -316,8 +449,12 @@ $(function(){
 						}
 						oTable.fnDraw();
 						
-						//移至第1筆
-						$("#TblTranPsnList tbody tr:first").find("a").eq(0).trigger("click");
+						//以rowIndex優先,若無,設為第1筆
+						if (rowIndex != 0){
+							$("#tblTranPsnList tbody tr:first").find("a").eq(rowIndex).trigger("click");
+							rowIndex = 0;
+						}else
+							$("#tblTranPsnList tbody tr:first").find("a").eq(0).trigger("click");
 						
 					},
 					error: function(xhr){					
@@ -411,7 +548,8 @@ $(function(){
 				var csflag=$("#filter_pacsflag option:selected").val();
 				var expfsp=$("#filter_expfsp option:selected").val();
 				var paret=$("#filter_paret option:selected").val();
-				var tracod=$("#filter_patracd option:selected").val();
+				//var patracod=$("#filter_patracd option:selected").val();
+				patracod=$.getSelectVals("filter_patracd");
 				var inflg=$("#filter_inflg option:selected").val();
 				patradt=$.getSelectVals("filter_patradt");
 				var payrank=$.getSelectVals("filter_payrank");
@@ -421,7 +559,7 @@ $(function(){
 				var expfkey2=$.getSelectVals("filter_expfkey2");
 				var expfkey3=$.getSelectVals("filter_expfkey3");
 				
- 				console.log("卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec+" 職號:"+empno+" patradt:"+patradt+" payrank:"+payrank+" paytitle:"+paytitle+" paydept:"+paydept+" expfkey1:"+expfkey1+" expfkey2:"+expfkey2+" expfkey3:"+expfkey3+" 支領:"+csflag+" 點數:"+expfsp+" 專2:"+paret+" 異動原因:"+tracod+" 保險補助:"+inflg);
+ 				//console.log("卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec+" 職號:"+empno+" patradt:"+patradt+" payrank:"+payrank+" paytitle:"+paytitle+" paydept:"+paydept+" expfkey1:"+expfkey1+" expfkey2:"+expfkey2+" expfkey3:"+expfkey3+" 支領:"+csflag+" 點數:"+expfsp+" 專2:"+paret+" 異動原因:"+patracod+" 保險補助:"+inflg);
 
 				code_data="";
 				code_data={
@@ -440,17 +578,19 @@ $(function(){
 		        		csflag     :csflag,
 		        		expfsp     :expfsp,
 		        		paret      :paret,
-		        		tracod     :tracod,
+		        		patracod   :patracod,
 		        		inflg      :inflg
 		        	};
-				console.log("異動資料_篩選_查詢:code_data:"+JSON.stringify(code_data));
+				//console.log("異動資料_篩選_查詢:code_data:"+JSON.stringify(code_data));
 				
 				$.ajax({
 					url:"${pageContext.request.contextPath}/salController.do",
 					data:{
 						method  : 'getTranPsnList',
 						item    : '2',
-						code_data :JSON.stringify(code_data)
+						code_data :JSON.stringify(code_data),
+						hid     : pahid,
+						userid  : paUserid,
 					},
 					type:"POST",	//type:POST, GET(default:GET)
 					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -458,13 +598,13 @@ $(function(){
 					success:function(data) {
 						//更新查詢清單
 						$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
-						$('#TblTranPsnFilter').show();
-						oTable = $('#TblTranPsnFilter').dataTable(objCopyD);
+						$('#tblTranPsnFilter').show();
+						oTable = $('#tblTranPsnFilter').dataTable(objCopyD);
 						
 						oTable.fnClearTable(0);		//清空資料
 								
-						if (data.TranPsnFilter!=null && data.TranPsnFilter.length>0){	
-							oTable.fnAddData(data.TranPsnFilter);//重新給資料
+						if (data.traPsnFilter!=null && data.traPsnFilter.length>0){	
+							oTable.fnAddData(data.traPsnFilter);//重新給資料
 						}
 						oTable.fnDraw();
 						
@@ -479,32 +619,44 @@ $(function(){
 				return false;
 			}
 		}
-		else if (id == 'subPATranPsn_Updbtn'){	//異動檔更改
-			if ($("#subPATranPsnForm").valid()){
+		else if (id == 'subPATRAPSN_Updbtn' ||id == 'subPATRAPSN_Insbtn'){	//異動檔更改
+			if ($("#subPATraPsnForm").valid()){
 				msg = $.checkFields(id);
 				if(msg == ''){
-					itmTbl="TblTranPsnList";
+					itmTbl="tblTranPsnList";
 					tblname=id.substring(3,id.indexOf('_'));
 					console.log("tblname:"+tblname);
 					var jsonString = $.getDataInfo(tblname); //取得目前的資料
 					
-					var pk_data={
+					pk_data={
 		        		payidno : $('#payidno').val(),
+		        		patradt : $('#patradt').val(),
+		        		patracod : $('#patracod').val(),
 		        		hid		: $('#hid').val()
 		        	};
 					if (id.substring(id.indexOf('_')+1) =='Updbtn')		
-						$('#method').val("update");
-// 					else if (id.substring(id.indexOf('_')+1) =='Insbtn')		
-// 						$('#method').val("insert");
-
+						$('#trapsnfun').val("update");
+ 					else if (id.substring(id.indexOf('_')+1) =='Insbtn')		
+ 						$('#trapsnfun').val("insert");
+					console.log("異動檔更改 pk_data:"+JSON.stringify(pk_data));
+					
+					uTable = $('#' + itmTbl ).dataTable();
+					info = oTable.page.info();		//記錄目前頁碼
+					currentPage=info.page;
+					
+					return false;
 					 $.ajax({
 						url:"${pageContext.request.contextPath}/salController.do",
 						data:{
-							method	: "updPATblByKey",
-							tblname : tblname,
+							method	: "handelTran",
+							fun      : 'updTraPsn',
+							selNm    : '異動檔',
+							editMode : $('#trapsnfun').val(),
 							pk_data : JSON.stringify(pk_data),
-							item  : $('#method').val(),
-							tabJson : jsonString
+							tblname : tblname,
+							tabJson : jsonString,
+							hid     : pahid,
+							userid  : paUserid
 						},
 						type:"POST",			//type:POST, GET(default:GET)
 						dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -512,10 +664,12 @@ $(function(){
 						contentType: "application/x-www-form-urlencoded;charset=utf-8",  
 						success:function(data) {
 							if (data.msg!=null){
-								$("#btn_cln_tran_TranPsn").trigger( "click" ); 
-								$("#tran_idno").val(pk_data.payidno);
+								/* $("#btn_cln_tran_TranPsn").trigger( "click" ); 
+								$("#tran_idno").val(pk_data.payidno); */
 								
-								$("#btn_qry_tran_TranPsn").trigger( "click" );  
+								$("#btn_qry_tran_TranPsn").trigger( "click" );
+								uTable.fnPageChange(currentPage);		//切到原先某碼<==無法切換  
+								
 								alert(data.msg);
 							}	
 						},
@@ -529,26 +683,64 @@ $(function(){
 					return false;
 				}
 		 	}
+		}
+		else if (id == 'subPATRAPSN_Delbtn'){	//異動檔刪除(刪除patrapsn,patrapay)
+			delCheck = confirm("請確認是否刪除！！\n\n若是，請按【確定】．\n\n若不是，請按【取消】");
+			if (delCheck) {
+				itmTbl="tblTranPsnList";
+				tblname=id.substring(3,id.indexOf('_'));
+				
+				pk_data={
+		        		payidno : $('#payidno').val(),
+		        		patradt : $('#patradt').val(),
+		        		patracod : $('#patracod').val(),
+		        		hid		: $('#hid').val()
+		        	};
+		        console.log("異動檔刪除 tblname:"+tblname+" pk_data:"+JSON.stringify(pk_data));	
+				//return false;
+				$.ajax({
+					url:"${pageContext.request.contextPath}/salController.do",
+					data:{
+						method	 : "handelTran",
+						fun      : 'updTraPsn',
+						selNm    : '異動檔',
+						editMode : 'delete',
+						pk_data  : JSON.stringify(pk_data),
+						tblname  : tblname,
+						hid      : pahid,
+						userid   : paUserid
+					},
+					type:"POST",			//type:POST, GET(default:GET)
+					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+					async: true,	//逐步執行
+					contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+					success:function(data) {
+						if (data.msg!=null){
+							$("#btn_qry_tran_TranPsn").trigger( "click" );		
+							alert(data.msg);
+						}	
+					},
+					error: function(xhr){					
+						alert("刪除[薪資異動檔]失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
+					}
+				}); 	
+			}
 		}	
+		
+		
 				
 	});
 	
 	//個人明細
  	var objCopyA = $.extend(true, {aaSorting: []}, dataTableConfig);			
-	objCopyA.aoColumns = [	
-							{ "mData": "payidno" },
-							{ "mData": "paycard" },
-							{ "mData": "paynamec" },
-							{ "mData": "traname" },							
-							{ "mData": "patradt" }
+	objCopyA.aoColumns =  [	
+							{ "sTitle":"身分證","mData": "payidno" },
+							{ "sTitle":"卡號","mData": "paycard" },
+							{ "sTitle":"姓名","mData": "paynamec" },
+							{ "sTitle":"異動別","mData": "traname" },							
+							{ "sTitle":"發薪日","mData": "patradt" }
 						 ];
-	
-	objCopyA = $.extend(true,objCopyA, {
-				 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-						$('td:eq(0)', nRow).html( '<a href = "#tranpsnData" class= "tranpsnData">'+aData.payidno+'</a>' );
-				 }						
-		      });
-	
+	objCopyA.iDisplayLength=10;
 					    
 	objCopyA = $.extend(true,objCopyA, {
 		dom: 'B<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-tl  ui-corner-tr form-inline"lfr>'+
@@ -556,45 +748,52 @@ $(function(){
 				'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br form-inline"ip>',
 		buttons: [
            'excelHtml5' 
-        ]
+        ],
+        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+						$('td:eq(0)', nRow).html( '<a href = "#tranpsnData" class= "tranpsnData">'+aData.payidno+'</a>' );
+				 }
 	});
-	$('#TblTranPsnList').dataTable(objCopyA);
+	$('#tblTranPsnList').dataTable(objCopyA);
 	
-	//顯示pa.paTranPsn明細
-	$('#TblTranPsnList tbody').on('click', '.tranpsnData', function () {
-		oTable = $('#TblTranPsnList').dataTable().api();
+	//顯示pa.paTraPsn明細
+	$('#tblTranPsnList tbody').on('click', '.tranpsnData', function () {
+		oTable = $('#tblTranPsnList').dataTable().api();
 		info = oTable.page.info();		//記錄目前頁碼
 		currentPage=info.page;
         var tr = $(this).parents('tr');
-        rowData = oTable.row(tr).data();//抓取目前點選link這筆row的data	 		
+        rowData = oTable.row(tr).data();//抓取目前點選link這筆row的data
+        rowIndex = oTable.row(tr).index();//抓取目前點選link這筆row的index			 		
 		var idtno=rowData.payidno;
 		var tradt=rowData.patradt;
 		var tranum=rowData.tranum;
 		var tracod=rowData.patracod;
 		var hid=rowData.hid;
 		
-		//找pa.paTranPsn及pa.patrapay
-		code_data="";
-		code_data={
+		//找pa.paTraPsn及pa.patrapay
+		in_data="";
+		in_data={
         		idtno  : idtno,
         		tradt  : tradt,
         		tracod : tracod,
         		tranum : tranum,
         		hid    : hid
         	};
-		console.log("異動資料paTranPsn查詢:code_data:"+JSON.stringify(code_data));
+		//console.log("異動資料paTraPsn查詢:code_data:"+JSON.stringify(code_data));
 		
-		$.getTraPsnByKey(code_data);
+		$.getTraPsnByKey(in_data);
 		
 	});
 	
-	//依KEY找出pa.paTranPsn
-	$.getTraPsnByKey = function(code_data){
+	//依KEY找出pa.PATraPsn
+	$.getTraPsnByKey = function(in_data){
 		$.ajax({
 			url:"${pageContext.request.contextPath}/salController.do",
 			data:{
-				method  : 'getTraPsnByKey',
-				code_data :JSON.stringify(code_data)
+				method	: "handelTran",
+				fun     : 'getTraPsnByKey',
+				in_data :JSON.stringify(in_data),
+				hid     : pahid,
+				userid  : paUserid,
 			},
 			type:"POST",			//type:POST, GET(default:GET)
 			dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -603,14 +802,297 @@ $(function(){
 				if (data.traPsnItem!=null){
 					//顯示異動個人明細
 					$.doTraPsnDetail(data.traPsnItem);
+					//pa.paTrapay異動支扣明細
+					cleanTable("TraPayO");
+					$.doTraPayTbl("TraPayO",data.otraPayList);
+					cleanTable("TraPayN");
+					$.doTraPayTbl("TraPayN",data.ntraPayList);
 					//pa.paTrapay原異動支扣明細
-					$.doTraPayDetail("TblOTraPayList",data.otraPayList);
+					//$.doTraPayDetail("TblOTraPayList",data.otraPayList);
 					//pa.paTrapay新異動支扣明細
-					payTbl="TblNTraPayList";
-					$.doTraPayDetail(payTbl,data.ntraPayList);					
+					//payTbl="TblNTraPayList";
+					//$.doTraPayDetail(payTbl,data.ntraPayList);					
 				}
 			}  
 		}) 
+	};
+	
+	//顯示pa.paTrapay個人支扣明細
+	$.doTraPayTbl = function(tbl,mData){
+		var row_html="" ;
+		var sumPay_p=0,sumPay_d=0;
+		if (mData!=null && mData.length>0){
+			$.each(mData, function(idx) {
+				if ( idx!=0) {
+					row_html = "<tr>" + $('#'+tbl +" tbody").find("tr").eq(0).html() + "</tr>";
+	    			$('#'+tbl+" tbody").append(row_html);
+				}
+				//帶入動態表格數值
+				tr = $('#'+tbl+" tbody").find("tr").eq(idx);
+				if (tbl=="TraPayO"){
+					tr.find(':input[name*="paycode"]').val(mData[idx].paycode);
+					tr.find(':input[name*="codenm"]').val(mData[idx].pacodnmc);
+					tr.find(':input[name*="paysort"]').val("O");
+				
+				}if (tbl=="TraPayN"){
+					tr.find(':input[name*="paycode"]').val(mData[idx].paycode+":"+mData[idx].payauth+":"+mData[idx].payiftax);
+					tr.find(':input[name*="paysort"]').val("N");
+				}
+				//console.log(tr.find(':input[name*="paycode"]').val());
+				tr.find(':input[name*="payauth"]').val(mData[idx].payauth);	
+				tr.find(':input[name*="payiftax"]').val(mData[idx].payiftax);
+				tr.find(':input[name*="hid"]').val(mData[idx].hid);
+				tr.find(':input[name*="payidno"]').val(mData[idx].payidno);
+				tr.find(':input[name*="tranum"]').val(mData[idx].tranum);		
+				tr.find(':input[name*="payamtp"]').val(mData[idx].payamtp);
+				tr.find(':input[name*="payamtd"]').val(mData[idx].payamtd);
+				//console.log(row_html);
+			});
+			
+			//收入
+			$('#'+tbl+' :input[name*="payamtp"]').each(function(){		//全部金額加總				
+		  		sumPay_p=sumPay_p+getInt($(this).val());    	  		
+			});
+			
+			//支出
+			$('#'+tbl+' :input[name*="payamtd"]').each(function(){		//全部金額加總				
+		  		sumPay_d=sumPay_d+getInt($(this).val());    	  		
+			});
+			
+			if (tbl=="TraPayO"){
+				$("#o_sumpay_p").html(sumPay_p);
+				$("#o_sumpay_d").html(sumPay_d);	
+			}else if (tbl=="TraPayN"){
+				$("#n_sumpay_p").html(sumPay_p);
+				$("#n_sumpay_d").html(sumPay_d);
+			}
+		}
+	};
+	//刪除指定的table行
+    $("#TraPayN").on("click", ".delete_row", function() { 
+    	var this_table = $(this).closest('table');
+    	var index = $(this).closest('tr').index();
+    	var tr_length = $(this).closest('table').find("tbody").find('tr').length; //欄位數量
+
+    	//刪除一欄
+    	if ( tr_length == 1 ) {
+    		cleanTable($(this).closest('table').attr("id")); //清除該頁面所有資料    		
+    	} else {
+    		$(this).closest("tr").remove();
+    	}	    	
+    });
+	
+	//指定表格新增一欄
+	function add_row(this_table) {
+		
+		var table_id = this_table.attr("id");
+		var row_html = "<tr>" + this_table.find("tbody").find("tr").eq(0).html() + "</tr>";
+		
+		console.log(row_html);
+		
+    	this_table.append(row_html);
+    	
+    	var rows = this_table.find("tbody").find("tr").length;
+    	
+    	//塞預設值
+    	if (table_id=="TraPayN"){
+    		tr = $('#'+table_id+" tbody").find("tr").eq(rows-1);
+			tr.find(':input[name*="pbidtno"]').val($("#pbidtno").val());
+			tr.find(':input[name*="hid"]').val($("#hid").val());
+    	}
+	}
+	
+	//新增指定的table行
+    $('.add_row').on( "click", function() {
+    	var this_table = $(this).prev("table");
+    	add_row(this_table);
+    });
+    
+	//取得正負整數
+	function getInt( data ) {
+		var result;
+		//var result = parseInt(data.toString().replace(",","")); //移除千份位
+		if (typeof(data) == "undefined")
+			result = 0;	
+		else
+			result = data.toString().replace( /,/g , '' ); //移除千份位
+		/* if ( isNaN(result) ) {
+			result = 0;
+		} */
+		//var reg = /^[\d]+$/;
+		var reg = /^[+-]?\d+$/;
+		if (!reg.test(result)) { //不是整數
+			result = 0;
+		}
+		
+		return parseInt(result);
+	}
+	//清除指定頁面資料
+	function cleanTable(table_id){
+		$(":checkbox,:radio").prop("checked", false);
+		//清除所有頁面的內容(enable)，disable的不清除
+		$('#'+table_id+' :input:enabled').each(function() {
+			$(this).val("");
+	    });
+	    //清除tfoot
+	    $('#'+table_id+' >tfoot').each(function() {
+	    	$(this).find("td").each(function(index, td) { 
+	    		$(this).html('');
+			});
+	    	
+	    });
+	    
+	    //所有select預設選擇第一項
+	    $('#'+table_id+' select').each(function() {
+			$(this).prop("selectedIndex", 0);
+	    });
+	    
+	    //清除所有table的row，只留第一行
+	    $('#'+table_id+' >tbody').each(function() {
+	    	var tableID = $(this).closest('table').attr("id");
+	    	$(this).find("tr").each(function(index, tr) { 
+	    		if (index >= 1 ) {
+		    			$(this).remove(); //清除第一行以外的row
+		    	}	    		
+			});
+	    	
+	    });	    
+	}
+	//新[實際支領KEY]對應
+	$(".calCSPF").change(function(){
+		var mrnk2n="";
+		var mrank="";
+		var mrank3="";
+		var mdegr2="";
+		var mjt="";
+		var mtradt=$("#patradt").val();
+		var mcsflag_New = $("#pacsflag").val();//新_工作獎金
+		var mcsflag_Old = $("#paocsfla").val();//原_工作獎金
+		//原
+		if (mcsflag_Old=="Y"){
+			mrnk2n = $("#paornk2n").val();
+			mrank  = $("#paorank").val();
+			mrank3 = $("#paorank3").val();
+			mdegr2 = $("#paodegr2").val();
+			mjt    = $("#paotitle").val();
+			$.doCsPf(mjt,mrnk2n,mrank,mdegr2,mrank3,mtradt,'O');				
+		}else if (mcsflag_Old=="N"){
+			$("#TranPsn_pokey").val("");
+			$("#TranPsn_pobas").val("");
+			$("#TranPsn_podat").val("");
+		}
+		//新
+		if (mcsflag_New=="Y"){
+			mrnk2n = $("#payrnk2n").val();
+			mrank  = $("#payrank").val();
+			mrank3 = $("#payrank3").val();
+			mdegr2 = $("#paydegr2").val();
+			mjt    = $("#paytitle").val();
+			$.doCsPf(mjt,mrnk2n,mrank,mdegr2,mrank3,mtradt,'N');
+		}else if (mcsflag_New=="N"){
+			$("#TranPsn_pfkey").val("");
+			$("#TranPsn_pfbas").val("");
+			$("#TranPsn_pfdat").val("");
+		}
+	});
+	
+	//實際支領KEY 基本點數 職等點數
+	$.doCsPf = function(mjt,mrnk2n,mrank,mdegr2,mrank3,mtradt,item){
+		$.ajax({
+			url:"${pageContext.request.contextPath}/salController.do",
+				data:{
+					method : 'getCsPfBykey',
+					jt  : mjt,
+					rnk2n  : mrnk2n,
+					rank   : mrank,
+					degr2  : mdegr2,
+					rank3  : mrank3,
+					tradt  : mtradt 
+				},
+
+			type:"POST",		//type:POST, GET(default:GET)
+			dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+			contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+			async:false,
+			success:function(data) {
+				if (data.cspfData!=null){
+					if (item=='O'){
+						$("#TranPsn_pokey").val(data.cspfData.pfkey);
+						$("#TranPsn_pobas").val(data.cspfData.pfbas);
+						$("#TranPsn_podat").val(data.cspfData.pfdat);
+					}else if (item=='N'){	
+						$("#TranPsn_pfkey").val(data.cspfData.pfkey);
+						$("#TranPsn_pfbas").val(data.cspfData.pfbas);
+						$("#TranPsn_pfdat").val(data.cspfData.pfdat);
+						if (data.cspfData.pfbas==""){
+							$("#TranPsn_pfbas").addClass('bg-danger');
+							$("#TranPsn_pfdat").addClass('bg-danger');
+						}else{
+							$("#TranPsn_pfbas").removeClass('bg-danger');
+							$("#TranPsn_pfdat").removeClass('bg-danger');
+						}
+					}
+				}
+			},
+			error: function(xhr){	
+				alert("搜尋[實際支領KEY]過程中，程式發生錯誤!!!\nerror code:"+ xhr.status);
+			}
+		});
+	};
+	//新[俸點對應
+	$(".calRank").change(function(){
+		var mrnk2n="";
+		var mrank="";
+		var mrank3="";
+		var mdegr2="";
+		var mjt="";
+		mjt    = $("#paytitle").val();
+		mrank  = $("#payrank").val();
+		mrank3 = $("#payrank3").val();
+		mrnk2n = $("#payrnk2n").val();
+		mdegr2 = $("#paydegr2").val();
+		
+		$.doRank(mjt,mrank,mrank3,mrnk2n,mdegr2,'N');
+	});
+	//顯示俸點對應
+	$.doRank = function(mjt,mrank,mrank3,mrnk2n,mdegr2,item){
+		$.ajax({
+			url:"${pageContext.request.contextPath}/salController.do",
+				data:{
+					method : 'getDegreByRank',
+					jt     : mjt,
+					rank   : mrank,
+					rank3  : mrank3,
+					rnk2n  : mrnk2n,
+					degr2  : mdegr2 
+				},
+
+			type:"POST",		//type:POST, GET(default:GET)
+			dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+			contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+			async:false,
+			success:function(data) {
+				if (data.rankItem!=null){
+					if (item=='O'){
+						$("#paodegre").val(data.rankItem.paydegrv);
+						$("#paodegre").removeClass('bg-danger');
+					}else if (item=='N'){	
+						$("#paydegre").val(data.rankItem.paydegrv);
+						$("#paydegre").removeClass('bg-danger');
+					}
+				}else{
+					if (item=='O'){
+						$("#paodegre").addClass('bg-danger');
+					}else if (item=='N'){	
+						$("#paydegre").addClass('bg-danger');
+					}
+				}
+				
+			},
+			error: function(xhr){	
+				alert("搜尋[俸點對應]過程中，程式發生錯誤!!!\nerror code:"+ xhr.status);
+			}
+		});
 	};
 	//新_工作獎金Y,show pfkey 工作獎金N show pfdoc
 	$("#pacsflag").change(function(){
@@ -635,7 +1117,7 @@ $(function(){
 		}
 	});
 	
-	//顯示pa.paTranPsn明細
+	//顯示pa.paTraPsn明細
 	$.doTraPsnDetail = function(mData){
 		$("#div_paypflag").addClass("d-none");
 		$("#paymonno_lbl").html("追補扣日數");
@@ -643,7 +1125,7 @@ $(function(){
 		if (mData.patracod=='51'){
 			$("#div_paypflag").removeClass("d-none");
 			$("#paymonno_lbl").html("核發月數");
-			$("#paypflag_lbl").html("發放年終獎金比例");
+			$("#paypflag_lbl").html(" 發放年終獎金比例");
 			select = $('#paypflag');
 			select.empty();
 			$.each(pflgBOptions, function(val, text) {
@@ -655,7 +1137,7 @@ $(function(){
 		//考績獎金
 		else if (mData.patracod=='11' || mData.patracod=='12'){			
 			$("#div_paypflag").removeClass("d-none");
-			$("#paypflag_lbl").html("發放考績獎金月數");
+			$("#paypflag_lbl").html(" 發放考績獎金月數");
 			select = $('#paypflag');
 			select.empty();
 			$.each(pflgAOptions, function(val, text) {			    
@@ -664,13 +1146,13 @@ $(function(){
 			});
 			
 			select.selectpicker('refresh');
-			
 		}
 		$("#hid").val(mData.hid);
 		$("#patradt").val(mData.patradt.dts);
 		$("#patracod").selectpicker('val',mData.patracod);
 		$("#salnum").val(mData.salnum);
 		$("#paylvefg").val(mData.paylvefg);
+		$("#tranum").val(mData.tranum);
 		
 		$("#payidno").val(mData.payidno);
 		$("#paycard").val(mData.paycard);		
@@ -686,28 +1168,28 @@ $(function(){
 		$("#paeffdt").val(mData.paeffdt.dts);
 		$("#paymonno").val(mData.paymonno);
 		$("#paydayno").val(mData.paydayno);
-		$("#payinflg").val(mData.payinflg);
 		
 		$("#paytaxno").val(mData.paytaxno);
 		$("#paydpno").val(mData.paydpno);
-		$("#insuamt").val(mData.insuamt);
+		$("#insuamt").val(mData.insuamt);	//投保級距
 		$("#paypflag").selectpicker('val',mData.paypflag);
+		$("#payinflg").val(mData.payinflg);	//保險費比率
 		
 		$("#paydept").selectpicker('val',mData.paydept);
 		
 		//基本資料
 		$("#paotitle").selectpicker('val',mData.paotitle);
-		$("#ranknamo").val(mData.ranknamo);
-		$("#paornk2n").val(mData.paornk2n);
-		$("#paorank3").val(mData.paorank3);
-		$("#paodegr2").val(mData.paodegr2);
+		$("#paorank").val(mData.paorank);	//階別
+		$("#paornk2n").val(mData.paornk2n);	//職等
+		$("#paorank3").val(mData.paorank3);	//本功別
+		$("#paorank2").val(mData.paorank2);	//權理
+		$("#paodegr2").val(mData.paodegr2);	//級別
+		$("#paorankc").val(mData.paorankc);	//主管權理
+		$("#paorank4").val(mData.paorank4);	//適用專業加給表
 		$("#paodegre").val(mData.paodegre);
+		
 		$("#TranPsn_contraco").val(mData.contraco);
-		
-		$("#paorank2").val(mData.paorank2);
-		$("#paorankc").val(mData.paorankc);
-		$("#rnk4namo").val(mData.rnk4namo);
-		
+		//
 		$("#paocsfla").val(mData.paocsfla);
 		$("#TranPsn_pokey").val(mData.pokey);
 		$("#TranPsn_pobas").val(mData.pobas);
@@ -724,16 +1206,16 @@ $(function(){
 		
 		//新
 		$("#paytitle").selectpicker('val',mData.paytitle);
-		$("#rankname").val(mData.rankname);
-		$("#payrnk2n").val(mData.payrnk2n);
-		$("#payrank3").val(mData.rank3name);
-		$("#paydegr2").val(mData.paydegr2);
+		$("#payrank").val(mData.payrank);	//階別
+		$("#payrnk2n").val(mData.payrnk2n);	//職等
+		$("#payrank3").val(mData.payrank3);	//本功別
+		$("#payrank2").val(mData.payrank2);	//權理
+		$("#paydegr2").val(mData.paydegr2);	//級別
+		$("#payrankc").val(mData.payrankc);	//主管權理
+		$("#payrank4").val(mData.payrank4);	//適用專業加給表
 		$("#paydegre").val(mData.paydegre);
-		$("#TranPsn_contract").val(mData.contract);
 		
-		$("#payrank2").val(mData.payrank2);
-		$("#payrankc").val(mData.payrankc);
-		$("#rnk4name").val(mData.rnk4name);
+		$("#TranPsn_contract").val(mData.contract);
 		
 		$("#pacsflag").val(mData.pacsflag);
 		$("#TranPsn_pfkey").val(mData.pfkey);
@@ -806,14 +1288,27 @@ $(function(){
 			$("#div_contraco").addClass("d-none");
 		}
 			
-		//總院才需列出
-		if (mData.hid=='1A0'){
-			$(".cspf").removeClass("d-none");
-		}else if (mData.pacsflag=='N'){
-			$(".cspf").addClass("d-none");
-		}
-		
-		$("#subPATranPsn_Updbtn").prop("disabled", false);
+		//工獎 1A0 2A0才需列出,專勤額度=0
+		if (mData.hid=='1A0' || mData.hid=='2A0'){
+			if ( getInt(mData.paopfdoc) == 0 )
+				$(".cspf_o").removeClass("d-none");
+			else
+				$(".cspf_o").addClass("d-none");	
+			if ( getInt(mData.paypfdoc) == 0 )
+				$(".cspf_n").removeClass("d-none");
+			else
+				$(".cspf_n").addClass("d-none");
+				
+		}else{
+			if (mData.pacsflag=='N'){
+				$(".cspf_n").addClass("d-none");			
+			}
+			if (mData.paocsfla=='N'){
+				$(".cspf_o").addClass("d-none");
+			}
+		}	
+		//button啟用
+		$("#subPATRAPSN_Updbtn,#subPATRAPSN_Delbtn").prop("disabled", false);		
 	};
 	//
 	//顯示pa.paTrapay個人原支扣明細
@@ -1056,40 +1551,57 @@ $(function(){
 	//篩選
  	var objCopyD = $.extend(true, {aaSorting: []}, dataTableConfig);			
 	objCopyD.aoColumns = [	
-							{ "mData": "paylvefg" },
-							{ "mData": "paycard" },
-							{ "mData": "payempno" },
-							{ "mData": "payidno" },
-							{ "mData": "paynamec" },
-							{ "mData": "padepnmc" },
-							{ "mData": "paytitlp" },
-							{ "mData": "rankname" },
-							{ "mData": "payrnk2n" },
-							{ "mData": "rank3name" },
-							{ "mData": "paydegr2" },
-							{ "mData": "paydegre" },
-							{ "mData": "payrank2" },
-							{ "mData": "payrankc" },
-							{ "mData": "rnk4name" },
-							{ "mData": "contract" },
-							{ "mData": "paygovdt" },
-							{ "mData": "payempdt" },
-							{ "mData": "paysgndt" },
-							{ "mData": "payrsgdt" },
-							{ "mData": "patradt" },
-							{ "mData": "traname" },
-							{ "mData": "paydpno" },
-							{ "mData": "paytaxno" },
-							{ "mData": "payinflg" },
-							{ "mData": "insuamt" },
-							{ "mData": "pacsflag" },
-							{ "mData": "pfbas" },
-							{ "mData": "pfdat" },
-							{ "mData": "paypfsp1" },
-							{ "mData": "paypfsp2" },
-							{ "mData": "paypfsp3" },
-							{ "mData": "paypfdoc" },
-							{ "mData": "paretention" }							
+							{ "sTitle":"異動日","mData": "patradt" },
+							{ "sTitle":"異動項目","mData": "traname" },
+							{ "sTitle":"離職","mData": "paylvefg" },
+							{ "sTitle":"卡號","mData": "paycard" },
+							{ "sTitle":"職號","mData": "payempno" },
+							{ "sTitle":"身分證","mData": "payidno" },
+							{ "sTitle":"姓名","mData": "paynamec" },
+							{ "sTitle":"初任公職日","mData": "paygovdt" },
+							{ "sTitle":"到院日","mData": "payempdt" },
+							{ "sTitle":"現職日","mData": "paysgndt" },
+							{ "sTitle":"離職日","mData": "payrsgdt" },
+							{ "sTitle":"生效日","mData": "paeffdt" },
+							{ "sTitle":"單位","mData": "padepnmc" },
+							{ "sTitle":"新/舊","mData": "contract" },							
+							{ "sTitle":"健保數","mData": "paydpno" },
+							{ "sTitle":"扶養數","mData": "paytaxno" },
+							{ "sTitle":"保險補助","mData": "payinflg" },
+							{ "sTitle":"投保金額","mData": "insuamt" },
+							{ "sTitle":"原職稱","mData": "paotitlp" },
+							{ "sTitle":"原階別","mData": "oranknm" },
+							{ "sTitle":"原職等","mData": "paornk2n" },
+							{ "sTitle":"原本功","mData": "orank3nm" },
+							{ "sTitle":"原級別","mData": "paodegr2" },
+							{ "sTitle":"原俸點","mData": "paodegre" },
+							{ "sTitle":"原權理","mData": "paorank2" },
+							{ "sTitle":"原主管權理","mData": "paorankc" },
+							{ "sTitle":"原比照","mData": "ornk4nm" },
+							{ "sTitle":"原支領","mData": "paocsfla" },
+							{ "sTitle":"原基本績分","mData": "pfobas" },
+							{ "sTitle":"原俸級績分","mData": "pfodat" },
+							{ "sTitle":"原額外1","mData": "paopfsp1" },
+							{ "sTitle":"原額外2","mData": "paopfsp2" },
+							{ "sTitle":"原額外3","mData": "paopfsp3" },
+							{ "sTitle":"專勤額度","mData": "paypfdoc" },
+							{ "sTitle":"新職稱","mData": "paytitlp" },
+							{ "sTitle":"新階別","mData": "rankname" },
+							{ "sTitle":"新職等","mData": "payrnk2n" },
+							{ "sTitle":"新本功","mData": "rank3nm" },
+							{ "sTitle":"新級別","mData": "paydegr2" },
+							{ "sTitle":"新俸點","mData": "paydegre" },
+							{ "sTitle":"新權理","mData": "payrank2" },
+							{ "sTitle":"新主管權理","mData": "payrankc" },
+							{ "sTitle":"新比照","mData": "rnk4nm" },
+							{ "sTitle":"新支領","mData": "pacsflag" },
+							{ "sTitle":"新基本績分","mData": "pfbas" },
+							{ "sTitle":"新俸級績分","mData": "pfdat" },
+							{ "sTitle":"新額外1","mData": "paypfsp1" },
+							{ "sTitle":"新額外2","mData": "paypfsp2" },
+							{ "sTitle":"新額外3","mData": "paypfsp3" },
+							{ "sTitle":"新專勤額度","mData": "paypfdoc" },
+							{ "sTitle":"專2","mData": "paretention" }							
 						 ];
 	
 	objCopyD = $.extend(true,objCopyD, {
@@ -1108,16 +1620,16 @@ $(function(){
 
 <ul class="nav nav-pills mb-3" id="pills-tab" role="tab">
   <li class="nav-item">
-    <a class="nav-link active" id="pills-basic-tab" data-toggle="pill" href="#byPsnBaseDetailMain" role="tab" aria-controls="pills-home" aria-selected="true">異動資料</a>
+    <a class="nav-link active" id="pills-basic-tab" data-toggle="pill" href="#byTranDetailMain" role="tab" aria-controls="pills-home" aria-selected="true">異動資料</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="pills-query-tab" data-toggle="pill" href="#byPsnBaseFilterMain" role="tab" aria-controls="pills-profile" aria-selected="false">篩選</a>
+    <a class="nav-link" id="pills-query-tab" data-toggle="pill" href="#byTranFilterMain" role="tab" aria-controls="pills-profile" aria-selected="false">篩選</a>
   </li>
 </ul>
 
 <div class="tab-content" id="pills-tabContent">
 	<!--異動資料-->
-  	<div class="tab-pane fade show active" id="byPsnBaseDetailMain" role="tabpanel" aria-labelledby="pills-basic-tab">
+  	<div class="tab-pane fade show active" id="byTranDetailMain" role="tabpanel" aria-labelledby="pills-basic-tab">
 		<div class="container-fluid">
 			<div class="row" id="baseItem">
 				<div class="col-10">
@@ -1164,16 +1676,9 @@ $(function(){
 			<div class="row">
 				<div class="col-4 border border-dark">
 					<div id="TranPsnListDiv_1" class="TranPsnListDiv">
-					<!-- pa.paTranPsn清單 -->
-					<table id="TblTranPsnList" class="table table-striped table-bordered table-hover" >
+					<!-- pa.paTraPsn清單 -->
+					<table id="tblTranPsnList" class="table table-striped table-bordered table-hover" >
 						<thead>
-							<tr>
-								<th>身分證</th>
-								<th>卡號</th>	
-								<th>姓名</th>
-								<th>異動別</th>
-								<th>發薪日</th>
-							</tr>
 						</thead>
 					</table>				
 					</div>
@@ -1181,32 +1686,32 @@ $(function(){
 				
  				<div class="col-8 border border-dark">
  					<div class="container-fluid">
+ 					<form id="subPATraPsnForm" class="form-inline">	 
  					<div id="accordion">
 					    <div class="card">
 					      <div class="card-header">
 					        <a class="card-link" data-toggle="collapse" href="#collapseOne">
-					          	異動資料					          	
+					          	[異動個人明細]					          	
 					        </a>
-					        <button type="button" class="btn btn-success" id="subPATranPsn_Insbtn" disabled><i class="fa fa-save"></i>新增一筆</button>
-					        <button type="button" class="btn btn-info" id="subPATranPsn_Cpybtn" disabled><i class="fa fa-copy"></i>複製</button>
-					        <button type="button" class="btn btn-primary" id="subPATranPsn_Updbtn" disabled><i class="fa fa-edit"></i>更改</button>
-					        <button type="button" class="btn btn-danger" id="subPATranPsn_Delbtn" disabled><i class="fa fa-trash-alt"></i>刪除</button>
+					        <button type="button" class="btn btn-success" id="subPATRAPSN_Insbtn" disabled><i class="fa fa-save"></i>新增一筆</button>
+					        <button type="button" class="btn btn-primary" id="subPATRAPSN_Updbtn" disabled><i class="fa fa-edit"></i>更改</button>
+					        <button type="button" class="btn btn-danger"  id="subPATRAPSN_Delbtn" disabled><i class="fa fa-trash-alt"></i>刪除</button>
 					      </div>
 					      <div id="collapseOne" class="collapse show" data-parent="#accordion">
 					        <div class="card-body">
-					        	<!-- pa.paTranPsn明細 -->
+					        	<!-- pa.paTraPsn明細 -->
 		 						<div class="table-responsive-sm">
-		 							<form id="subPATranPsnForm">	 
-		 							<INPUT type="hidden" id ="method"  value="">
-		 							<INPUT type="hidden" id ="hid"  value="">
-				 					<table id="PATranPsn" class="table table-striped table-bordered table-hover table-sm table-condensed" >
+		 							<INPUT type="hidden" id ="trapsnfun"  value="">
+		 							<table id="PATRAPSN" class="table table-striped table-bordered table-hover table-sm table-condensed" >
+				 						<INPUT type="hidden" id ="hid"  value="">
+				 						<INPUT type="hidden" id ="tranum"  value="">
 				 						<tbody>
 											<tr><td>
 												<div class="form-inline">
 													<div class="form-group">
-														<label for="patradt" class="form-inline table-warning">發薪日:</label>
+														<label for="patradt" class="form-inline table-warning">*發薪日:</label>
 														<input type="text" id="patradt" class="form-control table-warning"  maxlength="10" size="10"  />
-														<label for="patracod" class="form-inline table-warning">異動原因:</label>
+														<label for="patracod" class="form-inline table-warning">*異動原因:</label>
 														<select id="patracod" name="patracod" class="form-control selectpicker required" data-width="fit" title="異動原因">
 														</select>
 														<label for="salnum">餉單編號:</label>
@@ -1219,13 +1724,9 @@ $(function(){
 											<tr><td>	
 												<div class="form-inline">
 													<div class="form-group">
-														<label for="payidno" class="table-warning">身份證字號:</label>
+														<label for="payidno" class="table-warning">*身份證字號:</label>
 														<input type="text" id="payidno" class="text-uppercase form-control required" maxlength="10" size="10"  />
 													</div>												
-													<div class="form-group">
-														<label for="paycard" class="form-inline table-warning">卡號:</label>
-														<input type="text" id="paycard" class="text-uppercase form-control required" maxlength="4" size="4"  />
-													</div>
 													<div class="form-group">
 														<label for="payempno" class="form-inline table-warning">職號:</label>
 														<input type="text" id="payempno" class="text-uppercase form-control required" maxlength="7" size="7"  />
@@ -1234,12 +1735,14 @@ $(function(){
 														<label for="paynamec" class="form-inline table-warning">姓名:</label>
 														<input type="text" id="paynamec" class="form-control required" maxlength="12" size="12"  />
 													</div>
-													
+													<div class="form-group">
+														<label for="paycard" class="form-inline table-warning">卡號:</label>
+														<input type="text" id="paycard" class="text-uppercase form-control required" maxlength="4" size="4" style="font-weight: bold; font-size:30px;" />
+													</div>
 												</div>
 											</td></tr>
 											<tr><td>
 												<div class="form-inline">
-													
 													<div class="form-group">
 														<label for="paygovdt" class="table-warning">初任公職日:</label>
 														<input type="text" id="paygovdt" class="gclsCalTxt form-control required"  maxlength="10" size="10"  />
@@ -1248,10 +1751,6 @@ $(function(){
 														<label for="payempdt" class="table-warning">到院日:</label>
 														<input type="text" id="payempdt" class="gclsCalTxt form-control required"  maxlength="10" size="10"  />
 													</div>
-												</div>
-											</td></tr>
-											<tr><td>
-												<div class="form-inline">		
 													<div class="form-group">
 														<label for="paysgndt" class="table-warning">現職日:</label>
 														<input type="text" id="paysgndt" class="gclsCalTxt form-control required"  maxlength="10" size="10"  />
@@ -1260,9 +1759,9 @@ $(function(){
 														<label for="payrsgdt" class="table-warning">離職日:</label>
 														<input type="text" id="payrsgdt" class="gclsCalTxt form-control"  maxlength="10" size="10"  />
 													</div>
-													
 												</div>
 											</td></tr>
+											
 											<tr><td>
 												<div class="form-inline">		
 													<div class="form-group">
@@ -1295,15 +1794,15 @@ $(function(){
 													</div>
 													<div class="form-group">
 														<label for="paydpno" class="table-warning">健保人數:</label>
-														<input type="text" id="paydpno" class="form-control" maxlength="2" size="2"  />
+														<input type="text" id="paydpno" class="form-control" maxlength="7" size="7"  />
 													</div>
 													<div class="form-group">
 														<label for="insuamt" class="table-warning">投保金額:</label>
-														<input type="text" id="insuamt" class="form-control" maxlength="6" size="6"  />
+														<select id="insuamt" name="insuamt" class="form-control " title="投保金額"></select>
 													</div>
 													<div class="form-group">
 														<label for="payinflg" class="table-warning">保險費比率:</label>
-														<select id="payinflg"  class="form-control selectpicker" >
+														<select id="payinflg"  class="form-control" >
 															<option value="">請選擇</option>
 															<option value="0">0</option>
 											     			<option value="1">1/4</option>
@@ -1326,8 +1825,7 @@ $(function(){
 												<div class="form-inline">		
 													<div class="form-group">
 														<label for="paydept" class="table-warning">單位:</label>
-														<select id="paydept" name="paydept" class="form-control selectpicker required" data-width="fit" title="單位">
-														</select>
+														<select id="paydept" name="paydept" class="form-control selectpicker required" data-width="fit" title="單位"></select>
 													</div>
 												</div>
 											</td>
@@ -1336,34 +1834,32 @@ $(function(){
 												<div class="form-inline">		
 													<div class="form-group">
 														<label for="paotitle" class="table-warning">職稱:</label>
-														<select id="paotitle" name="paotitle" class="form-control selectpicker" data-width="fit" title="職稱">
-														</select>
-														
+														<select id="paotitle" name="paotitle" class="form-control selectpicker" data-width="fit" title="職稱" disabled></select>
 													</div>
 												</div>
 												<div class="form-inline">
 													<div class="form-group">
-														<label for="ranknamo" class="table-warning">階別:</label>
-														<input type="text" id="ranknamo"  class="form-control" maxlength="8" size="8"  />
+														<label for="paorank" class="table-warning">階別:</label>
+														<select id="paorank" name="paorank" class="form-control " title="階別" disabled></select>														
 													</div>
 													<div class="form-group">
 														<label for="paornk2n" class="table-warning">職等:</label>
-														<input type="text" id="paornk2n" class="form-control" maxlength="2" size="2"  />
+														<select id="paornk2n" name="paornk2n" class="form-control " data-width="fit" title="職等" disabled></select>														
 													</div>
 													<div class="form-group">
 														<label for="paorank3" class="table-warning">本功別:</label>
-														<input type="text" id="paorank3" class="form-control" maxlength="1" size="1"  />
+														<select id="paorank3" name="paorank3" class="form-control " title="本功別" disabled></select>
 													</div>
 													<div class="form-group">
 														<label for="paodegr2" class="table-warning">級別:</label>
-														<input type="text" id="paodegr2" class="form-control" maxlength="2" size="2"  />
+														<select id="paodegr2" name="paodegr2" class="form-control " title="級別"  disabled></select>
 													</div>
 													<div class="form-group">
 														<label for="paodegre" class="table-warning">俸點:</label>
-														<input type="text" id="paodegre" class="form-control" maxlength="2" size="2"  />
+														<input type="text" id="paodegre" class="form-control" maxlength="2" size="2" readonly />
 													</div>
 													<div id="div_contraco" class="form-group d-none">
-														<label for="TranPsn_contraco" >新Y/舊N:</label>
+														<label for="TranPsn_contraco" >月尾薪Y/月頭薪N:</label>
 														<input type="text" id="TranPsn_contraco" readonly class="form-control" maxlength="1" size="1"  />
 													</div>
 												</div>
@@ -1373,15 +1869,15 @@ $(function(){
 												<div class="form-inline d-none" id="div_authorito">
 													<div class="form-group">
 														<label for="paorank2" class="table-warning">權理:</label>
-														<input type="text" id="paorank2" class="form-control" maxlength="2" size="2"  />
+														<select id="paorank2" name="paorank2" class="form-control " title="權理" disabled></select>														
 													</div>
 													<div class="form-group">
 														<label for="paorankc" class="table-warning">主管(權理):</label>
-														<input type="text" id="paorankc" class="form-control" maxlength="2" size="2"  />
+														<select id="paorankc" name="paorankc" class="form-control "  title="主管(權理)" disabled></select>
 													</div>
 													<div class="form-group">
-														<label for="rnk4namo" class="table-warning">適用專業加給表:</label>
-														<input type="text" id="rnk4namo" class="form-control" maxlength="15" size="15"  />
+														<label for="paorank4" class="table-warning">適用專業加給表:</label>
+														<select id="paorank4" name="paorank4" class="form-control " title="適用專業加給表" disabled></select>														
 													</div>
 												</div>
 												</td>												
@@ -1390,7 +1886,7 @@ $(function(){
 												<div class="form-inline">
 													<div class="form-group">
 														<label for="paocsfla" class="table-warning">工作獎金:</label>
-														<select id="paocsfla"  class="form-control" >
+														<select id="paocsfla"  class="form-control calCSPF" >
 															<option value="">請選擇</option>
 															<option value="Y">Y</option>
 											     			<option value="N">N</option>
@@ -1404,11 +1900,15 @@ $(function(){
 														<label for="TranPsn_podat" >職等點數:</label>
 														<input type="text" id="TranPsn_podat" readonly class="form-control" maxlength="3" size="3"  />
 													</div>
+													<div class="form-group" id="div_podoc">
+														<label for="paopfdoc" class="table-warning">專勤基本額度:</label>
+														<input type="text" id="paopfdoc" class="form-control" maxlength="8" size="8"  />															
+													</div>
 												</div>
 												<TD>
 											</TR>
 											<tr><td>
-												<div class="cspf d-none">
+												<div class="cspf_o d-none">
 													<div class="form-inline">
 														<div class="form-group ">
 															<label for="paopfsp1" class="table-warning">額外點數:</label>															
@@ -1424,12 +1924,6 @@ $(function(){
 															</select>
 															<input type="text" id="paopfsp3" class="form-control" maxlength="3" size="3"  />														
 														</div>
-													</div>	
-													<div class="form-inline">	
-														<div class="form-group" id="div_podoc">
-															<label for="paopfdoc" class="table-warning">專勤基本額度:</label>
-															<input type="text" id="paopfdoc" class="form-control" maxlength="8" size="8"  />															
-														</div>
 													</div>
 												</div>
 												</td>
@@ -1439,33 +1933,35 @@ $(function(){
 												<div class="form-inline">		
 													<div class="form-group">
 														<label for="paytitle" class="table-warning">職稱:</label>
-														<select id="paytitle" name="paytitle" class="form-control selectpicker" data-width="fit" title="職稱">
+														<select id="paytitle" name="paytitle" class="form-control selectpicker calRank" data-width="fit" title="職稱">
 														</select>
 													</div>
 												</div>
 												<div class="form-inline">
 													<div class="form-group">
-														<label for="rankname" class="table-warning">階別:</label>
-														<input type="text" id="rankname"  class="form-control" maxlength="8" size="8"  />
+														<label for="payrank" class="table-warning">階別:</label>
+														<select id="payrank" name="payrank" class="form-control calCSPF calRank" title="階別"></select>
+														
 													</div>
 													<div class="form-group">
 														<label for="payrnk2n" class="table-warning">職等:</label>
-														<input type="text" id="payrnk2n" class="form-control" maxlength="2" size="2"  />
+														<select id="payrnk2n" name="payrnk2n" class="form-control calCSPF calRank" data-width="fit" title="階別"></select>
+<!-- 														<input type="text" id="payrnk2n" class="form-control" maxlength="2" size="2"  /> -->
 													</div>
 													<div class="form-group">
 														<label for="payrank3" class="table-warning">本功別:</label>
-														<input type="text" id="payrank3" class="form-control" maxlength="1" size="1"  />
+														<select id="payrank3" name="payrank3" class="form-control calCSPF calRank" title="本功別"></select>
 													</div>
 													<div class="form-group">
 														<label for="paydegr2" class="table-warning">級別:</label>
-														<input type="text" id="paydegr2" class="form-control" maxlength="2" size="2"  />
+														<select id="paydegr2" name="paydegr2" class="form-control calCSPF calRank" title="級別"></select>
 													</div>
 													<div class="form-group">
 														<label for="paydegre" class="table-warning">俸點:</label>
 														<input type="text" id="paydegre" class="form-control" maxlength="2" size="2"  />
 													</div>
 													<div id="div_contract" class="form-group d-none">
-														<label for="TranPsn_contract" >新Y/舊N:</label>
+														<label for="TranPsn_contract" >月尾薪Y/月頭薪N:</label>
 														<input type="text" id="TranPsn_contract" readonly class="form-control" maxlength="1" size="1"  />
 													</div>
 												</div>
@@ -1475,15 +1971,16 @@ $(function(){
 												<div class="form-inline d-none" id="div_authority">
 													<div class="form-group">
 														<label for="payrank2" class="table-warning">權理:</label>
+														<select id="payrank2" name="payrank2" class="form-control " data-width="fit" title="權理"></select>
 														<input type="text" id="payrank2" class="form-control" maxlength="2" size="2"  />
 													</div>
 													<div class="form-group">
 														<label for="payrankc" class="table-warning">主管(權理):</label>
-														<input type="text" id="payrankc" class="form-control" maxlength="2" size="2"  />
+														<select id="payrankc" name="payrankc" class="form-control " data-width="fit" title="主管(權理)"></select>														
 													</div>
 													<div class="form-group">
-														<label for="rnk4name" class="table-warning">適用專業加給表:</label>
-														<input type="text" id="rnk4name" class="form-control" maxlength="15" size="15"  />
+														<label for="payrank4" class="table-warning">適用專業加給表:</label>
+														<select id="payrank4" name="payrank4" class="form-control " data-width="fit" title="適用專業加給表"></select>														
 													</div>
 												</div>
 												</td>
@@ -1492,7 +1989,7 @@ $(function(){
 												<div class="form-inline">
 													<div class="form-group">
 														<label for="pacsflag" class="table-warning">工作獎金:</label>
-														<select id="pacsflag" name="pacsflag" class="form-control" >
+														<select id="pacsflag" name="pacsflag" class="form-control calCSPF" >
 															<option value="">請選擇</option>
 															<option value="Y">Y</option>
 											     			<option value="N">N</option>
@@ -1506,11 +2003,15 @@ $(function(){
 														<label for="TranPsn_pfdat" >職等點數:</label>
 														<input type="text" id="TranPsn_pfdat" readonly class="form-control" maxlength="3" size="3"  />
 													</div>
+													<div class="form-group" id="div_pfdoc">
+														<label for="paypfdoc" class="table-warning">專勤基本額度:</label>
+														<input type="text" id="paypfdoc" class="form-control" maxlength="8" size="8"  />															
+													</div>
 												</div>
 												<TD>
 											</TR>
 											<tr><td>
-												<div class="cspf d-none">
+												<div class="cspf_n d-none">
 													<div class="form-inline">
 														<div class="form-group ">
 															<label for="paypfsp1" class="table-warning">額外點數:</label>															
@@ -1527,12 +2028,7 @@ $(function(){
 															<input type="text" id="paypfsp3" class="form-control" maxlength="3" size="3"  />														
 														</div>
 													</div>	
-													<div class="form-inline">	
-														<div class="form-group" id="div_pfdoc">
-															<label for="paypfdoc" class="table-warning">專勤基本額度:</label>
-															<input type="text" id="paypfdoc" class="form-control" maxlength="8" size="8"  />															
-														</div>
-													</div>
+													
 												</div>
 												</td>
 											</tr>
@@ -1569,7 +2065,6 @@ $(function(){
 											
 										</tbody>
 				 					</table>
-				 					</form>
 		 						</div> 
 					        </div>
 					      </div>
@@ -1581,58 +2076,145 @@ $(function(){
 					      	</a>
 					      </div>
 					      <div id="collapseTwo" class="collapse" data-parent="#accordion">
-					        <div class="card-body">
-					          <!-- pa.paTrapay原清單 -->
-								<table id="TblOTraPayList" class="table table-striped table-bordered table-hover" >
-									<thead>
-										<tr>
-											<th>項次</th>
-											<th>代碼</th>
-											<th>項目</th>
-											<th>所得</th>
-											<th>支出</th>
-										</tr>
-									</thead>
-									<tfoot>
-							            <tr>
-							            	<th colspan=2 style="text-align:right"></th>
-							             	<th style="text-align:right"></th>
-							                <th style="text-align:right"></th>
-							                <th style="text-align:right"></th>
-							            </tr>
-							        </tfoot>
-								</table>
-					        </div>
-					      </div>
-					    </div>
+					      	<div class="card-body">
+					      	  <!-- pa.paTrapay原清單 -->
+	          				  <!-- 一組開頭 style="border-spacing: 1px 1px;padding:0px;"-->
+	          				  <div class="row">
+	          				  	<div class="col-sm-12">
+									<table id="TraPayO" class="table table-sm table-striped table-bordered table-condensed table-responsive dynamic" >
+										<thead>
+											<tr>
+												<th>項目代碼</th>
+												<th>項目中文</th>
+												<th>所得</th>
+												<th>支出</th>
+												<th></th><th></th><th></th><th></th><th></th><th></th>
+											</tr>
+										</thead>
+										<tfoot>
+											<tr>
+												<td></td><td></td>
+												<td id="o_sumpay_p" class="text-right"></td>
+												<td id="o_sumpay_d" class="text-right"></td>
+												<td></td><td></td><td></td><td></td><td></td><td></td>		
+											</tr>
+										</tfoot>
+										<tbody>
+											<tr>
+												<td>
+													<!-- 支扣代碼-->
+	<!-- 												<div class="input-group"> -->
+													<input class="form-control" type="text" id="o_paycode" name="paycode" value="" maxlength="5" size="5" disabled>
+												</td>
+												<td>		
+													<input class="form-control" type="text" id="o_codenm" name="codenm" value="" maxlength="22" size="22" disabled>
+												</td>
+												<td>
+													<!-- 收入-->
+													<input class="form-control text-right" type="text" id="o_payamt" name="payamtp" value="" maxlength="10" size="10" disabled>
+												</td>
+												<td>
+													<!-- 支出-->
+													<input class="form-control text-right" type="text" id="o_payamt" name="payamtd" value="" maxlength="10" size="10" disabled>
+												</td>
+												<td>
+													<!-- hidden-->
+													<input class="form-control" type="hidden" id="o_paysort" name="paysort" value="O">
+												</td>
+												<td>		
+													<input class="form-control" type="hidden" id="o_payauth" name="payauth" value="">
+												</td>
+												<td>		
+													<input class="form-control" type="hidden" id="o_payiftax" name="payiftax" value="">
+												</td>
+												<td>		
+													<input class="form-control" type="hidden" id="o_payidno" name="payidno" value="">
+												</td>
+												<td>		
+													<input class="form-control" type="hidden" id="o_hid" name="hid" value="">
+												</td>
+												<td>		
+													<input class="form-control" type="hidden" id="o_tranum" name="tranum" value="">
+												</td>
+											</tr>
+										</tbody>
+									</table>
+					        	</div><!-- <div class="col-sm-12"> -->
+					      	  </div><!-- row -->
+					       </div><!-- <div class="card-body"> -->
+					      </div><!-- div id="collapseTwo" -->
+					    </div><!-- card -->
 					   
 						<div class="card">
 					      <div class="card-header">
 					        <a class="collapsed card-link" data-toggle="collapse" href="#collapseThree">
 					        	[新]支扣明細
 					      	</a>
-					      	<button id="btn_addpay" class="btn btn-success ml-auto" type="button" data-toggle="modal" data-target="#addPayeDialog"><i class="fa fa-edit"></i>新增一筆</button>
+					      	<!-- <button id="btn_addpay" class="btn btn-success ml-auto" type="button" data-toggle="modal" data-target="#addPayeDialog"><i class="fa fa-edit"></i>新增一筆</button> -->
 					      </div>
 					      <div id="collapseThree" class="collapse" data-parent="#accordion">
 					        <div class="card-body">
 					          <!-- pa.paTrapay新清單 -->
-								<table id="TblNTraPayList" class="table table-striped table-bordered table-hover" >
+					          <!-- 一組開頭 -->
+								<table id="TraPayN" class="table table-sm table-striped table-bordered border-primary dynamic" >
 									<thead>
 										<tr>
-											<th>項次</th>
-											<th>代碼</th>
-											<th>項目</th>
-											<th>金額</th>
-											<th>編輯</th>
+											<th width="5%">刪除</th>
+											<th class="text-center">項目</th>
+											<th>所得</th>
+											<th>支出</th>
+											<th></th><th></th><th></th><th></th>
 										</tr>
 									</thead>
-								</table>
+									<tfoot>
+										<tr>
+											<td></td>
+											<td></td>
+											<td id="n_sumpay_p" class="text-right"></td>
+											<td id="n_sumpay_d" class="text-right"></td>
+											<td></td><td></td><td></td><td></td>	
+										</tr>
+									</tfoot>
+									<tbody>
+										<tr>
+											<td>
+												<!-- Table刪除 -->
+												<button class="btn btn-sm btn-danger delete_row" type="button" style=""><i class="fa fa-minus"></i></button>												
+											</td>
+											<td>
+												<!-- 支扣代碼 -->
+												<select class="form-control paycodeSelect" id="n_paycode" name="paycode"></select>
+											</td>
+											<td>
+												<!-- 收入-->
+												<input class="form-control text-right" type="text" id="n_payamt" name="payamtp" value="" maxlength="10" size="10">
+											</td>
+											<td>
+												<!-- 支出-->
+												<input class="form-control text-right" type="text" id="n_payamt" name="payamtd" value="" maxlength="10" size="10">
+											</td>
+											<td>
+												<!-- hidden-->
+												<input class="form-control" type="hidden" id="n_paysort" name="paysort" value="N">
+											</td>
+											<td>
+												<input class="form-control" type="hidden" id="n_payidno" name="payidno" value="">
+											</td>
+											<td>	
+												<input class="form-control" type="hidden" id="n_hid" name="hid" value="">
+											</td>
+											<td>		
+												<input class="form-control" type="hidden" id="n_tranum" name="tranum" value="">
+											</td>	
+										</tr>
+									</tbody>
+								</table><!-- 一組結尾 -->
+								<button class="btn btn-sm btn-info add_row" type="button" style="">新增項目</button>
 					        </div>
 					      </div>
 					    </div>
-					    
 					</div>
- 					
+ 					</form>
  					</div>	
  				</div>
  			</div>
@@ -1702,7 +2284,7 @@ $(function(){
   </div>
   
   <!--篩選-->
-  <div class="tab-pane fade" id="byPsnBaseFilterMain" role="tabpanel" aria-labelledby="pills-query-tab">
+  <div class="tab-pane fade" id="byTranFilterMain" role="tabpanel" aria-labelledby="pills-query-tab">
 	<div class="container-fluid">
 		<div class="row" id="filterItem">
 			<div class="col-10">
@@ -1743,7 +2325,7 @@ $(function(){
 								<option value="${bitem.paybank}">${bitem.paybank}</option>
 							</c:forEach>
 						</select>
-						<select id="filter_patracd" class="selectpicker" data-width="fit"  title="異動原因">
+						<select id="filter_patracd" class="selectpicker" data-width="fit" multiple title="異動原因">
 							<option value=""></option>
 							<c:forEach var="bitem" items="${altracdTbl}" varStatus="loop">
 								<option value="${bitem.tracode}">${bitem.traname}</option>
@@ -1794,46 +2376,9 @@ $(function(){
 		<div class="row">
 			<div class="col border border-dark">
 				<div id="TranPsnListDiv_2" class="TranPsnListDiv">
-					<!-- pa.paTranPsn篩選清單 -->
-					<table id="TblTranPsnFilter" class="table table-striped table-hover" >
-						<thead>
-							<tr>
-								<th>離職</th>
-								<th>卡號</th>	
-								<th>職號</th>
-								<th>身分證</th>
-								<th>姓名</th>
-								<th>單位</th>
-								<th>職稱</th>
-								<th>階別</th>	
-								<th>職等</th>
-								<th>本功</th>
-								<th>級別</th>
-								<th>俸點</th>	
-								<th>權理</th>
-								<th>主管權理</th>
-								<th>比照</th>
-								<th>新/舊</th>
-								<th>公職日</th>
-								<th>到院日</th>
-								<th>現職日</th>
-								<th>離職日</th>
-								<th>異動日</th>
-								<th>異動項目</th>
-								<th>健保數</th>
-								<th>扶養數</th>
-								<th>保險補助</th>
-								<th>投保金額</th>
-								<th>支領</th>
-								<th>基本績分</th>
-								<th>俸級績分</th>
-								<th>額外1</th>
-								<th>額外2</th>
-								<th>額外3</th>
-								<th>專勤額度</th>
-								<th>專2</th>
-							</tr>
-						</thead>
+					<!-- pa.paTraPsn篩選清單 -->
+					<table id="tblTranPsnFilter" class="table table-striped table-hover" >
+						
 					</table>				
 				</div>
 			</div>

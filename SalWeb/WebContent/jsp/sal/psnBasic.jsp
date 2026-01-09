@@ -53,14 +53,14 @@ $(function(){
 	}
 	//依醫院角色,欄位show/hide或標題調整
 	if (pahid=="2A0"){
-		$('#payctcbacno').html('台銀薪資帳號:');
-		$('#payctcbgedno').html('台銀薪資公儲帳號:');				
+		$('#label_acno').text('台銀薪資帳號:');
+		$('#label_gedno').html('台銀薪資公儲帳號:');				
 	}else if (pahid=="3A0"){
-		$('#payctcbacno').html('玉山薪資帳號:');
-		$('#payctcbgedno').html('玉山優惠儲蓄帳號:');		
+		$('#label_acno').html('玉山薪資帳號:');
+		$('#label_gedno').html('玉山優惠儲蓄帳號:');		
 	}else if (pahid=="1A0"){
-		$('#payctcbacno').html('中國信託薪資帳號:');
-		$('#payctcbgedno').html('中國信託公儲帳號:');
+		$('#label_acno').html('中國信託薪資帳號:');
+		$('#label_gedno').html('中國信託公儲帳號:');
 	}
 	//總院才需列出
 	if (pahid=='1A0' || pahid=='2A0'){
@@ -243,7 +243,7 @@ $(function(){
 	    });
 	    
    		value.push(obj);   	//以整支table寫入	
-   		array.push( { "tblname": tblname, "value": value } ); //將動態表格資料轉換為json		    
+   		array.push( { "formnm": tblname, "value": value } ); //將動態表格資料轉換為json		    
 		    
   		var jsonArray = JSON.stringify(array); // 轉換成json
 	    	    
@@ -291,7 +291,7 @@ $(function(){
 		    $("#TblBasPsnList").dataTable().fnClearTable();
 			$("#TblBasPayList").dataTable().fnClearTable();
 			$("#TblPaHistList").dataTable().fnClearTable();
-			$("#TblBasPsnFilter").dataTable().fnClearTable();
+			//$("#TblBasPsnFilter").dataTable().fnClearTable();
 			
 			return false;
 		}
@@ -329,6 +329,7 @@ $(function(){
 						method  : 'getBasPsnList',
 						item    : '1',
 						hid     : pahid,
+						userid  : paUserid,
 						code_data :JSON.stringify(code_data)
 					},
 					type:"POST",	//type:POST, GET(default:GET)
@@ -414,7 +415,8 @@ $(function(){
 						method  : 'getBasPsnList',
 						item    : '2',
 						code_data :JSON.stringify(code_data),
-						hid      : pahid
+						hid     : pahid,
+						userid  : paUserid
 					},
 					type:"POST",	//type:POST, GET(default:GET)
 					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -466,16 +468,18 @@ $(function(){
 						$('#method').val("update");
 // 					else if (id.substring(id.indexOf('_')+1) =='Insbtn')		
 // 						$('#method').val("insert");
-
+					//return false;
 					 $.ajax({
 						url:"${pageContext.request.contextPath}/salController.do",
 						data:{
-							method	: "updPATblByKey",
+							method	: "handelBas",
+							fun	    : "updBasPsn",
 							tblname : tblname,
 							pk_data : JSON.stringify(pk_data),
-							item    : $('#method').val(),
+							editMode : $('#method').val(),
 							tabJson : jsonString,
-							hid     : pahid
+							hid     : pahid,
+							userid  : paUserid
 						},
 						type:"POST",			//type:POST, GET(default:GET)
 						dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -559,7 +563,8 @@ $(function(){
 			data:{
 				method    : 'getBasPsnByKey',
 				code_data :JSON.stringify(code_data),
-        		hid       :pahid
+        		hid     : pahid,
+				userid  : paUserid,
 			},
 			type:"POST",			//type:POST, GET(default:GET)
 			dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -1167,12 +1172,14 @@ $(function(){
 													<a href="#basother" class="btn btn-info" data-toggle="collapse">其他</a>
 											  		<div id="basother" class="collapse">
 											  			<div class="form-inline">
-											  				<div class="form-group">
-											  					<label id="payctcbacno" class="table-warning"></label>
+												  			<div class="form-group">
+																<label for="payctcbacno" class="table-warning" id="label_acno"></label>
 																<input type="text" id="payctcbacno" class="form-control" maxlength="12" size="12"  />
-																<label id="payctcbgedno" class="form-inline table-warning"></label>
-																<input type="text" id="payctcbgedno" class="form-control" maxlength="12" size="12"  />
 															</div>
+															<div class="form-group">
+																<label for="payctcbgedno" class="table-warning" id="label_gedno"></label>
+																<input type="text" id="payctcbgedno" class="form-control" maxlength="12" size="12"  />
+															</div>											  				
 														</div>	
 														<div class="form-inline">	
 															<div class="form-group">

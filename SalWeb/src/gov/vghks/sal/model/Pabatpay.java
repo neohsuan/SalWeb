@@ -33,6 +33,16 @@ public class Pabatpay {
     private String payauth;
     /** 是否列入應稅所得*/
     private String payiftax;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhbatpay;
+    /** 日期時戳 */
+    private java.sql.Timestamp zpabatpay;
+    /** 日期時戳 */
+    private java.sql.Timestamp zptbatpay;
+    /** 年*/
+    private String yy;
+    /** 月*/
+    private String mm;
     
 	public java.sql.Date getPatradt() {
 		return patradt;
@@ -124,6 +134,35 @@ public class Pabatpay {
 	public void setPayiftax(String payiftax) {
 		this.payiftax = payiftax;
 	}
-    
+	public java.sql.Timestamp getZlhbatpay() {
+		return zlhbatpay;
+	}
+	public void setZlhbatpay(java.sql.Timestamp zlhbatpay) {
+		this.zlhbatpay = zlhbatpay;
+	}
+	public java.sql.Timestamp getZpabatpay() {
+		return zpabatpay;
+	}
+	public void setZpabatpay(java.sql.Timestamp zpabatpay) {
+		this.zpabatpay = zpabatpay;
+	}
+	public java.sql.Timestamp getZptbatpay() {
+		return zptbatpay;
+	}
+	public void setZptbatpay(java.sql.Timestamp zptbatpay) {
+		this.zptbatpay = zptbatpay;
+	}
+	public String getYy() {
+		return yy;
+	}
+	public void setYy(String yy) {
+		this.yy = yy;
+	}
+	public String getMm() {
+		return mm;
+	}
+	public void setMm(String mm) {
+		this.mm = mm;
+	}
 	    
 }

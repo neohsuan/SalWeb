@@ -45,7 +45,10 @@ public class Pahist {
     private String hid;
     /** 日期時戳 */
     private java.sql.Timestamp zpahist;
-    
+    /** 日期時戳 */
+    private java.sql.Timestamp zpthist;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhhist;
     
 	public java.sql.Date getPatradt() {
 		return patradt;
@@ -172,5 +175,17 @@ public class Pahist {
 	}
 	public void setZpahist(java.sql.Timestamp zpahist) {
 		this.zpahist = zpahist;
+	}
+	public java.sql.Timestamp getZpthist() {
+		return zpthist;
+	}
+	public void setZpthist(java.sql.Timestamp zpthist) {
+		this.zpthist = zpthist;
+	}
+	public java.sql.Timestamp getZlhhist() {
+		return zlhhist;
+	}
+	public void setZlhhist(java.sql.Timestamp zlhhist) {
+		this.zlhhist = zlhhist;
 	}
 }

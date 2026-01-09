@@ -101,6 +101,10 @@ public class Pabaspsn implements Serializable{
     private String hid;
     /** 日期時戳 */
     private java.sql.Timestamp zpabaspsn;
+    /** 日期時戳 */
+    private java.sql.Timestamp zptbaspsn;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhbaspsn;
     /** 部門中文*/
     private String padepnmc;
     /** 階別中文*/
@@ -152,19 +156,19 @@ public class Pabaspsn implements Serializable{
 		this.payempno = payempno;
 	}
 	public String getPaynamec() {
-		return paynamec;
+		return StringUtil.nullToString(paynamec);
 	}
 	public void setPaynamec(String paynamec) {
 		this.paynamec = paynamec;
 	}
 	public String getPaydept() {
-		return paydept;
+		return StringUtil.nullToString(paydept);
 	}
 	public void setPaydept(String paydept) {
 		this.paydept = paydept;
 	}
 	public String getPaytitle() {
-		return paytitle;
+		return StringUtil.nullToString(paytitle);
 	}
 	public void setPaytitle(String paytitle) {
 		this.paytitle = paytitle;
@@ -212,7 +216,10 @@ public class Pabaspsn implements Serializable{
 		this.payrankc = payrankc;
 	}
 	public int getPaypfdoc() {
-		return paypfdoc;
+		int newtmp = 0;
+		String tmp=StringUtil.nullToString(paypfdoc);
+		newtmp = (tmp == "") ? 0 : paypfdoc;
+		return newtmp;
 	}
 	public void setPaypfdoc(int paypfdoc) {
 		this.paypfdoc = paypfdoc;
@@ -505,13 +512,28 @@ public class Pabaspsn implements Serializable{
 	public void setPayexpfkey3(int payexpfkey3) {
 		this.payexpfkey3 = payexpfkey3;
 	}
+	public String getPaypsw() {
+		return paypsw;
+	}
+	public java.sql.Timestamp getZptbaspsn() {
+		return zptbaspsn;
+	}
+	public void setZptbaspsn(java.sql.Timestamp zptbaspsn) {
+		this.zptbaspsn = zptbaspsn;
+	}
+	public java.sql.Timestamp getZlhbaspsn() {
+		return zlhbaspsn;
+	}
+	public void setZlhbaspsn(java.sql.Timestamp zlhbaspsn) {
+		this.zlhbaspsn = zlhbaspsn;
+	}
 	public String getPaydpno() {
 		return paydpno;
 	}
 	public void setPaydpno(String paydpno) {
 		this.paydpno = paydpno;
 	}
-    
+	
         
 }
 	

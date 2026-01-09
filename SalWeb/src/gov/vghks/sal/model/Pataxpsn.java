@@ -43,6 +43,10 @@ public class Pataxpsn implements Serializable{
     private String hid;
     /** 日期時戳 */
     private java.sql.Timestamp zpataxpsn;
+    /** 日期時戳 */
+    private java.sql.Timestamp zpttaxpsn;
+    /** 日期時戳 */
+    private java.sql.Timestamp zlhtaxpsn;
     /** 職號*/
     private String payempno;
     /** 流水號51*/
@@ -183,6 +187,18 @@ public class Pataxpsn implements Serializable{
 	}
 	public void setPayempno(String payempno) {
 		this.payempno = payempno;
+	}
+	public java.sql.Timestamp getZpttaxpsn() {
+		return zpttaxpsn;
+	}
+	public void setZpttaxpsn(java.sql.Timestamp zpttaxpsn) {
+		this.zpttaxpsn = zpttaxpsn;
+	}
+	public java.sql.Timestamp getZlhtaxpsn() {
+		return zlhtaxpsn;
+	}
+	public void setZlhtaxpsn(java.sql.Timestamp zlhtaxpsn) {
+		this.zlhtaxpsn = zlhtaxpsn;
 	}
     
  }
