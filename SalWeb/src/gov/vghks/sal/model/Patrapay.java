@@ -37,6 +37,8 @@ public class Patrapay {
     private String pacoddel;
     /** 是否入所得稅應計收入*/
     private String payreward;
+    /** 卡號*/
+    private String paycard;
     
 	public String getPayidno() {
 		return payidno;
@@ -127,6 +129,12 @@ public class Patrapay {
 	}
 	public void setPayreward(String payreward) {
 		this.payreward = payreward;
+	}
+	public String getPaycard() {
+		return paycard;
+	}
+	public void setPaycard(String paycard) {
+		this.paycard = paycard;
 	}
 	
     

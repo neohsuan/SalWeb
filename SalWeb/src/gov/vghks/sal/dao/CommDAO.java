@@ -576,134 +576,135 @@ public class CommDAO {
 		String vSalBgdt ="2005-7-1";      //開始不扣房租津貼及實物代金日期
 		
 		Padatpay datpayObj=null;
-		
-		Iterator<Padatpay> it =  datpayAry.iterator();
-		while ( it.hasNext()) {
-			datpayObj = (Padatpay) it.next();
-			if ("FP00".equals(datpayObj.getPaycode().substring(0, 4))){
-				vflag = true;
-			}
-			//總收入,應稅收入,總支出
-			if ("P".equals(datpayObj.getPaycode().substring(1, 2))){
-				vpay +=	datpayObj.getPayamt();
-				if ("Y".equals(datpayObj.getPayiftax())){
-					vtaxPay_Y+=datpayObj.getPayamt();
+		if (datpayAry != null && !datpayAry.isEmpty()) {
+			Iterator<Padatpay> it =  datpayAry.iterator();
+			while ( it.hasNext()) {
+				datpayObj = (Padatpay) it.next();
+				if ("FP00".equals(datpayObj.getPaycode().substring(0, 4))){
+					vflag = true;
 				}
-			}else if ("D".equals(datpayObj.getPaycode().substring(1, 2))){
-				vduduct+=datpayObj.getPayamt();
+				//總收入,應稅收入,總支出
+				if ("P".equals(datpayObj.getPaycode().substring(1, 2))){
+					vpay +=	datpayObj.getPayamt();
+					if ("Y".equals(datpayObj.getPayiftax())){
+						vtaxPay_Y+=datpayObj.getPayamt();
+					}
+				}else if ("D".equals(datpayObj.getPaycode().substring(1, 2))){
+					vduduct+=datpayObj.getPayamt();
+				}
+				//主管加給 年終獎金--主管特支  考績獎金--主管特支
+		        if ("FP03".equals(datpayObj.getPaycode().substring(0, 4)) || datpayObj.getPaycode().substring(0, 4).matches("VP124|VP134")){
+		        	vchief += datpayObj.getPayamt();
+		        }
+		        //公職退撫基金溯自110年1月1日免納入所得稅 2023.7.1 FD07退撫離職金自願提撥,免納入所得稅
+		        else if (datpayObj.getPaycode().substring(0, 4).matches("FD04|FD07") ){
+		        	if ( vRank.matches("1|2|3|8|9") && !DateUtil.compareDate(vSalDt,Globals.gPensionFund) ) {
+		        		vPension += datpayObj.getPayamt();
+		        	}	
+		        }
+		        
+		        //不休假獎金
+		        else if("VP11".equals(datpayObj.getPaycode().substring(0, 4))){
+		        	vnon_rest += datpayObj.getPayamt();
+		        }
+		        //交通費,己廢除    
+	//	        else if(datpayObj.getPaycode().substring(0, 4).matches("FP06|VP19")){
+	//	        	vtraffic += datpayObj.getPayamt();
+	//	        }
+		        //福利互助金   
+		        else if("VP400".equals(datpayObj.getPaycode())){
+		        	vWelfare += datpayObj.getPayamt();
+		        }
+		        //自繳退休金  ,2022.11.10 屏榮FD06
+		        else if(datpayObj.getPaycode().substring(0, 4).matches("VD06|FD06")){
+		        	vSelfRetire += datpayObj.getPayamt();
+		        }
+		        //超額獎金_論文補助   
+		        else if("VP437".equals(datpayObj.getPaycode())){
+		        	vPapers += datpayObj.getPayamt();
+		        }
+		        //加班費
+		        else if("VP200".equals(datpayObj.getPaycode())){
+		        	vOvertime += datpayObj.getPayamt();
+		        }
+		        //總值日值班費
+		        else if("VP455".equals(datpayObj.getPaycode())){
+		        	vDuty += datpayObj.getPayamt();
+		        }
+		        //所得稅
+		        else if(datpayObj.getPaycode().substring(0, 4).matches("FD05|VD03")){
+		        	vtax += datpayObj.getPayamt();
+		        }
 			}
-			//主管加給 年終獎金--主管特支  考績獎金--主管特支
-	        if ("FP03".equals(datpayObj.getPaycode().substring(0, 4)) || datpayObj.getPaycode().substring(0, 4).matches("VP124|VP134")){
-	        	vchief += datpayObj.getPayamt();
-	        }
-	        //公職退撫基金溯自110年1月1日免納入所得稅 2023.7.1 FD07退撫離職金自願提撥,免納入所得稅
-	        else if (datpayObj.getPaycode().substring(0, 4).matches("FD04|FD07") ){
-	        	if ( vRank.matches("1|2|3|8|9") && !DateUtil.compareDate(vSalDt,Globals.gPensionFund) ) {
-	        		vPension += datpayObj.getPayamt();
-	        	}	
-	        }
-	        
-	        //不休假獎金
-	        else if("VP11".equals(datpayObj.getPaycode().substring(0, 4))){
-	        	vnon_rest += datpayObj.getPayamt();
-	        }
-	        //交通費,己廢除    
-//	        else if(datpayObj.getPaycode().substring(0, 4).matches("FP06|VP19")){
-//	        	vtraffic += datpayObj.getPayamt();
-//	        }
-	        //福利互助金   
-	        else if("VP400".equals(datpayObj.getPaycode())){
-	        	vWelfare += datpayObj.getPayamt();
-	        }
-	        //自繳退休金  ,2022.11.10 屏榮FD06
-	        else if(datpayObj.getPaycode().substring(0, 4).matches("VD06|FD06")){
-	        	vSelfRetire += datpayObj.getPayamt();
-	        }
-	        //超額獎金_論文補助   
-	        else if("VP437".equals(datpayObj.getPaycode())){
-	        	vPapers += datpayObj.getPayamt();
-	        }
-	        //加班費
-	        else if("VP200".equals(datpayObj.getPaycode())){
-	        	vOvertime += datpayObj.getPayamt();
-	        }
-	        //總值日值班費
-	        else if("VP455".equals(datpayObj.getPaycode())){
-	        	vDuty += datpayObj.getPayamt();
-	        }
-	        //所得稅
-	        else if(datpayObj.getPaycode().substring(0, 4).matches("FD05|VD03")){
-	        	vtax += datpayObj.getPayamt();
-	        }
-		}
-		
-	    //房租,實物代金
-		if (("".equals(StringUtil.nullToString(vRANK2))) && ("".equals(StringUtil.nullToString(vRNK2N)))){
-			vRank_P ="";
-		}else{
-			if(!"".equals(StringUtil.nullToString(vRANK2)))
-				vRank_P = StringUtil.nullToString(vRANK2);
-			else
-				vRank_P = StringUtil.nullToString(vRNK2N);
-		}
-	    
-	    if (vflag){	//有本薪才有實物代金 房租
-		    if ( DateUtil.compareDate(vSalDt, vSalBgdt) ){	//vSaldt < vSalBgdt '2005-7-20改 2005-7-1開始不計算房租及實物代金
-		    	if (vRank.matches("5|6")){
-		    		vrent_house = 400;
-		    	    vthing_money = 930;
-		    	}//2022.5.2契約主治沒有房租及實物代金
-		    	else if (!vRank.matches("F")){
-		    		if (vRank_P.matches("01|02|03") || (vRank_P.equals("T1") && vDegre<385 ) || "4".equals(vRank)){
-			    		vrent_house = 500;
+			
+		    //房租,實物代金
+			if (("".equals(StringUtil.nullToString(vRANK2))) && ("".equals(StringUtil.nullToString(vRNK2N)))){
+				vRank_P ="";
+			}else{
+				if(!"".equals(StringUtil.nullToString(vRANK2)))
+					vRank_P = StringUtil.nullToString(vRANK2);
+				else
+					vRank_P = StringUtil.nullToString(vRNK2N);
+			}
+		    
+		    if (vflag){	//有本薪才有實物代金 房租
+			    if ( DateUtil.compareDate(vSalDt, vSalBgdt) ){	//vSaldt < vSalBgdt '2005-7-20改 2005-7-1開始不計算房租及實物代金
+			    	if (vRank.matches("5|6")){
+			    		vrent_house = 400;
 			    	    vthing_money = 930;
-			    	}else if (vRank_P.matches("04|05|06|07|P3") || (vRank_P.equals("T1") && vDegre>=385 )){
-			    		vrent_house = 600;
-			    	    vthing_money = 930;
-			    	}else if (vRank_P.matches("08|09|10|11|12|13|14|P1|P2") ){
-			    		 vrent_house = 700;
-			    		 vthing_money = 930;
-			    	}
-		    	} 
-		    }	
-		    else	//2005-8-29改 以84.7.1為基準計算 之前要扣 之後不扣 (初任公職日<基準日,有房租及實物代金)
-		    {
-		    	if (vRank.matches("5|6")){
-		    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
-		    			vrent_house = 400;
-		    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
-		    			vthing_money = 930;
-		    	}
-		    	//2022.5.2契約主治沒有房租及實物代金
-		    	else if (!vRank.matches("F")){
-		    		if (vRank_P.matches("01|02|03") || (vRank_P.equals("T1") && vDegre<385 ) || "4".equals(vRank)){
+			    	}//2022.5.2契約主治沒有房租及實物代金
+			    	else if (!vRank.matches("F")){
+			    		if (vRank_P.matches("01|02|03") || (vRank_P.equals("T1") && vDegre<385 ) || "4".equals(vRank)){
+				    		vrent_house = 500;
+				    	    vthing_money = 930;
+				    	}else if (vRank_P.matches("04|05|06|07|P3") || (vRank_P.equals("T1") && vDegre>=385 )){
+				    		vrent_house = 600;
+				    	    vthing_money = 930;
+				    	}else if (vRank_P.matches("08|09|10|11|12|13|14|P1|P2") ){
+				    		 vrent_house = 700;
+				    		 vthing_money = 930;
+				    	}
+			    	} 
+			    }	
+			    else	//2005-8-29改 以84.7.1為基準計算 之前要扣 之後不扣 (初任公職日<基準日,有房租及實物代金)
+			    {
+			    	if (vRank.matches("5|6")){
 			    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
-			    			vrent_house = 500;
-			    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
-			    			vthing_money = 930;
-			    	}else if (vRank_P.matches("04|05|06|07|P3") || (vRank_P.equals("T1") && vDegre>=385 )){
-			    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
-			    			vrent_house = 600;
-			    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
-			    			vthing_money = 930;
-			    	}else if (vRank_P.matches("08|09|10|11|12|13|14|P1|P2") ){	
-			    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
-			    			vrent_house = 700;
+			    			vrent_house = 400;
 			    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
 			    			vthing_money = 930;
 			    	}
-		    	} 
+			    	//2022.5.2契約主治沒有房租及實物代金
+			    	else if (!vRank.matches("F")){
+			    		if (vRank_P.matches("01|02|03") || (vRank_P.equals("T1") && vDegre<385 ) || "4".equals(vRank)){
+				    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
+				    			vrent_house = 500;
+				    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
+				    			vthing_money = 930;
+				    	}else if (vRank_P.matches("04|05|06|07|P3") || (vRank_P.equals("T1") && vDegre>=385 )){
+				    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
+				    			vrent_house = 600;
+				    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
+				    			vthing_money = 930;
+				    	}else if (vRank_P.matches("08|09|10|11|12|13|14|P1|P2") ){	
+				    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
+				    			vrent_house = 700;
+				    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
+				    			vthing_money = 930;
+				    	}
+			    	} 
+			    }
 		    }
-	    }
-	    //淨所得=總所得-總支出
-	    vnetpay = vpay - vduduct;
-	    if (vflag){
-			//應稅所得=datpay.getPayiftax()="Y"-實物代金-房租-自繳退休金-公職退撫基金
-		    vtaxpay = vtaxPay_Y - vrent_house - vthing_money - vSelfRetire -vPension;
-		    if (vtaxpay<0) vtaxpay=0;
-	    }else{
-	    	vtaxpay = vtaxPay_Y;
-	    }
+		    //淨所得=總所得-總支出
+		    vnetpay = vpay - vduduct;
+		    if (vflag){
+				//應稅所得=datpay.getPayiftax()="Y"-實物代金-房租-自繳退休金-公職退撫基金
+			    vtaxpay = vtaxPay_Y - vrent_house - vthing_money - vSelfRetire -vPension;
+			    if (vtaxpay<0) vtaxpay=0;
+		    }else{
+		    	vtaxpay = vtaxPay_Y;
+		    }
+		}    
 	    rtnMap.put("tax", vtax);
 	    rtnMap.put("pay", vpay);
 		rtnMap.put("duduct", vduduct); 

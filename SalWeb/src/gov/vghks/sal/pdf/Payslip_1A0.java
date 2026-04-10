@@ -106,7 +106,8 @@ public class Payslip_1A0 {
 			Font fontTitle10 = new Font( bfChinese, 10, Font.NORMAL ); //標題字型設定，size為10
 			Font fontColTitlA = new Font( bfChinese, 8, Font.NORMAL ); //標題字型設定，size為8
 			Font fontColTitlB = new Font( bfChinese, 7, Font.NORMAL ); //標題字型設定，size為7
-			Font fontColCent = new Font( bfChinese, 8, Font.NORMAL ); //字型設定，size為8
+			Font fontColCent = new Font( bfChinese, 9, Font.NORMAL ); //字型設定，size為9
+			Font fontColCentT = new Font( bfChinese, 7, Font.NORMAL ); //總計字型設定，size為7
 			Font fontColCentB = new Font( bfChinese, 8, Font.BOLD ); //字型設定，size為8
 			
 			//加入標題
@@ -347,56 +348,56 @@ public class Payslip_1A0 {
 			sumCell.setHorizontalAlignment(Element.ALIGN_RIGHT); //垂直置中
 			//本薪,超額獎金
 			tmp = String.valueOf(intCellSum_1A)+"\n\n"+String.valueOf(intCellSum_1B);
-			sumCell.setPhrase(new Phrase( tmp , fontColCent));
+			sumCell.setPhrase(new Phrase( tmp , fontColCentT));
 			sumCell.setColspan(1);
 			sumTable.addCell(sumCell);
 			//專業加給,超盈餘獎金
 			tmp = String.valueOf(intCellSum_2A)+"\n\n"+String.valueOf(intCellSum_2B);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//主管加給,考績獎金
 			tmp = String.valueOf(intCellSum_3A)+"\n\n"+String.valueOf(intCellSum_3B);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//實習費,年終獎金
 			tmp = String.valueOf(intCellSum_4A)+"\n\n"+String.valueOf(intCellSum_4B);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//工作獎金,各項津貼
 			tmp = String.valueOf(intCellSum_5A)+"\n\n"+String.valueOf(intCellSum_5B);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//專勤獎金,病歷罰扣
 			tmp = String.valueOf(intCellSum_6A)+"\n\n"+String.valueOf(intCellSum_6B);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//加班費,各項獎勵
 			tmp = String.valueOf(intCellSum_7A)+"\n\n"+String.valueOf(intCellSum_7B);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//夜班費,各項補助
 			tmp = String.valueOf(intCellSum_8A)+"\n\n"+String.valueOf(intCellSum_8B);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//不休假獎金
 			tmp = String.valueOf(intCellSum_9A)+"\n\n　";
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//休假補助
 			tmp = String.valueOf(intCellSum_10A)+"\n\n　";
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//應發數
 			tmp = fm.format(intCellSum_11A);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//扣款數
 			tmp = fm.format(intCellSum_12A);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//實發數
 			tmp = fm.format(intCellSum_13A);
-			sumCell.setPhrase(new Phrase( tmp , fontColCent));
+			sumCell.setPhrase(new Phrase( tmp , fontColCentT));
 			sumTable.addCell(sumCell);
 			
 			//總計頁 要加 蓋章欄

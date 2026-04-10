@@ -483,7 +483,7 @@ public class ItemSum_1A0 {
 			tmp="薪　　資:";
 			sCell.setPhrase(new Phrase( tmp, font12));
 			sTable.addCell(sCell);
-			tmp="$" +fm.format(pay);
+			tmp="$" +fm.format(prtobj.getPay()-prtobj.getPaygedp());
 			sCell.setPhrase(new Phrase( tmp, font12));
 			sTable.addCell(sCell);
 			
@@ -495,12 +495,12 @@ public class ItemSum_1A0 {
 			sCell.setPhrase(new Phrase( tmp, font12));
 			sCell.setBorder(Rectangle.BOTTOM);
 			sTable.addCell(sCell);
-			
+			//傳票支付的錢
 			tmp="";
 			sCell.setPhrase(new Phrase( tmp, font12));
 			sCell.setBorder(Rectangle.NO_BORDER);
 			sTable.addCell(sCell);
-			tmp="$" +fm.format(pay-prtobj.getPaygedp());
+			tmp="$" +fm.format( prtobj.getPay() );
 			sCell.setPhrase(new Phrase( tmp, font12));
 			sCell.setBorder(Rectangle.NO_BORDER);
 			sTable.addCell(sCell);

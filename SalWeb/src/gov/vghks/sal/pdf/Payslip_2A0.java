@@ -49,6 +49,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 //薪津冊_屏榮
+//2026.2.11#11501312簽約留任金PAYCPLM2
 public class Payslip_2A0 {
 	Logger log = Logger.getLogger(SalNTDAO.class);  //呼叫log4j
 	String ttfDir = "font\\VGHKH_KAI.TTF";
@@ -73,7 +74,7 @@ public class Payslip_2A0 {
 		int intCellSum_3A=0,intCellSum_3B=0,intCellSum_4A=0,intCellSum_4B=0;
 		int intCellSum_5A=0,intCellSum_5B=0,intCellSum_6A=0,intCellSum_6B=0;
 		int intCellSum_7A=0,intCellSum_7B=0,intCellSum_8A=0,intCellSum_8B=0;
-		int intCellSum_9A=0,intCellSum_10A=0,intCellSum_11A=0,intCellSum_12A=0,intCellSum_13A=0;
+		int intCellSum_9A=0,intCellSum_9B=0,intCellSum_10A=0,intCellSum_11A=0,intCellSum_12A=0,intCellSum_13A=0;
 		try {
 			//新增資料夾路徑
 			if (!FileUtil.FileToSmbFile(strDir,hid).exists()){
@@ -88,7 +89,7 @@ public class Payslip_2A0 {
 			int pdfSCol = 7; // 簽名處有幾欄
 			float[] floatColSign = {0.14f, 0.14f, 0.14f, 0.14f, 0.14f, 0.14f, 0.16f}; //欄位比例
 			String signName[]={"製表","總務室","人事審核","人事室","主計審核","主計室","機關首長及其授權人"};
-			String titleName[]={"職號\n卡號","階級","職稱","姓名","支給\n日數","薪俸\n不休假獎金","專業加給\n休假補助","主管加給\n考績獎金","院區加給\n年終獎金","身障加給\n各項補助","特別津貼\n各項津貼","各項津貼\n護理能力進階","專勤獎金\n病歷罰扣","加班費\n　","夜班費\n　","應發數","扣款數","實發數"};
+			String titleName[]={"職號\n卡號","階級","職稱","姓名","支給\n日數","薪俸\n不休假獎金","專業加給\n休假補助","主管加給\n考績獎金","院區加給\n年終獎金","身障加給\n各項補助","特別津貼\n各項津貼","各項津貼\n護理能力進階","專勤獎金\n病歷罰扣","加班費\n簽約留任金","夜班費\n　","應發數","扣款數","實發數"};
 			int pdfCol = 18; // 內文有幾欄
 			float[] floatCol = {0.045f, 0.06f, 0.08f, 0.06f, 0.03f, 0.055f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.055f, 0.05f, 0.05f, 0.05f, 0.07f, 0.065f, 0.07f}; //欄位比例
 			
@@ -107,7 +108,7 @@ public class Payslip_2A0 {
 			Font fontColTitlA = new Font( bfChinese, 8, Font.NORMAL ); //標題字型設定，size為8
 			Font fontColTitlB = new Font( bfChinese, 7, Font.NORMAL ); //標題字型設定，size為7
 			Font fontColTitlC = new Font( bfChinese, 6, Font.NORMAL ); //標題字型設定，size為6
-			Font fontColCent = new Font( bfChinese, 8, Font.NORMAL ); //字型設定，size為8
+			Font fontColCent = new Font( bfChinese, 7, Font.NORMAL ); //字型設定，size為8
 			Font fontColCentB = new Font( bfChinese, 8, Font.BOLD ); //字型設定，size為8
 			
 			//加入標題
@@ -176,7 +177,7 @@ public class Payslip_2A0 {
 				sTitleCell.setVerticalAlignment(Element.ALIGN_MIDDLE); //水平置中
 				if (i==4)	//支給日數
 					sTitleCell.setPhrase(new Phrase( titleName[i], fontColCent));
-				else if (i==5 )	//長度=5
+				else if (i==5 || i==13 )	//長度=5
 					sTitleCell.setPhrase(new Phrase( titleName[i], fontColTitlB));
 				else if (i==11 )	//長度=6
 					sTitleCell.setPhrase(new Phrase( titleName[i], fontColTitlC));
@@ -217,8 +218,9 @@ public class Payslip_2A0 {
 				//專勤獎金PAYSTALD+PAYSTAL ,病歷罰扣PAYSARS   ,
 				intCellSum_8A += data.getPaystald()+data.getPaystal();
 				intCellSum_8B += data.getPaysars();
-				//加班費PAYCPLM3
+				//加班費PAYCPLM3,(2026.2.11#11501312簽約留任金PAYCPLM2)
 				intCellSum_9A += data.getPaycplm3();
+				intCellSum_9B += data.getPaycplm2();
 				//夜班費PAYNIGHT
 				intCellSum_10A += data.getPaynight();
 				//應發數PAYTOTAL
@@ -295,8 +297,8 @@ public class Payslip_2A0 {
 					tmp=String.valueOf( data.getPayrstbn()+data.getPaystal() )+"\n"+String.valueOf( data.getPaysars() );
 					cellContent.setPhrase(new Phrase(tmp, fontColCent));		
 					contentTable.addCell(cellContent);
-					//加班費PAYCPLM3
-					tmp=String.valueOf( data.getPaycplm3() )+"\n　" ;
+					//加班費PAYCPLM3(2026.2.11#11501312簽約留任金PAYCPLM2)
+					tmp=String.valueOf( data.getPaycplm3() )+"\n"+String.valueOf( data.getPaycplm2() );
 					cellContent.setPhrase(new Phrase(tmp, fontColCent));		
 					contentTable.addCell(cellContent);
 					//夜班費PAYNIGHT
@@ -381,8 +383,8 @@ public class Payslip_2A0 {
 			tmp = String.valueOf(intCellSum_8A)+"\n\n"+String.valueOf(intCellSum_8B);
 			sumCell.setPhrase(new Phrase( tmp, fontColTitlA));
 			sumTable.addCell(sumCell);
-			//加班費PAYCPLM3
-			tmp = String.valueOf(intCellSum_9A)+"\n\n　";
+			//加班費PAYCPLM3,(2026.2.11#11501312簽約留任金PAYCPLM2)
+			tmp = String.valueOf(intCellSum_9A)+"\n\n"+String.valueOf(intCellSum_9B);
 			sumCell.setPhrase(new Phrase( tmp, fontColTitlA));
 			sumTable.addCell(sumCell);
 			//夜班費PAYNIGHT

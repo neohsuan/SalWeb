@@ -298,7 +298,7 @@ public class SalController{
 			alexpfTbl= (ArrayList) request.getSession().getAttribute("alexpfTbl");
 			altracdTbl= (ArrayList) request.getSession().getAttribute("altracdTbl");
 		}
-		else if("tranPay".equals(item)){
+		else if(item.matches("tranPay|payDetail")){
 			alpayitmTbl= (ArrayList) request.getSession().getAttribute("alpayitmTbl");
 		}
 		else if("payTax".equals(item)){
@@ -346,7 +346,8 @@ public class SalController{
 				System.out.println("5.PADEPT:");
 				if (alDeptCodeTbl==null||alDeptCodeTbl.size()==0 || flag.equals("Y")){	
 					alDeptCodeTbl=tDAO.getLoadCodeTbl("PADEPT",userid,hid,da);
-					request.getSession().setAttribute("alDeptCodeTbl", alDeptCodeTbl);  
+					request.getSession().setAttribute("alDeptCodeTbl", alDeptCodeTbl);
+					System.out.println("5.PADEPT:size("+alDeptCodeTbl.size()+")");
 				}
 				System.out.println("6.PADPINTBL:");
 				if (alDpinTbl==null||alDpinTbl.size()==0 || flag.equals("Y")){	
@@ -354,7 +355,7 @@ public class SalController{
 					request.getSession().setAttribute("alDpinTbl", alDpinTbl);  
 				}
 				System.out.println("7.PAPAYITM:");
-				if (item.matches("tranPay|batchPay")){	
+				if (item.matches("tranPay|batchPay|payDetail")){	
 					if (alpayitmTbl==null||alpayitmTbl.size()==0 || flag.equals("Y")){	
 						alpayitmTbl=tDAO.getLoadCodeTbl("PAPAYITM",userid,hid,da);
 						request.getSession().setAttribute("alpayitmTbl", alpayitmTbl);  
@@ -412,7 +413,7 @@ public class SalController{
 					jsonObj.element("alexpfTbl", alexpfTbl);
 					jsonObj.element("altracdTbl", altracdTbl);
 				}
-				if (item.matches("tranPay|batchPay")){
+				if (item.matches("tranPay|batchPay|payDetail|bonus")){
 					jsonObj.element("alpayitmTbl", alpayitmTbl);					
 				}
 				if (item.matches("payTax")){
@@ -723,7 +724,7 @@ public class SalController{
 		String me = getClass().getName() + ".getDatPsnList()";		
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
-		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//傳入json
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//傳入json
 		
 		String dataSourceNT="";
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
@@ -736,7 +737,7 @@ public class SalController{
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
-				jsonArrRtn=tDAO.getDatPsnList(code_data,userid,hid,da);
+				jsonArrRtn=tDAO.getDatPsnList(in_data,userid,hid,da);
 				// 用一個root tag將JSONArray包裝起來
 				jsonObj.element("datPsnList", jsonArrRtn);  
 			}catch(Exception e){	
@@ -763,7 +764,8 @@ public class SalController{
 	@RequestMapping(params="method=getBasPsnList")
 	public void getBasPsnList(HttpServletRequest request, HttpServletResponse response){
 		String me = getClass().getName() + ".getBasPsnList()";
-		VGHDataAccess da=new VGHDataAccess(Globals.dataSource_NT);
+				
+		//VGHDataAccess da=new VGHDataAccess(Globals.dataSource_NT);
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//傳入json
@@ -811,7 +813,7 @@ public class SalController{
 		String me = getClass().getName() + ".getTranPsnList()";
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
-		VGHDataAccess da=new VGHDataAccess(Globals.dataSource_NT);
+		//VGHDataAccess da=new VGHDataAccess(Globals.dataSource_NT);
 
 		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//傳入json
 		String item = request.getParameter("item")==null?"":request.getParameter("item");
@@ -902,7 +904,7 @@ public class SalController{
 		Padatpsn psnitem=null;
 		HashMap datPayMap=new HashMap();
 		HashMap datPaySumMap=new HashMap();
-		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//傳入json
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//傳入json
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String dataSourceNT="";
@@ -917,10 +919,10 @@ public class SalController{
 			try{
 				jsonObj = new JSONObject();
 				//個人明細
-				psnitem=tDAO.getDatPsnBykey(code_data,userid,hid,da);
+				psnitem=tDAO.getDatPsnBykey(in_data,userid,hid,da);
 				jsonObj.element("datPsnItem", psnitem,cfg);
 				//個人支扣
-				datPayMap=tDAO.getDatPayList(code_data,psnitem,userid,hid,da);
+				datPayMap=tDAO.getDatPayList(in_data,psnitem,userid,hid,da);
 				jsonObj.element("datPayList", datPayMap.get("datpay_json"));
 				//淨所得,應稅所得
 				datPaySumMap=(HashMap) datPayMap.get("datpaySum_map");
@@ -1083,7 +1085,7 @@ public class SalController{
 		response.setCharacterEncoding("utf-8");		
 		AmJsonConfig cfg = new AmJsonConfig();		
 		jsonArrRtn=new JSONArray();		
-		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//傳入json
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//傳入json
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String dataSourceNT="";
@@ -1096,8 +1098,51 @@ public class SalController{
 			try{
 				jsonObj = new JSONObject();
 				//支扣sum
-				jsonArrRtn=tDAO.getCheckPayBykey(code_data,userid,hid,da);
+				jsonArrRtn=tDAO.getCheckPayBykey(in_data,userid,hid,da);
 				jsonObj.element("checkPayList", jsonArrRtn);
+				
+			}catch(Exception e){	
+				log.info(me+"失敗=="+e.toString());
+				e.printStackTrace();
+			}finally{
+				tDAO=null;
+				da.close();
+				da = null;
+			}
+			
+			PrintWriter out = response.getWriter();
+			// 寫出至JSP頁面
+			out.print(jsonObj.toString());
+			out.flush();
+		}catch (Exception e) {
+			log.info(me + " fail, " + e);
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 依支扣代碼,取得日期範圍名單
+	 */
+	@RequestMapping(params="method=getItmPayList")
+	public void getItmPayList(HttpServletRequest request, HttpServletResponse response){
+		String me = getClass().getName() + ".getItmPayList()";
+		//如果有中文，避免亂碼
+		response.setCharacterEncoding("utf-8");		
+		AmJsonConfig cfg = new AmJsonConfig();		
+		jsonArrRtn=new JSONArray();		
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//傳入json
+		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
+		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
+		String dataSourceNT="";
+		Hospitals hospInfo = Hospitals.getOneHosp(hid);
+		dataSourceNT=hospInfo.dataSourceNT;
+		da=new VGHDataAccess(dataSourceNT);
+		
+		try{
+			tDAO = new SalNTDAO(da,hid);
+			try{
+				jsonObj = new JSONObject();
+				jsonArrRtn=tDAO.getItmPayList(in_data,userid,hid,da);
+				jsonObj.element("itmPayList", jsonArrRtn);
 				
 			}catch(Exception e){	
 				log.info(me+"失敗=="+e.toString());
@@ -1129,7 +1174,7 @@ public class SalController{
 		AmJsonConfig cfg = new AmJsonConfig();
 		
 		jsonArrRtn=new JSONArray();		
-		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//傳入json
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//傳入json
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String dataSourceNT="";
@@ -1143,7 +1188,7 @@ public class SalController{
 			try{
 				jsonObj = new JSONObject();
 				//支扣清單
-				jsonArrRtn=tDAO.getDayPayByCode(code_data,userid,hid,da);
+				jsonArrRtn=tDAO.getDayPayByCode(in_data,userid,hid,da);
 				jsonObj.element("datPayBycodeList", jsonArrRtn);
 				
 			}catch(Exception e){	
@@ -1247,6 +1292,62 @@ public class SalController{
 		}
 	}
 	/**
+	 * [檔案產製]主計室,績效組
+	 * 1:主計室_發放:BAS_1 selCode:selNm:selEn
+	 */
+	@RequestMapping(params="method=handelPrtFile")
+	public void handelPrtFile(HttpServletRequest request, HttpServletResponse response)throws IOException{
+		String me = getClass().getName() + ".handelPrtFile()";
+		//如果有中文，避免亂碼
+		response.setCharacterEncoding("utf-8");		
+		AmJsonConfig cfg = new AmJsonConfig();
+		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
+		userid=request.getParameter("userid");
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//傳入json
+		JSONObject object_in_data =null;
+		String selNm = "";
+		int salnum = 0;
+		String selEn = "";
+		String dataSourceNT="";
+		Hospitals hospInfo = Hospitals.getOneHosp(hid);
+		dataSourceNT=hospInfo.dataSourceNT;
+		da=new VGHDataAccess(dataSourceNT);
+		
+		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
+		
+		try{
+			tDAO = new SalNTDAO(da,hid);
+			try{
+				if (in_data!=null && ! in_data.equals("")){
+					object_in_data = JSONObject.fromObject(in_data);
+					selEn=(!object_in_data.has("selEn")) ? "" : object_in_data.getString("selEn");					
+				}
+				if ( ! selEn.equals("") && selEn.matches("BAS_1|BAS_2") ){
+					jsonArrRtn=tDAO.getBASFileList(in_data,userid,hid,da);
+				}else if ( ! selEn.equals("") && selEn.matches("Perf_1|Perf_2") ){
+					jsonArrRtn=tDAO.getPerfFileList(in_data,userid,hid,da);
+				}
+				// 用一個root tag將JSONArray包裝起來
+				jsonObj.element("fileData", jsonArrRtn);  
+			}catch(Exception e){	
+				log.info(me+"失敗=="+e.toString());
+				e.printStackTrace();
+			}finally{
+				tDAO=null;
+				da.close();
+				da = null;
+			}
+			
+			PrintWriter out = response.getWriter();
+			// 寫出至JSP頁面
+			out.print(jsonObj.toString());
+			out.flush();
+		}catch (Exception e) {
+			log.info(me + " fail, " + e);
+			e.printStackTrace();
+		}
+	}
+	/**
 	 * [產生/查詢/PDF]報表檔 銀行作業{媒體傳輸}
 	 * 1:月報:Prt_M_1 selCode:selNm:selEn
 	 */
@@ -1325,6 +1426,7 @@ public class SalController{
 				else if (fun.equals("printPrt") ){
 					//資料夾路徑
 					strDir = hospInfo.fileSRV+"prt\\";
+					//strDir = hospInfo.fileSRV+"bak\\";
 					//冊子最大數
 					//薪津表(補發扣)
 					if ( selEn.matches("Prt_M_3") )
@@ -1972,6 +2074,11 @@ public class SalController{
 					jsonObj.element("LBINFPayDet", nhiMap.get("LBINFPayDet"));
 					jsonObj.element("LBINFNHIDet", nhiMap.get("LBINFNHIDet"));
 				}
+				else if (fun.equals("NhiAccu")){
+					nhiMap=tDAO.getNhiAccuList(in_data,userid,hid,da);
+					// 用一個root tag將JSONArray包裝起來
+					jsonObj.element("NHIAccuList", nhiMap.get("nhidet_json"));
+				}
 				else if (fun.matches("updNhiCal|updNhiDet")){
 					blnupd = tDAO.updPATblByKey(editMode,tblname,pk_data,tabJson,userid,hid,da);
 					
@@ -2225,7 +2332,7 @@ public class SalController{
 						    			//卡號
 						    			pabatpay.setPaycard( StringUtil.addZero(StringUtil.nullToString(fields[2]),4) );
 						    			//金額
-						    			pabatpay.setPayamt(Integer.parseInt(fields[3]));
+						    			pabatpay.setPayamt(Integer.parseInt(StringUtil.nullToString(fields[3])));
 						    			//Y更新至主檔 N每月歸零
 						    			pabatpay.setPaupbas(paupbas);
 						    			//發薪日
@@ -2251,6 +2358,7 @@ public class SalController{
 						strRtn=tDAO.impByBankC(alPrtDtl,patradt,salnum,selEn,filename,userid,hid,da);						
 						jsonObj.put("msg", strRtn);
 					}
+					//[匯入]批次檔 ImpPayInBat
 					else if (selEn.matches("ImpPayInBat")){
 						strRtn=tDAO.ImpPayInBat(alBatpay,patradt,paycode,chkbas,selEn,filename,userid,hid,da);						
 						jsonObj.put("msg", strRtn);

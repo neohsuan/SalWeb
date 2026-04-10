@@ -88,6 +88,8 @@ public class Padatpsn implements Serializable{
     private java.sql.Date paygovdt;
     /** 到院日期*/
     private java.sql.Date payempdt;
+    /** 現職日期*/
+    private java.sql.Date paysgndt;
     /** 發薪日期_String*/
     private String strbank;
     /** 初任公職日期_String*/
@@ -98,6 +100,10 @@ public class Padatpsn implements Serializable{
     private String contract;
     /** 投保金額*/
     private int insuamt;
+    /** 性別*/
+    private String sex;
+    /** 留職留薪,支領專2(Y/N)*/
+    private String paretention;
     
     public int getSalnum() {
 		return salnum;
@@ -317,9 +323,9 @@ public class Padatpsn implements Serializable{
 	}
 
 	//契約
-	//高榮1A0--醫師:舊制N,契約:到院日2015/1起為新制Y,舊制N
-	//屏榮2A0--醫師:舊制N,契約:新制Y
-	//聯醫3A0--新制Y
+	//高榮1A0--醫師:舊制N,契約:到院日2015/1起為新制(月尾)Y,舊制(月頭)N
+	//屏榮2A0--醫師:舊制(月頭)N,契約:新制(月尾)Y
+	//聯醫3A0--新制(月尾)Y
 	public String getContract() { 
 		String rtnTmp="";
 		try {
@@ -370,7 +376,25 @@ public class Padatpsn implements Serializable{
 	public void setZlhdatpsn(java.sql.Timestamp zlhdatpsn) {
 		this.zlhdatpsn = zlhdatpsn;
 	}
-    
+	public String getSex() {
+		return sex;
+	}
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+	public java.sql.Date getPaysgndt() {
+		return paysgndt;
+	}
+	public void setPaysgndt(java.sql.Date paysgndt) {
+		this.paysgndt = paysgndt;
+	}
+	public String getParetention() {
+		return paretention;
+	}
+	public void setParetention(String paretention) {
+		this.paretention = paretention;
+	}
+	
         
 }
 	

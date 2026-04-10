@@ -47,23 +47,42 @@ $(function(){
 // 	$(".selectpicker").selectpicker({
 // 		noneSelectedText : '請選擇'//預設顯示內容
 //     });
-    	
+
+	//tab設定
+	$('#pills-tab a').on('click', function (e) {
+	  e.preventDefault();
+	  $(this).tab('show');
+	  tabid=$(this).attr('id');
+	  console.log(tabid);
+	  //計算匯出
+	  if (tabid=="pills-nhiprod-tab"){
+	  	var logtmp="log資料夾:\\\\ap_pd1\\Apps_Exe\\SalProd\\" ;
+	  	logtmp = logtmp.concat(pahid,"\\log\\");
+		logtmp = logtmp.concat(" ", "data資料夾:\\\\ap_pd1\\Apps_Exe\\SalProd\\");
+		logtmp = logtmp.concat(pahid,"\\data\\");
+		$("#explanProd_1").html(logtmp);
+	  }
+	  
+	});
+	    	
 	$(".gclsCalTxt").datepicker({ 
 		changeMonth: true,
       	changeYear: true,
       	dateFormat:"yy-mm-dd"});
       	
-	//代碼選單
+	//代碼選單,2026.3.12先把VB版改成WEB版,製票號先暫緩
 	$("#prod_cond").change(function(){
 		$(".prod_1,.prod_2,.prod_3").addClass("d-none");	//隱藏
 		selCode=(typeof($("#prod_cond option:selected").val().split(':')[0]) == "undefined" )? "0":$("#prod_cond option:selected").val().split(':')[0];
   		console.log(selCode);
 		if (selCode == 1 || selCode == 2 || selCode == 3 || selCode == 4)
 			$(".prod_1").removeClass("d-none");
-		else if (selCode == 5 || selCode == 6 )
-			$(".prod_3").removeClass("d-none");
-		else	 
-			$(".prod_2").removeClass("d-none");
+		else
+			$(".prod_2").removeClass("d-none");	
+// 		else if (selCode == 5 || selCode == 6 || selCode == 7)
+// 			$(".prod_2").removeClass("d-none");
+// 		else	 
+// 			$(".prod_3").removeClass("d-none");
   	});		
 	$.getLoadCodeTbl = function(item,flag){		
 		$.ajax({
@@ -185,16 +204,31 @@ $(function(){
 				if (selCode == 1 || selCode == 2 || selCode == 3 || selCode == 4){
 					if($("#prod_nhi_SalNum").val()=='')
   						msg = '[餉單編號]請勿空白';
-  				}else if (selCode == 5 || selCode == 6 ){
-  					if($("#prod_nhi_payno").val()=='')
-  						msg = '[製票號]請勿空白';  						
-  				}else if (selCode == 7){
-  					if($("#prod_nhi_paydt").val()=='')
-  						msg = '[給付日期]請勿空白';
-  				}	
+  				}
+  				else {
+   					if($("#prod_nhi_paydt").val()=='')
+ 						msg = '[給付日期]請勿空白';
+   				}
+//   				else if (selCode == 8 || selCode == 9 ){
+//   					if($("#prod_nhi_payno").val()=='')
+//   						msg = '[製票號]請勿空白';  						
+//   				}else if (selCode == 5 || selCode == 6 || selCode == 7 || selCode == 10){
+//   					if($("#prod_nhi_paydt").val()=='')
+//   						msg = '[給付日期]請勿空白';
+//   				}	
 			}			
+ 		}else if (btn== 'btn_qryAccu'){	//累積數_查詢
+ 			if ( ($("#qry_accu_cardno").val()=='' && $("#qry_accu_idtno").val()=='' && $("#qry_accu_namec").val()=='') &&
+  				 (typeof($("#qry_accu_nhiyr option:selected").val())=='undefined' || $("#qry_accu_nhiyr option:selected").val()=="") ){
+  				msg = '請輸入條件值!!';
+  			}	
+  			//要加年度,	
+			else if ( $("#qry_accu_cardno").val()!='' || $("#qry_accu_idtno").val()!='' || $("#qry_accu_idtno").val()!=''  )  {
+				if ( typeof($("#qry_accu_nhiyr option:selected").val())=='undefined' || $("#qry_accu_nhiyr option:selected").val()=="" )  {
+					msg="請設定[年度]";
+				}	
+			}
  		}
- 		
  		
   		return msg;	
 	};
@@ -441,6 +475,11 @@ $(function(){
 			cleanTable("byNhiDetMain");
 			//清空datatable
 		 	$("#TblNhiDetList").dataTable().fnClearTable();
+		 	return false;
+		}else if(id == 'btn_clnAccu'){
+			cleanTable("byNhiAccuMain");
+			//清空datatable
+		 	$("#TblAccuList").dataTable().fnClearTable();
 		 	return false;
 		}
 		else if(id == 'btn_addNhical'){		//補充保險費[獎金]_新增一筆
@@ -809,25 +848,24 @@ $(function(){
 			msg = $.checkFields(id);
 			if(msg == ''){
 				selCode=$("#prod_cond option:selected").val().split(':')[0];
-				selNm=$("#prod_cond option:selected").val().split(':')[1];
-				selEn=$("#prod_cond option:selected").val().split(':')[2];
+				selNm  =$("#prod_cond option:selected").val().split(':')[1];
+				selEn  =$("#prod_cond option:selected").val().split(':')[2];
 				salnum =$("#prod_nhi_SalNum").val().split(':')[0];
 				paybank =$("#prod_nhi_SalNum").val().split(':')[1];
 				paydt =$("#prod_nhi_paydt").val();
 				payno =$("#prod_nhi_payno").val();
-				
-				console.log("[產生]計算/匯出_執行  selCode:"+selCode+" selEn:"+selEn+" selNm:"+selNm+" salnum:"+salnum+" paydt:"+paydt+" hid:"+pahid );
 				in_data="";
 				in_data={
-						selNm   :selNm,
-						selEn   :selEn,
-						salnum  :salnum,
-						paybank :paybank,
-						paydt   :paydt,
-						payno   :payno,
+						selNm   : selNm,
+						selEn   : selEn,
+						salnum  : salnum,
+						paybank : paybank,
+						paydt   : paydt,
+						payno   : payno,
 						hid     : pahid,
 						userid  : paUserid
 					   };
+				console.log("[產生]計算/匯出_執行  selCode:"+selCode+" in_data:"+JSON.stringify(in_data) );					   
 				//return false;
 				$.ajax({
 						url:"${pageContext.request.contextPath}/salController.do",
@@ -856,6 +894,64 @@ $(function(){
 							alert("[產生]計算/匯出_執行["+selNm+"] 失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
 						}
 					});	
+			}	
+			else{
+				alert(msg);
+				return false;
+			}
+		}
+		else if(id == 'btn_qryAccu'){		//累積數_查詢
+			msg = $.checkFields(id);
+			if(msg == ''){
+				cardno=$("#qry_accu_cardno").val().toUpperCase();
+				idtno=$("#qry_accu_idtno").val().toUpperCase();
+				namec=$("#qry_accu_namec").val();
+				payyr=$.getSelectVals("qry_accu_nhiyr"); 
+				selCode="NhiAccu";
+				selNm="補充保險費[累積數]";
+						
+				console.log("卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec+" 年度:"+payyr);
+				//return false;
+				
+				in_data={
+		        		cardno     :cardno,
+		        		idtno      :idtno,
+		        		namec      :namec,
+		        		payyr      :payyr,
+		        		selCode    :selCode,
+		        		selNm      :selNm
+		        	};
+								
+				$.ajax({
+					url:"${pageContext.request.contextPath}/salController.do",
+					data:{
+						method  : 'handelNhi',
+						fun     : selCode,
+						in_data : JSON.stringify(in_data),
+						hid     : pahid,
+						userid  : paUserid
+					},
+					type:"POST",	//type:POST, GET(default:GET)
+					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+					contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+					success:function(data) {
+						//更新查詢清單
+						$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
+						$('#TblAccuList').show();
+						oTable = $('#TblAccuList').dataTable(objCopyC);
+						
+						oTable.fnClearTable(0);		//清空資料
+								
+						if (data.NHIAccuList!=null && data.NHIAccuList.length>0){	
+							oTable.fnAddData(data.NHIAccuList);//重新給資料
+						}
+						oTable.fnDraw(false);
+						
+					},
+					error: function(xhr){					
+						alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
+					}
+				});
 			}	
 			else{
 				alert(msg);
@@ -1206,7 +1302,53 @@ $(function(){
 			//累積獎金,放在hidden
 			$("#nhidet_lastjackpot").val(jack);
 		}	
-	};    	      
+	};
+	
+	 //補充保險費[獎金]
+ 	var objCopyC = $.extend(true, {aaSorting: []}, dataTableConfig);			
+	objCopyC.aoColumns = [	
+							{ "sTitle":"","mData": null },
+							{ "sTitle":"年度",	"mData": "yy" },
+							{ "sTitle":"身份證字號",	"mData": "payidno" },
+							{ "sTitle":"卡號",		"mData": "paycard" },
+							{ "sTitle":"姓名",		"mData": "paynamec" },
+							{ "sTitle":"投保額",		"mData": "moninsu" },								
+							{ "sTitle":"4投保額",	"mData": "moninsu4" },	
+							{ "sTitle":"累積獎金",	"mData": "bonusamt" }
+																			
+						 ];
+	objCopyC.iDisplayLength=10;
+	
+	objCopyC = $.extend(true,objCopyC, {
+				  dom: 'B<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-tl  ui-corner-tr"lfr>'+
+							't'+
+						'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
+					buttons: [
+					   'excelHtml5'/*  , {extend: 'csv',text: 'CSV',bom: true} */
+					],
+				 "fnDrawCallback": function () {
+	  			 		//第1欄序列
+						 var api = this.api();
+						var startIndex=0;
+                    	api.column(0).nodes().each(function(cell, i) {
+                        	cell.innerHTML = startIndex + i + 1;
+                    	}); 
+                    	//到某頁
+					 	$("#TblNhiCalList_paginate").append("  到第 <input style='height:28px;line-height:28px;width:40px;' class='margin text-center' id='changePageC' type='text'> 頁  <a class='btn btn-success shiny' style='margin-bottom:5px' href='javascript:void(0);' id='dataTable-btn'>確認</a>");
+					 	oTable = $("#TblNhiCalList").dataTable();
+					 	$('#dataTable-btn').click(function(e) {
+					 		if($("#changePageC").val() && $("#changePageC").val() > 0) {
+					 			var redirectpage = $("#changePageC").val() - 1;
+					 		} else {
+					 			var redirectpage = 0;
+					 		}	
+					 		oTable.fnPageChange(redirectpage);		
+					 	});
+					}
+                 }    							
+			);
+				    
+	$('#TblAccuList').dataTable(objCopyC);    	      
 });
 
 </script>
@@ -1223,6 +1365,9 @@ $(function(){
   <li class="nav-item">
     <a class="nav-link" id="pills-nhiprod-tab" data-toggle="pill" href="#byNhiProdMain" role="tab" aria-controls="pills-profile" aria-selected="false">計算/匯出</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" id="pills-nhiaccu-tab" data-toggle="pill" href="#byNhiAccuMain" role="tab" aria-controls="pills-profile" aria-selected="false">累積獎金</a>
+  </li>
 </ul>
 
 <div class="tab-content" id="pills-tabContent">
@@ -1234,6 +1379,7 @@ $(function(){
 					<div class="form-inline">
 		    			<div class="input-group">
 		    				<input type="text" id="qry_nhical_paydt" size="10" class="form-control-sm gclsCalTxt" placeholder="給付日期" >
+		    				<span class="input-group-text">年度</span>
 		    				<select id="qry_nhical_nhiyr" class="form-control-sm nhiyr" title="年度">
 								
 							</select>
@@ -1373,8 +1519,8 @@ $(function(){
 								<option value="5:申報扣費明細_[產生](給付日期):Det_1">5:申報扣費明細_[產生](給付日期)</option>	
 								<option value="6:申報扣費明細_[刪除](給付日期):Det_2">6:申報扣費明細_[刪除]給付日期)</option>	
 								<option value="7:申報扣費明細_[產生]媒體申報檔(給付日期):Det_3">7:申報扣費明細_[產生]媒體申報檔(給付日期)</option>	
-								<option value="8:所得稅_[寫入]轉帳項目:35 57 58(傳票):Tax_1">8:所得稅_[寫入]轉帳項目:35 57 58(傳票)</option>
-								<option value="9:所得稅_[寫入]轉帳項目:59(傳票):Tax_2">9:所得稅_[寫入]轉帳項目:59(傳票)</option>
+								<option value="8:所得稅_[寫入]轉帳項目35 57 58(給付日期):Tax_1">8:所得稅_[寫入]轉帳項目:35 57 58(給付日期)</option>
+								<option value="9:所得稅_[寫入]轉帳項目59(給付日期):Tax_2">9:所得稅_[寫入]轉帳項目:59(給付日期)</option>
 								<option value="10:所得稅_[刪除](給付日期):Tax_3">10:所得稅_[刪除](給付日期)</option>							
 							</select>
 						
@@ -1394,7 +1540,61 @@ $(function(){
 					<button id="btn_clnNhi" class="btn btn-warning " type="button"><i class="fa fa-eraser"></i>清空</button>
 				</div>	
 			</div>
+			<div class="row">
+			<div class="col-md-12">
+				<div id="explanProd_1" class="text-danger"></div>
+			</div>
+			</div>
 		</div>
+	</div>
+	<!--累積獎金-->
+	<div class="tab-pane fade" id="byNhiAccuMain" role="tabpanel" aria-labelledby="pills-nhiaccu-tab">
+		<div class="container-fluid">
+			
+			<div class="row">
+				<div class="col-12">
+					<a href="#explan_NhiAccu" class="btn btn-danger" data-toggle="collapse">注意事項</a>
+			  		<div id="explan_NhiAccu" class="collapse">
+			  			<div id="explanAccu_1" class="text-danger">
+				  			1.年+卡號/身分證/姓名+【查詢】:依[年]+[卡號/身分證/姓名],列出年度累積獎金<br>
+				  			2.身分證:唯一值,卡號/姓名:會有重複問題<br>					  			
+				  		</div>
+				  	</div>	
+				</div>
+			</div>
+				
+			<div class="row">
+				<div class="col-10">
+					<div class="form-inline">
+		    			<div class="input-group">
+		    				<span class="input-group-text">年度</span>
+		    				<select id="qry_accu_nhiyr" class="form-control-sm nhiyr" title="年度">
+								
+							</select>
+							<input type="text" id="qry_accu_cardno" size="4" class="form-control-sm text-uppercase" placeholder="卡號" >
+							<input type="text" id="qry_accu_idtno" size="10" class="form-control-sm text-uppercase" placeholder="身分證" >
+							<input type="text" id="qry_accu_namec" size="12" class="form-control-sm " placeholder="姓名" >
+							
+						</div>		    		
+			    		
+					</div>
+				</div>
+				<div class="col-2">
+					<button id="btn_qryAccu" class="btn btn-info" type="button" ><i class="fa fa-search"></i>查詢</button>
+					<button id="btn_clnAccu" class="btn btn-warning" type="button"><i class="fa fa-eraser"></i>清空</button>
+				</div>
+			</div>
+				
+			<div class="row">
+				<div class="col-12 border border-dark">
+					<!-- pa.panhical清單 -->
+					<table id="TblAccuList" class="table table-striped table-bordered table-hover" >
+						<thead>							
+						</thead>
+					</table>
+				</div>
+			</div>
+ 		</div>	
 	</div>
 </div>
 

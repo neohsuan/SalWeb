@@ -105,7 +105,8 @@ public class Deduct_1A0 {
 			Font fontColTitlA = new Font( bfChinese, 8, Font.NORMAL ); //標題字型設定，size為8
 			Font fontColTitlB = new Font( bfChinese, 7, Font.NORMAL ); //標題字型設定，size為7
 			Font fontColTitlC = new Font( bfChinese, 5, Font.NORMAL ); //標題字型設定，size為6
-			Font fontColCent = new Font( bfChinese, 8, Font.NORMAL ); //字型設定，size為8
+			Font fontColCent = new Font( bfChinese, 9, Font.NORMAL ); //字型設定，size為9
+			Font fontColCentT = new Font( bfChinese, 8, Font.NORMAL ); //字型設定，size為8
 			Font fontColCentB = new Font( bfChinese, 8, Font.BOLD ); //字型設定，size為8
 			
 			//加入標題
@@ -294,7 +295,7 @@ public class Deduct_1A0 {
 					cellContent.setPhrase(new Phrase(tmp, fontColCent));		
 					contentTable.addCell(cellContent);
 					//補充保險費PAYOTHER1
-					tmp=String.valueOf( data.getPayadrtn() ) +"\n　";
+					tmp=String.valueOf( data.getPayother1() ) +"\n　";
 					cellContent.setPhrase(new Phrase(tmp, fontColCent));
 					contentTable.addCell(cellContent);
 					//房屋津貼PAYMHOUS
@@ -343,55 +344,55 @@ public class Deduct_1A0 {
 			sumCell.setHorizontalAlignment(Element.ALIGN_RIGHT); //垂直置中
 			//公保費PAYGEINS,公共設施使用費PAYGYM
 			tmp = String.valueOf(intCellSum_1A)+"\n\n"+String.valueOf(intCellSum_1B);
-			sumCell.setPhrase(new Phrase( tmp , fontColCent));
+			sumCell.setPhrase(new Phrase( tmp , fontColCentT));
 			sumTable.addCell(sumCell);
 			//健保費PAYDPINS,代扣停車費PAYPARK1
 			tmp = String.valueOf(intCellSum_2A)+"\n\n"+String.valueOf(intCellSum_2B);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//勞保費PAYLBINS,眷舍管理費PAYDORM1+PAYDORM2+PAYDORM3+payother2PGY眷舍管理費 2025.8.20 
 			tmp = String.valueOf(intCellSum_3A)+"\n\n"+String.valueOf(intCellSum_3B);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//退撫離職金PAYRETIR,餐費PAYMEAL
 			tmp = String.valueOf(intCellSum_4A)+"\n\n"+String.valueOf(intCellSum_4B);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//所得稅PAYTAX,製卡費PAYCARDF
 			tmp = String.valueOf(intCellSum_5A)+"\n\n"+String.valueOf(intCellSum_5B);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//公教儲金PAYGEDP,惠民捐款PAYAGEN1
 			tmp = String.valueOf(intCellSum_6A)+"\n\n"+String.valueOf(intCellSum_6B);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//醫療互助金PAYNSPFD,醫療糾紛PAYOTHER3
 			tmp = String.valueOf(intCellSum_7A)+"\n\n"+String.valueOf(intCellSum_7B);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//國宅貸款PAYHLOA1+PAYHLOA2+PAYHLOA3+PAYHLOA4+PAYHLOA5+PAYHLOA6,體適能中心費用PAYVETD
 			tmp = String.valueOf(intCellSum_8A)+"\n\n"+String.valueOf(intCellSum_8B);
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//自繳勞退PAYDLOAN
 			tmp = String.valueOf(intCellSum_9A)+"\n\n　";
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//補充保險費PAYOTHER1
 			tmp = String.valueOf(intCellSum_10A)+"\n\n　";
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//房屋津貼PAYMHOUS
 			tmp = String.valueOf(intCellSum_11A)+"\n\n　";
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//清償債款PAYLIEN
 			tmp = String.valueOf(intCellSum_12A)+"\n\n　";
-			sumCell.setPhrase(new Phrase( tmp, fontColCent));
+			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//扣款合計PAYTLDED
 			tmp = fm.format(intCellSum_13A);
-			sumCell.setPhrase(new Phrase( tmp , fontColCent));
+			sumCell.setPhrase(new Phrase( tmp , fontColCentT));
 			sumTable.addCell(sumCell);
 			
 			document.add(contentTable); //加入內容Table

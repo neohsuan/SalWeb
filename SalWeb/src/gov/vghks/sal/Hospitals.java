@@ -26,12 +26,17 @@ public enum Hospitals {
 		"appa01",  
 		"pa01ap",
 		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\SalProd\\1A0\\",
+		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\Sal\\",
+		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\SALEPF\\",
+		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\SALPPF\\",
 		"高雄市左營區大中一路３８６號",
-		"潘麗馡",
+		"陳金順",
 		"07-3422121",		
 		"08261077",
 		"E12",
 		"120300016",
+		"潘麗馡",
+		"07-3422121",
 		"123573286",
 		"110005304",
 		"('0','1','2','3','4','A','B','C','D','E','5','6','F','G','H','I','J','K','M','7','U','8')"
@@ -48,12 +53,17 @@ public enum Hospitals {
 		"appa02",
 		"ptpa02ap",
 		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\SalProd\\2A0\\",
+		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\Sal\\",
+		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\SALEPF\\",
+		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\SALPPF\\",
 		"屏東縣屏東市崇武里榮總東路１號",
 		"王瑞祥",
 		"08-7557885",
 		"92362346",
 		"T90",
 		"900816938",
+		"王瑞祥",
+		"08-7557885",
 		"",
 		"",
 		"('P','Q','T','W','X','Y')"
@@ -70,12 +80,17 @@ public enum Hospitals {
 		"appa04",
 		"lhpa04ap$$--",
 		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\SalProd\\3A0\\",
+		"\\\\Ap_pd1.vghks.gov.tw\\apps_exe\\Sal\\",
+		"",
+		"",
 		"高雄市鼓山區中華一路９７６號",
 		"馬光遠",
 		"07-5552565",
 		"15757714",
 		"E06",
-		"15757714",
+		"065000003",
+		"李治",
+		"5552565#51476",
 		"",
 		"",
 		"('L')"
@@ -92,13 +107,18 @@ public enum Hospitals {
 	public final String dataSourceDSN;		//DATA_SOURCE_主機
 	public final String gap_id;				//ap帳號
 	public final String gap_pwd;			//ap密碼
-	public final String fileSRV;			//local_file
+	public final String fileSRV;			//file存放位置
+	public final String fileAPSRV;			//file存放位置AP_PD1 
+	public final String fileSALEPF;			//file存放位置AP_PD1_SALEPF員工
+	public final String fileSALPPF;			//file存放位置AP_PD1_SALPPF醫師
 	public final String adr;				//醫院地址
 	public final String agent;				//扣繳義務人
 	public final String tel;				//機關電話
 	public final String taxNo;			//申報單位統一編號
 	public final String agencyNo;		//稽徵機關代號
 	public final String taxID;			//申報單位稅籍編號
+	public final String contactNm;		//申報聯絡人姓名
+	public final String contactTel;		//申報聯絡人電話
 	public final String healthLabID;	//勞保身分健保 投保單位代號
 	public final String healthCivID;	//公保身分健保 投保單位代號
 	public final String cardGrp;		//卡號群組
@@ -115,12 +135,17 @@ public enum Hospitals {
 		final String gap_id,
 		final String gap_pwd,
 		final String fileSRV,
+		final String fileAPSRV,
+		final String fileSALEPF,
+		final String fileSALPPF,
 		final String adr,
 		final String agent,
 		final String tel,
 		final String taxNo,
 		final String agencyNo,
 		final String taxID,
+		final String contactNm,
+		final String contactTel,
 		final String healthLabID,
 		final String healthCivID,
 		final String cardGrp
@@ -136,12 +161,17 @@ public enum Hospitals {
     	this.gap_id = gap_id;
     	this.gap_pwd = gap_pwd;    	
     	this.fileSRV = fileSRV;
+    	this.fileAPSRV = fileAPSRV;
+    	this.fileSALEPF = fileSALEPF;
+    	this.fileSALPPF = fileSALPPF;
     	this.adr = adr;
         this.agent = agent;
         this.tel = tel;
         this.taxNo = taxNo;
     	this.agencyNo = agencyNo;
     	this.taxID = taxID;
+    	this.contactNm = contactNm;
+    	this.contactTel = contactTel;
     	this.healthLabID = healthLabID;
     	this.healthCivID = healthCivID;
     	this.cardGrp = cardGrp;

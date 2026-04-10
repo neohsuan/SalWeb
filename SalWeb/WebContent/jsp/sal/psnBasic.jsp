@@ -1159,7 +1159,7 @@ $(function(){
 														<div class="form-group" id="div_pfdoc">
 															<label for="paypfdoc" class="table-warning">專勤基本額度:</label>
 															<input type="text" id="paypfdoc" class="form-control" maxlength="8" size="8"  />
-															<label for="paretention" class="table-warning">留職留薪,支領專2(Y/N):</label>
+															<label for="paretention" class="table-warning">專1=0,支領專2(Y/N):</label>
 															<input type="text" id="paretention" class="form-control text-uppercase" maxlength="1" size="1"  />
 														</div>
 													</div>

@@ -18,13 +18,16 @@ var padeptno = ("" != agent) ? "${sessionScope.agentdeptno}" : deptno;          
 
 var tabid="";
 var objCopy;
-var code_data;
 var in_data;
 var codeTbl;
 var oTable;
 var paybank;
 var salnum;
 var cardno;
+var idtno;
+var namec;
+var paydept;
+var paycode;
 var salNm;
 var selEn;
 var selPs;
@@ -33,6 +36,10 @@ var hid;
 var patradt;
 var rowData;
 var msg;
+var logtmp;
+var val;
+var tmp;
+var jsonString;
 $(function(){
 	$('#collapseOne').collapse('show');	
 	$(".gclsCalTxt").datepicker({ 
@@ -46,6 +53,49 @@ $(function(){
     //初始化重新整理資料
 	$(window).on('load', function() {
 		$('.selectpicker').selectpicker('refresh');
+	});
+	
+	//tab設定
+	$('#pills-tab a').on('click', function (e) {
+	  e.preventDefault();
+	  $(this).tab('show');
+	  tabid=$(this).attr('id');
+	  console.log(tabid);
+	  var logtmp;
+	  //檔案產製
+	  if (tabid=="pills-fileProd-tab"){
+	  	tmp = "";	
+		if (pahid != "1A0"){
+			tmp = pahid;
+		}
+	  	logtmp="\\\\ap_pd1.vghks.gov.tw\\Apps_Exe\\Sal\\pay"+tmp +".txt";	
+		$("#explanProd_1").html(logtmp);
+	  }
+	  
+	});
+	//檔案產製代碼切換
+	$("#file_cond").change(function(){
+		$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
+		selCode=$("#file_cond option:selected").val().split(':')[0];
+		if (typeof(selCode)=="undefined" || '' == selCode){
+			selCode="1";
+		}
+		tmp = "";	
+		if (pahid != "1A0"){
+			tmp = pahid;
+		}
+		
+		if (selCode == "1"){	//主計室發放
+			codeTbl="tblBASPayList";
+			logtmp="\\\\ap_pd1.vghks.gov.tw\\Apps_Exe\\Sal\\pay"+tmp +".txt";		  	
+	  	}else if (selCode == "2"){	//主計室扣款
+	  		codeTbl="tblBASDeductList";
+	  		logtmp="\\\\ap_pd1.vghks.gov.tw\\Apps_Exe\\Sal\\DEDUCT"+tmp +".txt";		  	
+		}  	
+	  	$("#explanProd_1").html(logtmp);
+	  	$('#'+codeTbl).show();		
+		$("#btn_qryCode").trigger( "click" );	
+		
 	});
 	//非1A0刪除比對中Value='2'的Option
 	if (pahid == "2A0" || pahid == "3A0"){
@@ -109,8 +159,9 @@ $(function(){
 					});
 					select.selectpicker('refresh');
 				}
+				//單位
 				if (data.alDeptCodeTbl[0]!=null){
-					select = $('#qryDept');
+					select = $('#qryDept,#qry_itmPay_Dept');
 					select.empty();
 					options = "<option value=''>";
 					select.append(options);
@@ -145,7 +196,7 @@ $(function(){
 				}
 				//餉單編號(2個月內)
 				if (data.alBankDtTbl_2M[0]!=null){
-					select = $('#qry_set_datyr,#prod_SalNum,#prt_SalNum,#print_SalNum');
+					select = $('#qry_set_datyr,#prod_SalNum,#prt_SalNum,#print_SalNum,#file_SalNum');
 					select.empty();
 					options = "<option value=''>";
 					select.append(options);
@@ -168,6 +219,18 @@ $(function(){
 					});
 					select.selectpicker('refresh');			 	
 			 	}
+			 	//支扣代碼
+				if (data.alpayitmTbl[0]!=null){
+					select = $('#qry_itmPay_Pay');
+					select.empty();
+					options = "<option value=''>";
+					select.append(options);
+					$.each(data.alpayitmTbl, function(idx) {
+						options = "<option value='" + data.alpayitmTbl[idx].paycode + "'>" + data.alpayitmTbl[idx].paycode+" "+data.alpayitmTbl[idx].pacodnmc ;
+						select.append(options);
+					});
+					select.selectpicker('refresh');
+				}
 			}  
 		});
 	};
@@ -181,6 +244,12 @@ $(function(){
   		if (btn== 'btn_qrySalNum'){	//餉單編號設定_查詢
   			if (typeof($("#prod_selCode option:selected").val())=='undefined'){
   				msg = '請勾選[性質]項目!!';
+  			}
+  			if ($("#qry_set_salnum").val()==''){
+  				msg += '[餉單編號]請勿空白,請填>=0 !!';
+  			}
+  			if ($("#qry_set_patradt").val()==''){
+  				msg += '[發薪日]請勿空白 !!';
   			}
   		}
   		else if (btn== 'btn_printPrt'){	//報表列印
@@ -203,9 +272,9 @@ $(function(){
 				day = '0' + day;
  			var today = now.getFullYear() + '-' + month + '-' + day;
  			patradt = $("#prt_SalNum").val().split(':')[1];
-  			/* if (patradt < today) {
+  			/*if (patradt < today) {
   				msg+=' 請勾選 大於 今日!!';
-  			} */
+  			}*/
   			if (typeof($("#qry_prt_cond option:selected").val()) == 'undefined' ){
   				msg+=' 請勾選[條件]項目!!';  		
 			}
@@ -240,26 +309,40 @@ $(function(){
 				day = '0' + day;
  			var today = now.getFullYear() + '-' + month + '-' + day;
  			patradt = $("#prod_SalNum").val().split(':')[1];
-  			/* if (patradt < today) {
+  			if (patradt < today) {
   				msg+=' 請勾選 大於 今日!!';
-  			} */
+  			} 
   			
   			if (typeof($("#qry_prod_cond option:selected").val()) == 'undefined' ){
   				msg+=' 請勾選[條件]項目!!';  		
 			}
   		}
   		else if (btn== 'btn_prodSalNum'){	//餉單編號設定_執行
-  			if( $("#prod_set_SalNum").val()=='')
-  				msg = '[編號設定]請勿空白';
-  			if (typeof($("#qry_set_datyr option:selected").val())!='undefined' && $("#qry_set_datyr option:selected").val()!=''){
-  				isChecked=$('input[name="chkupdA"]:checked').length;
-				if (isChecked==0) 
-					msg+=' 請至少勾選1個';  		
+  			if( $("#prod_set_SalNum").val()==''){
+  				msg = '[新編號值]請勿空白';
+  			}
+  			
+  			val=$("#qry_set_salnum").val();	
+  			if ( !isNaN(parseFloat(val)) ){
+  				//原餉單編號>0,要判斷勾選筆數
+  				if  ( parseInt(val) > 0 && $("#qry_set_patradt").val()!=''){
+	  				isChecked=$('input[name="chkupdA"]:checked').length;
+					if (isChecked==0) 
+						msg+=' 請至少勾選1個';
+				}			  		
+			}else{
+				msg = '[餉單編號]為數字.';
 			}
   		}
   		else if (btn== 'btn_qryDatPsn'){	//發薪明細_查詢
-  			if($("#qryCardno").val()==''  && $("#qry_padatpsn_salnum option:selected").val()=='' && $("#qry_padatpsn_paybank option:selected").val()=='' && $("#qry_payrank option:selected").val()=='' && 
-  			   typeof($("#qry_padatpsn_salnum option:selected").val())=='undefined' && typeof($("#qry_payrank option:selected").val())=='undefined'){
+  			if($("#qryCardno").val()==''  && $("#qryIdtno").val()=='' && $("#qryNamec").val()=='' && 
+  			  ($("#qry_padatpsn_salnum option:selected").val()=='' || typeof($("#qry_padatpsn_salnum option:selected").val())=='undefined' )&& 
+  			  ($("#qry_padatpsn_paybank option:selected").val()=='' || typeof($("#qry_padatpsn_paybank option:selected").val())=='undefined' )&& 
+  			  ($("#qry_payrank option:selected").val()=='' || typeof($("#qry_payrank option:selected").val())=='undefined') && 
+  			  ($("#qryDept option:selected").val()=='' || typeof($("#qryDept option:selected").val())=='undefined')  && 
+  			  ($("#qryTitle option:selected").val()=='' || typeof($("#qryTitle option:selected").val())=='undefined') && 
+  			  ($("#qry_insuamt option:selected").val()=='' || typeof($("#qry_insuamt option:selected").val())=='undefined') )
+  			  {
   				msg = '請輸入條件值!!';
   			}
   		}
@@ -270,9 +353,27 @@ $(function(){
  			}	
  		}
 		else if (btn== 'btn_qryProdPrt'){	//報表作業_查詢
-			if($("#prt_SalNum").val()=='' && typeof($("#qry_prt_cond option:selected").val()) == 'undefined' ){
+			if(($("#prt_SalNum").val()==''  ) ){
   				msg = '請輸入條件值!!';
   			}
+  		}else if (btn== 'btn_qryItmPay'){	//支扣明細查詢
+  			if($("#qry_itmPay_Pay").val()==''){
+  				msg = '請輸入[支扣代碼]條件值!!';
+  			}
+  			if($("#qry_itmPay_Cardno").val()==''  && $("#qry_itmPay_Idtno").val()=='' && $("#qry_itmPay_Namec").val()=='' && 
+  			  ($("#qry_itmPay_paybankBeg").val()=='' || typeof($("#qry_itmPay_paybankBeg").val())=='undefined' )&& 
+  			  ($("#qry_itmPay_paybankEnd").val()=='' || typeof($("#qry_itmPay_paybankEnd").val())=='undefined' )&& 
+  			  ($("#qry_itmPay_Dept").val()=='' || typeof($("#qry_itmPay_Dept option:selected").val())=='undefined') )
+  			  {
+  				msg += '請輸入條件值!!';
+  			}
+  		}
+  		else if (btn== 'btn_qryFile'){	//檔案產製
+  			if($("#file_cond").val()=='' || typeof($("#file_cond").val())=='undefined' ){
+  				msg = '請輸入項目!!';
+  			}
+  			if($("#file_SalNum").val()=='' || typeof($("#file_SalNum").val())=='undefined')
+  			    msg += '[餉單編號_發薪日]請勿空白!!';
   		}
   		return msg;	
 	};
@@ -284,15 +385,58 @@ $(function(){
 		    selectedValues=selectedValues + $(this).val();
 		});
 		return selectedValues;
-	}	
-		//jQuery按紐圖示
+	};	
+	//jQuery按紐圖示
 	$(".btn").button().click(
 		function(event) {event.preventDefault();}
 	);
 	$(".btn").click(function(){
 		var id = $(this).attr('id');
 		
-		if(id == 'btn_clnDatPsn' || id == 'btn_clnCheck' || id =='btn_clnSalNum' || id =='btn_clnProdDat' || id =='btn_clnProdPrt'){
+		if(id == 'btn_clnDatPsn'){
+			cleanTable("byPayDetailMain");
+			$('.selectpicker').selectpicker('val', '');
+			$('.selectpicker').selectpicker('refresh');
+			$("#TblDatPsnList").dataTable().fnClearTable();
+			return false;
+		}
+		else if(id == 'btn_clnCheck'){
+			cleanTable("byCheckMain");
+			$('.selectpicker').selectpicker('val', '');
+			$('.selectpicker').selectpicker('refresh');
+			$("#TblCheckPayList").dataTable().fnClearTable();
+			return false;
+		}
+		else if(id == 'btn_clnSalNum'){
+			cleanTable("bySetSalnumMain");
+			$('.selectpicker').selectpicker('val', '');
+			$('.selectpicker').selectpicker('refresh');
+			$("#tblSalNumList").dataTable().fnClearTable();
+			$("#salnum_select_all").prop('checked', false);
+			return false;
+		}
+		else if(id == 'btn_clnProdDat'){
+			cleanTable("byProdDatMain");
+			$('.selectpicker').selectpicker('val', '');
+			$('.selectpicker').selectpicker('refresh');
+			return false;
+		}
+		else if(id == 'btn_clnProdPrt'){
+			cleanTable("byPordPrtMain");
+			$('.selectpicker').selectpicker('val', '');
+			$('.selectpicker').selectpicker('refresh');
+			$("#TblRepDtlList").dataTable().fnClearTable();
+			return false;
+		}
+		else if(id == 'btn_clnItmPay'){
+			cleanTable("byItmPayMain");
+			$('.selectpicker').selectpicker('val', '');
+			$('.selectpicker').selectpicker('refresh');
+			$("#tblItmPayList").dataTable().fnClearTable();
+			$('#' + codeTbl ).dataTable().fnClearTable();
+			return false;
+		}
+		/* if(id == 'btn_clnDatPsn' || id == 'btn_clnCheck' || id =='btn_clnSalNum' || id =='btn_clnProdDat' || id =='btn_clnProdPrt'){
 			$(":text,textarea").val("");
 			$(":checkbox,:radio").prop("checked", false);
 			console.log("ss:"+$('#tfoot_taxpay').html());
@@ -318,24 +462,24 @@ $(function(){
 			$("#salnum_select_all").prop('checked', false);
 			
 			return false;
-		}
+		} */
 		else if(id == 'btn_qryDatPsn'){		//發薪明細查詢
 			msg = $.checkFields(id);
 			if(msg == ''){
 				cardno=$("#qryCardno").val().toUpperCase();
-				var idtno=$("#qryIdtno").val().toUpperCase();
-				var namec=$("#qryNamec").val();
+				idtno=$("#qryIdtno").val().toUpperCase();
+				namec=$("#qryNamec").val();
 				salnum=$.getSelectVals("qry_padatpsn_salnum");				
 				paybank=$.getSelectVals("qry_padatpsn_paybank");
 				var payrank=$.getSelectVals("qry_payrank");
 				var paytitle=$.getSelectVals("qryTitle");
-				var paydept=$.getSelectVals("qryDept");
+				paydept=$.getSelectVals("qryDept");
 				var payinsuamt=$.getSelectVals("qry_insuamt");
 				
  				console.log("卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec+" salnum:"+salnum+" paybank:"+paybank+" payrank:"+payrank+" paytitle:"+paytitle+" paydept:"+paydept+" insuamt:"+payinsuamt);
-// 				return false;
-				code_data="";
-				code_data={
+ 				
+				in_data="";
+				in_data={
 		        		cardno     :cardno,
 		        		idtno      :idtno,
 		        		namec      :namec,
@@ -346,13 +490,13 @@ $(function(){
 		        		paydept    :paydept,
 		        		insuamt    :payinsuamt
 		        	};
-				console.log("發薪明細查詢:code_data:"+code_data+" hid:"+pahid);
 				
+				//return false;
 				$.ajax({
 					url:"${pageContext.request.contextPath}/salController.do",
 					data:{
 						method  : 'getDatPsnList',
-						code_data :JSON.stringify(code_data),
+						in_data :JSON.stringify(in_data),
 						hid     : pahid,
 						userid  : paUserid,
 					},
@@ -399,19 +543,18 @@ $(function(){
 				paybank=$("#qry_check_paybank").val();
 				
 				console.log("檢驗查詢 salnum:"+salnum+" paybank:"+paybank+" hid:"+pahid);
-// 				return false;
-				code_data="";
-				code_data={
+
+				in_data="";
+				in_data={
 						salnum     :salnum,
 						paybank    :paybank
-					};
-				console.log("檢驗查詢:code_data:"+code_data);
-				
+					};				
+// 				return false;				
 				$.ajax({
 					url:"${pageContext.request.contextPath}/salController.do",
 					data:{
 						method    : 'getCheckPayList',
-						code_data :JSON.stringify(code_data),
+						in_data :JSON.stringify(in_data),
 						hid     : pahid,
 						userid  : paUserid,
 					},
@@ -448,21 +591,21 @@ $(function(){
 				selCode=$("#prod_selCode option:selected").val().split(':')[0];
 				selEn=$("#prod_selCode option:selected").val().split(':')[2];
 				selNm=$("#prod_selCode option:selected").val().split(':')[1];
-				salnum =$("#qry_set_datyr option:selected").val() == "" ? "0":$("#qry_set_datyr option:selected").val().split(':')[0];
+				//salnum =$("#qry_set_datyr option:selected").val() == "" ? "0":$("#qry_set_datyr option:selected").val().split(':')[0];
+				salnum =$("#qry_set_salnum").val() ;
+				patradt =$("#qry_set_patradt").val() ;
 				cardno=$("#qry_set_Cardno").val().toUpperCase();
-				
-				console.log("餉單編號設定_查詢 selCode:"+selCode+" selNm:"+selNm+" salnum:"+salnum+" cardno:"+cardno+" hid:"+pahid);
-
 				in_data="";
 				in_data={
 						selCode :selCode,
 						selNm   :selNm,
 						selEn   :selEn,
 						salnum  :salnum,
-						cardno  :cardno
+						cardno  :cardno,
+						patradt :patradt
 					};
-				console.log("餉單編號設定_查詢:in_data:"+in_data);
-// 				return false;				
+				console.log("餉單編號設定_查詢  hid:"+pahid+" in_data:"+JSON.stringify(in_data));
+ 				//return false;				
 				$.ajax({
 					url:"${pageContext.request.contextPath}/salController.do",
 					data:{
@@ -505,16 +648,15 @@ $(function(){
 				selNm=$("#prod_selCode option:selected").val().split(':')[1];
 				selEn=$("#prod_selCode option:selected").val().split(':')[2];
 				var salnum_n =$("#prod_set_SalNum").val();
-				var salnum_o =$("#qry_set_datyr option:selected").val() == "" ? "0":$("#qry_set_datyr option:selected").val().split(':')[0];
-				var patradt_o=$("#qry_set_datyr option:selected").val() == "" ? "":$("#qry_set_datyr option:selected").val().split(':')[1];
-				var jsonString = "";
+// 				var salnum_o =$("#qry_set_datyr option:selected").val() == "" ? "0":$("#qry_set_datyr option:selected").val().split(':')[0];
+// 				var patradt_o=$("#qry_set_datyr option:selected").val() == "" ? "":$("#qry_set_datyr option:selected").val().split(':')[1];
+ 				var salnum_o =$("#qry_set_salnum").val() == "" ? "0":$("#qry_set_salnum").val();
+				var patradt_o=$("#qry_set_patradt").val() ;
+				jsonString = "";
 				if ( salnum_o !='0' ) {
 					var itmTbl="tblSalNumList";
 					jsonString = $.getDataInfo(itmTbl,selCode); //取得目前的資料
 				}
-				
-				console.log("餉單編號設定_執行 selCode:"+selCode+" selNm:"+selNm+" salnum_o:"+salnum_o+" patradt_o:"+patradt_o+" salnum_n:"+salnum_n+" hid:"+pahid);
-
 				in_data="";
 				in_data={
 						selCode :selCode,
@@ -524,6 +666,7 @@ $(function(){
 						salnum_o  :salnum_o,
 						patradt_o :patradt_o
 					   };
+				console.log("餉單編號設定_執行  hid:"+pahid+" indata:"+JSON.stringify(in_data));	   
 				//return false;				
 				$.ajax({
 					url:"${pageContext.request.contextPath}/salController.do",
@@ -570,7 +713,7 @@ $(function(){
 				patradt =$("#prod_SalNum").val().split(':')[1];
 								
 				console.log("產生發薪明細_執行 selCode:"+selCode+" selNm:"+selNm+" salnum:"+salnum+" patradt:"+patradt+" hid:"+pahid);
-
+				jsonString = "";
 				in_data="";
 				in_data={
 						selCode :selCode,
@@ -882,8 +1025,176 @@ $(function(){
 				alert(msg);
 				return false;
 			}
+		}
+		else if(id == 'btn_qryItmPay'){		//支扣明細查詢
+			msg = $.checkFields(id);
+			if(msg == ''){
+				var pabankdt_beg =$("#qry_itmPay_paybankBeg").val() ;
+				var pabankdt_end =$("#qry_itmPay_paybankEnd").val() ;
+				paydept=$.getSelectVals("qry_itmPay_Dept");
+				paycode =$("#qry_itmPay_Pay").val() ;
+				cardno=$("#qry_itmPay_Cardno").val().toUpperCase();
+				idtno=$("#qry_itmPay_Idtno").val().toUpperCase();
+				namec=$("#qry_itmPay_Namec").val();
+				console.log("支扣明細查詢  卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec+" paybank:"+pabankdt_beg+"-"+pabankdt_end+" paycode:"+paycode+" hid:"+pahid);
+
+				in_data="";
+				in_data={
+						pabankdt_beg : pabankdt_beg,
+						pabankdt_end : pabankdt_end,
+						paydept      : paydept,
+						cardno       : cardno,
+						idtno        : idtno,
+						namec        : namec,
+						paycode      : paycode   
+					};
+				console.log("in_data:"+JSON.stringify(in_data));
+ 				//return false;				
+				$.ajax({
+					url:"${pageContext.request.contextPath}/salController.do",
+					data:{
+						method  : 'getItmPayList',
+						in_data : JSON.stringify(in_data),
+						hid     : pahid,
+						userid  : paUserid
+					},
+					type:"POST",	//type:POST, GET(default:GET)
+					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+					contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+					success:function(data) {
+						//更新查詢清單
+						$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
+						$('#tblItmPayList').show();
+						oTable = $('#tblItmPayList').dataTable(objCopyG);
+						
+						oTable.fnClearTable(0);		//清空資料
+								
+						if (data.itmPayList!=null && data.itmPayList.length>0){	
+							oTable.fnAddData(data.itmPayList);//重新給資料
+						}
+						oTable.fnDraw();
+						
+					},
+					error: function(xhr){					
+						alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
+					}
+				});
+			}	
+			else{
+				alert(msg);
+				return false;
+			}	 
+		}
+		else if(id == 'btn_qryFile'){		//檔案產製
+			msg = $.checkFields(id);
+			if(msg == ''){
+				showLoading(); //顯示loading	
+				selCode = $("#file_cond option:selected").val().split(':')[0];
+				selNm   = $("#file_cond option:selected").val().split(':')[1];
+				selEn   = $("#file_cond option:selected").val().split(':')[2];
+				salnum  = $("#file_SalNum").val().split(':')[0];
+				patradt = $("#file_SalNum").val().split(':')[1];
+				console.log("檔案產製: selCode:"+selCode+" selNm:"+selNm+" salnum:"+salnum+" patradt:"+patradt+" hid:"+pahid);
+				if (typeof(codeTbl)=="undefined" || '' == codeTbl){
+					if (selCode == "1"){	//主計室發放
+						codeTbl="tblBASPayList";
+				  	}else if (selCode == "2"){	//主計室扣款
+				  		codeTbl="tblBASDeductList";
+					}
+				}	 
+				in_data="";
+				in_data={
+						selCode : selCode,
+						selNm   : selNm,
+						selEn   : selEn,
+						salnum  : salnum,
+						patradt : patradt   
+					};
+				console.log("in_data:"+JSON.stringify(in_data));
+				$.ajax({
+					url:"${pageContext.request.contextPath}/salController.do",
+					data:{
+						method  : 'handelPrtFile',
+						in_data : JSON.stringify(in_data),
+						hid     : pahid,
+						userid  : paUserid
+					},
+					type:"POST",	//type:POST, GET(default:GET)
+					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+					contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+					success:function(data) {
+						//更新查詢清單
+						$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
+						$('#'+codeTbl).show();
+						if (selCode == "1"){	//主計室發放
+							oTable = $('#' + codeTbl ).dataTable(objCopyH);
+					  	}
+ 					  	else if (selCode == "2"){	//主計室扣款
+ 					  		oTable = $('#' + codeTbl ).dataTable(objCopyI);
+ 						}
+						else if(selCode == "3"){	//績效組_醫師
+ 							oTable = $('#' + codeTbl ).dataTable(objCopyJ);
+ 					  	}
+//						else if (selCode == "4"){	//績效組_員工
+// 					  		oTable = $('#' + codeTbl ).dataTable(objCopyK);
+// 						}
+						
+						oTable.fnClearTable(0);		//清空資料
+								
+						if (data.fileData!=null && data.fileData.length>0){	
+							oTable.fnAddData(data.fileData);//重新給資料
+						}
+						oTable.fnDraw();
+						
+					},
+					error: function(xhr){					
+						alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
+					},
+					complete: function(data) {
+						hideLoading(); //隱藏loading
+					}
+				});
+				return false;
+				
+			}else{
+				alert(msg);
+				return false;
+			} 
 		}			
 	});
+	
+	
+  	//清除指定頁面資料
+	function cleanTable(table_id){
+		$(":checkbox,:radio").prop("checked", false);
+		//清除所有頁面的內容(enable)，disable的不清除
+		$('#'+table_id+' :input:enabled').each(function() {
+			$(this).val("");
+	    });
+	    //清除tfoot
+	    $('#'+table_id+' >tfoot').each(function() {
+	    	$(this).find("td").each(function(index, td) { 
+	    		$(this).html('');
+			});
+	    	
+	    });
+	    
+	    //所有select預設選擇第一項
+	    $('#'+table_id+' select').each(function() {
+			$(this).prop("selectedIndex", 0);
+	    });
+	    
+	    //清除所有table的row，只留第一行
+	    $('#'+table_id+' >tbody').each(function() {
+	    	var tableID = $(this).closest('table').attr("id");
+	    	$(this).find("tr").each(function(index, tr) { 
+	    		if (index >= 1 ) {
+		    			$(this).remove(); //清除第一行以外的row
+		    	}	    		
+			});
+	    	
+	    });	    
+	}
 	
 	//讀取table欄位內容 selCode:0異動 1批次
   	$.getDataInfo = function(formnm,sel){
@@ -978,28 +1289,28 @@ $(function(){
 		currentPage=info.page;
         var tr = $(this).parents('tr');
         rowData = oTable.row(tr).data();//抓取目前點選link這筆row的data	 		
-		var idtno=rowData.payidno;
+		idtno=rowData.payidno;
 		salnum=rowData.salnum;
 		hid=rowData.hid;
 		//找pa.padatpsn及pa.padaypay
-		code_data="";
-		code_data={
+		in_data="";
+		in_data={
         		idtno      :idtno,
         		salnum     :salnum
         	};
-		console.log("發薪明細padatpsn查詢:code_data:"+code_data);
+		console.log("發薪明細padatpsn查詢:in_data:"+in_data);
 		
-		$.getDatPsnByKey(code_data);
+		$.getDatPsnByKey(in_data);
 		
 	});
 	
 	//依KEY找出pa.padatpsn
-	$.getDatPsnByKey = function(code_data){
+	$.getDatPsnByKey = function(in_data){
 		$.ajax({
 			url:"${pageContext.request.contextPath}/salController.do",
 			data:{
 				method  : 'getDatPsnByKey',
-				code_data :JSON.stringify(code_data),
+				in_data :JSON.stringify(in_data),
 				hid     : pahid,
 				userid  : paUserid
 			},
@@ -1219,7 +1530,7 @@ $(function(){
 						't'+
 						'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
 				buttons: [
-		           'excelHtml5' 
+		           'excelHtml5' ,'print'
 		        ],
 	  			 "fnDrawCallback": function () {
 						var api = this.api();
@@ -1303,27 +1614,27 @@ $(function(){
         var tr = $(this).parents('tr');
         rowData = oTable.row(tr).data();//抓取目前點選link這筆row的data	 		
 		salnum=rowData.salnum;
-		var paycode=rowData.paycode;
+		paycode=rowData.paycode;
 		var pacodnmc=rowData.pacodnmc;
 		//依salnum+paycode找pa.padaypay清單
-		code_data="";
-		code_data={
+		in_data="";
+		in_data={
         		salnum     :salnum,
         		paycode    :paycode
         	};
-		console.log("[檢驗]依salnum+paycode找pa.padaypay清單:code_data:"+code_data);
+		console.log("[檢驗]依salnum+paycode找pa.padaypay清單:in_data:"+in_data);
 		
-		$.getDayPayByCode(code_data,paycode,pacodnmc);
+		$.getDayPayByCode(in_data,paycode,pacodnmc);
 		
 	});
 		 
 	//依salnum+paycode找pa.padaypay清單
-	$.getDayPayByCode = function(code_data,paycode,pacodnmc){
+	$.getDayPayByCode = function(in_data,paycode,pacodnmc){
 		$.ajax({
 			url:"${pageContext.request.contextPath}/salController.do",
 			data:{
 				method  : 'getDayPayByCode',
-				code_data :JSON.stringify(code_data),
+				in_data :JSON.stringify(in_data),
 				hid     : pahid,
 				userid  : paUserid,
 			},
@@ -1418,7 +1729,13 @@ $(function(){
 		                    		  i.replace(/[\$,]/g, '')*1 :
 		                    		  typeof i === 'number' ? i : 0;
 		            };
-		 
+		 			//Total over all pages
+		 			var total_1 = api
+		                .column( 12 )
+		                .data()
+		                .reduce( function (a, b) {
+		                    return intVal(a) + intVal(b);
+		                }, 0 );
 		            // Total over this page
 		            var pTotal = api
 		                .column( 12	, { page: 'current'} )
@@ -1429,7 +1746,7 @@ $(function(){
 		 
 		            // Update footer
 		            $( api.column( 12 ).footer() ).html(
-		                '總金額:'+pTotal 
+		            	'$'+pTotal +' <br>( $'+ total_1 +' 合計)'
 		            );
 				}   							
 			});   
@@ -1797,7 +2114,233 @@ $(function(){
 		                '$'+pageTotal_5 +'<br>( $'+ total_5 +' 合計)'
 		            );				           
 		        } 							
-			});	*/   	      
+			});	*/
+			
+	//支扣明細查詢
+ 	var objCopyG = $.extend(true, {aaSorting: []}, dataTableConfig);			
+	objCopyG.aoColumns = [	
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"發薪日","mData": "paybank"},
+							{ "sTitle":"卡號","mData": "paycard"},
+							{ "sTitle":"身分證","mData": "payidno"},
+							{ "sTitle":"單位","mData": "padepnmc"},
+							{ "sTitle":"職稱","mData": "paytitlc"},
+							{ "sTitle":"姓名","mData": "paynamec"},
+							{ "sTitle":"金額","mData": "payamt"},
+						 ];
+						 
+	objCopyG.iDisplayLength=10;
+						    
+	objCopyG = $.extend(true,objCopyG, {
+		dom: 'B<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-tl  ui-corner-tr"lfr>'+
+				't'+
+				'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
+		buttons: [
+           'excelHtml5' 
+        ],
+	 	"fnDrawCallback": function () {
+			var api = this.api();
+			var startIndex=0;
+	                	api.column(0).nodes().each(function(cell, i) {
+	                    	cell.innerHTML = startIndex + i + 1;
+	                	});
+	             }
+	});
+	$('#tblItmPayList').dataTable(objCopyG);
+	
+	//檔案產製_主計室_發放
+ 	var objCopyH = $.extend(true, {aaSorting: []}, dataTableConfig);
+ 	if (pahid=="1A0"){
+ 		objCopyH.aoColumns = [	
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"發薪日","mData": "paybank"},
+							{ "sTitle":"單位","mData": "paydept"},
+							{ "sTitle":"卡號","mData": "paycard"},
+							{ "sTitle":"姓名","mData": "paynamec"},
+							{ "sTitle":"職稱","mData": "paytitle"},
+							{ "sTitle":"職稱中文","mData": "paytitlp"},
+							{ "sTitle":"性別","mData": "sex"},
+							{ "sTitle":"職號","mData": "payempno"},
+							{ "sTitle":"新制公保","mData": "l_Govfg"},
+							{ "sTitle":"契約(月尾)","mData": "l_contract"},
+							{ "sTitle":"本薪","mData": "P1"},
+							{ "sTitle":"專業加給","mData": "P2"},
+							{ "sTitle":"主管加給","mData": "P3"},
+							{ "sTitle":"工作獎金2","mData": "P4"},
+							{ "sTitle":"津貼_保險病歷查詢","mData": "P5"},
+							{ "sTitle":"實習費","mData": "P6"},
+							{ "sTitle":"工作獎金","mData": "P7"},
+							{ "sTitle":"專勤醫師費","mData": "P8"},
+							{ "sTitle":"病歷罰扣","mData": "P9"},
+							{ "sTitle":"夜班費","mData": "P10"},
+							{ "sTitle":"不休假獎金","mData": "P11"},
+							{ "sTitle":"年終獎金","mData": "P12"},
+							{ "sTitle":"考績獎金","mData": "P13"},
+							{ "sTitle":"晉級補發","mData": "P14"},
+							{ "sTitle":"休假補助","mData": "P15"},
+							{ "sTitle":"子女教育補助","mData": "P16"},
+							{ "sTitle":"婚喪生育","mData": "P17"},
+							{ "sTitle":"加班費","mData": "P18"},
+							{ "sTitle":"顧問費","mData": "P19"},
+							{ "sTitle":"超盈餘獎金","mData": "P20"},
+							{ "sTitle":"超額獎金","mData": "P21"},
+							{ "sTitle":"津貼_教學主治醫師","mData": "P22"},
+							{ "sTitle":"專勤醫師費二","mData": "P23"},
+							{ "sTitle":"津貼-值班費","mData": "P24"},
+							{ "sTitle":"獎勵-教職獎勵","mData": "P25"},
+							{ "sTitle":"獎勵-論文獎勵","mData": "P26"},
+							{ "sTitle":"總值日值班費","mData": "P27"},
+							{ "sTitle":"工獎-團","mData": "P28"},
+							{ "sTitle":"生日禮金","mData": "P29"},
+							{ "sTitle":"計劃補助","mData": "P30"},
+							{ "sTitle":"工獎-團(2)_任務","mData": "P31"},
+							{ "sTitle":"工獎-團(3)","mData": "P32"},
+							{ "sTitle":"工獎-院長外加","mData": "P33"},
+							{ "sTitle":"工獎-留任新進三成","mData": "P34"},
+							{ "sTitle":"年度績效獎金","mData": "P35"},
+						 ];
+	}						 
+	else if (pahid=="2A0"){
+ 		objCopyH.aoColumns = [	
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"發薪日","mData": "paybank"},
+							{ "sTitle":"單位","mData": "paydept"},
+							{ "sTitle":"卡號","mData": "paycard"},
+							{ "sTitle":"姓名","mData": "paynamec"},
+							{ "sTitle":"職稱","mData": "paytitle"},
+							{ "sTitle":"職稱中文","mData": "paytitlp"},
+							{ "sTitle":"性別","mData": "sex"},
+							{ "sTitle":"職號","mData": "payempno"},
+							{ "sTitle":"新制公保","mData": "l_Govfg"},
+							{ "sTitle":"契約(月尾)","mData": "l_contract"},
+						 ];
+	}						 
+	else if (pahid=="3A0"){
+ 		objCopyH.aoColumns = [	
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"發薪日","mData": "paybank"},
+							{ "sTitle":"單位","mData": "paydept"},
+							{ "sTitle":"卡號","mData": "paycard"},
+							{ "sTitle":"姓名","mData": "paynamec"},
+							{ "sTitle":"職稱","mData": "paytitle"},
+							{ "sTitle":"職稱中文","mData": "paytitlp"},
+							{ "sTitle":"性別","mData": "sex"},
+							{ "sTitle":"職號","mData": "payempno"},
+							{ "sTitle":"新制公保","mData": "l_Govfg"},
+							{ "sTitle":"契約(月尾)","mData": "l_contract"},
+						 ];
+	}						 						 		
+	objCopyH.iDisplayLength=10;
+						    
+	objCopyH = $.extend(true,objCopyH, {
+		dom: 'B<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-tl  ui-corner-tr"lfr>'+
+				't'+
+				'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
+		buttons: [
+           'excelHtml5' 
+        ],
+	 	"fnDrawCallback": function () {
+			var api = this.api();
+			var startIndex=0;
+	                	api.column(0).nodes().each(function(cell, i) {
+	                    	cell.innerHTML = startIndex + i + 1;
+	                	});
+	             }
+	});
+	/* $('#tblBASPayList').dataTable(objCopyH); */
+	//檔案產製_主計室_扣款
+ 	var objCopyI = $.extend(true, {aaSorting: []}, dataTableConfig);
+ 	if (pahid=="1A0"){
+ 		objCopyI.aoColumns = [	
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"發薪日","mData": "paybank"},
+							{ "sTitle":"單位","mData": "paydept"},
+							{ "sTitle":"卡號","mData": "paycard"},
+							{ "sTitle":"姓名","mData": "paynamec"},
+							{ "sTitle":"職稱","mData": "paytitle"},
+							{ "sTitle":"職稱中文","mData": "paytitlp"},
+							{ "sTitle":"性別","mData": "sex"},
+							{ "sTitle":"職號","mData": "payempno"},
+							{ "sTitle":"新制公保","mData": "l_Govfg"},
+							{ "sTitle":"惠民捐款","mData": "D1"},
+							{ "sTitle":"公保費","mData": "D2"},
+							{ "sTitle":"健保費","mData": "D3"},
+							{ "sTitle":"勞保費","mData": "D4"},
+							{ "sTitle":"退撫離職金","mData": "D5"},
+							{ "sTitle":"所得稅","mData": "D6"},
+							{ "sTitle":"體適能中心清潔費","mData": "D7"},
+							{ "sTitle":"國宅貸款","mData": "D8"},
+							{ "sTitle":"補充保險費","mData": "D9"},
+							{ "sTitle":"餐費-員工食堂合作社","mData": "D10"},
+							{ "sTitle":"房屋津貼","mData": "D11"},
+							{ "sTitle":"醫療互助金","mData": "D12"},
+							{ "sTitle":"代扣停車費","mData": "D13"},
+							{ "sTitle":"眷舍停車費","mData": "D14"},
+							{ "sTitle":"公共設施使用費","mData": "D15"},
+							{ "sTitle":"清償債款","mData": "D16"},
+							{ "sTitle":"餐費","mData": "D17"},
+							{ "sTitle":"卡費","mData": "D18"},
+							{ "sTitle":"眷舍管理費(10F)","mData": "D19"},
+							{ "sTitle":"眷舍管理費(5F)","mData": "D20"},
+							{ "sTitle":"眷舍管理費(單身)","mData": "D21"},
+							{ "sTitle":"保留","mData": "D22"},
+							{ "sTitle":"PGY眷舍管理費","mData": "D23"},
+							{ "sTitle":"醫療糾紛","mData": "D24"},
+							{ "sTitle":"體適能中心訓練費","mData": "D25"},
+							{ "sTitle":"餐費-員工食堂","mData": "D26"},
+							{ "sTitle":"德齡館使用費","mData": "D27"},
+							
+						 ];
+	}						 
+	else if (pahid=="2A0"){
+ 		objCopyI.aoColumns = [	
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"發薪日","mData": "paybank"},
+							{ "sTitle":"單位","mData": "paydept"},
+							{ "sTitle":"卡號","mData": "paycard"},
+							{ "sTitle":"姓名","mData": "paynamec"},
+							{ "sTitle":"職稱","mData": "paytitle"},
+							{ "sTitle":"職稱中文","mData": "paytitlp"},
+							{ "sTitle":"性別","mData": "sex"},
+							{ "sTitle":"職號","mData": "payempno"},
+							{ "sTitle":"新制公保","mData": "l_Govfg"},
+							
+						 ];
+	}						 
+	else if (pahid=="3A0"){
+ 		objCopyI.aoColumns = [	
+							{ "sTitle":"","mData": null},
+							{ "sTitle":"發薪日","mData": "paybank"},
+							{ "sTitle":"單位","mData": "paydept"},
+							{ "sTitle":"卡號","mData": "paycard"},
+							{ "sTitle":"姓名","mData": "paynamec"},
+							{ "sTitle":"職稱","mData": "paytitle"},
+							{ "sTitle":"職稱中文","mData": "paytitlp"},
+							{ "sTitle":"性別","mData": "sex"},
+							{ "sTitle":"職號","mData": "payempno"},
+							{ "sTitle":"新制公保","mData": "l_Govfg"},
+							
+						 ];
+	}						 						 		
+	objCopyI.iDisplayLength=10;
+						    
+	objCopyI = $.extend(true,objCopyI, {
+		dom: 'B<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-tl  ui-corner-tr"lfr>'+
+				't'+
+				'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
+		buttons: [
+           'excelHtml5' 
+        ],
+	 	"fnDrawCallback": function () {
+			var api = this.api();
+			var startIndex=0;
+	                	api.column(0).nodes().each(function(cell, i) {
+	                    	cell.innerHTML = startIndex + i + 1;
+	                	});
+	             }
+	});
+	/* $('#tblBASDeductList').dataTable(objCopyI); */
+	
 });
 
 </script>
@@ -1822,6 +2365,12 @@ $(function(){
   </li>
   <li class="nav-item">
     <a class="nav-link" id="pills-printPrt-tab" data-toggle="pill" href="#byPrintPrtMain" role="tab" aria-controls="pills-profile" aria-selected="false">報表列印</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="pills-itmPay-tab" data-toggle="pill" href="#byItmPayMain" role="tab" aria-controls="pills-profile" aria-selected="false">支扣項目查詢</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="pills-fileProd-tab" data-toggle="pill" href="#byFileProdMain" role="tab" aria-controls="pills-profile" aria-selected="false">檔案產製</a>
   </li>
 </ul>
 
@@ -1849,7 +2398,7 @@ $(function(){
 							<input type="text" id="qryIdtno" size="10" class="form-control-sm text-uppercase" placeholder="身分證" >
 							<input type="text" id="qryNamec" size="12" class="form-control-sm " placeholder="姓名" >
 
-							<select id="qryDept" name="qryDept" class="selectpicker JTCODE" data-width="fit" data-live-search="true" multiple title="單位">
+							<select id="qryDept" name="qryDept" class="selectpicker" data-width="fit" data-live-search="true" multiple title="單位">
 								<option value=""></option>
 			     				<c:forEach var="uitem" items="${alDeptCodeTbl}" varStatus="loop">
 									<option value="${uitem.padepcod}">${uitem.pacstno}-${uitem.padepnmc}</option>
@@ -2093,7 +2642,18 @@ $(function(){
 	
   	<!--檢驗-->
 	<div class="tab-pane fade" id="byCheckMain" role="tabpanel" aria-labelledby="pills-check-tab">
-		<div class="container-sm">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<a href="#explan_check" class="btn btn-danger" data-toggle="collapse">注意事項</a>
+			  		<div id="explan_check" class="collapse">
+			  			<div id="explan_3" class="text-danger">
+			  				1.查詢:餉單編號,發薪日,擇一查詢,不用2個一起設;2個一起設,以發薪日為主,不會抓餉單編號.	<br>
+			  				2.查看明細:點支扣代碼,藍色字體.		  			
+				  		</div>
+				  	</div>	
+				</div>
+			</div>
 			<div class="row" id="qryCheckItem">
 				<div class="col-10">
 					<div class="form-inline">
@@ -2176,11 +2736,10 @@ $(function(){
 					<a href="#explan_setSalNum" class="btn btn-danger" data-toggle="collapse">注意事項</a>
 			  		<div id="explan_setSalNum" class="collapse">
 			  			<div id="explan_1" class="text-danger">
-				  			1.異動/批次+【查詢】:依[異動/批次]+[餉單編號]=0,列出清單<br>
-				  			2.異動/批次+餉單編號+【查詢】:依[異動/批次]+[餉單編號],列出清單<br>
-				  			3.異動/批次+餉單編號+卡號+【查詢】:依[異動/批次]+[餉單編號]+[卡號],列出清單<br>
-				  			4.異動/批次+【執行】:依[異動/批次],將[餉單編號]=0,設為[編號值]<br>
-				  			5.異動/批次+餉單編號或加卡號+勾選清單+【執行】:依[異動/批次]+勾選清單的[餉單編號],設為[編號值]<br>
+			  				1.出現尚未上餉單編號的資料:選取[異動或批次]+[餉單編號=0]+[發薪日]→[查詢]<br>
+							2.勾選要上餉單編號的項目→[新編號值]輸入餉單號碼→[執行]<br>
+							3.查看:選取[異動或批次]→[餉單編號>0]或[發薪日]或[卡號]→[查詢]:出現依條件列出餉單號碼明細<br>
+							4.餉單號碼還原為0:選取[異動或批次]→必要項【餉單編號】或[卡號]→[查詢]+名單勾選+[新編號值]=0→[執行]			  			
 				  		</div>
 				  	</div>	
 				</div>
@@ -2196,17 +2755,15 @@ $(function(){
 							</select>
 						</div>	
 						<div class="input-group">
-							<span class="input-group-text">餉單編號-發薪日</span>
-		    				<select id="qry_set_datyr" class="form-control" title="餉單編號-發薪日">
-								
-							</select>
+							<input type="text" class="form-control" id="qry_set_salnum" size="4"placeholder="餉單編號">
+							<input type="text" id="qry_set_patradt" size="10" class="form-control-sm gclsCalTxt" placeholder="發薪日期" >
 							<input type="text" id="qry_set_Cardno" size="4" class="form-control text-uppercase" placeholder="卡號" >
 							<button id="btn_qrySalNum" class="btn btn-info" type="button" ><i class="fa fa-search"></i>查詢</button>
 						</div>
 						<div class="input-group">
-							<span class="input-group-text">編號值</span>	
+							<span class="input-group-text">新編號值</span>	
 							<input type="text" class="form-control" id="prod_set_SalNum" size="4">
-							<button id="btn_prodSalNum" class="btn btn-info" type="button"><i class="fa fa-cog"></i>執行</button>
+							<button id="btn_prodSalNum" class="btn btn-success" type="button"><i class="fa fa-cog"></i>執行</button>
 						</div>	
 						<button id="btn_clnSalNum" class="btn btn-warning ml-auto" type="button"><i class="fa fa-eraser"></i>清空</button>	
 					</div>
@@ -2229,7 +2786,7 @@ $(function(){
 					<a href="#explan_setSalNum" class="btn btn-danger" data-toggle="collapse">注意事項</a>
 			  		<div id="explan_setSalNum" class="collapse">
 			  			<div id="explan_2" class="text-danger">
-				  			1.執行前,注意,發薪明細有資料,會先刪除,再重新產生。<br>				  			
+				  			1.發薪明細會先[刪除]原有資料,再重新[產生]。<br>				  			
 				  		</div>
 				  	</div>	
 				</div>
@@ -2254,7 +2811,7 @@ $(function(){
 					</div>
 				</div>
 				<div class="col-2">
-					<button id="btn_prodPayroll" class="btn btn-info" type="button" ><i class="fa fa-cog"></i>執行</button>
+					<button id="btn_prodPayroll" class="btn btn-success" type="button" ><i class="fa fa-cog"></i>執行</button>
 					<button id="btn_clnProdDat" class="btn btn-warning" type="button"><i class="fa fa-eraser"></i>清空</button>
 				</div>
 			</div>			
@@ -2345,6 +2902,84 @@ $(function(){
 				</div>
 			</div>			
 		</div>
+	</div>
+	<!--支扣明細查詢-->
+  	<div class="tab-pane fade" id="byItmPayMain" role="tabpanel" aria-labelledby="pills-pay-tab">
+		<div class="container-fluid">
+			<div class="row" >
+				<div class="col-10">
+					<div class="form-inline">
+		    			<div class="input-group">
+		    				<select class="selectpicker paycodeSelect" id="qry_itmPay_Pay" name="qry_itmPay_Pay"  data-width="fit"  data-live-search="true" title="支扣代碼"></select>
+		    				<input type="text" id="qry_itmPay_paybankBeg" class="gclsCalTxt form-control"  maxlength="10" size="10" placeholder="發薪日_起" />
+		    				-<input type="text" id="qry_itmPay_paybankEnd" class="gclsCalTxt form-control"  maxlength="10" size="10" placeholder="發薪日_訖" />
+		    				<input type="text" id="qry_itmPay_Cardno" size="4" class="form-control-sm text-uppercase" placeholder="卡號" >
+							<input type="text" id="qry_itmPay_Idtno" size="10" class="form-control-sm text-uppercase" placeholder="身分證" >
+							<input type="text" id="qry_itmPay_Namec" size="12" class="form-control-sm " placeholder="姓名" >
+							<select id="qry_itmPay_Dept" name="qry_itmPay_Dept" class="selectpicker" data-width="fit" data-live-search="true" multiple title="單位"></select>
+						</div>		    		
+			    		
+					</div>
+				</div>
+				<div class="col-2">
+					<button id="btn_qryItmPay" class="btn btn-info" type="button" ><i class="fa fa-search"></i>查詢</button>
+					<button id="btn_clnItmPay" class="btn btn-warning" type="button"><i class="fa fa-eraser"></i>清空</button>
+				</div>
+			</div>
+				
+			<div class="row">
+				<div class="col-12 border border-dark">
+					<!-- pa.padatpsn清單 -->
+					<table id="tblItmPayList" class="table table-striped table-bordered table-hover" >
+						<thead>							
+						</thead>
+					</table>
+				</div>
+			</div>
+ 		</div>	
+	</div>
+	<!-- 檔案產製 -->
+	<div class="tab-pane fade" id="byFileProdMain" role="tabpanel" aria-labelledby="pills-fileProd-tab">
+		<div class="row" >
+			<div class="col-10">
+				<div class="form-inline">
+					<div class="input-group">
+						<span class="input-group-text">項目</span>	
+						<select id="file_cond" class="form-control-sm" title="條件">
+							<option value="1:主計室_發放:BAS_1">1:主計室_發放</option>
+							<option value="2:主計室_扣款:BAS_2">2:主計室_扣款</option>
+						</select>
+						
+						<label for="file_SalNum" >餉單編號-發薪日</label>
+						<select id="file_SalNum" class="form-control" title="餉單編號-發薪日">
+							
+						</select>
+					</div>
+				</div>
+			</div>	
+			<div class="col-2">
+				<button id="btn_qryFile" class="btn btn-info" type="button" ><i class="fa fa-search"></i>查詢</button>									
+			</div>	
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div id="explanProd_1" class="text-danger"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div id="codeIdDiv" class="codeDiv">
+					<table id="tblBASPayList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
+						<thead>						
+						</thead>
+					</table>
+					<table id="tblBASDeductList" class="table table-striped table-bordered table-hover" style="text-align:center;display:none;">
+						<thead>						
+						</thead>
+					</table>
+				</div>
+			</div>	
+		</div>	 
 	</div>	
 </div>
 

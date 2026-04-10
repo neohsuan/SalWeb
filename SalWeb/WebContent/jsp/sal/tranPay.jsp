@@ -256,7 +256,11 @@ $(function(){
   		msg = '';
   		
   		if (btn== 'btn_qry_tran_TranPsn'){	//異動資料_查詢
-	 		if($("#tran_card").val()=='' && $("#tran_idno").val()=='' && $("#tran_namec").val()=='' && $("#tran_empno").val()=='' && $("#tran_salnum option:selected").val()=='' && $("#tran_patradt option:selected").val()=='' && $("#tran_patracd option:selected").val()==''){
+	 		if($("#tran_card").val()=='' && $("#tran_idno").val()=='' && $("#tran_namec").val()=='' && $("#tran_empno").val()=='' && 
+	 		  ( $("#tran_salnum option:selected").val()=='' || typeof($("#tran_salnum option:selected").val())=='undefined' ) && 
+	 		  ( $("#tran_patradt option:selected").val()=='' || typeof($("#tran_patradt option:selected").val())=='undefined' ) && 
+	 		  ( $("#tran_patracd option:selected").val()=='' || typeof($("#tran_patracd option:selected").val())=='undefined' ) &&
+	 		  ( $("#tran_dept option:selected").val()=='' || typeof($("#tran_dept option:selected").val())=='undefined' )){
 	 			msg = '請輸入條件值!!';
 	 		}	
  		}
@@ -264,11 +268,18 @@ $(function(){
  		
 		}
 		else if (btn== 'btn_qry_filter_TranPsn'){	//異動資料_篩選_查詢
-	 		if($("#filter_card").val()=='' && $("#filter_idno").val()=='' && $("#filter_namec").val()=='' && $("#filter_empno").val()=='' && 
-	 		   $("#expfkey1").val()==''&& $("#expfkey2").val()=='' && $("#expfkey3").val()=='' && $("#filter_title option:selected").val()=='' && 
-	 		   $("#filter_dept option:selected").val()==''&& $("#filter_lvefg option:selected").val()=='' && $("#filter_patradt option:selected").val()=='' && 
-	 		   $("#filter_payrank option:selected").val()==''&& $("#filter_pacsflag option:selected").val()==''&& $("#filter_expfsp option:selected").val()=='' && 
-	 		   $("#filter_paret option:selected").val()=='' && $("#filter_patracd option:selected").val()=='' && $("#filter_inflg option:selected").val()==''){
+	 		if($("#filter_card").val()=='' && $("#filter_idno").val()=='' && $("#filter_namec").val()=='' && $("#filter_empno").val()=='' &&
+               $("#filter_paeffdt_bng").val()=='' && $("#filter_paeffdt_end").val()=='' &&
+               $("#filter_lvefg option:selected").val()=='' && 
+               ($("#filter_dept option:selected").val()=='' || typeof($("#filter_dept option:selected").val())=='undefined') &&
+               ($("#filter_title option:selected").val()=='' || typeof($("#filter_title option:selected").val())=='undefined') &&
+               ($("#filter_payrank option:selected").val()=='' || typeof($("#filter_payrank option:selected").val())=='undefined') &&
+               ($("#filter_patradt option:selected").val()=='' || typeof($("#filter_patradt option:selected").val())=='undefined') &&
+               ($("#filter_patracd option:selected").val()=='' || typeof($("#filter_patracd option:selected").val())=='undefined') &&
+               $("#filter_pacsflag option:selected").val()==''&& $("#filter_expfsp option:selected").val()=='' &&  
+               $("#filter_expfkey1").val()==''&& $("#filter_expfkey2").val()=='' && $("#filter_expfkey3").val()=='' &&  
+	 		   $("#filter_paret option:selected").val()=='' &&  $("#filter_inflg option:selected").val()=='' 
+	 		   ) {
 	 			msg = '請輸入條件值!!';
 	 		}	
  		}
@@ -394,12 +405,14 @@ $(function(){
 			return false;
 		}
 		else if( id == 'btn_cln_filter_TranPsn'){
-			cleanTable("byTranFilterMain");			
+			cleanTable("byTranFilterMain");
+			$('.selectpicker').selectpicker('val', '');
+			$('.selectpicker').selectpicker('refresh');			
 			$("#tblTranPsnFilter").dataTable().fnClearTable();
 			return false;			
 		}
 		else if(id == 'btn_qry_tran_TranPsn'){		//異動資料_查詢
-			msg = $.checkFields();
+			msg = $.checkFields(id);
 			if(msg == ''){
 				salnum=$.getSelectVals("tran_salnum");
 				patradt=$.getSelectVals("tran_patradt");
@@ -410,8 +423,7 @@ $(function(){
 				var empno=$("#tran_empno").val().toUpperCase();				
 				var paydept=$.getSelectVals("tran_dept");
 				
- 				//console.log("卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec+" 職號:"+empno+" patradt:"+patradt+" salnum:"+salnum+" patracod:"+patracod+" paydept:"+paydept);
-				code_data="";
+ 				code_data="";
 				code_data={
 						salnum     :salnum,
 						patradt    :patradt,
@@ -422,8 +434,8 @@ $(function(){
 		        		patracod   :patracod,
 		        		paydept    :paydept
 		        	};
-				//console.log("異動資料查詢:code_data:"+JSON.stringify(code_data));
-				
+				console.log("異動資料查詢:code_data:"+JSON.stringify(code_data));
+				//return false;
 				$.ajax({
 					url:"${pageContext.request.contextPath}/salController.do",
 					data:{
@@ -538,12 +550,14 @@ $(function(){
 			}
 		}
 		else if(id == 'btn_qry_filter_TranPsn'){		//異動資料_篩選_查詢
-			msg = $.checkFields();
+			msg = $.checkFields(id);
 			if(msg == ''){
 				var cardno=$("#filter_card").val().toUpperCase();
 				var idtno=$("#filter_idno").val().toUpperCase();
 				var namec=$("#filter_namec").val();
 				var empno=$("#filter_empno").val().toUpperCase();
+				var effdt_bng=$("#filter_paeffdt_bng").val();
+				var effdt_end=$("#filter_paeffdt_end").val();
 				var lvefg=$("#filter_lvefg option:selected").val();
 				var csflag=$("#filter_pacsflag option:selected").val();
 				var expfsp=$("#filter_expfsp option:selected").val();
@@ -559,9 +573,7 @@ $(function(){
 				var expfkey2=$.getSelectVals("filter_expfkey2");
 				var expfkey3=$.getSelectVals("filter_expfkey3");
 				
- 				//console.log("卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec+" 職號:"+empno+" patradt:"+patradt+" payrank:"+payrank+" paytitle:"+paytitle+" paydept:"+paydept+" expfkey1:"+expfkey1+" expfkey2:"+expfkey2+" expfkey3:"+expfkey3+" 支領:"+csflag+" 點數:"+expfsp+" 專2:"+paret+" 異動原因:"+patracod+" 保險補助:"+inflg);
-
-				code_data="";
+ 				code_data="";
 				code_data={
 						lvefg	   :lvefg,
 		        		cardno     :cardno,
@@ -579,10 +591,12 @@ $(function(){
 		        		expfsp     :expfsp,
 		        		paret      :paret,
 		        		patracod   :patracod,
-		        		inflg      :inflg
+		        		inflg      :inflg,
+		        		effdt_bng  :effdt_bng,
+		        		effdt_end  :effdt_end,	
 		        	};
-				//console.log("異動資料_篩選_查詢:code_data:"+JSON.stringify(code_data));
-				
+				console.log("異動資料_篩選_查詢:code_data:"+JSON.stringify(code_data));
+				//return false;
 				$.ajax({
 					url:"${pageContext.request.contextPath}/salController.do",
 					data:{
@@ -2297,7 +2311,7 @@ $(function(){
 						<input type="text" id="filter_empno" size="7" class="form-control-sm text-uppercase" placeholder="職號" >
 						<select id="filter_lvefg"  class="selectpicker" data-width="fit" title="離職">
 							<option value=""></option>
-							<option value="N" selected>N</option>
+							<option value="N">N</option>
 								<option value="Y">Y</option>
 						</select>
 						<select id="filter_dept" name="filter_dept" class="selectpicker PAYDEPT" data-width="fit" data-live-search="true" multiple title="單位">
@@ -2365,6 +2379,8 @@ $(function(){
 							<option value=""></option>
 							<option value="Y">Y</option>
 						</select>
+						<input type="text" id="filter_paeffdt_bng" size="10" class="form-control-sm gclsCalTxt" placeholder="起訖日_起" >
+						<input type="text" id="filter_paeffdt_end" size="10" class="form-control-sm gclsCalTxt" placeholder="起訖日_訖" >
 					</div>
 				</div>
 			</div>

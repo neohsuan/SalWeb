@@ -24,7 +24,6 @@ var pahid = ("" != agent) ? "${sessionScope.agenthid}" : hid;            //醫�
 var pacostid = ("" != agent) ? "${sessionScope.agentcostid}" : costid;            //使用者成本中心
 var padeptnm = ("" != agent) ? "${sessionScope.agentdeptnm}" : deptnm;            //使用者單位名稱
 var padeptno = ("" != agent) ? "${sessionScope.agentdeptno}" : deptno;            //使用者單位名稱 英文
-var padeptno = ("" != agent) ? "${sessionScope.agentdeptno}" : deptno;            //使用者單位名稱 英文
 
 var objCopy;
 var oTable;
@@ -37,6 +36,7 @@ var paycitation;
 var payear;
 var payear_old="";
 var paymonth;
+var paydept;
 var payformat;
 var cardno;
 var idtno;
@@ -113,7 +113,7 @@ $(function(){
 				 <%-- $('#qry_viewYear,#qry_sumYear,#qry_taskYear,#payear').selectpicker('val','<%=today_y%>');  --%>
  				
  				if (data.alDeptCodeTbl[0]!=null){
-					select = $('#paydept');
+					select = $('#paydept,#qry_StatDept');
 					select.empty();
 					options = "<option value=''>單位";
 					select.append(options);
@@ -121,7 +121,7 @@ $(function(){
 						options = "<option value='" + data.alDeptCodeTbl[idx].padepcod + "'>" + data.alDeptCodeTbl[idx].pacstno+"-"+data.alDeptCodeTbl[idx].padepnmc ;
 						select.append(options);
 					});
-					//select.selectpicker('refresh');
+					select.selectpicker('refresh');
 				}
 				//
  				if (data.alTaxCatgTbl[0]!=null){
@@ -176,7 +176,7 @@ $(function(){
   	
   	//代碼選單切換
 	$("#qryType").change(function(){
-		$("#divfield_1,#divfield_2,#divfield_3,#divfield_4,#divfield_5,#explan_1,#explan_2").addClass("d-none");	//隱藏
+		$("#divfield_1,#divfield_2,#divfield_3,#divfield_4,#divfield_5,#explan_1,#explan_2,#explan_3").addClass("d-none");	//隱藏
   		selCode=(typeof($("#qryType option:selected").val().split(':')[0]) == "undefined" )? "1":$("#qryType option:selected").val().split(':')[0];
   		console.log(selCode);
   		if (selCode=="1" ){			//1.匯入_轉帳發薪明細 
@@ -188,6 +188,10 @@ $(function(){
 			$("#explan_2").removeClass("d-none");
 		}else if (selCode=="3"){	//3[匯入]批次人工入稅
 			$("#divfield_3").removeClass("d-none");
+			$("#explan_3").removeClass("d-none");
+			var logtmp="log資料夾:\\\\ap_pd1\\Apps_Exe\\SalProd\\" ;
+			logtmp = logtmp.concat(pahid, "\\log\\");	
+			$("#explan_3").html(logtmp);			
 		}else if (selCode=="4"){	//4[刪除]批次人工入稅
 			$("#divfield_4").removeClass("d-none");
 		}else if (selCode=="5" || selCode=="6"){	//5.身分證檢查及流水號編號  6產生媒體申報檔
@@ -289,7 +293,10 @@ $(function(){
  			}
 		}
 		else if (btn== 'btn_qryTaxStat'){	//所得稅統計_查詢
-	 		if(typeof($("#qry_StatYear option:selected").val())=='undefined' && typeof($("#qry_StatMon option:selected").val())=='undefined' && $("#qry_StatNamec").val()=='' && $("#qry_StatId").val()=='' && $("#qry_StatCard").val()==''  ){
+	 		if($("#qry_StatNamec").val()=='' && $("#qry_StatId").val()=='' && $("#qry_StatCard").val()=='' &&   
+	 		   ($("#qry_StatYear option:selected").val()== '' || typeof($("#qry_StatYear option:selected").val())=='undefined' ) && 
+	 		   ($("#qry_StatMon option:selected").val() == '' || typeof($("#qry_StatMon option:selected").val())=='undefined'  ) &&
+	 		   ($("#qry_StatDept option:selected").val()== '' || typeof($("#qry_StatDept option:selected").val())=='undefined' ) ) {
 	 			msg = '請輸入條件值!!';
 	 		}
 		}
@@ -383,7 +390,7 @@ $(function(){
 		        		paycitation:paycitation,
 		        		payear     :payear
 		        	};
-				console.log("所得稅編輯_查詢:code_data:"+code_data+" hid:"+pahid);
+				console.log("所得稅編輯_查詢:code_data:"+JSON.stringify(code_data)+" hid:"+pahid);
 				//return false;
 				$.ajax({
 					url:"${pageContext.request.contextPath}/salController.do",
@@ -444,7 +451,7 @@ $(function(){
 		        		paymonth   :paymonth,
 		        		payformat  :payformat
 		        	};
-				console.log("所得稅查看:code_data:"+code_data+" hid:"+pahid);
+				console.log("所得稅查看:code_data:"+JSON.stringify(code_data)+" hid:"+pahid);
 				
 				$.ajax({
 					url:"${pageContext.request.contextPath}/salController.do",
@@ -499,7 +506,7 @@ $(function(){
 		        		paymonth   :paymonth,
 		        		payformat  :payformat
 		        	};
-				console.log("所得稅彙總:code_data:"+code_data+" hid:"+pahid);
+				console.log("所得稅彙總:code_data:"+JSON.stringify(code_data)+" hid:"+pahid);
 				
 				$.ajax({
 					url:"${pageContext.request.contextPath}/salController.do",
@@ -547,9 +554,10 @@ $(function(){
 				namec=$("#qry_StatNamec").val();
 				payear=$.getSelectVals("qry_StatYear");
 				paymonth=$.getSelectVals("qry_StatMon");
+				paydept=$.getSelectVals("qry_StatDept");
 				
- 				console.log("所得稅統計: payear:"+payear+" paymonth:"+paymonth+" payformat:"+payformat+" 卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec);
- 				//return false;
+ 				console.log("所得稅統計: payear:"+payear+" paymonth:"+paymonth+" paydept:"+paydept+" 卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec);
+ 				
 				code_data="";
 				code_data={
 						cardno     :cardno,
@@ -557,10 +565,10 @@ $(function(){
 		        		namec      :namec,
 		        		payear     :payear,
 		        		paymonth   :paymonth,
-		        		payformat  :payformat
+		        		paydept    :paydept
 		        	};
-				console.log("所得稅統計:code_data:"+code_data+" hid:"+pahid);
-				
+				console.log("所得稅統計:code_data:"+JSON.stringify(code_data)+" hid:"+pahid);
+				//return false;
 				$.ajax({
 					url:"${pageContext.request.contextPath}/salController.do",
 					data:{
@@ -821,6 +829,14 @@ $(function(){
     	table_id = this_table.attr("id");
     	var this_form =$(this).closest('form').attr("id");
     	
+    	tr = $(this).closest('table').find("tbody").find('tr');
+		//第1行,key是空白,要補index
+		index = $(this).closest('tr').index();
+		if ( index == 0){
+			tr.find(':input[name*="cashKpayidno"]').val($("#payidno").val());
+			tr.find(':input[name*="cashKhid"]').val(pahid);
+		}
+    	
     	if ($("#" + this_form + "").valid()){    	
 	    	index = $(this).closest('tr').index();
 	    	var row = $(this).closest('tr').index() + 1; //取得所選擇到的列
@@ -928,7 +944,9 @@ $(function(){
     		cleanTable($(this).closest('table').attr("id")); //清除該頁面所有資料    		
     	} else {
     		$(this).closest("tr").remove();
-    	}	    	
+    	}
+    	//重新計算加總
+    	$.sumPay(); 	    	
     });
 	
 	//新增指定的table行
@@ -1202,14 +1220,15 @@ $(function(){
 							{ "sTitle":"身分證",		"mData": "payidno" },
 							{ "sTitle":"卡號",		"mData": "paycard" },
 							{ "sTitle":"姓名",		"mData": "paynamec" },
-							{ "sTitle":"單位",		"mData": "paydept" },
+							{ "sTitle":"單位",		"mData": "padepnmc" },
+							{ "sTitle":"職稱",		"mData": "paytitlp" },
 							{ "sTitle":"應稅所得",	"mData": "taxpay" },
 							{ "sTitle":"己扣",		"mData": "taxdeduct" }
 						 ];
 	objCopyD.iDisplayLength=10;
 	objCopyD.aoColumnDefs= [
 							 {
-					         'targets': [ 6,7],
+					         'targets': [ 7,8],
 					         'searchable':true,
 					         'orderable':true,
 					         'className': 'dt-body-right',
@@ -1242,40 +1261,40 @@ $(function(){
 		 
 		            // 應稅所得
 		            var pTotal = api
-		                .column( 6	)
+		                .column( 7	)
 		                .data()
 		                .reduce( function (a, b) {
 		                    		return intVal(a) + intVal(b);
 		                		}, 0 );
 		 			// Total over this page
 		            var pageTotal_1 = api
-		                .column( 6	, { page: 'current'} )
+		                .column( 7	, { page: 'current'} )
 		                .data()
 		                .reduce( function (a, b) {
 		                    return intVal(a) + intVal(b);
 		                }, 0 );
 		                
 		            // Update footer
-		            $( api.column( 6 ).footer() ).html(
+		            $( api.column( 7).footer() ).html(
 		            	'$'+pageTotal_1 +' <br>( $'+ pTotal +' 合計)'		                
 		            );
 		            
 		           // 已繳所得稅
 		            var dTotal = api
-		                .column( 7	 )
+		                .column( 8	 )
 		                .data()
 		                .reduce( function (a, b) {
 		                    		return intVal(a) + intVal(b);
 		                		}, 0 );
 		 			// Total over this page
 		            var pageTotal_2 = api
-		                .column( 7	, { page: 'current'} )
+		                .column( 8	, { page: 'current'} )
 		                .data()
 		                .reduce( function (a, b) {
 		                    return intVal(a) + intVal(b);
 		                }, 0 );
 		            // Update footer
-		            $( api.column( 7 ).footer() ).html(
+		            $( api.column( 8 ).footer() ).html(
 		                '$'+pageTotal_2 +' <br>( $'+ dTotal +' 合計)'	 
 		            );	             
 		        }    							
@@ -1381,7 +1400,7 @@ $(function(){
         		idtno      :idtno,
         		payear     :payear
         	};
-		console.log("所得稅pataxpsn查詢:code_data:"+code_data);
+		console.log("所得稅pataxpsn查詢:code_data:"+JSON.stringify(code_data));
 		
 		$.getTaxPsnByKey(code_data);
 		
@@ -1494,7 +1513,7 @@ $(function(){
 		row_html="" ;
 		sumtaxpay=0;
 		sumtaxded=0;
-		
+		$(".cashOnly").prop("disabled", false);	//將key設成readOnly
 		if (mrcontdy!=null && mrcontdy.length>0){
 			console.log("mCash:"+mrcontdy.length);
 			$.each(mrcontdy, function(idx) {
@@ -1564,7 +1583,7 @@ $(function(){
 			        		"payear"  :$("#payear option:selected").val(),
 			        		"idtno"   :key
 			        	}
-			        	console.log("所得稅findkey:code_data:"+code_data);	
+			        	console.log("所得稅findkey:code_data:"+JSON.stringify(code_data));	
 		        	}
 		        }
 		        //return false;	
@@ -1646,8 +1665,7 @@ $(function(){
 					<div class="form-inline">
 						<div class="input-group">
 							<span class="input-group-text">選單</span>
-			  	
-							<select id="qryType" class="form-control">
+			  				<select id="qryType" class="form-control">
 								<option value="1:[入稅]轉帳發薪明細:InTran">1[入稅]轉帳發薪明細</option>
 								<option value="2:[刪除]轉帳發薪明細:DelTran">2[刪除]轉帳發薪明細</option>
 								<option value="3:[匯入]批次人工入稅:InBatCash">3[匯入]批次人工入稅</option>
@@ -1667,6 +1685,7 @@ $(function(){
 			<div class="col-md-12">
 				<div id="explan_1" class="text-danger">同一月份,若有2筆以上餉單編號,分別處理</div>
 				<div id="explan_2" class="text-danger d-none" >回復處理:將已匯入的所得稅刪除</div>
+				<div id="explan_3" class="text-danger d-none" ></div>
 			</div>
 			</div>
 			<div class="row">
@@ -2246,6 +2265,8 @@ $(function(){
 							<option value="11">11</option>
 							<option value="12">12</option>	
 						</select>
+						<select id="qry_StatDept" name="qry_StatDept" class="selectpicker" data-width="fit"  data-live-search="true" multiple title="單位">							
+						</select>
 						<input type="text" id="qry_StatId" size="10" class="form-control text-uppercase" placeholder="身分證">
 						<input type="text" id="qry_StatCard" size="4" class="form-control text-uppercase" placeholder="卡號">
 						<input type="text" id="qry_StatNamec" size="12" class="form-control " placeholder="姓名" >																	
@@ -2257,24 +2278,23 @@ $(function(){
 				</div>
 			</div>
 			<div class="row">
+			<div class="col-md-12">
+				<div id="explanStat_1" class="text-danger">1.查詢項[單位]=所得稅主檔.單位;2.清單[職稱]=基本檔.職稱;3.以所得格式50為統計</div>				
+			</div>
+			</div>
+			<div class="row">
 				<div class="col-12 border border-dark">
 					<table id="TblTaxStat" class="table table-striped table-bordered table-hover" style="width="100%">
-						<thead>
-						</thead>
+						<thead></thead>
 						<tfoot>
 				            <tr>
-				            	<th colspan=6></th>
+				            	<th colspan=7></th>
 				            	<th style="text-align:right"></th>
 				            	<th style="text-align:right"></th>         
 				            </tr> 
 				        </tfoot>
 					</table>
 				</div>
-			</div>
-			<div class="row">
-			<div class="col-md-12">
-				<div class="text-danger">以所得格式50為統計</div>				
-			</div>
 			</div>
 		</div>	
 	</div>

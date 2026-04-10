@@ -99,8 +99,7 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 					      		<a class="list-group-item list-group-item-action" id="denailPay" href="<c:url value="/jsp/sal/payDetail.jsp"/>"><span class="big-size">發薪明細/檢驗</span></a>
 					      		<a class="list-group-item list-group-item-action" id="paynhi" href="<c:url value="/jsp/sal/paynhi.jsp"/>"><span class="big-size">補充保險費</span></a>
 					      		<a class="list-group-item list-group-item-action" id="labretir" href="<c:url value="/jsp/sal/labretir.jsp"/>"><span class="big-size">x勞工退休金</span></a>
-					      		<a class="list-group-item list-group-item-action" id="paydebt" href="<c:url value="/jsp/sal/paydebt.jsp"/>"><span class="big-size">x清償債款</span></a>
-					      		<a class="list-group-item list-group-item-action" id="routinePay" href="<c:url value="/jsp/sal/codeSetting.jsp"/>"><span class="big-size">x相關程序</span></a>							  	
+					      		<a class="list-group-item list-group-item-action" id="paydebt" href="<c:url value="/jsp/sal/paydebt.jsp"/>"><span class="big-size">x清償債款</span></a>					      									  	
 							</div>
 				    	</div>
 					</div>
@@ -122,8 +121,6 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 					      		<a class="list-group-item list-group-item-action" id="paynhi" href="<c:url value="/jsp/sal/paynhi.jsp"/>"><span class="big-size">補充保險費</span></a>
 					      		<a class="list-group-item list-group-item-action" id="labretir" href="<c:url value="/jsp/sal/labretir.jsp"/>"><span class="big-size">x勞工退休金</span></a>
 					      		<a class="list-group-item list-group-item-action" id="paydebt" href="<c:url value="/jsp/sal/paydebt.jsp"/>"><span class="big-size">x清償債款</span></a>
-					      		<a class="list-group-item list-group-item-action" id="routinePay" href="<c:url value="/jsp/sal/codeSetting.jsp"/>"><span class="big-size">x相關程序</span></a>							  	
-					      		
 							</div>
 				    	</div>
 					</div>							               
@@ -178,7 +175,9 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 						</div>
 			  	    	<div class="card-body">
 					      	<div class="list-group">
-					      		<a class="list-group-item list-group-item-action" id="basePay3" href="<c:url value="/jsp/sal/basePayxx.jsp"/>"><span class="big-size">xx</span></a>
+					      		<a class="list-group-item list-group-item-action" id="bonus2" href="<c:url value="/jsp/sal/bonus.jsp"/>"><span class="big-size">員工績效</span></a>
+<%-- 					      		<a class="list-group-item list-group-item-action" id="bonus1" href="<c:url value="/jsp/sal/bonus1.jsp"/>"><span class="big-size">x代碼維護</span></a> --%>
+<%-- 					      		<a class="list-group-item list-group-item-action" id="bonus2" href="<c:url value="/jsp/sal/bonus2.jsp"/>"><span class="big-size">x績效彙總設定</span></a>					      		 --%>
 							</div>
 				    	</div>
 					</div>
@@ -193,7 +192,9 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 						</div>
 			  	    	<div class="card-body">
 					      	<div class="list-group">
-					      		<a class="list-group-item list-group-item-action" id="basePay3" href="<c:url value="/jsp/sal/basePayxx.jsp"/>"><span class="big-size">xx</span></a>
+					      		<a class="list-group-item list-group-item-action" id="bonus2" href="<c:url value="/jsp/sal/bonus.jsp"/>"><span class="big-size">員工績效</span></a>
+<%-- 					      		<a class="list-group-item list-group-item-action" id="bonus1" href="<c:url value="/jsp/sal/bonus1.jsp"/>"><span class="big-size">代碼維護</span></a> --%>
+<%-- 					      		<a class="list-group-item list-group-item-action" id="bonus2" href="<c:url value="/jsp/sal/bonus2.jsp"/>"><span class="big-size">績效彙總設定</span></a> --%>
 							</div>
 				    	</div>
 					</div>
