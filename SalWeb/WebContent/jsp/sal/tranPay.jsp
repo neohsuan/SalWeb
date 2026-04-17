@@ -56,7 +56,7 @@ var rank3Options = [
 //職等
 var rnk2nOptions = [
     { val: "00", text: "00" },{ val: "01", text: "01" },{ val: "02", text: "02" },{ val: "03", text: "03" },{ val: "04", text: "04" }, { val: "05", text: "05" },{ val: "06", text: "06" }, { val: "07", text: "07" },
-    { val: "08", text: "08" },{ val: "09", text: "09" },{ val: "10", text: "10" },{ val: "11", text: "11" },{ val: "12", text: "12" }, { val: "13", text: "13" },{ val: "14", text: "14" }, { val: "P1", text: "P2" },
+    { val: "08", text: "08" },{ val: "09", text: "09" },{ val: "10", text: "10" },{ val: "11", text: "11" },{ val: "12", text: "12" }, { val: "13", text: "13" },{ val: "14", text: "14" }, { val: "P1", text: "P1" },
     { val: "P2", text: "P2" },{ val: "P3", text: "P3" },{ val: "T1", text: "T1" }
 ];
 
@@ -1959,7 +1959,7 @@ $(function(){
 													</div>
 													<div class="form-group">
 														<label for="payrnk2n" class="table-warning">職等:</label>
-														<select id="payrnk2n" name="payrnk2n" class="form-control calCSPF calRank" data-width="fit" title="階別"></select>
+														<select id="payrnk2n" name="payrnk2n" class="form-control calCSPF calRank" data-width="fit" title="職等"></select>
 <!-- 														<input type="text" id="payrnk2n" class="form-control" maxlength="2" size="2"  /> -->
 													</div>
 													<div class="form-group">

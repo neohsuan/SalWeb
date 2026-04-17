@@ -255,9 +255,12 @@ $(function(){
 			$("#batpay_payidno").prop("readOnly",false);	
 			$('#batpay_salnum').prop('disabled', false).selectpicker('refresh');
 			$('#batpay_paycode').prop('disabled', false).selectpicker('refresh');
-			//hid
 			$("#batpay_hid").val(pahid);
-					
+			//先塞預設值
+			$("#batpay_patradt").val(patradt);
+			$("#batpay_salnum").selectpicker('val',salnum);
+			$("#batpay_paycode").selectpicker('val',paycode);
+			
 			$("label.error").hide();
 			$(".error").removeClass("error");
 	        $("#batPayItemModal").modal("show");
@@ -269,7 +272,7 @@ $(function(){
 			if(msg == ''){
 				cardno=$("#qry_pabatpay_cardno").val().toUpperCase();
 				var idtno=$("#qry_pabatpay_idtno").val().toUpperCase();
-				var paycode=$.getSelectVals("qry_pabatpay_paycode");
+				paycode=$.getSelectVals("qry_pabatpay_paycode");
 				salnum=$.getSelectVals("qry_pabatpay_salnum");
 				patradt=$.getSelectVals("qry_pabatpay_patradt");
 				
@@ -290,7 +293,7 @@ $(function(){
 					data:{
 						method  : 'handelBatch',
 						fun     : 'qryBatPay',
-						in_data :JSON.stringify(in_data),
+						in_data : JSON.stringify(in_data),
 						hid     : pahid,
 						userid  : paUserid,
 					},
@@ -312,7 +315,6 @@ $(function(){
 						
 						//移至第1筆
 						//$("#tblBatPayList tbody tr:first").find("a").eq(0).trigger("click");
-						
 						
 					},
 					error: function(xhr){					
@@ -982,7 +984,7 @@ $(function(){
 	objCopyB.aoColumns = [	
 // 							{ "sTitle":' <div><input type="checkbox" id="leavepay_select_all" data-to-table="tasks"  > ', "mData": null },
 							{ "sTitle":"",		  "mData": null },
-							{ "sTitle":"年月", 	  "mData": "ym" },
+							{ "sTitle":"請假年月", "mData": "ym" },
 							{ "sTitle":"卡號",	  "mData": "paycard" },
 							{ "sTitle":"姓名",	  "mData": "empname" },
 							{ "sTitle":"分類",	  "mData": null },
@@ -1203,7 +1205,7 @@ $(function(){
 			            		<tr>	
 			            			<th>*支扣項目</th>
 		            				<Td>
-			            				<select id="batpay_paycode" name="paycode" class="form-control text-left selectpicker required" data-width="fit" title="支扣項目" >
+			            				<select id="batpay_paycode" name="paycode" class="form-control text-left selectpicker required" data-width="fit" data-live-search="true" title="支扣項目" >
 										</select>
 			            			<th>金額</th>
 			            			<td colspan=3>
@@ -1295,8 +1297,8 @@ $(function(){
 				  			2.日薪採計,高榮=本薪+專業加給+主管加給<br>
 				  			3.屏榮=本俸+專業加給+主管加給+院區加給FP100+身心障礙加給FP110+特別津貼FP120<br>
 				  			4.聯醫=本俸+專業加給+主管加給+責任加給FP090+職務加給FP100<br>
-				  			5.1月假檔,日數累計是前一年1-12月累加數<br>
-				  			6.寫入前,請先按卡號排序<br>
+				  			5.1月份假檔,日數累計是前一年1-12月累加數<br>
+				  			6.寫入前,請先按[卡號]排序,金額0不會寫入.<br>
 				  		</div>
 				  	</div>
 				</div>	

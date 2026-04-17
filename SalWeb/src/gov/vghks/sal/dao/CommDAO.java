@@ -16,6 +16,7 @@ import gov.vghks.sal.model.Patitle;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -404,16 +405,17 @@ public class CommDAO {
 		String oneKey="";
 		long starttime =0;
 		sql = "select PAYCODE, PACODNMC, PACODDEL, PAYAUTH, PAYIFTAX, PAUPBAS, PAYREWARD, HID "+
-		 	    "from "+this.tPayitm ;
-		
-		log.info(me+"  " + sql+"...params:"+ params.toString());
+		 	    "from "+this.tPayitm +" where hid=? ";
 		try{
 			starttime = System.currentTimeMillis();
+			params.add(hid);
 			if (!"".equals(vcoddel) ){
-				sql += " PACODNMC='N' ";
+				sql += " and PACODDEL=? ";
+				params.add(vcoddel);
 			}
 			sql += " with ur";
-			result = da.arraylistbyQuery(sql,META_TYPE);
+			result = da.arraylistbyQuery(sql,params,META_TYPE);
+			log.info(me+"  " + sql+"...params:"+ params.toString());
 			log.info(me+"  ...size:"+result.size());
 			if(result.size()>0){
 				for (Map<String,Object> data :result){
@@ -953,6 +955,41 @@ public class CommDAO {
 		if (itm.equals("F")) return 15;
 		return itmDay;
 	}
+	/**傳回 不開業獎金(專二/工二)
+	 * tracod=33(職務調整)升主管,職等有調整,要抓原先,2個月 2026/5/1 A152 3/30更換,5月
+	4650(4/2) 3633(4/1),5月及6月
+	 * @param jt職稱,jtsub職稱分類,rnk2n職等,degr2級數,pfdoc專勤額度,reten(專一=0,專二YN) csflag(工獎YN)
+	 * @return 
+	 * Ex: getOpenBonus('CB','H','',6,0,'','Y') return 20000 
+	 * @throws Exception 
+	 */
+	public int getOpenBonus(String jt,String jtsub,String rnk2n,int degr2,int pfdoc,String reten,String csfg) throws Exception{		
+		int rtnAmt = 0;
+		if (jt.matches("AL|CB|CH|CK")){//AL不分科住院醫師(證書) CB聘用住院醫師 CH契約住院醫師(證書) CK PGY
+			if (degr2==1 ||degr2==2)
+				rtnAmt=20000;
+			else if (degr2==3 ||degr2==4)
+				rtnAmt=25000;
+			else if (degr2==5 ||degr2==6)
+				rtnAmt=30000;
+		}
+		else if (jt.matches("CG") || jtsub.matches("V|A")){//CG契主治 職稱分類=V醫師/A兼職
+			if ( pfdoc == 0 && !reten.equals("Y") && csfg.equals("N") )
+				rtnAmt=0;
+			else{
+				if (rnk2n.equals("P1"))
+					rtnAmt=36000;
+				else if (rnk2n.equals("P2"))
+					rtnAmt=33000;
+				else if (rnk2n.matches("P3|07"))	//16公職住院醫師職等=07
+					rtnAmt=25000;
+			}
+		}
+			
+		return rtnAmt;
+	}
+	
+	
 	/**
 	 * 關閉VGHDataAccess與ResultSet
 	 * 

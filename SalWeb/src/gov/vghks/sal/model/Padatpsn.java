@@ -50,6 +50,8 @@ public class Padatpsn implements Serializable{
     private int paypfsp1;
     /** 額外點數2*/
     private int paypfsp2;
+    /** 額外點數2代碼*/
+    private int payexpfkey2;
     /** 額外點數3*/
     private int paypfsp3;
     /** 最後更改ID*/
@@ -104,6 +106,14 @@ public class Padatpsn implements Serializable{
     private String sex;
     /** 留職留薪,支領專2(Y/N)*/
     private String paretention;
+    /** 職稱分類*/
+    private String patitsub;
+    /** 離職日期*/
+    private java.sql.Date payrsgdt;
+    /** 異動原因*/
+    private int patracod;
+    /** 額外點數*/
+    private int paypfsp;
     
     public int getSalnum() {
 		return salnum;
@@ -393,6 +403,36 @@ public class Padatpsn implements Serializable{
 	}
 	public void setParetention(String paretention) {
 		this.paretention = paretention;
+	}
+	public String getPatitsub() {
+		return patitsub;
+	}
+	public void setPatitsub(String patitsub) {
+		this.patitsub = patitsub;
+	}
+	public java.sql.Date getPayrsgdt() {
+		return payrsgdt;
+	}
+	public void setPayrsgdt(java.sql.Date payrsgdt) {
+		this.payrsgdt = payrsgdt;
+	}
+	public int getPatracod() {
+		return patracod;
+	}
+	public void setPatracod(int patracod) {
+		this.patracod = patracod;
+	}
+	public int getPaypfsp() {
+		return paypfsp;
+	}
+	public void setPaypfsp(int paypfsp) {
+		this.paypfsp = paypfsp;
+	}
+	public int getPayexpfkey2() {
+		return payexpfkey2;
+	}
+	public void setPayexpfkey2(int payexpfkey2) {
+		this.payexpfkey2 = payexpfkey2;
 	}
 	
         

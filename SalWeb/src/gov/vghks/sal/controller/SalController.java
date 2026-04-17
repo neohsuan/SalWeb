@@ -1322,9 +1322,12 @@ public class SalController{
 					object_in_data = JSONObject.fromObject(in_data);
 					selEn=(!object_in_data.has("selEn")) ? "" : object_in_data.getString("selEn");					
 				}
+				//主計
 				if ( ! selEn.equals("") && selEn.matches("BAS_1|BAS_2") ){
 					jsonArrRtn=tDAO.getBASFileList(in_data,userid,hid,da);
-				}else if ( ! selEn.equals("") && selEn.matches("Perf_1|Perf_2") ){
+				}
+				//績效
+				else if ( ! selEn.equals("") && selEn.matches("Perf_1|Perf_2") ){
 					jsonArrRtn=tDAO.getPerfFileList(in_data,userid,hid,da);
 				}
 				// 用一個root tag將JSONArray包裝起來

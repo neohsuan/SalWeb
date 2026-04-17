@@ -40,6 +40,7 @@ public enum Tables {
 			"PA.PAREPORT",
 			"PA.PANHICAL",
 			"PA.PANHIDET",
+			"PA.PATEACHAW",
 			"ZPATITLE",
 			"ZPARANKCODE",
 			"ZPABANK",
@@ -99,6 +100,7 @@ public enum Tables {
 		"PA.PTREPORT",
 		"PA.PTNHICAL",
 		"PA.PTNHIDET",
+		"PA.PTTEACHAW",
 		"ZPTTITLE",
 		"ZPTRANKCE",
 		"ZPTBANK",
@@ -158,6 +160,7 @@ public enum Tables {
 		"PA.LHREPORT",
 		"PA.LHNHICAL",
 		"PA.LHNHIDET",
+		"",
 		"ZLHTITLE",
 		"ZLHRANKCE",
 		"ZLHBANK",
@@ -218,6 +221,7 @@ public enum Tables {
 	public final String tRPPRT;						//35報表檔架構
 	public final String tNhiCal;					//二代健保(補充保險費_獎金)
 	public final String tNhiDet;					//二代健保申報扣費明細
+	public final String tTeaChaw;					//教職及論文獎勵
 	
 	public final String tmpZtitle ;		//時戳
 	public final String tmpZrankce ;
@@ -278,6 +282,7 @@ public enum Tables {
 		final String tRPPRT,
 		final String tNhiCal,
 		final String tNhiDet,
+		final String tTeaChaw,
 		final String  tmpZtitle ,		
 		final String  tmpZrankce ,
 		final String  tmpZbank ,
@@ -337,6 +342,7 @@ public enum Tables {
     	this.tRPPRT=tRPPRT;
     	this.tNhiCal=tNhiCal;
     	this.tNhiDet=tNhiDet;
+    	this.tTeaChaw=tTeaChaw;
     	this.tmpZtitle= tmpZtitle;		//時戳
     	this.tmpZrankce= tmpZrankce;
     	this.tmpZbank= tmpZbank;
