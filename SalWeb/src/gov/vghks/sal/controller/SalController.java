@@ -2003,6 +2003,11 @@ public class SalController{
 					// 用一個root tag將JSONArray包裝起來
 					jsonObj.element("PayLeaveList", rtnMap.get("leave_json"));
 				}
+				else if (fun.matches("qryteacheraw")){	//教職及論文獎勵 _查詢
+					rtnMap=tDAO.getTeacheraw(in_data,userid,hid,da);
+					// 用一個root tag將JSONArray包裝起來
+					jsonObj.element("TeacherawList", rtnMap.get("teacheraw_json"));
+				}
 			}catch(Exception e){	
 				log.info(me+"失敗=="+e.toString());
 				e.printStackTrace();

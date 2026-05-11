@@ -230,7 +230,7 @@ public class Deduct_1A0 {
 				//總計,不用列各列明細
 				if (!blnSum){
 					//職號,卡號
-					cellContent.setPhrase(new Phrase(data.getPayempno()+"\n"+data.getPaycard(), fontColCent));			
+					cellContent.setPhrase(new Phrase(data.getPayempno()+"\n"+data.getPaycard(), fontColCentT));			
 					contentTable.addCell(cellContent);
 					//階級
 					tmp=StringUtil.nullToString(data.getRankabbr())+StringUtil.nullToString(data.getPayrnk2n());
