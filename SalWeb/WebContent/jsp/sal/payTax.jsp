@@ -85,7 +85,8 @@ $(function(){
 				method  : 'getLoadCodeTbl',
  				item    : item,
  				flag    : flag,
- 				hid     : pahid
+ 				hid     : pahid,
+ 				userid  : paUserid
 			},
 			type:"POST",			//type:POST, GET(default:GET)
 			dataType:"json",	//dataType: text, xml, html, script, json, jsonp
@@ -1555,9 +1556,12 @@ $(function(){
 	$('#payidno').blur(function(){
 		var idno = $(this).val();
 		if (idno !=""){
-			//用正規表達式判斷身分證
-			reCheckCase = /(^[a-zA-Z]{1,2}[0-9]{1,9}$)|(^[0-9]{1,10}$)/ ;//包含以1-2個英文字為字首加上1-8個數字、1-10個數字
-			//reCheckCase = /^[A-Za-z][12]\d{8}$/ ;   //10碼身分證可以,但統一編號尚未
+			//用正規表達式判斷身分證 舊式居留證
+			//國民身分證：第一碼英文字母，第二碼為 1 或 2，總長 10 碼 ^[A-Z][12]\d{8}$
+			//新式居留證:1碼英文 + 8或9 + 8碼數字                               ^[A-Z][ABCD]\d{8}$
+			//複合型 (全部)                               ^[A-Z][1289ABCD]\d{8}$
+			reCheckCase = /^[A-Z][1289ABCD]\d{8}$/ ;
+			
 			if(!reCheckCase.test(idno)){
 				alert('輸入的身分證字號格式有誤，請重新輸入');
 				return;

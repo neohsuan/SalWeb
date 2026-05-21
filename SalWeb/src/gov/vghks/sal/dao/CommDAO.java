@@ -942,6 +942,11 @@ public class CommDAO {
 		if (itm.equals("F")) return "半日契約";
 		if (itm.equals("P")) return "不分科";
 		if (itm.equals("T")) return "研究助理";
+		if (itm.equals("E")) return "契約住院醫師";
+		if (itm.equals("C")) return "聘用住院醫師";
+		if (itm.equals("G")) return "技工";
+		if (itm.equals("H")) return "工友";
+		if (itm.equals("J")) return "契約主治醫師";		
 		return itmCd;
 	}
 	/**傳回 考勤_每月有效天數,全日=30,半日=15

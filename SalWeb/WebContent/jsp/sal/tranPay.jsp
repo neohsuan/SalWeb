@@ -171,7 +171,7 @@ $(function(){
 					select.selectpicker('refresh');
 				}
 				if (data.altracdTbl[0]!=null){
-					select = $('#tran_patracd,#filter_patracd,#patracod');
+					select = $('#tran_patracd,#filter_patracd');
 					select.empty();
 					options = "<option value=''>";
 					select.append(options);
@@ -180,6 +180,16 @@ $(function(){
 						select.append(options);
 					});
 					select.selectpicker('refresh');
+				}
+				if (data.altracdTbl[0]!=null){
+					select = $('#patracod');
+					select.empty();
+					options = "<option value=''>";
+					select.append(options);
+					$.each(data.altracdTbl, function(idx) {
+						options = "<option value='" + data.altracdTbl[idx].tracode + "'>" + data.altracdTbl[idx].tracode+" "+data.altracdTbl[idx].traname ;
+						select.append(options);
+					});
 				}
 				if (data.alpayitmTbl[0]!=null){
 					var payitmHtml ='<option value="">請選擇</option>';
@@ -402,6 +412,9 @@ $(function(){
 			
 		    $("#subPATRAPSN_Updbtn,#subPATRAPSN_Delbtn").prop("disabled", true);
 		    $("#tblTranPsnList").dataTable().fnClearTable();
+		    //button啟用
+			$("#subPATRAPSN_Newbtn").prop("disabled", false);
+		    
 			return false;
 		}
 		else if( id == 'btn_cln_filter_TranPsn'){
@@ -410,6 +423,17 @@ $(function(){
 			$('.selectpicker').selectpicker('refresh');			
 			$("#tblTranPsnFilter").dataTable().fnClearTable();
 			return false;			
+		}
+		else if( id == 'subPATRAPSN_Newbtn'){	//異動資料_新增一筆
+			//清空
+			cleanTable("byTranDetailMain");
+			//button啟用
+			$("#subPATRAPSN_Insbtn").prop("disabled", false);
+			//button禁用
+			$("#subPATRAPSN_Newbtn,#subPATRAPSN_Updbtn,#subPATRAPSN_Delbtn").prop("disabled", true);
+			
+			$('.selectpicker').selectpicker('val', '');
+			$('.selectpicker').selectpicker('refresh');
 		}
 		else if(id == 'btn_qry_tran_TranPsn'){		//異動資料_查詢
 			msg = $.checkFields(id);
@@ -633,10 +657,15 @@ $(function(){
 				return false;
 			}
 		}
-		else if (id == 'subPATRAPSN_Updbtn' ||id == 'subPATRAPSN_Insbtn'){	//異動檔更改
+		else if (id == 'subPATRAPSN_Updbtn' ||id == 'subPATRAPSN_Insbtn'){	//異動檔更改 存檔
 			if ($("#subPATraPsnForm").valid()){
 				msg = $.checkFields(id);
 				if(msg == ''){
+					//將key取消readOnly
+					$("#patradt").prop('disabled', false);
+					$("#patracod").prop("disabled", false) ;
+					$("#payidno").prop("readOnly", false) ;
+					
 					itmTbl="tblTranPsnList";
 					tblname=id.substring(3,id.indexOf('_'));
 					console.log("tblname:"+tblname);
@@ -658,7 +687,7 @@ $(function(){
 					info = oTable.page.info();		//記錄目前頁碼
 					currentPage=info.page;
 					
-					return false;
+					//return false;
 					 $.ajax({
 						url:"${pageContext.request.contextPath}/salController.do",
 						data:{
@@ -945,7 +974,11 @@ $(function(){
 	function cleanTable(table_id){
 		$(":checkbox,:radio").prop("checked", false);
 		//清除所有頁面的內容(enable)，disable的不清除
-		$('#'+table_id+' :input:enabled').each(function() {
+// 		$('#'+table_id+' :input:enabled').each(function() {
+// 			$(this).val("");
+// 	    });
+		//清除所有頁面的內容
+	    $('#'+table_id+' :input').each(function() {
 			$(this).val("");
 	    });
 	    //清除tfoot
@@ -1322,7 +1355,11 @@ $(function(){
 			}
 		}	
 		//button啟用
-		$("#subPATRAPSN_Updbtn,#subPATRAPSN_Delbtn").prop("disabled", false);		
+		$("#subPATRAPSN_Updbtn,#subPATRAPSN_Delbtn").prop("disabled", false);
+		//key readonly
+		$("#patradt").prop('disabled', true);
+		$("#patracod").prop("disabled", true) ;
+		$("#payidno").prop("readOnly", true) ;
 	};
 	//
 	//顯示pa.paTrapay個人原支扣明細
@@ -1340,6 +1377,92 @@ $(function(){
 		}
 		oTable.fnDraw();
 	};
+	//用正規表達式判斷身分證
+	$('#payidno').blur(function(){
+		$(this).val( $(this).val().toUpperCase() ) ;
+		var tmp = $(this).val();
+		if (tmp !=""){
+			//國民身分證：第一碼英文字母，第二碼為 1 或 2，總長 10 碼 ^[A-Z][12]\d{8}$
+			//新式居留證:1碼英文 + 8或9 + 8碼數字                               ^[A-Z][ABCD]\d{8}$
+			//複合型 (全部)                               ^[A-Z][1289ABCD]\d{8}$
+			reCheckCase = /^[A-Z][1289ABCD]\d{8}$/ ;
+			if(!reCheckCase.test(tmp)){
+				alert('輸入的身分證字號格式有誤，請重新輸入');
+				return;
+			}
+		}
+	});
+	//用正規表達式判斷卡號
+	$('#paycard').blur(function(){
+		$(this).val( $(this).val().toUpperCase() )
+		var tmp = $(this).val();
+		if (tmp !=""){
+			reCheckCase = /^\d{4}$|^[A-Za-z]\d{3}|^[A-Za-z][A-Za-z]\d{2}$|^$/;
+			if(!reCheckCase.test(tmp)){
+				alert('輸入的卡號格式有誤，請重新輸入');
+				return;
+			}
+		}
+	});	
+	//輸入ID/CARD+異動原因,找基本檔
+	$(".findkey").blur(function(){
+		patracod=$("#patracod option:selected").val();
+		if (patracod != "" && typeof(patracod) != "undefined"){
+			alert(patracod);
+		}
+		var key=$(this).attr('id');
+ 		
+		console.log("id:"+key+" readOnly:"+$(this).attr("readOnly")+" btn:"+ $("#subPATRAPSN_Insbtn").prop("disabled") );
+		return false;
+		//未設定readOnly屬性 
+		if($(this).attr("readOnly")==undefined || $(this).attr("readOnly")==false){	
+			var key=$(this).val().toUpperCase();
+			var code_data="";
+			if ( key != ""){
+				tblname="BASPSN";
+				if (tblname=="BASPSN"){						
+					if ($("#payear option:selected").val()=="" && $('#payidno').val()==""  ){
+						return false;
+					}else{
+			        	code_data={
+			        		"patracod" :patracod,
+			        		"key"      :key
+			        	}
+			        	console.log("基本檔findkey:code_data:"+JSON.stringify(code_data));	
+		        	}
+		        }
+		        //return false;	
+		        //有按[新增一筆]->[存檔]disable=false
+				if (!$("#subPATRAPSN_Insbtn").prop("disabled")){
+					$.ajax({				
+							url:"${pageContext.request.contextPath}/salController.do",
+							data:{
+								method  : 'getTaxPsnByKey',
+								code_data :JSON.stringify(code_data),
+								hid     : pahid,
+								userid  : paUserid,
+							},
+			
+							type:"POST",		//type:POST, GET(default:GET)
+							dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+							contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+							async: false,
+							cache: false,			
+							success:function(data) {
+								if ( data.basPsnItem!=null ){
+									alert("重複");
+								}	
+							},
+							error: function(xhr){	
+								alert("搜尋[輸入 KEY,找是否重複]過程中，程式發生錯誤!!!\nerror code:"+ xhr.status);
+							}
+						});
+				}
+			}
+		}			
+	});
+	
+	
 	
 	//原支扣明細
  	var objCopyB = $.extend(true, {aaSorting: []}, dataTableConfig);			
@@ -1707,7 +1830,8 @@ $(function(){
 					        <a class="card-link" data-toggle="collapse" href="#collapseOne">
 					          	[異動個人明細]					          	
 					        </a>
-					        <button type="button" class="btn btn-success" id="subPATRAPSN_Insbtn" disabled><i class="fa fa-save"></i>新增一筆</button>
+					        <button type="button" class="btn btn-success" id="subPATRAPSN_Newbtn"><i class="fa fa-plus"></i>新增一筆</button>
+					        <button type="button" class="btn btn-success" id="subPATRAPSN_Insbtn" disabled><i class="fa fa-save"></i>存檔</button>
 					        <button type="button" class="btn btn-primary" id="subPATRAPSN_Updbtn" disabled><i class="fa fa-edit"></i>更改</button>
 					        <button type="button" class="btn btn-danger"  id="subPATRAPSN_Delbtn" disabled><i class="fa fa-trash-alt"></i>刪除</button>
 					      </div>
@@ -1724,9 +1848,9 @@ $(function(){
 												<div class="form-inline">
 													<div class="form-group">
 														<label for="patradt" class="form-inline table-warning">*發薪日:</label>
-														<input type="text" id="patradt" class="form-control table-warning"  maxlength="10" size="10"  />
+														<input type="text" id="patradt" class="form-control gclsCalTxt table-warning required"  maxlength="10" size="10"  />
 														<label for="patracod" class="form-inline table-warning">*異動原因:</label>
-														<select id="patracod" name="patracod" class="form-control selectpicker required" data-width="fit" title="異動原因">
+														<select id="patracod" name="patracod" class="form-control required" data-width="fit" title="異動原因">
 														</select>
 														<label for="salnum">餉單編號:</label>
 														<input type="text" id="salnum" readonly class="form-control" maxlength="4" size="4"  />
@@ -1739,7 +1863,7 @@ $(function(){
 												<div class="form-inline">
 													<div class="form-group">
 														<label for="payidno" class="table-warning">*身份證字號:</label>
-														<input type="text" id="payidno" class="text-uppercase form-control required" maxlength="10" size="10"  />
+														<input type="text" id="payidno" class="text-uppercase form-control required findkey" maxlength="10" size="10"  />
 													</div>												
 													<div class="form-group">
 														<label for="payempno" class="form-inline table-warning">職號:</label>
@@ -1751,7 +1875,7 @@ $(function(){
 													</div>
 													<div class="form-group">
 														<label for="paycard" class="form-inline table-warning">卡號:</label>
-														<input type="text" id="paycard" class="text-uppercase form-control required" maxlength="4" size="4" style="font-weight: bold; font-size:30px;" />
+														<input type="text" id="paycard" class="text-uppercase form-control required findkey" maxlength="4" size="4" style="font-weight: bold; font-size:30px;" />
 													</div>
 												</div>
 											</td></tr>
