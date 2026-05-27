@@ -947,6 +947,7 @@ public class SalController{
 	}
 	/**
 	 * 依卡號取的人名
+	 * 2026.5.27 加HID,2A0,3A0限查自家
 	 */
 	@RequestMapping(params="method=getNamebyID")
 	public void getNamebyID(HttpServletRequest request, HttpServletResponse response){
@@ -954,11 +955,12 @@ public class SalController{
 		String me = getClass().getName() + ".getNamebyID()";
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String cardno = request.getParameter("cardno")==null?"":request.getParameter("cardno");		
-		
+		String loginHid = request.getParameter("loginHid")==null?"":request.getParameter("loginHid");
 		try{
 			tDAO = new SalNTDAO();
 			try{
-				jsonObj = tDAO.queryNamebyID(cardno);
+				jsonObj = tDAO.queryNamebyID(cardno,loginHid);
+				
 			}catch(Exception e){	
 				log.info(me+"失敗=="+e.toString());
 				e.printStackTrace();

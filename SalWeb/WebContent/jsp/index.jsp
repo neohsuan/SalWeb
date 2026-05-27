@@ -82,7 +82,7 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 	<div class="card-deck">
 		<!-- 例行作業 -->
 		<c:choose>
-			<c:when	test="${sessionScope.agent eq null or empty sessionScope.agent}"><!--代理 -->
+			<c:when	test="${sessionScope.agent eq null or empty sessionScope.agent}">
 				<c:if test="${ sessionScope.user.getPa_adm()=='Y' or (sessionScope.user.getPa_edit()=='Y') or 
 		                     (sessionScope.user.getPa_view()=='Y') }">
 				
@@ -166,8 +166,8 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 		
 		<!-- 員工績效 -->
 		<c:choose>
-			<c:when	test="${sessionScope.agent eq null or empty sessionScope.agent}">
-				<c:if test="${ sessionScope.user.getPa_adm()=='Y' or (sessionScope.user.getPa_bones()=='Y') }">				
+			<c:when	test="${sessionScope.agent eq null or empty sessionScope.agent }">
+				<c:if test="${ sessionScope.user.getHid()!='3A0' && (sessionScope.user.getPa_adm()=='Y' or sessionScope.user.getPa_bones()=='Y')  }">				
 					<div class="card">
 						<div class="card-header">
 							<img border="0" src="<c:url value="/resources/images/if_Settings-5_379393.png"/>" width="45" height="45" style="display:inline;">		 		

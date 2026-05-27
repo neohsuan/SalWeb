@@ -11953,7 +11953,7 @@ public class SalNTDAO {
 		}
 		return pataxpsn;
 	}
-	//依KEY,取得pa.pabasPSN
+	//依KEY(idtno,cardno),取得pa.pabasPSN
 	public Pabaspsn getBasPsnBykey(String code_data,String userid,VGHDataAccess da) throws Exception{
 		String me = getClass().getName() + ".getBasPsnBykey(),userid = " + userid;
 		log.info(me +  " code_data = " + code_data+ " hid = " + hid);
@@ -11967,12 +11967,14 @@ public class SalNTDAO {
 		Date end = new Date();
 		String strSelect="";
 		String idtno="";
+		String cardno="";
 		
 		ArrayList<Object> params = new ArrayList<Object>();
 		
 		if (code_data!=null && !code_data.equals("")){
 			object_code_data = JSONObject.fromObject(code_data);
 			idtno=(!object_code_data.has("idtno")) ? "" : object_code_data.getString("idtno");
+			cardno=(!object_code_data.has("cardno")) ? "" : object_code_data.getString("cardno");
 			hid=(!object_code_data.has("hid")) ? "" : object_code_data.getString("hid");
 		}
 		//讀取pa.pabaspsn
@@ -11991,10 +11993,17 @@ public class SalNTDAO {
 			   " left outer join "+ this.tRnk4Tbl+" E on A.PAYRANK4=E.RNK4KEY "+
 			   " left outer join "+ this.tTraCode+" F on A.PATRACOD=F.TRACODE "+
 			   " left outer join "+ this.tBasAdr+" G on A.PAYIDNO=G.PAYIDNO "+
-			   " where  A.PAYIDNO=? and A.HID=?  with ur ";
-		
-		params.add(idtno);
+			   " where A.HID=? and ";
 		params.add(hid);
+		if (!idtno.equals("")) {
+			sql +="A.PAYIDNO=? order by A.payrsgdt desc with ur ";
+			params.add(idtno);
+		}
+		else if (!cardno.equals("")) {
+			sql +="A.PAYIDNO=? order by A.payrsgdt desc with ur ";
+			params.add(cardno);
+		}
+		
 		log.info(me+"  " + sql+"...params:"+ params.toString());
 		
 		try{
@@ -12761,7 +12770,8 @@ public class SalNTDAO {
 		return success;
 	}
 	//取得相對應卡號之姓名
-	public JSONObject queryNamebyID(String cardno) throws Exception {
+	//2026.5.27 2A0 3A0 查自家的,1A0不限
+	public JSONObject queryNamebyID(String cardno,String Loginhid) throws Exception {
 		JSONObject user = new JSONObject();
 
 		try{
@@ -12769,56 +12779,58 @@ public class SalNTDAO {
 			String hostname = InetAddress.getLocalHost().getHostName();
 			String programName=this.getClass().getName();
 			LDAPUtil ldapUtil = LDAPUtil.getInstance() ; 
-			
-			String userName = ldapUtil.getUserNm(cardno);
-			String userCosId = ldapUtil.getCostId(cardno);	
-			//成本中心中文
-			String userDeptName = ldapUtil.getDeptName(cardno,hostname,programName);
 			String userHID=ldapUtil.getLdapAttr(cardno,"HID",hostname,programName);
-			// 成本中心英文
-			String userDept = ldapUtil.getDeptNo(cardno, hostname, programName);
-			if(userDept.length()>=3  && userDept.substring(0,3).equals("NUR")) 
-				userDept = userDept.substring(3,userDept.length());
-			//職稱代碼
-			String user_psWkTypd=ldapUtil.getLdapAttr(cardno,"payWkTyd",hostname,programName);
-			
-			//查詢是否為薪資管理者權限
-			boolean pa_admin = ldapUtil.checkUserinGroup(cardno, Globals.SESSION_SYS_ADMIN);
-			System.out.println("管理者" + ":" + pa_admin);
-			String strAdmin = pa_admin ? "Y" : "N";
-			
-			//查詢是否為薪資系統_維護角色
-			boolean pa_edit = ldapUtil.checkUserinGroup(cardno, Globals.SESSION_SYS_EDIT);
-			System.out.println("維護角色" + ":" + pa_edit);
-			String strEdit = pa_edit ? "Y" : "N";
-			
-			//查詢是否為薪資系統_查詢角色
-			boolean pa_view = ldapUtil.checkUserinGroup(cardno, Globals.SESSION_SYS_VIEW);
-			System.out.println("查詢角色" + ":" + pa_view);
-			String strView = pa_view ? "Y" : "N";
-			
-			//查詢是否為薪資系統_員工獎金角色
-			boolean pa_bones = ldapUtil.checkUserinGroup(cardno, Globals.SESSION_SYS_BONES);
-			System.out.println("員工獎金角色" + ":" + pa_bones);
-			String strBones = pa_bones ? "Y" : "N";
-			
-			//查詢是否為薪資系統_所得稅角色
-			boolean pa_tax = ldapUtil.checkUserinGroup(cardno, Globals.SESSION_SYS_TAX);
-			System.out.println("所得稅角色" + ":" + pa_tax);
-			String strTax = pa_tax ? "Y" : "N";
-			
-			user.element("userCardno", cardno);			
-			user.element("userName", userName);
-			user.element("userCosId", userCosId);
-			user.element("userDept", userDept);
-			user.element("userDeptName", userDeptName);
-			user.element("userHid",userHID);
-			user.element("userPsWkTypd",user_psWkTypd);
-			user.element("userAdmin",strAdmin);
-			user.element("userEdit",strEdit);
-			user.element("userView",strView);
-			user.element("userBones",strBones);
-			user.element("userTax",strTax);
+			if ((Loginhid.matches("2A0|3A0") && userHID.equals(Loginhid)) || Loginhid.matches("1A0") ) {
+				String userName = ldapUtil.getUserNm(cardno);
+				String userCosId = ldapUtil.getCostId(cardno);	
+				//成本中心中文
+				String userDeptName = ldapUtil.getDeptName(cardno,hostname,programName);
+				
+				// 成本中心英文
+				String userDept = ldapUtil.getDeptNo(cardno, hostname, programName);
+				if(userDept.length()>=3  && userDept.substring(0,3).equals("NUR")) 
+					userDept = userDept.substring(3,userDept.length());
+				//職稱代碼
+				String user_psWkTypd=ldapUtil.getLdapAttr(cardno,"payWkTyd",hostname,programName);
+				
+				//查詢是否為薪資管理者權限
+				boolean pa_admin = ldapUtil.checkUserinGroup(cardno, Globals.SESSION_SYS_ADMIN);
+				System.out.println("管理者" + ":" + pa_admin);
+				String strAdmin = pa_admin ? "Y" : "N";
+				
+				//查詢是否為薪資系統_維護角色
+				boolean pa_edit = ldapUtil.checkUserinGroup(cardno, Globals.SESSION_SYS_EDIT);
+				System.out.println("維護角色" + ":" + pa_edit);
+				String strEdit = pa_edit ? "Y" : "N";
+				
+				//查詢是否為薪資系統_查詢角色
+				boolean pa_view = ldapUtil.checkUserinGroup(cardno, Globals.SESSION_SYS_VIEW);
+				System.out.println("查詢角色" + ":" + pa_view);
+				String strView = pa_view ? "Y" : "N";
+				
+				//查詢是否為薪資系統_員工獎金角色
+				boolean pa_bones = ldapUtil.checkUserinGroup(cardno, Globals.SESSION_SYS_BONES);
+				System.out.println("員工獎金角色" + ":" + pa_bones);
+				String strBones = pa_bones ? "Y" : "N";
+				
+				//查詢是否為薪資系統_所得稅角色
+				boolean pa_tax = ldapUtil.checkUserinGroup(cardno, Globals.SESSION_SYS_TAX);
+				System.out.println("所得稅角色" + ":" + pa_tax);
+				String strTax = pa_tax ? "Y" : "N";
+				
+				user.element("userCardno", cardno);			
+				user.element("userName", userName);
+				user.element("userCosId", userCosId);
+				user.element("userDept", userDept);
+				user.element("userDeptName", userDeptName);
+				user.element("userHid",userHID);
+				user.element("userPsWkTypd",user_psWkTypd);
+				user.element("userAdmin",strAdmin);
+				user.element("userEdit",strEdit);
+				user.element("userView",strView);
+				user.element("userBones",strBones);
+				user.element("userTax",strTax);
+			}
 		} catch(Exception e){
 			log.info(" fail, " + e);
 		} finally {
