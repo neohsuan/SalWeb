@@ -106,7 +106,7 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 				</c:if>					
 			</c:when>
 			<c:otherwise>
-				<c:if test="${ sessionScope.agentEdit=='Y' or (sessionScope.agentView=='Y')  }"><!--代理 -->
+				<c:if test="${ sessionScope.agentAdmin=='Y' or (sessionScope.agentEdit=='Y') or (sessionScope.agentView=='Y')  }"><!--代理 -->
 					<div class="card">
 						<div class="card-header">
 							<img border="0" src="<c:url value="/resources/images/plan.png"/>" width="45" height="45" style="display:inline;">		 		
@@ -148,7 +148,7 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 				</c:if>					
 			</c:when>
 			<c:otherwise>
-				<c:if test="${ sessionScope.agentEdit=='Y' or (sessionScope.agentView=='Y') or (sessionScope.agentTax=='Y') }"><!--代理 -->
+				<c:if test="${ sessionScope.agentAdmin=='Y' or (sessionScope.agentEdit=='Y') or (sessionScope.agentView=='Y') or (sessionScope.agentTax=='Y') }"><!--代理 -->
                      <div class="card">
 						<div class="card-header">
 							<img border="0" src="<c:url value="/resources/images/if_Analytics_379550.png"/>" width="45" height="45" style="display:inline;">		 		
@@ -184,7 +184,7 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 				</c:if>			
 			</c:when>
 			<c:otherwise>
-				<c:if test="${ (sessionScope.agentBones=='Y') }"><!--代理 -->
+				<c:if test="${ sessionScope.agenthid !='3A0' && (sessionScope.agentAdmin=='Y' or sessionScope.agentBones=='Y') }"><!--代理 -->
                      <div class="card">
 						<div class="card-header">
 							<img border="0" src="<c:url value="/resources/images/if_Settings-5_379393.png"/>" width="45" height="45" style="display:inline;">		 		
@@ -223,7 +223,7 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 				</c:if>					
 			</c:when>
 			<c:otherwise>
-				<c:if test="${ sessionScope.agentEdit=='Y' }"><!--代理 -->
+				<c:if test="${ sessionScope.agentAdmin=='Y' or (sessionScope.agentEdit=='Y') }"><!--代理 -->
 					<div class="card">
 						<div class="card-header">
 							<img border="0" src="<c:url value="/resources/images/manager.png"/>" width="45" height="45" style="display:inline;">		 		
