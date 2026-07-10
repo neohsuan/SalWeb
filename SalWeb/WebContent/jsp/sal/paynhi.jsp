@@ -28,6 +28,7 @@ var idtno;
 var paydt;//給付日期
 var payno;//製票號
 var panhiyr;//年度
+var paymon;//月份
 var painsu;//保險別
 var payitem;//給付所得類別62獎金 63兼職
 var selCode;
@@ -523,13 +524,14 @@ $(function(){
 				cardno=$("#qry_nhidet_cardno").val().toUpperCase();
 				idtno=$("#qry_nhidet_idtno").val().toUpperCase();
 				namec=$("#qry_nhidet_namec").val();
-				payyr=$.getSelectVals("qry_nhidet_nhiyr"); 
+				payyr=$.getSelectVals("qry_nhidet_nhiyr");
+				paymon=$.getSelectVals("qry_nhidet_nhimon");  
 				paydt=$("#qry_nhidet_paydt").val();
 				payitem=$("#qry_nhidet_payitem option:selected").val();
 				selCode="NhiDet";
 				selNm="申報扣費明細";
 					
-				console.log("卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec+" 給付日期:"+paydt+" 年度:"+payyr+" 類別:"+payitem);
+				console.log("卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec+" 給付日期:"+paydt+" 年度:"+payyr+" 月:"+paymon+" 類別:"+payitem);
 				//return false;
 				
 				in_data={
@@ -537,6 +539,7 @@ $(function(){
 		        		idtno      :idtno,
 		        		namec      :namec,
 		        		payyr      :payyr,
+		        		paymon     :paymon,
 		        		paydt      :paydt,
 		        		payitem    :payitem,
 		        		selCode    :selCode,
@@ -595,7 +598,7 @@ $(function(){
 				namec=$("#qry_nhical_namec").val();
 				/* paydt=$.getSelectVals("qry_nhical_paydt");*/
 				payyr=$.getSelectVals("qry_nhical_nhiyr"); 
-				var paymon=$.getSelectVals("qry_nhical_nhimon"); 
+				paymon=$.getSelectVals("qry_nhical_nhimon"); 
 				paydt=$("#qry_nhical_paydt").val();
 				painsu=$("#qry_nhical_insu option:selected").val();
 				payitem=$("#qry_nhical_payitem option:selected").val();
@@ -1459,6 +1462,21 @@ $(function(){
 		    				<input type="text" id="qry_nhidet_paydt" size="10" class="form-control-sm gclsCalTxt" placeholder="給付日期" >
 		    				<select id="qry_nhidet_nhiyr" class="form-control nhiyr"  title="年度">
 								
+							</select>
+							<select id="qry_nhidet_nhimon" class="selectpicker" data-width="fit" multiple title="月">
+								<option value="" ></option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+								<option value="11">11</option>
+								<option value="12">12</option>
 							</select>
 		    				<span class="input-group-text">類別</span>
 							<select id="qry_nhidet_payitem" class="form-control" >
