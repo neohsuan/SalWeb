@@ -16,7 +16,7 @@ import gov.vghks.sal.model.Off0102v;
 
 public class PsNTDAO {
 	String gClassName = PsNTDAO.class.getName();
-	static Logger log = Logger.getLogger(SalNTDAO.class);  //©I¥slog4j
+	static Logger log = Logger.getLogger(PsNTDAO.class);  //©I¥slog4j
 	private VGHDataAccess da = null;
 	static ArrayList<Map<String, Object>> result = null;
 	static ArrayList<Object> params = new ArrayList<Object>();
