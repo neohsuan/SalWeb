@@ -173,7 +173,7 @@ $(function(){
 				}
 				
 				//餉單編號
-				if (data.alBankDtTbl[0]!=null){
+				/* if (data.alBankDtTbl[0]!=null){
 					select = $('#qry_padatpsn_salnum,#qry_check_salnum');
 					select.empty();
 					options = "<option value=''>";
@@ -193,7 +193,7 @@ $(function(){
 						select.append(options);
 					});
 					select.selectpicker('refresh');
-				}
+				} */
 				//餉單編號(2個月內)
 				if (data.alBankDtTbl_2M[0]!=null){
 					select = $('#qry_set_datyr,#prod_SalNum,#prt_SalNum,#print_SalNum,#file_SalNum');
@@ -335,9 +335,10 @@ $(function(){
 			}
   		}
   		else if (btn== 'btn_qryDatPsn'){	//發薪明細_查詢
+  			//($("#qry_padatpsn_salnum option:selected").val()=='' || typeof($("#qry_padatpsn_salnum option:selected").val())=='undefined' )&& 
+  			//  ($("#qry_padatpsn_paybank option:selected").val()=='' || typeof($("#qry_padatpsn_paybank option:selected").val())=='undefined' )&&
   			if($("#qryCardno").val()==''  && $("#qryIdtno").val()=='' && $("#qryNamec").val()=='' && 
-  			  ($("#qry_padatpsn_salnum option:selected").val()=='' || typeof($("#qry_padatpsn_salnum option:selected").val())=='undefined' )&& 
-  			  ($("#qry_padatpsn_paybank option:selected").val()=='' || typeof($("#qry_padatpsn_paybank option:selected").val())=='undefined' )&& 
+  			   $("#qry_padatpsn_salnum").val()==''   && $("#qry_padatpsn_paybank").val()==''  && 
   			  ($("#qry_payrank option:selected").val()=='' || typeof($("#qry_payrank option:selected").val())=='undefined') && 
   			  ($("#qryDept option:selected").val()=='' || typeof($("#qryDept option:selected").val())=='undefined')  && 
   			  ($("#qryTitle option:selected").val()=='' || typeof($("#qryTitle option:selected").val())=='undefined') && 
@@ -347,8 +348,9 @@ $(function(){
   			}
   		}
   		else if (btn== 'btn_qryCheck'){	//檢驗_查詢
-  			if( ( $("#qry_check_salnum option:selected").val()=='' || typeof($("#qry_check_salnum option:selected").val())=='undefined' ) && 
-  			    ( $("#qry_check_paybank option:selected").val()=='' ||typeof($("#qry_check_paybank option:selected").val())=='undefined' ) ){
+//   			if( ( $("#qry_check_salnum option:selected").val()=='' || typeof($("#qry_check_salnum option:selected").val())=='undefined' ) && 
+//   			    ( $("#qry_check_paybank option:selected").val()=='' ||typeof($("#qry_check_paybank option:selected").val())=='undefined' ) ){
+			if (  $("#qry_check_salnum").val()=='' && $("#qry_check_paybank").val()=='' ){
  				msg = '請輸入條件值!!';
  			}	
  		}
@@ -469,8 +471,10 @@ $(function(){
 				cardno=$("#qryCardno").val().toUpperCase();
 				idtno=$("#qryIdtno").val().toUpperCase();
 				namec=$("#qryNamec").val();
-				salnum=$.getSelectVals("qry_padatpsn_salnum");				
-				paybank=$.getSelectVals("qry_padatpsn_paybank");
+				salnum=$("#qry_padatpsn_salnum").val();
+				paybank=$("#qry_padatpsn_paybank").val();
+				//salnum=$.getSelectVals("qry_padatpsn_salnum");				
+				//paybank=$.getSelectVals("qry_padatpsn_paybank");
 				var payrank=$.getSelectVals("qry_payrank");
 				var paytitle=$.getSelectVals("qryTitle");
 				paydept=$.getSelectVals("qryDept");
@@ -2468,7 +2472,7 @@ $(function(){
 				<div class="col-10">
 					<div class="form-inline">
 		    			<div class="input-group">
-		    				<select id="qry_padatpsn_salnum"  class="selectpicker SALNUM" data-width="fit" multiple title="餉單編號">
+		    				<%-- <select id="qry_padatpsn_salnum"  class="selectpicker SALNUM" data-width="fit" multiple title="餉單編號">
 		    					<option value=""></option>
 								<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
 									<option value="${bitem.salnum}">${bitem.salnum}</option>
@@ -2479,10 +2483,12 @@ $(function(){
 								<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
 									<option value="${bitem.paybank}">${bitem.paybank}</option>
 								</c:forEach>
-							</select>
-		    				<input type="text" id="qryCardno" size="4" class="form-control-sm text-uppercase" placeholder="卡號" >
-							<input type="text" id="qryIdtno" size="10" class="form-control-sm text-uppercase" placeholder="身分證" >
-							<input type="text" id="qryNamec" size="12" class="form-control-sm " placeholder="姓名" >
+							</select> --%>
+							<input type="text" id="qry_padatpsn_salnum" size="4" class="form-control" placeholder="餉單編號" >
+							<input type="text" id="qry_padatpsn_paybank" size="10" class="form-control gclsCalTxt" placeholder="發薪日" >
+		    				<input type="text" id="qryCardno" size="4" class="form-control text-uppercase" placeholder="卡號" >
+							<input type="text" id="qryIdtno" size="10" class="form-control text-uppercase" placeholder="身分證" >
+							<input type="text" id="qryNamec" size="12" class="form-control" placeholder="姓名" >
 
 							<select id="qryDept" name="qryDept" class="selectpicker" data-width="fit" data-live-search="true" multiple title="單位">
 								<option value=""></option>
@@ -2744,7 +2750,7 @@ $(function(){
 				<div class="col-10">
 					<div class="form-inline">
 		    			<div class="input-group">
-		    				<select id="qry_check_salnum"  class="selectpicker SALNUM" data-width="fit" title="餉單編號">
+		    				<%-- <select id="qry_check_salnum"  class="selectpicker SALNUM" data-width="fit" title="餉單編號">
 		    					<option value=""></option>
 								<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
 									<option value="${bitem.salnum}">${bitem.salnum}</option>
@@ -2755,7 +2761,10 @@ $(function(){
 								<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
 									<option value="${bitem.paybank}">${bitem.paybank}</option>
 								</c:forEach>
-							</select>
+							</select> --%>
+							<input type="text" id="qry_check_salnum" size="4" class="form-control" placeholder="餉單編號" >
+							<input type="text" id="qry_check_paybank" size="10" class="form-control gclsCalTxt" placeholder="發薪日" maxlength="10">
+		    				
 						</div>		 
 					</div>
 				</div>
