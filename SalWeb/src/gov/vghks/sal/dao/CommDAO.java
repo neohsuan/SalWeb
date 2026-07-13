@@ -141,15 +141,17 @@ public class CommDAO {
 		String rank4="";//適用專用加給表
 		String rankc="";//主管權理
 		String degre="";//俸點
+		String odegre="";//原俸點
 		String govdt="";//初入公職日
 		String effdt="";//生效日
 		String inflg="";//保險補助比率
 		String dpno="";//健保口數
+		int pflag=0;//考績獎金月數 年終獎金比例
 		int tracod=0;//異動碼
 		int monno=0;//補發月數
 		int dayno=0;//補發日數
 		String ojt="";//原職稱
-		String orank="";//原階別
+		String orank="";//原階別		
 		String idno="";//身分證
 		JSONArray o_basPayAry=null;//原支支扣明細 前端傳來
 		JSONObject o_basPay=null;
@@ -190,7 +192,9 @@ public class CommDAO {
 			rank4=(!object_in_data.has("rank4")) ? ""  : object_in_data.getString("rank4");
 			rankc=(!object_in_data.has("rankc")) ? ""  : object_in_data.getString("rankc");
 			degre=(!object_in_data.has("degre")) ? ""  : object_in_data.getString("degre");
+			odegre=(!object_in_data.has("odegre")) ? ""  : object_in_data.getString("odegre");
 			inflg=(!object_in_data.has("inflg")) ? ""  : object_in_data.getString("inflg");
+			pflag=(!object_in_data.has("pflag")) ? 0  : object_in_data.getInt("pflag");
 			dpno=(!object_in_data.has("dpno")) ? ""  : object_in_data.getString("dpno");
 			tracod=(!object_in_data.has("tracod")) ? 0  : object_in_data.getInt("tracod");
 			idno=(!object_in_data.has("idno")) ? ""  : object_in_data.getString("idno");
@@ -731,7 +735,7 @@ public class CommDAO {
 					
 					//--計算補發扣 
 					if (monno != 0 || dayno != 0) {
-						getReissue(jsonRtn,o_basPayAry,tracod,effdt,monno,dayno,l_lbinig,orank,rank,ojt,jt,payitmMap,hid);
+						getReissue(jsonRtn,o_basPayAry,tracod,effdt,monno,dayno,l_lbinig,orank,rank,ojt,jt,odegre,pflag,payitmMap,hid);
 					}	
 					
 					rtnMap.put("payitm_json", jsonRtn);
@@ -739,8 +743,8 @@ public class CommDAO {
 			}
 			else if(fun.equals("C")){	//計算計發扣
 				//--計算當月實際日數 
-				if (monno != 0 || dayno != 0) {
-					getReissue(jsonRtn,o_basPayAry,tracod,effdt,monno,dayno,l_lbinig,orank,rank,ojt,jt,payitmMap,hid);
+				if (monno != 0 || dayno != 0 || tracod==12) {
+					getReissue(jsonRtn,o_basPayAry,tracod,effdt,monno,dayno,l_lbinig,orank,rank,ojt,jt,odegre,pflag,payitmMap,hid);
 				}	
 				
 				rtnMap.put("payitm_json", jsonRtn);
@@ -757,10 +761,10 @@ public class CommDAO {
 		return rtnMap;
 	}
 	//計算補發扣 
-	//nPay新支扣,oPay原支扣,hid,tracod異動別,effdt生效日,monno月數,dayno日數,lbig勞保級距,orank原階別,rank新階別,ojt原職稱,jt職稱,payitmMap支扣碼集合
+	//nPay新支扣,oPay原支扣,tracod異動別,effdt生效日,monno月數,dayno日數,lbig勞保級距,orank原階別,rank新階別,ojt原職稱,jt職稱,odegre原俸點,pflag考績獎金月數/年終獎金比例,payitmMap支扣碼集合,hid
 	//2007-4-1 公保破月計算修正,以實際加保日數計算 
 	//2024.12.13 破月新進 無條件進位,離職 無條件捨去
-	private JSONArray getReissue(JSONArray nPay,JSONArray oPay,int tracod,String effdt,int monno,int dayno,int lbig,String orank,String rank,String ojt,String jt,HashMap<String,Papayitm> payitmMap,String hid) {
+	private JSONArray getReissue(JSONArray nPay,JSONArray oPay,int tracod,String effdt,int monno,int dayno,int lbig,String orank,String rank,String ojt,String jt,String odegre,int pflag,HashMap<String,Papayitm> payitmMap,String hid) {
 		String me = ".getReissue()";
 		JSONArray jsonRtn = new JSONArray();
 		JSONObject l_payObj=null;
@@ -768,6 +772,9 @@ public class CommDAO {
 		JSONObject jsonOne=null;	
 		String l_paycode="";
 		String o_paycode="";
+		int l_degre=0;	//原俸點
+		double l_pflag=0;//考績獎金比例
+		int l_prof=0;	//專業加給+專業加給差額
 		int l_payamt=0;
 		int o_payamt=0;
 		int r_payamt=0;//補發金額
@@ -801,6 +808,12 @@ public class CommDAO {
 				l_effdt=l_caldt;
 		}
 		System.out.println("依身份的有效日數:"+l_effdt);
+		//原俸點
+		if (odegre.equals(""))
+			l_degre=0;
+		else
+			l_degre=Integer.parseInt(odegre);
+		
 		//先設定返回值=新支扣
 		jsonRtn=nPay;
 		//1新進2復職
@@ -965,6 +978,129 @@ public class CommDAO {
 				} 
 			}
 		}
+		//51年終獎金,依核發月數,發放年終獎金比例,計算至元位，請遵循「無條件捨去至個位數」的原則
+		//年終獎金計算至元位，請遵循「無條件捨去至個位數」的原則。
+		//2026.7.13 出納詢問人事,折合率不再使用,用本薪(CB聘用住院醫師 CH契約住院醫師 AL一年有證不分科住院醫師 AN一年無證不分科住院醫師)==>月支報酬 = 報酬薪點 × 薪點折合率（計算至元為止，未達整數者，小數點以下無條件捨去）
+		else if ( tracod ==51 ) {
+			if (oPay != null) {
+				for (int i = 0; i < oPay.size(); i++) {
+					l_payObj = oPay.getJSONObject(i);
+				    l_paycode= l_payObj.getString("paycode");
+				    l_payamt = l_payObj.getInt("payamt");
+				    
+				    /*if (ojt.matches("CB|CH") && l_degre > 0) {
+				    	l_payamt=(int) Math.round(l_degre * Globals.gRPRemu);
+				    }else
+				    	l_payamt = l_payObj.getInt("payamt");*/
+				    
+				    if (l_paycode.equals("FP000") ) {	//FP000本薪
+				    	r_paycode="VP121";
+				    }else if (l_paycode.matches("FP010|FP080") ) {	//FP010專業加給 FP080專業加給差額
+				    	r_paycode="VP122";
+				    }else if (l_paycode.equals("FP030") ) {	//FP030主管加給
+				    	r_paycode="VP124";	
+				    }else if (l_paycode.equals("FP090") ) {	//FP090責任加給
+				    	r_paycode="VP126";	
+				    }else if (l_paycode.equals("FP100") ) {	//FP100職務加給
+				    	r_paycode="VP125";	
+				    }
+				    //1.5
+				    l_payamt = (int) Math.floor(l_payamt * 1.5 );
+				    //月數比例	
+				    if (monno != 12 )	
+				    	l_payamt = (int) Math.floor(l_payamt * monno /12 );
+				    
+			    	//發放比例
+			    	if (pflag == 1)	//發放1/3
+			    		r_payamt = (int) Math.floor(l_payamt  / 3 );
+			    	else if (pflag == 2)	//發放2/3
+			    		r_payamt = (int) Math.floor(l_payamt *2 / 3 );
+			    	else if (pflag == 3)	//發放全部
+			    		r_payamt = l_payamt ;
+			    	else if (pflag == 4)	//發放3/4 申誡
+			    		r_payamt = (int) Math.floor(l_payamt *3 / 4 );
+			    	//FP010專業加給 FP080專業加給差額
+			    	if (l_paycode.matches("FP010|FP080") ) {	
+			    		l_prof +=r_payamt;
+			    		r_payamt=0;
+			    	}
+			    	
+				    if (r_payamt != 0 ) {
+				    	//取得支扣代碼,因專業加給FP020+專業加給差額FP080,要寫入一筆VP122
+					    jsonOne = new JSONObject();
+					    jsonOne=getPayitemBycode(r_paycode,r_payamt,payitmMap);
+					    if (jsonOne !=null) {
+					    	jsonRtn.add(jsonOne);
+					    	r_payamt=0;
+					    }	
+				    }
+				}
+				if (l_prof != 0 ) {
+			    	//取得支扣代碼,因專業加給FP020+專業加給差額FP080,要寫入一筆VP122
+				    jsonOne = new JSONObject();
+				    jsonOne=getPayitemBycode("VP122",l_prof,payitmMap);
+				    if (jsonOne !=null) {
+				    	jsonRtn.add(jsonOne);
+				    }	
+			    }
+			}
+		}	
+		//12考績獎金 金額須計算至元位，小數點後無條件四捨五入（四捨五入至個位數）。
+		else if ( tracod ==12 ) {
+			if (oPay != null) {
+				for (int i = 0; i < oPay.size(); i++) {
+					l_payObj = oPay.getJSONObject(i);
+				    l_paycode= l_payObj.getString("paycode");
+				    l_payamt = l_payObj.getInt("payamt");
+				    
+				    if (l_paycode.equals("FP000") ) 	//FP000本薪
+				    	r_paycode="VP131";
+				    else if (l_paycode.matches("FP010|FP080") ) 	//FP010專業加給 FP080專業加給差額
+				    	r_paycode="VP132";
+				    else if (l_paycode.equals("FP030") ) 	//FP030主管加給
+				    	r_paycode="VP134";	
+				    else if (l_paycode.equals("FP090") ) 	//FP090責任加給
+				    	r_paycode="VP136";	
+				    else if (l_paycode.equals("FP100") ) 	//FP100職務加給
+				    	r_paycode="VP135";					    
+				    
+			    	//發放比例
+			    	if (pflag == 1)	//發放0.5月
+			    		l_pflag=0.5;
+			    	else if (pflag == 2)	//發放1個月
+			    		l_pflag=1;
+			    	else if (pflag == 3)	//發放1.5個月
+			    		l_pflag=1.5;
+			    	else if (pflag == 4)	//發放2個月
+			    		l_pflag=2;
+			    	
+			    	r_payamt = (int) Math.round(l_payamt * l_pflag );
+			    	//FP010專業加給 FP080專業加給差額
+			    	if (l_paycode.matches("FP010|FP080") ) {	
+			    		l_prof +=r_payamt;
+			    		r_payamt=0;
+			    	}
+			    	//取得支扣代碼,因專業加給FP020+專業加給差額FP080,要寫入一筆VP132
+				    if (r_payamt != 0 ) {				    	
+					    jsonOne = new JSONObject();
+					    jsonOne=getPayitemBycode(r_paycode,r_payamt,payitmMap);
+					    if (jsonOne !=null) {
+					    	jsonRtn.add(jsonOne);
+					    	r_payamt=0;
+					    }	
+				    }
+				}
+				if (l_prof != 0 ) {
+			    	//取得支扣代碼,因專業加給FP020+專業加給差額FP080,要寫入一筆VP132
+				    jsonOne = new JSONObject();
+				    jsonOne=getPayitemBycode("VP132",l_prof,payitmMap);
+				    if (jsonOne !=null) {
+				    	jsonRtn.add(jsonOne);
+				    }	
+			    }
+			}
+		}
+		
 		return jsonRtn;
 	}
 	

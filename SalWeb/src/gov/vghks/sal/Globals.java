@@ -45,5 +45,7 @@ public class Globals implements Serializable{
 	public static final double gAccident =0.115;
 	//---------------------就業保險費率
 	public static final double gEmploy = 0.01;
+	//---------------------聘用住院醫師折合率
+	public static final double gRPRemu = 159.2;
 }
 

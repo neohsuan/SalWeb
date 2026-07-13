@@ -1058,8 +1058,8 @@ public class SalController{
 				//個人明細
 				psnitem=tDAO.getBasPsnBykey(code_data,userid,da);
 				jsonObj.element("basPsnItem", psnitem,cfg);
-				//tracod>0是異動檔,不用讀取個人支扣:1新進2復職
-				if ( psnitem != null && !tracod.matches("1|2") ) {
+				//tracod>0是異動檔,不用讀取個人支扣:1新進
+				if ( psnitem != null && !tracod.matches("1") ) {
 					//個人支扣
 					basPayMap=tDAO.getBasPayList(psnitem.getPayidno(),tracod,userid,hid,da);
 					jsonObj.element("basPayList", basPayMap.get("baspay_json"));

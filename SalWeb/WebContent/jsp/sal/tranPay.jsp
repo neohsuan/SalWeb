@@ -331,16 +331,36 @@ $(function(){
 	 		}	
  		}
  		else if (btn== 'btn_calDegre'){	//取得新支扣--依新階別標準表,專業加給標準表,補發扣
+ 			if($("#patradt").val()=='')
+ 				msg = '請輸入[發薪日]!!';
  			if($("#paygovdt").val()=='')
- 				msg = '請輸入[初任公職日]!!';
- 			if( ($("#paymonno").val() == '' && $("#paydayno").val() == '') && ($("#paeffdt").val()=='' ) )
+ 				msg += '請輸入[初任公職日]!!';
+ 			if($("#paeffdt").val()=='')
+ 				msg += '請輸入[生效日]!!';	
+ 			else if( ($("#paymonno").val() == '' && $("#paydayno").val() == '') && ($("#paeffdt").val()=='' ) )
  				msg += '請輸入[生效日]!!';
  			if (hid=="1A0" && $("#payidno").val()=='')//要擷取人事保險檔,要有IDNO
  				msg += '請輸入[身份證字號]!!';
  			patracod=getInt($("#patracod option:selected").val());
-			if (patracod >=21 && patracod <=24 && $("#payrsgdt").val()=='' ){
-				msg += "請輸入[離職日]";
-			}
+			if (patracod >=21 && patracod <=24){//退出
+				if ($("#payrsgdt").val()=='' ){
+					msg += "請輸入[離職日]";
+				}
+			}	
+			else if (patracod ==51){//年終獎金
+				if ( $("#paymonno").val() == '' || $("#paypflag option:selected").val()== '' ) {
+					msg += "請輸入[核發月數]/[發放比例]";
+				}
+			}	
+			else if (patracod ==12){//考績獎金
+				if ( $("#paypflag option:selected").val()== '' ){
+					msg += "請輸入[考績獎金月數]";
+				}
+				if ( $("#paypflag option:selected").val()== '0' ){
+					msg += "[考績獎金月數]=0,請確認.";
+				}
+			} 
+ 
  		}
   		return msg;	
 	};
@@ -851,7 +871,7 @@ $(function(){
 			if(msg == ''){
 				//rnk2n職等  rank階別 rank3本功別 degr2級別 jt職稱 rank2權理 degre俸點
 				//inflg保險補助比率  dpno健保人數 rankc主管(權理) rank4適用專用加給表 govdt初任公職日
-				//o_basPay原支支扣 monno補發月數 dayno補發日數  ojt原職稱 orank原階別 effdt生效日期
+				//o_basPay原支支扣 monno補發月數 dayno補發日數  ojt原職稱 orank原階別 odegre原俸點 effdt生效日期 pflag考績獎金月數/年終獎金比例
 				in_data="";
 				in_data={
 		        		jt    : $("#paytitle").val(),
@@ -863,6 +883,7 @@ $(function(){
 						rank2 : $("#payrank2").val(),
 						rankc : $("#payrankc").val(),
 						degre : $("#paydegre").val(),
+						odegre: $("#paodegre").val(),
 						inflg : $("#payinflg").val(),
 						dpno  : $("#paydpno").val(),
 						govdt : $("#paygovdt").val(),
@@ -874,10 +895,11 @@ $(function(){
 						ojt   : $("#paotitle").val(),
 						orank : $("#paorank").val(),
 						effdt : $("#paeffdt").val(),
+						pflag : $("#paypflag").val(),
 		        	};
-		        //退出,要算補發扣,	
+		        //21..24退出,51年終獎金12考績獎金要算補發扣,	
 		        patracod=getInt($("#patracod option:selected").val());
-		        if (patracod>=21 && patracod <=24){
+		        if ((patracod>=21 && patracod <=24) || patracod ==51 || patracod ==12){
 		        	fun="C";
 		        }
 				$.doDegre(in_data,fun,patracod);
@@ -910,7 +932,8 @@ $(function(){
 				$.doTraPayTbl("TraPayN",data.payItemList);
 				//投保級距label
 				$("#lblInsuamt").removeClass('bg-danger text-white');
-				if (tracod >=21 && tracod<=24){//退出不用修改[投保級距]
+				//退出,41支扣,12考績獎金,51年終獎金 不用修改[投保級距]
+				if ((tracod >=21 && tracod<=24) ||tracod==41 || tracod==12 || tracod==51){
 				
 				}else{
 					var tmpinsu="";
@@ -1365,20 +1388,24 @@ $(function(){
 		//button禁用
 		$("#btn_calDegre").prop("disabled", true);
 		//年終
-		if (mData.patracod=='51' || tracod==51){
-			$("#div_paypflag").removeClass("d-none");
-			$("#paymonno_lbl").html("核發月數");
-			$("#paypflag_lbl").html(" 發放年終獎金比例");
-			select = $('#paypflag');
-			select.empty();
-			$.each(pflgBOptions, function(val, text) {
-			    options = "<option value='" + val + "'>" +text ;
-				select.append(options);
-			});
-			select.selectpicker('refresh');
-		}
-		//考績獎金
-		else if (mData.patracod=='11' || mData.patracod=='12' || tracod==11 || tracod==12){			
+ 		if (tracod==51 || mData.patracod=='51'){
+ 			$("#div_paypflag").removeClass("d-none");
+ 			$("#paymonno_lbl").html("核發月數");
+ 			$("#paypflag_lbl").html(" 發放年終獎金比例");
+ 			select = $('#paypflag');
+ 			select.empty();
+ 			$.each(pflgBOptions, function(val, text) {
+ 			    options = "<option value='" + val + "'>" +text ;
+ 				select.append(options);
+ 			});
+ 			select.selectpicker('refresh');
+ 			if(tracod==51){	//線上輸入[年終輸入],帶入預設值
+ 				$("#paymonno").val("12");
+ 				$("#paypflag").selectpicker('val','3');
+ 			}
+ 		}
+		//考績獎金 
+		else if (tracod==11 || tracod==12 || mData.patracod=='11' || mData.patracod=='12' ){			
 			$("#div_paypflag").removeClass("d-none");
 			$("#paypflag_lbl").html(" 發放考績獎金月數");
 			select = $('#paypflag');
@@ -1389,6 +1416,9 @@ $(function(){
 			});
 			
 			select.selectpicker('refresh');
+			if(tracod==12){	//線上輸入[考績輸入],帶入預設值
+ 				$("#paypflag").selectpicker('val','0');
+ 			}
 		}
 			
 		if ( item == "tra" ){
@@ -1760,7 +1790,7 @@ $(function(){
 			$("#patracod").prop("disabled", false) ;
 			$("#payidno").prop("readOnly", false) ;
 			//button啟用
-			if (tracod !=41 && tracod !=51){
+			if (tracod !=41 ){
 				$("#btn_calDegre").prop("disabled", false);
 			}
 		}
@@ -1892,7 +1922,7 @@ $(function(){
 							}
 						});
 						
-					if ((!blnHave && patracod == 1 )  ) ) {	
+					if ((!blnHave && patracod == 1 )  )  {	
 					//找人事基本檔1.薪資基本檔[沒]找到+1新進
 					//         2.薪資基本檔[有]找到+33納實37職務調整 || ( blnHave && (patracod == 33 || patracod == 37 
 // 						if(patracod == 33 || patracod == 37){
@@ -1961,6 +1991,8 @@ $(function(){
 					select.append(options);
 				});
 				select.selectpicker('refresh');
+				$("#paypflag").selectpicker('val','3');
+				$("#paymonno").val(12);
 			}
 			//考績獎金
 			else if (patracod==11 || patracod==12){			
