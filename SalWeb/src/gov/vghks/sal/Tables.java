@@ -41,6 +41,7 @@ public enum Tables {
 			"PA.PANHICAL",
 			"PA.PANHIDET",
 			"PA.PATEACHAW",
+			
 			"ZPATITLE",
 			"ZPARANKCODE",
 			"ZPABANK",
