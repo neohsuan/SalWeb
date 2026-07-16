@@ -150,6 +150,7 @@ public class SalNTDAO {
 	private String tmpZpayitm = "ZPAPAYITM";
 	private String tmpZtaxtran ="ZPATAXTRAN";
 	private String tmpZtaxcash ="ZPATAXCASH";
+	private String tmpZbasadr ="ZLHBASADR";
 	
 	public SalNTDAO() {
 		super();
@@ -227,6 +228,7 @@ public class SalNTDAO {
 		tmpZtaxtran=tabInfo.tmpZtaxtran;
 		tmpZtaxcash=tabInfo.tmpZtaxcash;
 		tmpZpayitm=tabInfo.tmpZpayitm;
+		tmpZbasadr=tabInfo.tmpZbasadr;
 	}
 	
 	//代入代碼檔
@@ -569,8 +571,8 @@ public class SalNTDAO {
 			//sql
 			//地址
 			sqlAdr_inq =" select PAYIDNO, PAYADDRS from "+ this.tBasAdr+ " where PAYIDNO=? ";
-			sqlAdr_upd =" update "+ this.tBasAdr+ " set (PAYADDRS, ZPABASADR) = (?, current timestamp) where PAYIDNO=? ";
-			sqlAdr_ins =" INSERT INTO "+ this.tBasAdr+ " (PAYADDRS, ZPABASADR,PAYIDNO) VALUES(?, current timestamp, ?);";
+			sqlAdr_upd =" update "+ this.tBasAdr+ " set (PAYADDRS, "+this.tmpZbasadr+") = (?, current timestamp) where PAYIDNO=? ";
+			sqlAdr_ins =" INSERT INTO "+ this.tBasAdr+ " (PAYADDRS, "+this.tmpZbasadr+", PAYIDNO) VALUES(?, current timestamp, ?);";
 			if ("PABASPSN".equals(tblname)){
 				strKey=StringUtil.nullToString(object_pk_data.getString("payidno"));
 				hid=StringUtil.nullToString(object_pk_data.getString("hid"));
@@ -578,6 +580,15 @@ public class SalNTDAO {
 					//基本檔
 					sql =" update "+ this.tBasPsn+ " set (PAYEMPNO,PAYNAMEC, PAYDEPT,PAYSGNDT,PAYTAXNO, INSUAMT,PACSFLAG, PARETENTION,PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3,PAYPFSP1, PAYPFSP2, PAYPFSP3,PAYCTCBACNO,PAYCTCBGEDNO,PAYUPDID, PAYUPDTM) "+
 						 "= (?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,current timestamp) where PAYIDNO=? and HID=? ";
+				}
+				//地址空白不處理
+				paramsA = new ArrayList<Object>();
+				paramsA.add(strKey);
+				rs = da.query(sqlAdr_inq,paramsA);
+				blnAdr=false;
+				while (rs.next()){
+					log.info(me+" 地址-> " + rs.getString("PAYIDNO"));
+					blnAdr=true;				
 				}
 			}
 			//補充費_獎金 , PAPAYDT PAYSOURCE, ITEMNUM, PAYIDNO, 
@@ -715,6 +726,7 @@ public class SalNTDAO {
 								for (int j=0; j<array.size(); j++) {
 									obj_item = array.getJSONObject(j);
 									
+									param = new ArrayList<Object>();
 									param.add((!obj_item.has("payempno")) ? "" : obj_item.getString("payempno"));
 									param.add((!obj_item.has("paynamec")) ? "" : obj_item.getString("paynamec"));
 									param.add((!obj_item.has("paydept")) ? "" : obj_item.getString("paydept"));
@@ -739,6 +751,16 @@ public class SalNTDAO {
 									
 									sql_stmts.add(sql);
 									params.add(param);
+									
+									strAddr=(!obj_item.has("payaddrs")) ? "" : obj_item.getString("payaddrs");
+									if (!strAddr.equals("")){
+										param = new ArrayList<Object>();							
+										param.add(strAddr);
+										param.add(strKey);
+										String sqlAddr = blnAdr ? sqlAdr_upd : sqlAdr_ins;										
+										sql_stmts.add(sqlAddr);
+										params.add(param);										
+									}
 								}
 							}
 						}//補充費_獎金
