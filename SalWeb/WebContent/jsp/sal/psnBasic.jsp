@@ -6,6 +6,146 @@
 <title>薪資基本檔</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <jsp:include page="../include.jsp"></jsp:include>
+<style>
+/* 專門處理這種「多組 label+input 並排」且希望間距一致的情況 */
+.basother-panel .form-row--equal {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.basother-panel .form-row--equal .form-group {
+  display: flex;
+  align-items: center;
+  min-width: 220px;   /* 每組 label+input 固定佔用寬度，讓下一組起始位置對齊 */
+  margin-right: 0;
+  margin-bottom: 8px;
+}
+
+.basother-panel .form-row--equal .form-group label {
+  min-width: 90px;     /* 統一 label 寬度，含「身份證字號:」5字 */
+  text-align: right;
+  margin: 0 8px 0 0;
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+  .basother-panel {
+    padding: 12px 8px;
+    border: 1px solid #e0e0e0;
+    
+    background: #fafafa;
+  }
+
+  .basother-panel .form-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .basother-panel .form-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .basother-panel .form-group {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+    margin-bottom: 0;
+  }
+
+  .basother-panel .form-group label {
+    min-width: 130px;      /* 統一 label 寬度,依實際最長文字調整 */
+    text-align: right;
+    margin: 0 8px 0 0;
+    white-space: nowrap;
+    font-weight: bold;      /* 新增：文字粗體 */
+  }
+
+  .basother-panel .form-control {
+    height: 30px;
+    padding: 4px 8px;
+  }
+
+  /* 戶籍地址欄位較長,獨立一行時 label 對齊方式相同即可 */
+  .basother-panel input[readonly] {
+    background-color: #f0f0f0;
+  }
+  
+  .basother-panel .form-group label.required::after {
+    content: " *";
+    color: #dc3545;
+    font-weight: bold;
+  }
+  
+  .basother-filter-group {
+    gap: 10px 14px;
+  }
+
+  .filter-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 100px;
+  }
+
+  .filter-item-wide {
+    min-width: 160px;
+  }
+
+  .filter-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 2px;
+    white-space: nowrap;
+  }
+
+  .filter-item .form-control,
+  .filter-item .bootstrap-select {
+    height: 30px;
+  }
+  /*篩選按鈕置中*/
+ .basother-btn-group {
+	position: relative;
+	left: 50%;
+	right: 50%;
+	margin-left: -50vw;
+	margin-right: -50vw;
+	width: 100vw;
+	display: flex;
+	justify-content: center;
+	gap: 0.5rem;
+	padding-top: 10px;
+	padding-bottom: 10px;
+ }
+/*基本資料*/
+/* 左右兩欄間距與邊框 */
+ .basother-detail-row {
+	gap: 12px 0;
+ }
+
+ .baspsnListDiv-wrap {
+	border: 1px solid #dee2e6;
+	border-radius: 6px;
+	overflow: hidden;
+ }
+
+ .basother-card-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+ }
+ /* 讓查詢/清空/更改三顆按鈕寬度一致，方便精準對齊 */
+ .basother-fixed-btn {
+	width: 78px;
+ }
+
+ /* 清空按鈕寬度(90px) + gap(8px，對應 .gap-2) = 98px
+   讓「更改」往右多留 98px，使其左邊界對齊「查詢」的左邊界 */
+ .basother-align-under-qry {
+	margin-right: 112px;
+ }
+</style>
 <script>
 //檢查使否有代理人，如有代理人則取代原資料
 var agent = "${sessionScope.agent}";	//代理人卡號
@@ -53,14 +193,14 @@ $(function(){
 	}
 	//依醫院角色,欄位show/hide或標題調整
 	if (pahid=="2A0"){
-		$('#label_acno').text('台銀薪資帳號:');
-		$('#label_gedno').html('台銀薪資公儲帳號:');				
+		$('#label_acno').text('台銀薪資帳號');
+		$('#label_gedno').html('台銀薪資公儲帳號');				
 	}else if (pahid=="3A0"){
-		$('#label_acno').html('玉山薪資帳號:');
-		$('#label_gedno').html('玉山優惠儲蓄帳號:');		
+		$('#label_acno').html('玉山薪資帳號');
+		$('#label_gedno').html('玉山優惠儲蓄帳號');		
 	}else if (pahid=="1A0"){
-		$('#label_acno').html('中國信託薪資帳號:');
-		$('#label_gedno').html('中國信託公儲帳號:');
+		$('#label_acno').html('中國信託薪資帳號');
+		$('#label_gedno').html('中國信託公儲帳號');
 	}
 	//總院才需列出
 	if (pahid=='1A0' || pahid=='2A0'){
@@ -76,7 +216,7 @@ $(function(){
  				flag    : flag,
  				hid     : pahid
 			},
-			type:"POST",			//type:POST, GET(default:GET)
+			type:"POST",		//type:POST, GET(default:GET)
 			dataType:"json",	//dataType: text, xml, html, script, json, jsonp
 			contentType: "application/x-www-form-urlencoded;charset=utf-8",
 			success:function(data) {
@@ -274,9 +414,9 @@ $(function(){
 			$(":checkbox,:radio").prop("checked", false);
 			
 			//所有select預設選擇第一項			
-// 			$('#qryCheckItem select').each(function() {
-// 				$(this).prop("selectedIndex", 0);
-// 		    });
+ 			//$('#qryCheckItem select').each(function() {
+ 				//$(this).prop("selectedIndex", 0);
+ 		    //});
 		    $('.selectpicker').selectpicker('val', '');
 			$('.selectpicker').selectpicker('refresh');
 		    $('#base_lvefg,#filter_lvefg').selectpicker('val', 'N');
@@ -291,7 +431,7 @@ $(function(){
 		    $("#TblBasPsnList").dataTable().fnClearTable();
 			$("#TblBasPayList").dataTable().fnClearTable();
 			$("#TblPaHistList").dataTable().fnClearTable();
-			//$("#TblBasPsnFilter").dataTable().fnClearTable();
+			$("#TblBasPsnFilter").dataTable().fnClearTable();
 			
 			return false;
 		}
@@ -332,12 +472,12 @@ $(function(){
 						userid  : paUserid,
 						code_data :JSON.stringify(code_data)
 					},
-					type:"POST",	//type:POST, GET(default:GET)
+					type:"POST",	    //type:POST, GET(default:GET)
 					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
 					contentType: "application/x-www-form-urlencoded;charset=utf-8",  
 					success:function(data) {
 						//更新查詢清單
-						$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
+						//$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
 						$('#TblBasPsnList').show();
 						oTable = $('#TblBasPsnList').dataTable(objCopyA);
 						
@@ -418,17 +558,17 @@ $(function(){
 						hid     : pahid,
 						userid  : paUserid
 					},
-					type:"POST",	//type:POST, GET(default:GET)
+					type:"POST",	    //type:POST, GET(default:GET)
 					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
 					contentType: "application/x-www-form-urlencoded;charset=utf-8",  
 					success:function(data) {
 						//更新查詢清單
-						$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
+						//$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
 						$('#TblBasPsnFilter').show();
 						oTable = $('#TblBasPsnFilter').dataTable(objCopyD);
 						
 						oTable.fnClearTable(0);		//清空資料
-								
+						
 						if (data.basPsnFilter!=null && data.basPsnFilter.length>0){	
 							oTable.fnAddData(data.basPsnFilter);//重新給資料
 						}
@@ -466,8 +606,8 @@ $(function(){
 		        	};
 					if (id.substring(id.indexOf('_')+1) =='Updbtn')		
 						$('#method').val("update");
-// 					else if (id.substring(id.indexOf('_')+1) =='Insbtn')		
-// 						$('#method').val("insert");
+					//else if (id.substring(id.indexOf('_')+1) =='Insbtn')		
+					//$('#method').val("insert");
 					//return false;
 					 $.ajax({
 						url:"${pageContext.request.contextPath}/salController.do",
@@ -482,8 +622,8 @@ $(function(){
 							userid  : paUserid
 						},
 						type:"POST",			//type:POST, GET(default:GET)
-						dataType:"json",	//dataType: text, xml, html, script, json, jsonp
-						async: true,	//逐步執行
+						dataType:"json",	    //dataType: text, xml, html, script, json, jsonp
+						async: true,	        //逐步執行
 						contentType: "application/x-www-form-urlencoded;charset=utf-8",  
 						success:function(data) {
 							if (data.msg!=null){
@@ -883,6 +1023,7 @@ $(function(){
            'excelHtml5' 
         ]
 	});
+	$('#TblBasPsnFilter').dataTable(objCopyD);
 	 		      
 });
 </script>
@@ -904,43 +1045,63 @@ $(function(){
 		<div class="container-fluid">
 			<div class="row" id="baseItem">
 				<div class="col-10">
-					<div class="form-inline">
-		    			<div class="input-group">
-							
-		    				<input type="text" id="base_card" size="4" class="form-control-sm text-uppercase" placeholder="卡號" >
-							<input type="text" id="base_idno" size="10" class="form-control-sm text-uppercase" placeholder="身分證" >
-							<input type="text" id="base_namec" size="12" class="form-control-sm " placeholder="姓名" >
-							<input type="text" id="base_empno" size="7" class="form-control-sm text-uppercase" placeholder="職號" >
-							<select id="base_lvefg"  class="selectpicker" data-width="fit" title="離職">
-								<option value=""></option>
-								<option value="N">N</option>
-								<option value="Y">Y</option>
-							</select>
-							<select id="base_dept" name="base_dept" class="selectpicker PAYDEPT" data-width="fit" data-live-search="true" multiple title="單位">
-								<option value=""></option>
-			     				<c:forEach var="uitem" items="${alDeptCodeTbl}" varStatus="loop">
-									<option value="${uitem.padepcod}">${uitem.pacstno}-${uitem.padepnmc}</option>
-								</c:forEach>
-							</select>
-							<select id="base_title" name="base_title" class="selectpicker JTCODE" data-width="fit" data-live-search="true" multiple title="職稱">
-								<option value=""></option>
-			     				<c:forEach var="uitem" items="${alTitleCodeTbl}" varStatus="loop">
-									<option value="${uitem.paytitlk}">${uitem.patitsub}-${uitem.paytitlk}-${uitem.paytitlc}</option>
-								</c:forEach>
-							</select>
-							
-							<select id="base_payrank"  class="selectpicker RANKCODE" data-width="fit" data-live-search="true" multiple title="階級">
-								<option value=""></option>
-								<c:forEach var="uitem" items="${alRankCodeTbl}" varStatus="loop">
-									<option value="${uitem.rankcode}">${uitem.rankcode}-${uitem.rankname}</option>
-								</c:forEach>
-							</select>
-							<select id="base_patradt" class="selectpicker PATRADT" data-width="fit"  data-live-search="true" multiple title="異動日">
-								<option value=""></option>
-								<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
-									<option value="${bitem.paybank}">${bitem.paybank}</option>
-								</c:forEach>
-							</select>
+					<div class="form-inline basother-filterbar">
+		    			<div class="d-flex flex-wrap align-items-end basother-filter-group">
+							<div class="filter-item">
+								<!-- <input type="text" id="base_card" size="4" class="form-control-sm text-uppercase" placeholder="卡號" > -->
+								<input type="text" id="base_card" class="form-control form-control-sm text-uppercase" placeholder="卡號" maxlength="4" size="4">
+							</div>
+							<div class="filter-item">
+								<!-- <input type="text" id="base_idno" size="10" class="form-control-sm text-uppercase" placeholder="身分證" >-->				
+								<input type="text" id="base_idno" class="form-control form-control-sm text-uppercase" placeholder="身分證" maxlength="10" size="10">
+							</div>
+							<div class="filter-item">
+								<!-- <input type="text" id="base_namec" size="12" class="form-control-sm " placeholder="姓名" > -->
+								<input type="text" id=base_namec class="form-control form-control-sm" placeholder="姓名" maxlength="12" size="12">
+							</div>
+							<div class="filter-item">
+								<!-- <input type="text" id="base_empno" size="7" class="form-control-sm text-uppercase" placeholder="職號" >-->
+								<input type="text" id="base_empno" class="form-control form-control-sm text-uppercase" placeholder="職號" maxlength="7" size="7">
+							</div>							
+							<div class="filter-item">							
+								<select id="base_lvefg" class="selectpicker" data-width="100%" title="離職" >
+									<option value=""></option>
+									<option value="N" selected>N</option>
+									<option value="Y">Y</option>
+								</select>
+							</div>
+							<div class="filter-item filter-item-wide">							
+								<select id="base_dept" name="base_dept" class="selectpicker PAYDEPT" data-width="100%" data-live-search="true" multiple title="單位">
+									<option value=""></option>
+									<c:forEach var="uitem" items="${alDeptCodeTbl}" varStatus="loop">
+										<option value="${uitem.padepcod}">${uitem.pacstno}-${uitem.padepnmc}</option>
+									</c:forEach>
+								</select>
+							</div>
+							<div class="filter-item filter-item-wide">							
+								<select id="base_title" name="base_title" class="selectpicker JTCODE" data-width="100%" data-live-search="true" multiple title="職稱">
+									<option value=""></option>
+									<c:forEach var="uitem" items="${alTitleCodeTbl}" varStatus="loop">
+										<option value="${uitem.paytitlk}">${uitem.patitsub}-${uitem.paytitlk}-${uitem.paytitlc}</option>
+									</c:forEach>
+								</select>
+							</div>
+							<div class="filter-item">							
+								<select id="base_payrank" class="selectpicker RANKCODE" data-width="100%" data-live-search="true" multiple title="階級">
+									<option value=""></option>
+									<c:forEach var="uitem" items="${alRankCodeTbl}" varStatus="loop">
+										<option value="${uitem.rankcode}">${uitem.rankcode}-${uitem.rankname}</option>
+									</c:forEach>
+								</select>
+							</div>
+							<div class="filter-item">							
+								<select id="base_patradt" class="selectpicker PATRADT" data-width="100%" data-live-search="true" multiple title="異動日">
+									<option value=""></option>
+									<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
+										<option value="${bitem.paybank}">${bitem.paybank}</option>
+									</c:forEach>
+								</select>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -949,26 +1110,27 @@ $(function(){
 					<button id="btn_cln_Base_BasPsn" class="btn btn-warning" type="button"><i class="fa fa-eraser"></i>清空</button>
 				</div>
 			</div>	
-			<div class="row">
-				<div class="col-4 border border-dark">
-					<div id="baspsnListDiv_1" class="baspsnListDiv">
-					<!-- pa.pabaspsn清單 -->
-					<table id="TblBasPsnList" class="table table-striped table-bordered table-hover" >
-						<thead>
-						</thead>
-					</table>				
-					</div>
+			<div class="row basother-detail-row">
+				<div class="col-4">
+					<div class="baspsnListDiv-wrap">
+						<!--  -->
+						<div id="baspsnListDiv_1" class="baspsnListDiv">
+							<!-- pa.pabaspsn清單 -->
+							<table id="TblBasPsnList" class="table table-striped table-bordered table-hover" >
+								<thead>
+								</thead>
+							</table>				
+						</div>
+					</div>					
 				</div>
 				
- 				<div class="col-8 border border-dark">
- 					<div class="container-fluid">
+ 				<div class="col-8">
+ 					<div class="container-fluid px-0">
  					<div id="accordion">
 					    <div class="card">
-					      <div class="card-header">
-					        <a class="card-link" data-toggle="collapse" href="#collapseOne">
-					          	基本資料					          	
-					        </a>
-					        <button type="button" class="btn btn-primary roleQry" id="subPABASPSN_Updbtn" disabled>更改</button>
+					      <div class="card-header basother-card-header">
+					      	<a class="card-link" data-toggle="collapse" href="#collapseOne">基本資料</a>
+					        <button type="button" class="btn btn-primary roleQry basother-fixed-btn basother-align-under-qry" id="subPABASPSN_Updbtn" disabled>更改</button>
 					      </div>
 					      <div id="collapseOne" class="collapse show" data-parent="#accordion">
 					        <div class="card-body">
@@ -979,222 +1141,242 @@ $(function(){
 		 							<INPUT type="hidden" id ="basPsn_hid"  value="">
 				 					<table id="PABASPSN" class="table table-striped table-bordered table-hover table-sm table-condensed" >
 				 						<tbody>
-											<tr><td>
-												<div class="form-inline">
+											<tr>
+												<td>
+													<div class="basother-panel">
+														<div class="form-row form-row--equal">													
 													<div class="form-group">
-														<label for="basPsn_paycard" >卡號:</label>
+														<label for="basPsn_paycard" >卡號</label>
 														<input type="text" id="basPsn_paycard" readonly class="text-uppercase form-control" maxlength="4" size="4"  />
 													</div>
 													<div class="form-group">
-														<label for="paynamec" class="form-inline table-warning">姓名:</label>
+														<label for="paynamec" class="table-warning">姓名</label>
 														<input type="text" id="paynamec" class="form-control required" maxlength="12" size="12"  />
 													</div>
 													<div class="form-group">
-														<label for="payempno" class="form-inline table-warning required">職號:</label>
+														<label for="payempno" class="table-warning required">職號</label>
 														<input type="text" id="payempno" class="text-uppercase form-control" maxlength="7" size="7"  />
 													</div>
 													<div class="form-group">
-														<label for="basPsn_paylvefg" >離職:</label>
+														<label for="basPsn_paylvefg" >離職</label>
 														<input type="text" id="basPsn_paylvefg" readonly class="form-control"  maxlength="1" size="1"  />
 													</div>
-												</div>
-											</td></tr>
-											<tr><td>
-												<div class="form-inline">
+														</div>
+													</div>
+												
+													<div class="basother-panel">
+														<div class="form-row form-row--equal">	
 													<div class="form-group">
-														<label for="basPsn_payidno" >身份證字號:</label>
+														<label for="basPsn_payidno" >身份證字號</label>
 														<input type="text" id="basPsn_payidno" readonly class="text-uppercase form-control" maxlength="10" size="10"  />
 													</div>
 													<div class="form-group">
-														<label for="basPsn_paygovdt" >初任公職日:</label>
+														<label for="basPsn_paygovdt" >初任公職日</label>
 														<input type="text" id="basPsn_paygovdt" readonly class="form-control"  maxlength="10" size="10"  />
 													</div>
 													<div class="form-group">
-														<label for="basPsn_payempdt" >到院日:</label>
+														<label for="basPsn_payempdt" >到院日</label>
 														<input type="text" id="basPsn_payempdt" readonly class="form-control"  maxlength="10" size="10"  />
 													</div>
-												</div>
-											</td></tr>
-											<tr><td>
-												<div class="form-inline">		
+														</div>
+													</div>
+											
+													<div class="basother-panel">
+														<div class="form-row form-row--equal">
 													<div class="form-group">
-														<label for="paysgndt" class="table-warning">現職日:</label>
+														<label for="paysgndt" class="table-warning">現職日</label>
 														<input type="text" id="paysgndt" class="gclsCalTxt form-control required"  maxlength="10" size="10"  />
 													</div>
 													<div class="form-group">
-														<label for="basPsn_payrsgdt" >離職日:</label>
+														<label for="basPsn_payrsgdt" >離職日</label>
 														<input type="text" id="basPsn_payrsgdt" readonly class="form-control"  maxlength="10" size="10"  />
 													</div>
 													<div class="form-group">
-														<label for="basPsn_patradt" >異動日:</label>
+														<label for="basPsn_patradt" >異動日</label>
 														<input type="text" id="basPsn_patradt" readonly class="form-control"  maxlength="10" size="10"  />
 														<input type="text" id="basPsn_traname" readonly class="form-control"  maxlength="8" size="8"  />
 													</div>
-												</div>
-											</td></tr>
+														</div>
+													</div>
 											
-											<tr><td>
-												<div class="form-inline">		
+													<div class="basother-panel">
+														<div class="form-row form-row--equal">		
 													<div class="form-group">
-														<label for="paytaxno" class="table-warning">扶養人數:</label>
+														<label for="paytaxno" class="table-warning">扶養人數</label>
 														<input type="text" id="paytaxno" class="form-control" maxlength="2" size="2"  />
 													</div>
 													<div class="form-group">
-														<label for="basPsn_paydpno" >健保人數:</label>
+														<label for="basPsn_paydpno" >健保人數</label>
 														<input type="text" id="basPsn_paydpno" readonly class="form-control" maxlength="2" size="2"  />
 													</div>
 													<div class="form-group">
-														<label for="insuamt" class="table-warning">投保金額:</label>
+														<label for="insuamt" class="table-warning">投保金額</label>
 														<input type="text" id="insuamt" class="form-control" maxlength="6" size="6"  />
 													</div>
 													<div class="form-group">
-														<label for="basPsn_inflgnm" >保險費比率:</label>
+														<label for="basPsn_inflgnm" >保險費比率</label>
 														<input type="text" id="basPsn_inflgnm" readonly class="form-control" maxlength="13" size="13"  />
 													</div>
-												</div>
-											</td></tr>	
-											
-											<TR>
-											<td>
-												<div class="form-inline">		
+														</div>
+													</div>
+										
+													<div class="basother-panel">
+														<div class="form-row form-row--equal">				
 													<div class="form-group">
-														<label for="paydept" class="table-warning">單位:</label>
+														<label for="paydept" class="table-warning">單位</label>
 														<select id="paydept" name="paydept" class="form-control" data-width="fit">
 														</select>
 													</div>
 													<div class="form-group">
-														<label for="basPsn_paytitle" >職稱:</label>
+														<label for="basPsn_paytitle" >職稱</label>
 														<input type="text" id="basPsn_paytitle" readonly class="form-control" maxlength="4" size="4"  />
 														<input type="text" id="basPsn_paytitlp" readonly class="form-control" maxlength="22" size="22"  />
 													</div>
-												</div>
-											</td>
-											<tr><td>
-												<div class="form-inline">
+														</div>
+													</div>
+										
+													<div class="basother-panel">
+														<div class="form-row form-row--equal">
 													<div class="form-group">
-														<label for="basPsn_rankname">階別:</label>
+														<label for="basPsn_rankname">階別</label>
 														<input type="text" id="basPsn_rankname" readonly  class="form-control" maxlength="8" size="8"  />
 													</div>
 													<div class="form-group">
-														<label for="basPsn_payrnk2n" >職等:</label>
+														<label for="basPsn_payrnk2n" >職等</label>
 														<input type="text" id="basPsn_payrnk2n" readonly class="form-control" maxlength="2" size="2"  />
 													</div>
 													<div class="form-group">
-														<label for="basPsn_payrank3" >本功別:</label>
+														<label for="basPsn_payrank3" >本功別</label>
 														<input type="text" id="basPsn_payrank3" readonly class="form-control" maxlength="1" size="1"  />
 													</div>
 													<div class="form-group">
-														<label for="basPsn_paydegr2" >級別:</label>
+														<label for="basPsn_paydegr2" >級別</label>
 														<input type="text" id="basPsn_paydegr2" readonly class="form-control" maxlength="2" size="2"  />
 													</div>
 													<div class="form-group">
-														<label for="basPsn_paydegre" >俸點:</label>
+														<label for="basPsn_paydegre" >俸點</label>
 														<input type="text" id="basPsn_paydegre" readonly class="form-control" maxlength="2" size="2"  />
 													</div>
 													<div id="div_contract" class="form-group d-none">
-														<label for="basPsn_contract" >新Y/舊N:</label>
+														<label for="basPsn_contract" >新Y/舊N</label>
 														<input type="text" id="basPsn_contract" readonly class="form-control" maxlength="1" size="1"  />
 													</div>
+														</div>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td>
+												<div class="basother-panel d-none" id="div_authority">
+													<div class="form-row form-row--equal">												
+														<div class="form-group">
+															<label for="basPsn_payrank2" >權理</label>
+															<input type="text" id="basPsn_payrank2" readonly class="form-control" maxlength="2" size="2"  />
+														</div>
+														<div class="form-group">
+															<label for="basPsn_payrankc" >主管(權理)</label>
+															<input type="text" id="basPsn_payrankc" readonly class="form-control" maxlength="2" size="2"  />
+														</div>
+														<div class="form-group">
+															<label for="basPsn_rnk4name" >適用專業加給表</label>
+															<input type="text" id="basPsn_rnk4name" readonly class="form-control" maxlength="15" size="15"  />
+														</div>
+													</div>
 												</div>
 												</td>
 											</tr>
-											<tr><td >
-												<div class="form-inline d-none" id="div_authority">
-													<div class="form-group">
-														<label for="basPsn_payrank2" >權理:</label>
-														<input type="text" id="basPsn_payrank2" readonly class="form-control" maxlength="2" size="2"  />
-													</div>
-													<div class="form-group">
-														<label for="basPsn_payrankc" >主管(權理):</label>
-														<input type="text" id="basPsn_payrankc" readonly class="form-control" maxlength="2" size="2"  />
-													</div>
-													<div class="form-group">
-														<label for="basPsn_rnk4name" >適用專業加給表:</label>
-														<input type="text" id="basPsn_rnk4name" readonly class="form-control" maxlength="15" size="15"  />
-													</div>
-												</div>
-												</td>
-											</tr>
-											<TR><td>
-												<div class="form-inline cspf d-none">
-													<div class="form-group">
-														<label for="pacsflag" class="table-warning">工作獎金:</label>
-														<select id="pacsflag" name="pacsflag" class="form-control" >
-															<option value="">請選擇</option>
-															<option value="Y">Y</option>
-											     			<option value="N">N</option>
-														</select>
-													</div>	
-													<div class="form-group" id="div_pfkey">	
-														<label for="basPsn_pfkey" readonly >實際支領KEY:</label>
-														<input type="text" id="basPsn_pfkey" readonly class="form-control" maxlength="7" size="7"  />
-														<label for="basPsn_pfbas" >基本點數:</label>
-														<input type="text" id="basPsn_pfbas" readonly class="form-control" maxlength="3" size="3"  />
-														<label for="basPsn_pfdat" >職等點數:</label>
-														<input type="text" id="basPsn_pfdat" readonly class="form-control" maxlength="3" size="3"  />
-													</div>
-												</div>
-												<TD>
-											</TR>
-											<tr><td>
+											<tr>
+												<td>
 												<div class="cspf d-none">
-													<div class="form-inline">
-														<div class="form-group ">
-															<label for="paypfsp1" class="table-warning">額外點數:</label>															
-															<select id="payexpfkey1"  class="selectpicker" data-width="fit" title="額外1">
-																
-															</select>
-															<input type="text" id="paypfsp1" class="form-control" maxlength="3" size="3"  />
-															<select id="payexpfkey2"  class="selectpicker" data-width="fit" title="額外2">
-																
-															</select>
-															<input type="text" id="paypfsp2" class="form-control" maxlength="3" size="3"  />
-															<select id="payexpfkey3"  class="selectpicker" data-width="fit" title="額外3">
-																
-															</select>
-															<input type="text" id="paypfsp3" class="form-control" maxlength="3" size="3"  />														
+													<div class="basother-panel">
+														<div class="form-row">
+															<div class="form-group">
+																<label for="pacsflag" class="table-warning">工作獎金</label>
+																<select id="pacsflag" name="pacsflag" class="form-control" >
+																	<option value="">請選擇</option>
+																	<option value="Y">Y</option>
+											     					<option value="N">N</option>
+																</select>
+															</div>	
+															<div class="form-group" id="div_pfkey">	
+																<label for="basPsn_pfkey" readonly >實際支領KEY</label>
+																<input type="text" id="basPsn_pfkey" readonly class="form-control" maxlength="7" size="7"  />
+																<label for="basPsn_pfbas" >基本點數</label>
+																<input type="text" id="basPsn_pfbas" readonly class="form-control" maxlength="3" size="3"  />
+																<label for="basPsn_pfdat" >職等點數</label>
+																<input type="text" id="basPsn_pfdat" readonly class="form-control" maxlength="3" size="3"  />
+															</div>
+														</div>
+													</div>													
+												</div>
+												<td>
+											</tr>
+											<tr>
+												<td>
+												<div class="cspf d-none">
+													<div class="basother-panel">
+														<div class="form-row">
+															<div class="form-group ">
+																<label for="paypfsp1" class="table-warning">額外點數</label>															
+																<select id="payexpfkey1"  class="selectpicker" data-width="fit" title="額外1">																
+																</select>
+																<input type="text" id="paypfsp1" class="form-control" maxlength="3" size="3"  />
+																<select id="payexpfkey2"  class="selectpicker" data-width="fit" title="額外2">																
+																</select>
+																<input type="text" id="paypfsp2" class="form-control" maxlength="3" size="3"  />
+																<select id="payexpfkey3"  class="selectpicker" data-width="fit" title="額外3">																
+																</select>
+																<input type="text" id="paypfsp3" class="form-control" maxlength="3" size="3"  />														
+															</div>
 														</div>
 													</div>	
-													<div class="form-inline">	
-														<div class="form-group" id="div_pfdoc">
-															<label for="paypfdoc" class="table-warning">專勤基本額度:</label>
-															<input type="text" id="paypfdoc" class="form-control" maxlength="8" size="8"  />
-															<label for="paretention" class="table-warning">專1=0,支領專2(Y/N):</label>
-															<input type="text" id="paretention" class="form-control text-uppercase" maxlength="1" size="1"  />
+													<div class="basother-panel">
+											  			<div class="form-row">
+															<div class="form-group" id="div_pfdoc">
+																<label for="paypfdoc" class="table-warning">專勤基本額度</label>
+																<input type="text" id="paypfdoc" class="form-control" maxlength="8" size="8"  />
+																&emsp;
+																<label for="paretention" class="table-warning">專1=0,支領專2(Y/N)</label>
+																<input type="text" id="paretention" class="form-control text-uppercase" maxlength="1" size="1"  />
+															</div>
 														</div>
 													</div>
 												</div>
 												</td>
-											</tr>
-															
+											</tr>															
 											<tr>
 												<td>
 													<a href="#basother" class="btn btn-info" data-toggle="collapse">其他</a>
 											  		<div id="basother" class="collapse">
-											  			<div class="form-inline">
-												  			<div class="form-group">
-																<label for="payctcbacno" class="table-warning" id="label_acno"></label>
-																<input type="text" id="payctcbacno" class="form-control" maxlength="12" size="12"  />
-															</div>
-															<div class="form-group">
-																<label for="payctcbgedno" class="table-warning" id="label_gedno"></label>
-																<input type="text" id="payctcbgedno" class="form-control" maxlength="12" size="12"  />
-															</div>											  				
+											  			<div class="basother-panel">
+											  				<div class="form-row">
+											  					<div class="form-group">
+																	<label for="payctcbacno" class="table-warning" id="label_acno"></label>
+																	<input type="text" id="payctcbacno" class="form-control" maxlength="12" size="12"  />
+																</div>
+																<div class="form-group">
+																	<label for="payctcbgedno" class="table-warning" id="label_gedno"></label>
+																	<input type="text" id="payctcbgedno" class="form-control" maxlength="12" size="12"  />
+																</div>	
+											  				</div>
+												  			<div class="form-row">
+												  				<div class="form-group">
+																	<label for="payaddrs" class="table-warning">戶籍地址</label>
+																	<input type="text" id="payaddrs" class="form-control" maxlength="62" size="62"  />													
+																</div>
+												  			</div>
+												  			<div class="form-row">
+												  				<div class="form-group">
+																	<label for="basPsn_payupdid" >更改者</label>
+																	<input type="text" id="basPsn_payupdid" readonly class="form-control" maxlength="4" size="12"  />
+																</div>
+																<div class="form-group">
+																	<label for="basPsn_updtm" >更改時間</label>
+																	<input type="text" id="basPsn_updtm" readonly class="form-control" maxlength="20" size="20"  />																
+																</div>
+												  			</div>
+														
 														</div>	
-														<div class="form-inline">	
-															<div class="form-group">
-																<label for="payaddrs" class="table-warning">戶籍地址::</label>
-																<input type="text" id="payaddrs" class="form-control" maxlength="62" size="62"  />													
-															</div>
-														</div>	
-														<div class="form-inline">	
-															<div class="form-group">
-																<label for="basPsn_payupdid" >更改者:</label>
-																<input type="text" id="basPsn_payupdid" readonly class="form-control" maxlength="4" size="4"  />
-																<label for="basPsn_updtm" >更改時間:</label>
-																<input type="text" id="basPsn_updtm" readonly class="form-control" maxlength="20" size="20"  />																
-															</div>
-														</div>
 											  		</div>										
 											  </td>
 											</tr>
@@ -1274,7 +1456,6 @@ $(function(){
  					
  					</div>	
  				</div>
-
  			</div>
  		</div>	
   </div>
@@ -1283,108 +1464,156 @@ $(function(){
   <div class="tab-pane fade" id="byPsnBaseFilterMain" role="tabpanel" aria-labelledby="pills-query-tab">
 	<div class="container-fluid">
 		<div class="row" id="filterItem">
-			<div class="col-10">
-				<div class="form-inline">
-	    			<div class="input-group">
-						
-	    				<input type="text" id="filter_card" size="4" class="form-control-sm text-uppercase" placeholder="卡號" >
-						<input type="text" id="filter_idno" size="10" class="form-control-sm text-uppercase" placeholder="身分證" >
-						<input type="text" id="filter_namec" size="12" class="form-control-sm " placeholder="姓名" >
-						<input type="text" id="filter_empno" size="7" class="form-control-sm text-uppercase" placeholder="職號" >
-						<select id="filter_lvefg"  class="selectpicker" data-width="fit" title="離職">
-							<option value=""></option>
-							<option value="N" selected>N</option>
+				<div class="form-inline basother-filterbar">
+					<div class="d-flex flex-wrap align-items-end basother-filter-group">
+						<div class="filter-item">
+							<label class="filter-label">卡號</label>
+							<input type="text" id="filter_card" class="form-control form-control-sm text-uppercase" placeholder="卡號" maxlength="4" size="4">
+						</div>
+						<div class="filter-item">
+							<label class="filter-label">身分證</label>
+							<input type="text" id="filter_idno" class="form-control form-control-sm text-uppercase" placeholder="身分證" maxlength="10" size="10">
+						</div>
+						<div class="filter-item">
+							<label class="filter-label">姓名</label>
+							<input type="text" id="filter_namec" class="form-control form-control-sm" placeholder="姓名" maxlength="12" size="12">
+						</div>
+						<div class="filter-item">
+							<label class="filter-label">職號</label>
+							<input type="text" id="filter_empno" class="form-control form-control-sm text-uppercase" placeholder="職號" maxlength="7" size="7">
+						</div>
+						<div class="filter-item">
+							<label class="filter-label">離職</label>
+							<select id="filter_lvefg" class="selectpicker" data-width="100%" title="離職" >
+								<option value=""></option>
+								<option value="N" selected>N</option>
 								<option value="Y">Y</option>
-						</select>
-						<select id="filter_dept" name="filter_dept" class="selectpicker PAYDEPT" data-width="fit" data-live-search="true" multiple title="單位">
-							<option value=""></option>
-		     				<c:forEach var="uitem" items="${alDeptCodeTbl}" varStatus="loop">
-								<option value="${uitem.padepcod}">${uitem.pacstno}-${uitem.padepnmc}</option>
-							</c:forEach>
-						</select>
-						<select id="filter_title" name="filter_title" class="selectpicker JTCODE" data-width="fit" data-live-search="true" multiple title="職稱">
-							<option value=""></option>
-		     				<c:forEach var="uitem" items="${alTitleCodeTbl}" varStatus="loop">
-								<option value="${uitem.paytitlk}">${uitem.patitsub}-${uitem.paytitlk}-${uitem.paytitlc}</option>
-							</c:forEach>
-						</select>
-						
-						<select id="filter_payrank"  class="selectpicker RANKCODE" data-width="fit" data-live-search="true" multiple title="階級">
-							<option value=""></option>
-							<c:forEach var="uitem" items="${alRankCodeTbl}" varStatus="loop">
-								<option value="${uitem.rankcode}">${uitem.rankcode}-${uitem.rankname}</option>
-							</c:forEach>
-						</select>
-						<select id="filter_patradt" class="selectpicker PATRADT" data-width="fit"  data-live-search="true" multiple title="異動日">
-							<option value=""></option>
-							<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
-								<option value="${bitem.paybank}">${bitem.paybank}</option>
-							</c:forEach>
-						</select>
-						<select id="filter_patracd" class="selectpicker" data-width="fit"  title="異動原因">
-							<option value=""></option>
-							<c:forEach var="bitem" items="${altracdTbl}" varStatus="loop">
-								<option value="${bitem.tracode}">${bitem.traname}</option>
-							</c:forEach>
-						</select>
-						<select id="filter_inflg"  class="selectpicker" data-width="fit" title="保險補助">
-							<option value=""></option>
-							<option value="Y">Y</option>
-						</select>
-						<select id="filter_insuamt"  class="selectpicker" data-width="fit" data-live-search="true" multiple title="保險級距">
-							<option value=""></option>
-							<c:forEach var="uitem" items="${alDpinTbl}" varStatus="loop">
-								<option value="${uitem.dpinhigh}">${uitem.dpinhigh}</option>
-							</c:forEach>
-						</select>
-						<select id="filter_pacsflag"  class="selectpicker cspf d-none" data-width="fit" title="工作獎金">
-							<option value=""></option>
-							<option value="Y">Y</option>
-							<option value="N">N</option>
-						</select>
-						<select id="filter_expfsp"  class="selectpicker cspf d-none" data-width="fit" title="點數">
-							<option value=""></option>
-							<option value="Y">Y</option>
-							<option value="N">N</option>
-						</select>
-						<select id="filter_expfkey1"  class="selectpicker cspf d-none" data-width="fit" title="額外1">
-							<c:forEach var="uitem" items="${alexpfTbl}" varStatus="loop">
-								<option value="${uitem.expfkey}">${uitem.expfname}</option>
-							</c:forEach>
-						</select>
-						<select id="filter_expfkey2"  class="selectpicker cspf d-none" data-width="fit" title="額外2">
-							<c:forEach var="uitem" items="${alexpfTbl}" varStatus="loop">
-								<option value="${uitem.expfkey}">${uitem.expfname}</option>
-							</c:forEach>
-						</select>
-						<select id="filter_expfkey3"  class="selectpicker cspf d-none" data-width="fit" title="額外3">
-							<c:forEach var="uitem" items="${alexpfTbl}" varStatus="loop">
-								<option value="${uitem.expfkey}">${uitem.expfname}</option>
-							</c:forEach>
-						</select>
-						<select id="filter_paret"  class="selectpicker cspf d-none" data-width="fit" title="專2">
-							<option value=""></option>
-							<option value="Y">Y</option>
-							<option value="N">N</option>
-						</select>
-						
+							</select>
+						</div>
+						<div class="filter-item filter-item-wide">
+							<label class="filter-label">單位</label>
+							<select id="filter_dept" name="filter_dept" class="selectpicker PAYDEPT" data-width="100%" data-live-search="true" multiple title="單位">
+								<option value=""></option>
+								<c:forEach var="uitem" items="${alDeptCodeTbl}" varStatus="loop">
+									<option value="${uitem.padepcod}">${uitem.pacstno}-${uitem.padepnmc}</option>
+								</c:forEach>
+							</select>
+						</div>
+						<div class="filter-item filter-item-wide">
+							<label class="filter-label">職稱</label>
+							<select id="filter_title" name="filter_title" class="selectpicker JTCODE" data-width="100%" data-live-search="true" multiple title="職稱">
+								<option value=""></option>
+								<c:forEach var="uitem" items="${alTitleCodeTbl}" varStatus="loop">
+									<option value="${uitem.paytitlk}">${uitem.patitsub}-${uitem.paytitlk}-${uitem.paytitlc}</option>
+								</c:forEach>
+							</select>
+						</div>
+						<div class="filter-item">
+							<label class="filter-label">階級</label>
+							<select id="filter_payrank" class="selectpicker RANKCODE" data-width="100%" data-live-search="true" multiple title="階級">
+								<option value=""></option>
+								<c:forEach var="uitem" items="${alRankCodeTbl}" varStatus="loop">
+									<option value="${uitem.rankcode}">${uitem.rankcode}-${uitem.rankname}</option>
+								</c:forEach>
+							</select>
+						</div>
+						<div class="filter-item">
+							<label class="filter-label">異動日</label>
+							<select id="filter_patradt" class="selectpicker PATRADT" data-width="100%" data-live-search="true" multiple title="異動日">
+								<option value=""></option>
+								<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
+									<option value="${bitem.paybank}">${bitem.paybank}</option>
+								</c:forEach>
+							</select>
+						</div>
+						<div class="filter-item">
+							<label class="filter-label">異動原因</label>
+							<select id="filter_patracd" class="selectpicker" data-width="100%" title="異動原因">
+								<option value=""></option>
+								<c:forEach var="bitem" items="${altracdTbl}" varStatus="loop">
+									<option value="${bitem.tracode}">${bitem.traname}</option>
+								</c:forEach>
+							</select>
+						</div>
+						<div class="filter-item">
+							<label class="filter-label">保險補助</label>
+							<select id="filter_inflg" class="selectpicker" data-width="100%" title="保險補助">
+								<option value=""></option>
+								<option value="Y">Y</option>
+							</select>
+						</div>
+						<div class="filter-item">
+							<label class="filter-label">保險級距</label>
+							<select id="filter_insuamt" class="selectpicker" data-width="100%" data-live-search="true" multiple title="保險級距">
+								<option value=""></option>
+								<c:forEach var="uitem" items="${alDpinTbl}" varStatus="loop">
+									<option value="${uitem.dpinhigh}">${uitem.dpinhigh}</option>
+								</c:forEach>
+							</select>
+						</div>
+						<div class="filter-item cspf d-none">
+							<label class="filter-label">工作獎金</label>
+							<select id="filter_pacsflag" class="selectpicker" data-width="100%" title="工作獎金">
+								<option value=""></option>
+								<option value="Y">Y</option>
+								<option value="N">N</option>
+							</select>
+						</div>
+						<div class="filter-item cspf d-none">
+							<label class="filter-label">點數</label>
+							<select id="filter_expfsp" class="selectpicker" data-width="100%" title="點數">
+								<option value=""></option>
+								<option value="Y">Y</option>
+								<option value="N">N</option>
+							</select>
+						</div>
+						<div class="filter-item cspf d-none">
+							<label class="filter-label">額外1</label>
+							<select id="filter_expfkey1" class="selectpicker" data-width="100%" title="額外1">
+								<c:forEach var="uitem" items="${alexpfTbl}" varStatus="loop">
+									<option value="${uitem.expfkey}">${uitem.expfname}</option>
+								</c:forEach>
+							</select>
+						</div>
+						<div class="filter-item cspf d-none">
+							<label class="filter-label">額外2</label>
+							<select id="filter_expfkey2" class="selectpicker" data-width="100%" title="額外2">
+								<c:forEach var="uitem" items="${alexpfTbl}" varStatus="loop">
+									<option value="${uitem.expfkey}">${uitem.expfname}</option>
+								</c:forEach>
+							</select>
+						</div>
+						<div class="filter-item cspf d-none">
+							<label class="filter-label">額外3</label>
+							<select id="filter_expfkey3" class="selectpicker" data-width="100%" title="額外3">
+								<c:forEach var="uitem" items="${alexpfTbl}" varStatus="loop">
+									<option value="${uitem.expfkey}">${uitem.expfname}</option>
+								</c:forEach>
+							</select>
+						</div>
+						<div class="filter-item cspf d-none">
+							<label class="filter-label">專2</label>
+							<select id="filter_paret" class="selectpicker" data-width="100%" title="專2">
+								<option value=""></option>
+								<option value="Y">Y</option>
+								<option value="N">N</option>
+							</select>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="col-2">
+		</div>
+		<div class="row">
+			<div class="d-flex justify-content-center gap-2 basother-btn-group">
 				<button id="btn_qry_filter_BasPsn" class="btn btn-info" type="button" ><i class="fa fa-search"></i>查詢</button>
-				<button id="btn_cln_filter_BasPsn" class="btn btn-warning" type="button"><i class="fa fa-eraser"></i>清空</button>
+				<button id="btn_cln_filter_BasPsn" class="btn btn-warning" type="button"><i class="fa fa-eraser"></i>清空</button>	
 			</div>
 		</div>
 		<div class="row">
-			<div class="col border border-dark">
-				<div id="baspsnListDiv_2" class="baspsnListDiv">
-					<!-- pa.pabaspsn篩選清單 -->
-					<table id="TblBasPsnFilter" class="table table-striped table-hover" >
-						<thead>
-						</thead>
-					</table>				
-				</div>
+			<div id="baspsnListDiv_2" class="baspsnListDiv">
+				<!-- pa.pabaspsn篩選清單 -->
+				<table id="TblBasPsnFilter" class="table table-striped table-hover" >
+					<thead></thead>
+				</table>				
 			</div>
 		</div>		
  	</div>
