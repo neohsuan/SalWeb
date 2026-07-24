@@ -372,7 +372,7 @@ public enum Tables {
     	this.tmpZpayitm= tmpZpayitm;
     	this.tmpZtaxtran= tmpZtaxtran;
     	this.tmpZtaxcash= tmpZtaxcash;
-    	this.tmpZbasadr= tmpZbasadr;
+    	this.tmpZbasadr= tmpZbasadr; //0716 MP·s¼W®ÉÂW
     }
 	
 	/**
