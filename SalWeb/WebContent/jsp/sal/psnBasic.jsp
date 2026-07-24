@@ -1467,23 +1467,18 @@ $(function(){
 				<div class="form-inline basother-filterbar">
 					<div class="d-flex flex-wrap align-items-end basother-filter-group">
 						<div class="filter-item">
-							<label class="filter-label">卡號</label>
 							<input type="text" id="filter_card" class="form-control form-control-sm text-uppercase" placeholder="卡號" maxlength="4" size="4">
 						</div>
 						<div class="filter-item">
-							<label class="filter-label">身分證</label>
 							<input type="text" id="filter_idno" class="form-control form-control-sm text-uppercase" placeholder="身分證" maxlength="10" size="10">
 						</div>
 						<div class="filter-item">
-							<label class="filter-label">姓名</label>
 							<input type="text" id="filter_namec" class="form-control form-control-sm" placeholder="姓名" maxlength="12" size="12">
 						</div>
 						<div class="filter-item">
-							<label class="filter-label">職號</label>
 							<input type="text" id="filter_empno" class="form-control form-control-sm text-uppercase" placeholder="職號" maxlength="7" size="7">
 						</div>
 						<div class="filter-item">
-							<label class="filter-label">離職</label>
 							<select id="filter_lvefg" class="selectpicker" data-width="100%" title="離職" >
 								<option value=""></option>
 								<option value="N" selected>N</option>
@@ -1491,7 +1486,6 @@ $(function(){
 							</select>
 						</div>
 						<div class="filter-item filter-item-wide">
-							<label class="filter-label">單位</label>
 							<select id="filter_dept" name="filter_dept" class="selectpicker PAYDEPT" data-width="100%" data-live-search="true" multiple title="單位">
 								<option value=""></option>
 								<c:forEach var="uitem" items="${alDeptCodeTbl}" varStatus="loop">
@@ -1500,7 +1494,6 @@ $(function(){
 							</select>
 						</div>
 						<div class="filter-item filter-item-wide">
-							<label class="filter-label">職稱</label>
 							<select id="filter_title" name="filter_title" class="selectpicker JTCODE" data-width="100%" data-live-search="true" multiple title="職稱">
 								<option value=""></option>
 								<c:forEach var="uitem" items="${alTitleCodeTbl}" varStatus="loop">
@@ -1509,7 +1502,6 @@ $(function(){
 							</select>
 						</div>
 						<div class="filter-item">
-							<label class="filter-label">階級</label>
 							<select id="filter_payrank" class="selectpicker RANKCODE" data-width="100%" data-live-search="true" multiple title="階級">
 								<option value=""></option>
 								<c:forEach var="uitem" items="${alRankCodeTbl}" varStatus="loop">
@@ -1518,7 +1510,6 @@ $(function(){
 							</select>
 						</div>
 						<div class="filter-item">
-							<label class="filter-label">異動日</label>
 							<select id="filter_patradt" class="selectpicker PATRADT" data-width="100%" data-live-search="true" multiple title="異動日">
 								<option value=""></option>
 								<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
@@ -1527,7 +1518,6 @@ $(function(){
 							</select>
 						</div>
 						<div class="filter-item">
-							<label class="filter-label">異動原因</label>
 							<select id="filter_patracd" class="selectpicker" data-width="100%" title="異動原因">
 								<option value=""></option>
 								<c:forEach var="bitem" items="${altracdTbl}" varStatus="loop">
@@ -1536,14 +1526,12 @@ $(function(){
 							</select>
 						</div>
 						<div class="filter-item">
-							<label class="filter-label">保險補助</label>
 							<select id="filter_inflg" class="selectpicker" data-width="100%" title="保險補助">
 								<option value=""></option>
 								<option value="Y">Y</option>
 							</select>
 						</div>
 						<div class="filter-item">
-							<label class="filter-label">保險級距</label>
 							<select id="filter_insuamt" class="selectpicker" data-width="100%" data-live-search="true" multiple title="保險級距">
 								<option value=""></option>
 								<c:forEach var="uitem" items="${alDpinTbl}" varStatus="loop">
@@ -1552,7 +1540,6 @@ $(function(){
 							</select>
 						</div>
 						<div class="filter-item cspf d-none">
-							<label class="filter-label">工作獎金</label>
 							<select id="filter_pacsflag" class="selectpicker" data-width="100%" title="工作獎金">
 								<option value=""></option>
 								<option value="Y">Y</option>
@@ -1560,7 +1547,6 @@ $(function(){
 							</select>
 						</div>
 						<div class="filter-item cspf d-none">
-							<label class="filter-label">點數</label>
 							<select id="filter_expfsp" class="selectpicker" data-width="100%" title="點數">
 								<option value=""></option>
 								<option value="Y">Y</option>
@@ -1568,7 +1554,6 @@ $(function(){
 							</select>
 						</div>
 						<div class="filter-item cspf d-none">
-							<label class="filter-label">額外1</label>
 							<select id="filter_expfkey1" class="selectpicker" data-width="100%" title="額外1">
 								<c:forEach var="uitem" items="${alexpfTbl}" varStatus="loop">
 									<option value="${uitem.expfkey}">${uitem.expfname}</option>
@@ -1576,7 +1561,6 @@ $(function(){
 							</select>
 						</div>
 						<div class="filter-item cspf d-none">
-							<label class="filter-label">額外2</label>
 							<select id="filter_expfkey2" class="selectpicker" data-width="100%" title="額外2">
 								<c:forEach var="uitem" items="${alexpfTbl}" varStatus="loop">
 									<option value="${uitem.expfkey}">${uitem.expfname}</option>
@@ -1584,7 +1568,6 @@ $(function(){
 							</select>
 						</div>
 						<div class="filter-item cspf d-none">
-							<label class="filter-label">額外3</label>
 							<select id="filter_expfkey3" class="selectpicker" data-width="100%" title="額外3">
 								<c:forEach var="uitem" items="${alexpfTbl}" varStatus="loop">
 									<option value="${uitem.expfkey}">${uitem.expfname}</option>
@@ -1592,7 +1575,6 @@ $(function(){
 							</select>
 						</div>
 						<div class="filter-item cspf d-none">
-							<label class="filter-label">專2</label>
 							<select id="filter_paret" class="selectpicker" data-width="100%" title="專2">
 								<option value=""></option>
 								<option value="Y">Y</option>

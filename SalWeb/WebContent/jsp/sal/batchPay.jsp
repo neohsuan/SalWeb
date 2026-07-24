@@ -42,7 +42,11 @@ $(function(){
 	$('body').on('focus', '.datepicker', function() { //以此方式才能動態更改頁面datepicker
           $(this).datepicker( { dateFormat: 'yy-mm-dd' } );
     });
-	
+	$(".gclsCalTxt").datepicker({ 
+		changeMonth: true,
+      	changeYear: true,
+      	dateFormat:"yy-mm-dd"
+    });
     $(".dateBat").datepicker({ 
 		changeMonth: true,
       	changeYear: true,
@@ -71,7 +75,15 @@ $(function(){
 		$(".roleQry").removeClass("d-none");	
 	}else{
 		$(".roleQry").addClass("d-none");
-	}	
+	}
+	//
+	if (pahid=="2A0" || pahid=="3A0") {
+		$("#pills-teacheraw-tab").hide();
+	}else if (pahid=="1A0") {
+		$("#pills-teacheraw-tab").show();
+	}
+	
+	
 	$.getLoadCodeTbl = function(item,flag){		
 		$.ajax({
 			url:"${pageContext.request.contextPath}/salController.do",
@@ -113,9 +125,9 @@ $(function(){
 					select.selectpicker('refresh');
 				}
 				
-				//餉單編號
+				//餉單編號#qry_pabatpay_salnum,
 				if (data.alBankDtTbl[0]!=null){
-					select = $('#qry_pabatpay_salnum,#batpay_salnum');
+					select = $('#batpay_salnum');
 					select.empty();
 					options = "<option value='0'>無餉單編號";
 					select.append(options);
@@ -125,13 +137,13 @@ $(function(){
 					});
 					select.selectpicker('refresh');
 					
-					select = $('#qry_pabatpay_patradt');
-					select.empty();
-					$.each(data.alBankDtTbl, function(idx) {
-						options = "<option value='" + data.alBankDtTbl[idx].paybank.dts + "'>" + data.alBankDtTbl[idx].paybank.dts ;
-						select.append(options);
-					});
-					select.selectpicker('refresh');
+// 					select = $('#qry_pabatpay_patradt');
+// 					select.empty();
+// 					$.each(data.alBankDtTbl, function(idx) {
+// 						options = "<option value='" + data.alBankDtTbl[idx].paybank.dts + "'>" + data.alBankDtTbl[idx].paybank.dts ;
+// 						select.append(options);
+// 					});
+// 					select.selectpicker('refresh');
 				}
 				//支扣項目 
 				if (data.alpayitmTbl[0]!=null){
@@ -170,9 +182,10 @@ $(function(){
   		msg = '';
   		var isChecked=0;
   		if (btn== 'btn_qryBatPay'){	//批次檔_查詢
+  		//( $("#qry_pabatpay_salnum option:selected").val()=='' || typeof($("#qry_pabatpay_salnum option:selected").val())=='undefined' ) && 
+  		//( $("#qry_pabatpay_patradt option:selected").val()=='' || typeof($("#qry_pabatpay_patradt option:selected").val())=='undefined') )
   			if( $("#qry_pabatpay_cardno").val()==''  && $("#qry_pabatpay_idtno").val()==''  && 
-  			    ( $("#qry_pabatpay_salnum option:selected").val()=='' || typeof($("#qry_pabatpay_salnum option:selected").val())=='undefined' ) && 
-  			    ( $("#qry_pabatpay_patradt option:selected").val()=='' || typeof($("#qry_pabatpay_patradt option:selected").val())=='undefined') ){
+  			    $("#qry_pabatpay_salnum").val()==''  && $("#qry_pabatpay_patradt").val()=='' ){
   				msg = '請輸入條件值!!';
   			}
   		}
@@ -221,7 +234,17 @@ $(function(){
 	            var checkbox = $($(this).find('td').eq(0)).find('input').prop('checked', true);                      
 	        });
   		}
-  		
+  		else if (btn== 'btn_qryTeacheraw'){	//教職及論文獎勵 --查詢
+  			if ($("#teacheraw_Datyr").val()=='' ){
+				msg += '請勾選[發薪日]!!';
+  			}
+  		}
+  		else if (btn== 'btn_wrtTeacheraw'){	//教職及論文獎勵--寫入
+			var rows = $('#tblTeacherawList').find('tbody tr');        	
+	        $.each(rows, function() {
+	            var checkbox = $($(this).find('td').eq(0)).find('input').prop('checked', true);                      
+	        });
+  		}
   		return msg;	
 	};
 	//將下拉式選單,多選,存成字串,以[,]分開
@@ -273,8 +296,10 @@ $(function(){
 				cardno=$("#qry_pabatpay_cardno").val().toUpperCase();
 				var idtno=$("#qry_pabatpay_idtno").val().toUpperCase();
 				paycode=$.getSelectVals("qry_pabatpay_paycode");
-				salnum=$.getSelectVals("qry_pabatpay_salnum");
-				patradt=$.getSelectVals("qry_pabatpay_patradt");
+				salnum=$("#qry_pabatpay_salnum").val();
+				patradt=$("#qry_pabatpay_patradt").val();
+				//salnum=$.getSelectVals("qry_pabatpay_salnum");
+				//patradt=$.getSelectVals("qry_pabatpay_patradt");
 				
  				console.log("卡號:"+cardno+" 身分證:"+idtno+" salnum:"+salnum+" patradt:"+patradt+" paycode:"+paycode);
  				//return false;
@@ -337,7 +362,7 @@ $(function(){
 				in_data={
 		        		patradt    :patradt
 		        	};
-				console.log("批次檔查詢:in_data:"+in_data+" hid:"+pahid);
+				console.log("事病假扣薪_查詢:in_data:"+in_data+" hid:"+pahid);
 				
 				$.ajax({
 					url:"${pageContext.request.contextPath}/salController.do",
@@ -360,6 +385,52 @@ $(function(){
 								
 						if (data.PayLeaveList!=null && data.PayLeaveList.length>0){	
 							oTable.fnAddData(data.PayLeaveList);//重新給資料
+						}
+						oTable.fnDraw();
+					},
+					error: function(xhr){					
+						alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
+					}
+				});
+			}	
+			else{
+				alert(msg);
+				return false;
+			}	
+		}
+		else if(id == 'btn_qryTeacheraw'){		//教職及論文獎勵 _查詢
+			msg = $.checkFields(id);
+			if(msg == ''){
+				patradt=$('#teacheraw_Datyr').val();;
+				console.log(" 發薪日:"+patradt);
+				//return false;
+				in_data="";
+				in_data={
+		        		patradt    :patradt
+		        	};
+				console.log("批次檔查詢:in_data:"+in_data+" hid:"+pahid);
+				
+				$.ajax({
+					url:"${pageContext.request.contextPath}/salController.do",
+					data:{
+						method  : 'handelBatch',
+						fun     : 'qryteacheraw',
+						in_data : JSON.stringify(in_data),
+						hid     : pahid,
+						userid  : paUserid,
+					},
+					type:"POST",	//type:POST, GET(default:GET)
+					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+					contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+					success:function(data) {
+						//更新查詢清單 
+						$(".dataTables_wrapper").hide();	//把全部的datatables隱藏起來
+						$('#tblTeacherawList').show();
+						oTable = $('#tblTeacherawList').dataTable(objCopyC);						
+						oTable.fnClearTable(0);		//清空資料
+								
+						if (data.TeacherawList!=null && data.TeacherawList.length>0){	
+							oTable.fnAddData(data.TeacherawList);//重新給資料
 						}
 						oTable.fnDraw();
 					},
@@ -433,7 +504,8 @@ $(function(){
 									
 									$("#qry_pabatpay_idtno").val($("#batpay_payidno").val());
 									if ($("#batpay_patradt").val() !=""){
-										$("#qry_pabatpay_patradt").selectpicker('val', $("#batpay_patradt").val() );
+										//$("#qry_pabatpay_patradt").selectpicker('val', $("#batpay_patradt").val() );
+										$("#qry_pabatpay_patradt").val( $("#batpay_patradt").val() );
 									}
 									if ($("#batpay_paycode").val() !=""){
 										$("#qry_pabatpay_paycode").selectpicker('val', $("#batpay_paycode").val().substring(0,5) );
@@ -584,12 +656,50 @@ $(function(){
 					contentType: "application/x-www-form-urlencoded;charset=utf-8",  
 					success:function(data) {
 						if (data.msg!=null){
-							$("#btn_qryA").trigger( "click" ); 
+							//$("#btn_qryA").trigger( "click" ); 
 							alert(data.msg);
 						}	
 					},
 					error: function(xhr){					
 						alert("寫入[事病假寫入批次檔]失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
+					}
+				}); 
+			}
+			else{
+				alert(msg);
+			}		
+		}
+		else if(id == 'btn_wrtTeacheraw'){	//教職及論文獎勵 寫入批次檔
+			//msg = $.checkFields(id);
+			if(msg == ''){
+				itmTbl="tblTeacherawList";
+				
+				jsonString = $.getDataInfo(itmTbl); //取得目前的資料
+				return false;
+				in_data={
+						selEn   : "writeBatByTeach"
+		        };					
+				$.ajax({
+					url:"${pageContext.request.contextPath}/salController.do",
+					data:{
+						method	: "handelBatch",
+						fun     : 'prodBat',
+						in_data : JSON.stringify(in_data),
+						tabJson : jsonString,
+						userid  : paUserid,
+						hid     : pahid
+					},
+					type:"POST",			//type:POST, GET(default:GET)
+					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+					async: true,	//逐步執行
+					contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+					success:function(data) {
+						if (data.msg!=null){
+							alert(data.msg);
+						}	
+					},
+					error: function(xhr){					
+						alert("寫入[教職及論文獎勵 寫入批次檔]失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
 					}
 				}); 
 			}
@@ -1082,6 +1192,44 @@ $(function(){
 		            );		        }
 	});					    
 	$('#tblPayLeaveList').dataTable(objCopyB);
+	
+	//教職及論文獎勵 
+ 	var objCopyC = $.extend(true, {aaSorting: []}, dataTableConfig);			
+	objCopyC.aoColumns = [	
+							{ "sTitle":"",		  "mData": null },
+							{ "sTitle":"身分證",	  "mData": "payidno" },
+							{ "sTitle":"卡號",	  "mData": "paycard" },
+							{ "sTitle":"姓名",	  "mData": "paynamec" },
+							{ "sTitle":"項目",	  "mData": "paycode" },
+							{ "sTitle":"金額",	  "mData": "payamt" },
+							{ "sTitle":"檢測", 	  "mData": "rtn" },
+						 ];
+	objCopyC.iDisplayLength=10;
+	
+	objCopyC.aoColumnDefs= [
+							 //勾選
+							{
+							'targets': 0,
+				         	'searchable':false,
+				         	'orderable':false,
+				         	'className': 'dt-body-center',
+				         	'render': function (data, type, row, meta){
+					         			return '<input type="checkbox" name="chkupdA" id="chkA_' +  meta.row + '" value="' 
+			 					                + $('<div/>').text(data).html() + '">';            
+							         },
+					        }
+							];
+	
+	objCopyC = $.extend(true,objCopyC, {
+				  dom: 'B<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-tl  ui-corner-tr"lfr>'+
+							't'+
+						'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
+					buttons: [
+					   'excelHtml5' 
+					],
+				
+				});					    
+	$('#tblTeacherawList').dataTable(objCopyC);
 	  	      
 });
 
@@ -1099,6 +1247,9 @@ $(function(){
   <li class="nav-item">
     <a class="nav-link" id="pills-payleave-tab" data-toggle="pill" href="#byPayLeaveMain" role="tab" aria-controls="pills-home" aria-selected="true">事病假扣薪</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" id="pills-teacheraw-tab" data-toggle="pill" href="#byTeacherawMain" role="tab" aria-controls="pills-home" aria-selected="true">教職及論文獎勵 </a>
+  </li>
 </ul>
 
 <div class="tab-content" id="pills-tabContent">
@@ -1109,17 +1260,22 @@ $(function(){
 				<div class="col-9">
 					<div class="form-inline">
 		    			<div class="input-group">
-		    				<select id="qry_pabatpay_salnum"  class="selectpicker SALNUM" data-width="fit" multiple title="餉單編號">
-		    					<option value="0">無餉單編號</option>
-								<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
-									<option value="${bitem.salnum}">${bitem.salnum}</option>
-								</c:forEach>
-							</select>
-							<select id="qry_pabatpay_patradt" class="selectpicker patradt" data-width="fit"  data-live-search="true" multiple title="發薪日">
-								<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
-									<option value="${bitem.paybank}">${bitem.paybank}</option>
-								</c:forEach>
-							</select>
+<!-- 		    				<select id="qry_pabatpay_salnum"  class="selectpicker SALNUM" data-width="fit" multiple title="餉單編號"> -->
+<!-- 		    					<option value="0">無餉單編號</option> -->
+<%-- 								<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop"> --%>
+<%-- 									<option value="${bitem.salnum}">${bitem.salnum}</option> --%>
+<%-- 								</c:forEach> --%>
+<!-- 							</select> -->
+<!-- 							<select id="qry_pabatpay_patradt" class="selectpicker patradt" data-width="fit"  data-live-search="true" multiple title="發薪日"> -->
+<%-- 								<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop"> --%>
+<%-- 									<option value="${bitem.paybank}">${bitem.paybank}</option> --%>
+<%-- 								</c:forEach> --%>
+<!-- 							</select> -->
+							<input type="text" id="qry_pabatpay_salnum" size="4"
+									class="form-control-sm" placeholder="餉單編號">
+							<input type="text" id="qry_pabatpay_patradt" size="10"
+								class="form-control-sm gclsCalTxt" placeholder="異動日">
+							
 							<select id="qry_pabatpay_paycode" class="selectpicker" data-width="fit" data-live-search="true" multiple title="支扣項目 ">
 								<option value=""></option>
 			     				<c:forEach var="uitem" items="${alpayitmTbl}" varStatus="loop">
@@ -1319,6 +1475,41 @@ $(function(){
 		            	<th colspan=17 style="text-align:right"></th>        
 		            </tr> 
 		        	</tfoot>
+				</table>
+			</div>
+		</div>
+  	</div>
+  	<!--教職及論文獎勵 -->
+  	<div class="tab-pane fade show" id="byTeacherawMain" role="tabpanel" aria-labelledby="pills-teacheraw-tab">
+  		<div class="row">
+  			<div class="col-md-9">
+  				<div class="form-inline">
+	  				<div class="input-group">
+						<label for="teacheraw_Datyr" >發薪日</label>
+						<input type="text" id="teacheraw_Datyr" class="form-control dateBat" maxlength="10" size="10"/>					
+					</div>
+					<a href="#explan_teacheraw" class="btn btn-danger" data-toggle="collapse">注意事項</a>
+					<div id="explan_teacheraw" class="collapse">
+			  			<div id="explan_teach" class="text-danger">
+				  			檢測說明:<br>
+				  			1.[金額更新]:教職檔期限內,和基本支扣[FP420,FP430]比對金額不同<br>				  			
+				  			2.[新增一筆]:教職檔期限內,找不到基本支扣[FP420,FP430]<br>
+				  			3.[期限已到,新增金額=0]:以基本支扣[FP420,FP430],找教職檔期限內,找不到<br>
+				  		</div>
+				  	</div>
+				</div>	
+  			</div>
+			<div class="col-md-3">
+				<button id="btn_qryTeacheraw" class="btn btn-info ms-auto" type="button" ><i class="fa fa-search"></i>查詢</button>
+				<button id="btn_wrtTeacheraw" class="btn btn-primary roleQry" type="button" ><i class="fa fa-pen"></i>寫入</button>					
+			</div>
+			
+		</div>
+		<div class="row">
+			<div class="col-12 border border-dark">
+				<table id="tblTeacherawList" class="table table-striped table-bordered table-hover" >
+					<thead>							
+					</thead>					
 				</table>
 			</div>
 		</div>

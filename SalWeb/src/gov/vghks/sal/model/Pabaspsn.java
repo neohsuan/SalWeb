@@ -26,13 +26,13 @@ public class Pabaspsn implements Serializable{
     /** 部門代碼*/
     private String paydept;
     /** 初任公職日期*/
-    private java.sql.Date paygovdt;
+    private java.sql.Date paygovdt=null;
     /** 到院日期*/
-    private java.sql.Date payempdt;
+    private java.sql.Date payempdt=null;
     /** 現職日期*/
-    private java.sql.Date paysgndt;
+    private java.sql.Date paysgndt=null;
     /** 離職日期*/
-    private java.sql.Date payrsgdt;
+    private java.sql.Date payrsgdt=null;
     /** 銀行帳號科目*/
     private String paybkid;
     /** 銀行帳號*/
@@ -74,13 +74,13 @@ public class Pabaspsn implements Serializable{
     /** 異動代碼*/
     private int patracod;
     /** 異動日期*/
-    private java.sql.Date patradt;
+    private java.sql.Date patradt =null;
     /** 扶養人數*/
     private int paytaxno;
     /** 最後更改ID*/
     private String payupdid;
     /** 最後更改TIME*/
-    private java.sql.Timestamp payupdtm;
+    private java.sql.Timestamp payupdtm=null;
     /** 額外點數1代碼*/
     private int payexpfkey1;
     /** 額外點數2代碼*/
@@ -89,9 +89,9 @@ public class Pabaspsn implements Serializable{
     private int payexpfkey3;
     /** 適用專業加給表*/
     private int payrank4;
-    /** 中國信託薪津帳號*/
+    /** 薪津帳號*/
     private String payctcbacno;
-    /** 中國信託公儲帳號*/
+    /** 公儲帳號*/
     private String payctcbgedno;
     /** 投保金額*/
     private int insuamt;
@@ -100,11 +100,11 @@ public class Pabaspsn implements Serializable{
     /** 醫院別*/
     private String hid;
     /** 日期時戳 */
-    private java.sql.Timestamp zpabaspsn;
+    private java.sql.Timestamp zpabaspsn=null;
     /** 日期時戳 */
-    private java.sql.Timestamp zptbaspsn;
+    private java.sql.Timestamp zptbaspsn=null;
     /** 日期時戳 */
-    private java.sql.Timestamp zlhbaspsn;
+    private java.sql.Timestamp zlhbaspsn=null;
     /** 部門中文*/
     private String padepnmc;
     /** 階別中文*/
@@ -129,13 +129,17 @@ public class Pabaspsn implements Serializable{
     /** 到院日期_String*/
     private String strempdt;
     /** 新制契約  契約除醫師外,到院日2015/1起為新制*/
-    private String contract;
+    private String contract="";
     /** 異動代碼中文*/
     private String traname;
     /** 傳回 保險費比率 中文名稱*/
     private String inflgnm;
     /** 戶籍地址*/
     private String payaddrs;
+    /** 公務員*/
+    private String servant;
+    /** 新制公務員:公保及退撫新制,初任公職日2023-7-1起*/
+    private String newServant;
     
 	public String getPayidno() {
 		return payidno;
@@ -303,7 +307,10 @@ public class Pabaspsn implements Serializable{
 		return PaCommUtil.getRank3Nm(payrank3);
 	}
 	public String getUpdtm() {
-		return sdf.format(payupdtm);
+		if (StringUtil.nullToString(payupdtm) != "")
+			return sdf.format(payupdtm);
+		else
+			return null;
 	}
 	public String getPfkey() {
 		return pfkey;
@@ -337,7 +344,9 @@ public class Pabaspsn implements Serializable{
 	}
 	//到院日_string
 	public String getStrempdt() {
-		return sdf_d.format(this.payempdt);
+		String rtnTmp="";
+		rtnTmp = (this.payempdt == null) ? "" : sdf_d.format(this.payempdt);
+		return rtnTmp;
 	}
 
 	//契約
@@ -347,23 +356,27 @@ public class Pabaspsn implements Serializable{
 	public String getContract() { 
 		String rtnTmp="";
 		try {
-			String empdt=this.getStrempdt();
-			if (this.getHid().equals("3A0"))
-				rtnTmp="Y";
-			else if (this.getHid().equals("2A0")){
-				if (("F".equals(payrank) && !this.paytitlp.contains("醫師")))
-					rtnTmp="N";
-				else
+			if (StringUtil.nullToString(this.getStrempdt())=="" || StringUtil.nullToString(this.getHid())=="" || StringUtil.nullToString(this.paytitlp)=="") {
+				
+			}else {
+				String empdt=this.getStrempdt();
+				if (this.getHid().equals("3A0"))
 					rtnTmp="Y";
-			}
-			else if (this.getHid().equals("1A0")){	
-				if (("F".equals(payrank) && !this.paytitlp.contains("醫師"))){
-					if( DateUtil.compareDate(empdt, Globals.gNcontract) )
+				else if (this.getHid().equals("2A0")){
+					if (("F".equals(payrank) && !this.paytitlp.contains("醫師")))
 						rtnTmp="N";
 					else
 						rtnTmp="Y";
 				}
-			}
+				else if (this.getHid().equals("1A0")){	
+					if (("F".equals(payrank) && !this.paytitlp.contains("醫師"))){
+						if( DateUtil.compareDate(empdt, Globals.gNcontract) )
+							rtnTmp="N";
+						else
+							rtnTmp="Y";
+					}
+				}
+			}	
 		} catch (ParseException e) {
 			// TODO 自動產生 catch 區塊
 			e.printStackTrace();
@@ -372,7 +385,9 @@ public class Pabaspsn implements Serializable{
 	}
 	
 	public String getStrgovdt() {
-		return sdf_d.format(this.paygovdt);
+		String rtnTmp="";
+		rtnTmp = (this.paygovdt == null) ? "" : sdf_d.format(this.paygovdt);
+		return rtnTmp;
 	}
 	public String getPaylvefg() {
 		return paylvefg;
@@ -533,7 +548,36 @@ public class Pabaspsn implements Serializable{
 	public void setPaydpno(String paydpno) {
 		this.paydpno = paydpno;
 	}
-	
+	//公務員 1簡2薦3委4雇8師9士H:警察人員
+	public String getServant() {
+		String rtnTmp="";
+		if (StringUtil.nullToString(payrank)==""){
+			
+		}else {
+			if (payrank.matches("1|2|3|4|8|9|H") ){
+					rtnTmp="Y";
+			}
+		}	
+		return rtnTmp;
+	}
+	//公保及退撫新制,初任公職日2023-7-1起為新制Y
+	public String getNewServant() {
+		String rtnTmp="";
+		try {
+			if (this.getStrgovdt()=="" || StringUtil.nullToString(payrank)=="") {
+				
+			}else {
+				String strGovdt=this.getStrgovdt();
+				if (payrank.matches("1|2|3|4|8|9") && !DateUtil.compareDate(strGovdt,Globals.gCivilServants)){
+					rtnTmp="Y";
+				}
+			}	
+		} catch (ParseException e) {
+			// TODO 自動產生 catch 區塊
+			e.printStackTrace();
+		}
+		return rtnTmp;
+	}
         
 }
 	

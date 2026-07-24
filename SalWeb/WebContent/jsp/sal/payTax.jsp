@@ -136,13 +136,13 @@ $(function(){
 					});
 					//select.selectpicker('refresh');
 				}
-				if (data.alBankDtTbl[0]!=null){
+				if (data.alBankDtTbl_2M[0]!=null){
 					select = $('#handing_Datyr');
 					select.empty();
 					options = "<option value=''>";
 					select.append(options);
-					$.each(data.alBankDtTbl, function(idx) {
-						options = "<option value='" + data.alBankDtTbl[idx].salnum + "'>" + data.alBankDtTbl[idx].paybank.dts+" "+data.alBankDtTbl[idx].salnum ;
+					$.each(data.alBankDtTbl_2M, function(idx) {
+						options = "<option value='" + data.alBankDtTbl_2M[idx].salnum + "'>" + data.alBankDtTbl_2M[idx].paybank.dts+" "+data.alBankDtTbl_2M[idx].salnum ;
 						select.append(options);
 					});
 					//select.selectpicker('refresh');

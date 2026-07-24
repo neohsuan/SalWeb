@@ -1,5 +1,6 @@
 package gov.vghks.sal;
 
+
 public enum Tables {
 	KSVGH(
 			"1A0", 
@@ -189,6 +190,8 @@ public enum Tables {
 	),
 	;
 	
+
+	public final String aa=null;
 	public final String hid;   				//1醫院別
 	public final String tTaxPsn;			//2所得稅個人明細
 	public final String tTaxTran;			//3所得稅轉帳明細
@@ -372,7 +375,7 @@ public enum Tables {
     	this.tmpZpayitm= tmpZpayitm;
     	this.tmpZtaxtran= tmpZtaxtran;
     	this.tmpZtaxcash= tmpZtaxcash;
-    	this.tmpZbasadr= tmpZbasadr;
+    	this.tmpZbasadr= tmpZbasadr; //0716 MP新增時戳
     }
 	
 	/**

@@ -162,7 +162,7 @@ public class Paprtdtl implements Serializable{
     private int paynspfd;
     /** 1A0_代扣停車費            2A0_汽車停車費      3A0_保留*/
     private int paypark1;
-    /** 1A0_眷舍停車費            2A0_保留      3A0_保留*/
+    /** 1A0_眷舍停車費->其他代收款2026.5.27#11504112    2A0_保留      3A0_保留*/
     private int paypark2;
     /** 1A0_體育管理費(公共設施使用費)   2A0_遺孤認養金      3A0_保留*/
     private int paygym;

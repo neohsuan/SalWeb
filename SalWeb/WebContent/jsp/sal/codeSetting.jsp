@@ -616,7 +616,8 @@ $(function(){
 				$("#model_Items_header_title").html("新增[階級支扣]");
 				$("#PARANK").show();
 				$("#paylev1v,#paylev2v,#payrankv").attr("readOnly",false);  //將key.readOnly 取消
-				$('#payrankv').selectpicker('val', []);												
+				$('#payrankv').selectpicker('val', []);	
+				$("#paybasev,#paygeinf,#paygeinn,#paylbinf,#paydpinv,#payrebef,#payreben").val("0");											
  			}
  			tblname=$("#qryItemstyp option:selected").val().split(':')[1];
 		}
@@ -2524,9 +2525,11 @@ $(function(){
 							$("#payrankv").selectpicker('val',rowData.payrankv);
 							$("#paybasev").val(rowData.paybasev);
 							$("#paygeinf").val(rowData.paygeinf);
+							$("#paygeinn").val(rowData.paygeinn);
 							$("#paylbinf").val(rowData.paylbinf);
 							$("#paydpinv").val(rowData.paydpinv);
 							$("#payrebef").val(rowData.payrebef);
+							$("#payreben").val(rowData.payreben);
 							$("#payuseid").val(rowData.payuseid);
 							$("#parank_payupdat").val(rowData.payupdat);
 							$("#model_items_header_title").html("修改[階級支扣]");
@@ -3585,6 +3588,10 @@ $(function(){
 										<td><input type="text" id="paygeinf" name="paygeinf" class="form-control digits" value="0"  maxlength="6" size="6"></input></td>
 									</tr>
 									<tr>	
+										<th class="text-center">新制公保費</th>
+										<td><input type="text" id="paygeinn" name="paygeinn" class="form-control digits" value="0"  maxlength="6" size="6"></input></td>
+									</tr>
+									<tr>	
 										<th class="text-center">勞保費</th>
 										<td><input type="text" id="paylbinf" name="paylbinf" class="form-control digits" value="0"  maxlength="6" size="6"></input></td>
 									</tr>
@@ -3595,6 +3602,10 @@ $(function(){
 									<tr>
 										<th class="text-center">退撫基金/離職金</th>
 										<td><input type="text" id="payrebef" name="payrebef" class="form-control digits" value="0"  maxlength="6" size="6"></input></td>
+									</tr>
+									<tr>
+										<th class="text-center">新制退撫離職金</th>
+										<td><input type="text" id="payreben" name="payreben" class="form-control digits" value="0"  maxlength="6" size="6"></input></td>
 									</tr>	
 									<tr>	
 										<th class="text-center">更新者</th>

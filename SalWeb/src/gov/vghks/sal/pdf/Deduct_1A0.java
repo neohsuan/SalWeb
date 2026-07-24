@@ -49,6 +49,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 //扣款表_高榮
+//#11504112 2026.5.27 VD401其它代收款
 public class Deduct_1A0 {
 	Logger log = Logger.getLogger(SalNTDAO.class);  //呼叫log4j
 	String ttfDir = "font\\VGHKH_KAI.TTF";
@@ -86,7 +87,7 @@ public class Deduct_1A0 {
 			// 步驟1 - 設定產生的PDF文件大小
 			document = new Document(PageSize.A4.rotate(), 30,25,25,20);//left, right, top, bottom
 			
-			String titleName[]={"職號\n卡號","階級","職稱","姓名","公保費\n公共設施使用費","健保費\n代扣停車費","勞保費\n眷舍管理費","退撫離職金\n餐費","所得稅\n製卡費","公教儲金\n惠民捐款","醫療互助金\n醫療糾紛","國宅貸款\n體適能中心費用","自繳勞退\n　","補充保險費\n　","房屋津貼\n　","清償債款\n　","扣款合計"};
+			String titleName[]={"職號\n卡號","階級","職稱","姓名","公保費\n公共設施使用費","健保費\n代扣停車費","勞保費\n眷舍管理費","退撫離職金\n餐費","所得稅\n製卡費","公教儲金\n惠民捐款","醫療互助金\n醫療糾紛","國宅貸款\n體適能中心費用","自繳勞退\n其他代收款","補充保險費\n　","房屋津貼\n　","清償債款\n　","扣款合計"};
 			int pdfCol = 17; // 內文有幾欄
 			float[] floatCol = {0.045f, 0.06f, 0.08f, 0.06f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.06f}; //欄位比例
 			
@@ -174,12 +175,12 @@ public class Deduct_1A0 {
 				sTitleCell.setHorizontalAlignment(Element.ALIGN_CENTER); //垂直置中
 				sTitleCell.setVerticalAlignment(Element.ALIGN_MIDDLE); //水平置中
 				//長度>5 有字體=6
-				if (String.valueOf(i).matches("4|13"))
-					sTitleCell.setPhrase(new Phrase( titleName[i], fontColTitlC));
+//				if (String.valueOf(i).matches("4|13"))
+//					sTitleCell.setPhrase(new Phrase( titleName[i], fontColTitlC));
 				//長度>=5 有字體=7
-				else if (String.valueOf(i).matches("5|6|7|8|10"))
-					sTitleCell.setPhrase(new Phrase( titleName[i], fontColTitlB));
-				else
+//				if (String.valueOf(i).matches("5|6|7|8|10"))
+//					sTitleCell.setPhrase(new Phrase( titleName[i], fontColTitlB));
+//				else
 					sTitleCell.setPhrase(new Phrase( titleName[i], fontColTitlA));			
 				contentTable.addCell(sTitleCell);
 			}
@@ -216,8 +217,9 @@ public class Deduct_1A0 {
 				//國宅貸款PAYHLOA1+PAYHLOA2+PAYHLOA3+PAYHLOA4+PAYHLOA5+PAYHLOA6,體適能中心費用PAYVETD
 				intCellSum_8A += data.getPayhloa1()+data.getPayhloa2()+data.getPayhloa3()+data.getPayhloa4()+data.getPayhloa5()+data.getPayhloa6();
 				intCellSum_8B += data.getPayvetd1();
-				//自繳勞退PAYDLOAN
+				//自繳勞退PAYDLOAN 其他代收款PAYPARK2
 				intCellSum_9A += data.getPaydloan();
+				intCellSum_9B += data.getPaypark2();
 				//補充保險費PAYOTHER1
 				intCellSum_10A += data.getPayother1();
 				//房屋津貼PAYMHOUS
@@ -290,8 +292,8 @@ public class Deduct_1A0 {
 					tmp=String.valueOf( data.getPayhloa1()+data.getPayhloa2()+data.getPayhloa3()+data.getPayhloa4()+data.getPayhloa5()+data.getPayhloa6() )+"\n"+ String.valueOf( data.getPayvetd1() );
 					cellContent.setPhrase(new Phrase(tmp, fontColCent));		
 					contentTable.addCell(cellContent);
-					//自繳勞退PAYDLOAN
-					tmp=String.valueOf( data.getPaydloan())+"\n　" ;
+					//自繳勞退PAYDLOAN,其他代收款PAYPARK2
+					tmp=String.valueOf( data.getPaydloan() )+"\n" + String.valueOf( data.getPaypark2()  );
 					cellContent.setPhrase(new Phrase(tmp, fontColCent));		
 					contentTable.addCell(cellContent);
 					//補充保險費PAYOTHER1
@@ -374,8 +376,8 @@ public class Deduct_1A0 {
 			tmp = String.valueOf(intCellSum_8A)+"\n\n"+String.valueOf(intCellSum_8B);
 			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
-			//自繳勞退PAYDLOAN
-			tmp = String.valueOf(intCellSum_9A)+"\n\n　";
+			//自繳勞退PAYDLOAN,其他代收款PAYPARK2
+			tmp = String.valueOf(intCellSum_9A)+"\n\n"+String.valueOf(intCellSum_9B);
 			sumCell.setPhrase(new Phrase( tmp, fontColCentT));
 			sumTable.addCell(sumCell);
 			//補充保險費PAYOTHER1
