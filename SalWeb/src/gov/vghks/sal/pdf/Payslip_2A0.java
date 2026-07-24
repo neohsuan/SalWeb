@@ -74,7 +74,9 @@ public class Payslip_2A0 {
 		int intCellSum_3A=0,intCellSum_3B=0,intCellSum_4A=0,intCellSum_4B=0;
 		int intCellSum_5A=0,intCellSum_5B=0,intCellSum_6A=0,intCellSum_6B=0;
 		int intCellSum_7A=0,intCellSum_7B=0,intCellSum_8A=0,intCellSum_8B=0;
-		int intCellSum_9A=0,intCellSum_9B=0,intCellSum_10A=0,intCellSum_11A=0,intCellSum_12A=0,intCellSum_13A=0;
+		//20260724 科經營  intCellSum_10B介閔改
+		int intCellSum_9A=0,intCellSum_9B=0,intCellSum_10A=0,intCellSum_10B=0;
+		int intCellSum_11A=0,intCellSum_12A=0,intCellSum_13A=0;
 		try {
 			//新增資料夾路徑
 			if (!FileUtil.FileToSmbFile(strDir,hid).exists()){
@@ -89,7 +91,7 @@ public class Payslip_2A0 {
 			int pdfSCol = 7; // 簽名處有幾欄
 			float[] floatColSign = {0.14f, 0.14f, 0.14f, 0.14f, 0.14f, 0.14f, 0.16f}; //欄位比例
 			String signName[]={"製表","總務室","人事審核","人事室","主計審核","主計室","機關首長及其授權人"};
-			String titleName[]={"職號\n卡號","階級","職稱","姓名","支給\n日數","薪俸\n不休假獎金","專業加給\n休假補助","主管加給\n考績獎金","院區加給\n年終獎金","身障加給\n各項補助","特別津貼\n各項津貼","各項津貼\n護理能力進階","專勤獎金\n病歷罰扣","加班費\n簽約留任金","夜班費\n　","應發數","扣款數","實發數"};
+			String titleName[]={"職號\n卡號","階級","職稱","姓名","支給\n日數","薪俸\n不休假獎金","專業加給\n休假補助","主管加給\n考績獎金","院區加給\n年終獎金","身障加給\n各項補助","特別津貼\n各項津貼","各項津貼\n護理能力進階","專勤獎金\n病歷罰扣","加班費\n簽約留任金","夜班費\n科經營","應發數","扣款數","實發數"};
 			int pdfCol = 18; // 內文有幾欄
 			float[] floatCol = {0.045f, 0.06f, 0.08f, 0.06f, 0.03f, 0.055f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.055f, 0.05f, 0.05f, 0.05f, 0.07f, 0.065f, 0.07f}; //欄位比例
 			
@@ -221,8 +223,9 @@ public class Payslip_2A0 {
 				//加班費PAYCPLM3,(2026.2.11#11501312簽約留任金PAYCPLM2)
 				intCellSum_9A += data.getPaycplm3();
 				intCellSum_9B += data.getPaycplm2();
-				//夜班費PAYNIGHT
+				//夜班費PAYNIGHT+20260724 科經營PAYEMPFD 介閔改
 				intCellSum_10A += data.getPaynight();
+				intCellSum_10B += data.getPayempfd();
 				//應發數PAYTOTAL
 				intCellSum_11A += data.getPaytotal();
 				//扣款數PAYTLDED
@@ -301,8 +304,8 @@ public class Payslip_2A0 {
 					tmp=String.valueOf( data.getPaycplm3() )+"\n"+String.valueOf( data.getPaycplm2() );
 					cellContent.setPhrase(new Phrase(tmp, fontColCent));		
 					contentTable.addCell(cellContent);
-					//夜班費PAYNIGHT
-					tmp=String.valueOf( data.getPaynight() )+"\n　" ;
+					//夜班費PAYNIGHT+20260724 科經營PAYEMPFD 介閔改
+					tmp=String.valueOf( data.getPaynight() )+"\n"+String.valueOf( data.getPayempfd() ) ;
 					cellContent.setPhrase(new Phrase(tmp, fontColCent));
 					contentTable.addCell(cellContent);
 					//應發數PAYTOTAL
@@ -387,8 +390,8 @@ public class Payslip_2A0 {
 			tmp = String.valueOf(intCellSum_9A)+"\n\n"+String.valueOf(intCellSum_9B);
 			sumCell.setPhrase(new Phrase( tmp, fontColTitlA));
 			sumTable.addCell(sumCell);
-			//夜班費PAYNIGHT
-			tmp = String.valueOf(intCellSum_10A)+"\n\n　";
+			//夜班費PAYNIGHT+20260724 科經營PAYEMPFD 介閔改
+			tmp = String.valueOf(intCellSum_10A)+"\n\n　"+ String.valueOf(intCellSum_10B);
 			sumCell.setPhrase(new Phrase( tmp, fontColTitlA));
 			sumTable.addCell(sumCell);
 			//應發數

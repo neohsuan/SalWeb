@@ -205,6 +205,7 @@ public class SalNTDAO {
 		tTraPay=tabInfo.tTraPay;
 		tTraPayDw=tabInfo.tTraPayDw;
 		tRPDTL=tabInfo.tRPDTL;
+		tRPPRT=tabInfo.tRPPRT;
 		tNhiCal=tabInfo.tNhiCal;
 		tNhiDet=tabInfo.tNhiDet;
 		tTeaChaw=tabInfo.tTeaChaw;
@@ -2976,7 +2977,7 @@ public class SalNTDAO {
 		String sqlDatPsn_ins="INSERT INTO " + this.tDatPsn+" (SALNUM, PAYBANK, PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PAYUPDID, PAYUPDTM, PAYRANK4, HID, INSUAMT) "+
 							" values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,current timestamp,?,?,?) ";
 		//發薪明細_寫入_1_padatpay
-				String sqlDatPay_ins="INSERT INTO PA.PADATPAY (SALNUM, PAYIDNO, PAYCODE, PAYAMT, PAYAUTH, PAYIFTAX, PAYUPDTM, PAYFLAG, HID)  "+
+				String sqlDatPay_ins="INSERT INTO " + this.tDatPay+ " (SALNUM, PAYIDNO, PAYCODE, PAYAMT, PAYAUTH, PAYIFTAX, PAYUPDTM, PAYFLAG, HID)  "+
 									" VALUES(?, ?, ?, ?, ?, ?, current timestamp, ?, ?) ";				
 				
 		try{
@@ -3432,7 +3433,7 @@ public class SalNTDAO {
 		String sqlDatPsn_ins="INSERT INTO " + this.tDatPsn+" (SALNUM, PAYBANK, PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PAYUPDID, PAYUPDTM, PAYRANK4, HID, INSUAMT) "+
 							" values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,current timestamp,?,?,?) ";
 		//發薪明細_寫入_1_padatpay
-		String sqlDatPay_ins="INSERT INTO PA.PADATPAY (SALNUM, PAYIDNO, PAYCODE, PAYAMT, PAYAUTH, PAYIFTAX, PAYUPDTM, PAYFLAG, HID)  "+
+		String sqlDatPay_ins="INSERT INTO " + this.tDatPay+ " (SALNUM, PAYIDNO, PAYCODE, PAYAMT, PAYAUTH, PAYIFTAX, PAYUPDTM, PAYFLAG, HID)  "+
 							" VALUES(?, ?, ?, ?, ?, ?, current timestamp, ?, ?) ";
 		//發薪明細_所得稅_1 給付金額淨額>起扣點+列入扣5%計算,金額>0,才能扣稅
 		String sqlDatTax_inq="SELECT a.payidno,a.paycard,a.paynamec,COALESCE(b.tamt,0) tamt,COALESCE(c.pamt,0) pamt " +
