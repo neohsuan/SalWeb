@@ -213,6 +213,7 @@ $(function(){
 				if (data.alpayitmTbl[0]!=null){
 					var payitmHtml ='<option value="">請選擇</option>';
 					select = $('#patrapay_paycode');
+					//select = $('.paycodeSelect');
 					select.empty();
 					options = "<option value=''>";
 					select.append(options);
@@ -372,8 +373,9 @@ $(function(){
 		var obj = {};
 		var $th = $('#'+ tblname + ' th');	
 		var data_val;
-		var data_id;	 
-
+		var data_id;
+		var data_nm;	 
+		var data_item;
 		$( 'select,:input,:checkbox', '#'+tblname).each(function() {
 	        //data_id = String($(this).attr("id")).split('_')[1];
 	        data_id  = $(this).attr("id");
@@ -423,28 +425,39 @@ $(function(){
 	   			data_val="";
 			    $th.each(function(index, th){
 			    	data_id = $tds.eq(index).children('input:text, select, textarea, input:hidden').attr('id');
+			    	data_nm = $tds.eq(index).children('input:text, select, textarea, input:hidden').attr('name');
 			    	
 			    	//var indexName = (index.toString().length==1) ? "0"+(index) : (index);
 			    	if (typeof data_id === "undefined" || data_id == "undefined" || data_id =='') {
 	        	
 	        		}else{
-	        			//id前加o_(原支扣明細) n_(新支扣明細)
+	        			//id前加o_(原支扣明細) n_(新支扣明細) paycode.第2碼=P,收入,要取name=payamtP paycode.第2碼=D,支出,要取name=payamtD
 	        			if (data_id.substring(0,2)=="o_" || data_id.substring(0,2)=="n_")
-	        				data_id=data_id.substring(2);				    	
-				        data_val = $tds.eq(index).children('input[type="text"], select, textarea, input:hidden').val();
+	        				data_id=data_id.substring(2);
+	        			data_val = $tds.eq(index).children('input[type="text"], select, textarea, input:hidden').val();
 				        if(data_val != null && data_val != "" ) {//只儲存有資料
 				        	data_val=data_val.toUpperCase();//轉大寫
-				        	obj[data_id] = data_val; //名稱+數值
+				        	if ( data_id=="paycode" )	//取代碼內容,依第2碼 //data_item=依paycode判斷data_val要取P D	
+	        					data_item = data_val.substring(1,2);
+				        	
+				        	if ( data_id=="payamt"){	//金額,P取[所得欄],D取[支出欄]	ex. FP000抓取payamtP,FD020取payamtD
+				        		if ( data_item !="" && data_item != data_nm.substring(6,7) )
+				        			data_val="";
+				        	}
+				        	if (data_val != ""){
+				        		obj[data_id] = data_val; //名稱+數值
+				        	}	
 				        }	
-				     }   
+				     }
+				     //console.log(i+" data_id:"+data_id+" data_name:"+data_nm+" data_val:"+data_val);   
 			    });
 			   
-			    if (data_val !=''  ){
+			    if (obj != null  ){
 			    	value.push(obj);
 			    }	
 	   		});
 	   		
-	   		if (data_val !=''){	   		
+	   		if (obj != null  ){   		
 	   			array.push( { "formnm": tableID, "value": value } ); //將動態表格資料轉換為json
 	   		}		   		
 	    }); 
@@ -479,13 +492,13 @@ $(function(){
 			cleanTable("TraPayN");
 			//pa.paTrapay異動支扣明細--原
 			cleanTable("TraPayO");
-			 //文字格有紅色,要移除
-			$(".bgcol").removeClass('bg-danger');
+			 //文字格有紅色,要移除 
+			$(".bgcol").removeClass('bg-danger text-white');
 			
 			$('.selectpicker').selectpicker('val', '');
 			$('.selectpicker').selectpicker('refresh');
 			
-		    $("#subPATRAPSN_Updbtn,#subPATRAPSN_Delbtn").prop("disabled", true);
+		    $("#subPATRAPSN_Updbtn,#subPATRAPSN_Delbtn,#subPATRAPSN_Insbtn").prop("disabled", true);
 		    $("#tblTranPsnList").dataTable().fnClearTable();
 		    //button啟用
 			$("#subPATRAPSN_Newbtn").prop("disabled", false);  
@@ -573,7 +586,9 @@ $(function(){
 								
 						if (data.traPsnList!=null && data.traPsnList.length>0){	
 							oTable.fnAddData(data.traPsnList);//重新給資料
-						}
+						}else{
+							alert("無資料");
+						} 
 						oTable.fnDraw();
 						
 						//以rowIndex優先,若無,設為第1筆
@@ -764,23 +779,24 @@ $(function(){
 					var jsonString = $.getDataInfo(tblname); //取得目前的資料
 					
 					pk_data={
-		        		payidno : $('#payidno').val(),
-		        		patradt : $('#patradt').val(),
+		        		payidno  : $('#payidno').val(),
+		        		patradt  : $('#patradt').val(),
 		        		patracod : $('#patracod').val(),
-		        		hid		: $('#hid').val()
+		        		hid		 : $('#hid').val()
 		        	};
 					if (id.substring(id.indexOf('_')+1) =='Updbtn')		
 						$('#trapsnfun').val("update");
  					else if (id.substring(id.indexOf('_')+1) =='Insbtn')		
  						$('#trapsnfun').val("insert");
 					console.log("異動檔更改 pk_data:"+JSON.stringify(pk_data));
-					
+					currentPage = 0;
 					uTable = $('#' + itmTbl ).dataTable();
-					info = oTable.page.info();		//記錄目前頁碼
-					currentPage=info.page;
-					
-					return false;
-					 $.ajax({
+					if (oTable != null ){
+						info = oTable.page.info();		//記錄目前頁碼
+						currentPage=info.page;
+					}
+					//return false;
+					$.ajax({
 						url:"${pageContext.request.contextPath}/salController.do",
 						data:{
 							method	: "handelTran",
@@ -799,11 +815,10 @@ $(function(){
 						contentType: "application/x-www-form-urlencoded;charset=utf-8",  
 						success:function(data) {
 							if (data.msg!=null){
-								/* $("#btn_cln_tran_TranPsn").trigger( "click" ); 
-								$("#tran_idno").val(pk_data.payidno); */
-								
+								$("#btn_cln_tran_TranPsn").trigger( "click" ); 
+								$("#tran_idno").val( pk_data.payidno ); 
+								$("#tran_patradt").val( pk_data.patradt );
 								$("#btn_qry_tran_TranPsn").trigger( "click" );
-								uTable.fnPageChange(currentPage);		//切到原先某碼<==無法切換  
 								
 								alert(data.msg);
 							}	
@@ -850,9 +865,10 @@ $(function(){
 					async: true,	//逐步執行
 					contentType: "application/x-www-form-urlencoded;charset=utf-8",  
 					success:function(data) {
+						$("#btn_cln_tran_TranPsn").trigger( "click" );
 						if (data.msg!=null){
-							$("#btn_qry_tran_TranPsn").trigger( "click" );		
 							alert(data.msg);
+							$("#btn_qry_tran_TranPsn").trigger( "click" );
 						}	
 					},
 					error: function(xhr){					
@@ -1072,23 +1088,22 @@ $(function(){
 					tr.find(':input[name*="paycode"]').val(mData[idx].paycode+":"+mData[idx].payauth+":"+mData[idx].payiftax);
 					tr.find(':input[name*="paysort"]').val("N");
 				}
-				console.log(tr.find(':input[name*="paycode"]').val());
 				tr.find(':input[name*="payauth"]').val(mData[idx].payauth);	
 				tr.find(':input[name*="payiftax"]').val(mData[idx].payiftax);
-				tr.find(':input[name*="hid"]').val(mData[idx].hid);
-				tr.find(':input[name*="payidno"]').val(mData[idx].payidno);
+				tr.find(':input[name*="hid"]').val($("#hid").val());
+				tr.find(':input[name*="payidno"]').val($("#payidno").val());	//新支扣帶入參考檔,沒有idno
 				tr.find(':input[name*="tranum"]').val(mData[idx].tranum);		
-				tr.find(':input[name*="payamtp"]').val(mData[idx].payamtp);
-				tr.find(':input[name*="payamtd"]').val(mData[idx].payamtd);
+				tr.find(':input[name*="payamtP"]').val(mData[idx].payamtp);
+				tr.find(':input[name*="payamtD"]').val(mData[idx].payamtd);
 				//console.log(row_html);
 			});
 			//收入
-			$('#'+tbl+' :input[name*="payamtp"]').each(function(){						
+			$('#'+tbl+' :input[name*="payamtP"]').each(function(){						
 		  		sumPay_p=sumPay_p+getInt($(this).val());    	  		
 			});
 			
 			//支出
-			$('#'+tbl+' :input[name*="payamtd"]').each(function(){						
+			$('#'+tbl+' :input[name*="payamtD"]').each(function(){						
 		  		sumPay_d=sumPay_d+getInt($(this).val());    	  		
 			});
 			
@@ -1106,12 +1121,12 @@ $(function(){
 		var sumPay_p=0,sumPay_d=0;
 		var tbl="TraPayN";  
 		//收入
-		$('#'+tbl+' :input[name*="payamtp"]').each(function(){						
+		$('#'+tbl+' :input[name*="payamtP"]').each(function(){						
 	  		sumPay_p=sumPay_p+getInt($(this).val());    	  		
 		});
 		
 		//支出
-		$('#'+tbl+' :input[name*="payamtd"]').each(function(){						
+		$('#'+tbl+' :input[name*="payamtD"]').each(function(){						
 	  		sumPay_d=sumPay_d+getInt($(this).val());    	  		
 		});
 		
@@ -1129,7 +1144,9 @@ $(function(){
     		cleanTable($(this).closest('table').attr("id")); //清除該頁面所有資料    		
     	} else {
     		$(this).closest("tr").remove();
-    	}	    	
+    	}
+    	//小計重算
+    	$.sumPay(); 	    	
     });
 	
 	//指定表格新增一欄
@@ -1138,7 +1155,7 @@ $(function(){
 		var table_id = this_table.attr("id");
 		var row_html = "<tr>" + this_table.find("tbody").find("tr").eq(0).html() + "</tr>";
 		
-		console.log(row_html);
+		//console.log(row_html);
 		
     	this_table.append(row_html);
     	
@@ -1147,7 +1164,7 @@ $(function(){
     	//塞預設值
     	if (table_id=="TraPayN"){
     		tr = $('#'+table_id+" tbody").find("tr").eq(rows-1);
-			tr.find(':input[name*="pbidtno"]').val($("#pbidtno").val());
+			tr.find(':input[name*="payidno"]').val($("#payidno").val());
 			tr.find(':input[name*="hid"]').val($("#hid").val());
     	}
 	}
@@ -1320,7 +1337,7 @@ $(function(){
 	});
 	//顯示俸點對應
 	$.doRank = function(in_data,item){
-		console.log("doRank顯示俸點對應:code_data:"+JSON.stringify(in_data));	
+		//console.log("doRank顯示俸點對應:code_data:"+JSON.stringify(in_data));	
 		$.ajax({
 			url:"${pageContext.request.contextPath}/salController.do",
 				data:{
@@ -1721,7 +1738,7 @@ $(function(){
 					$('#payexpfkey3').selectpicker('val', mData.payexpfkey3);
 					$("#paypfdoc").val(mData.paypfdoc);
 					$("#paypfsp1").val(mData.paypfsp1);
-					$("#paypfsp1").val(mData.paypfsp2);
+					$("#paypfsp2").val(mData.paypfsp2);
 					$("#paypfsp3").val(mData.paypfsp3);					
 				}
 			}
@@ -2686,10 +2703,10 @@ $(function(){
 																	</div>
 																</td>
 															</tr>
-															<tr class="table-success">
+															<tr class="table-info">
 																<td>『新』</td>
 															</tr>
-															<tr>
+															<tr class="table-warning">
 																<td>
 																	<div class="form-inline">
 																		<div class="form-group">
@@ -2738,7 +2755,7 @@ $(function(){
 																	</div>
 																</td>
 															</tr>
-															<tr>
+															<tr class="table-warning">
 																<td>
 																	<div class="form-inline d-none" id="div_authority">
 																		<div class="form-group">
@@ -2763,7 +2780,7 @@ $(function(){
 																	</div>
 																</td>
 															</tr>
-															<TR>
+															<TR class="table-warning">
 																<td>
 																	<div class="form-inline">
 																		<div class="form-group">
@@ -2791,12 +2808,12 @@ $(function(){
 																	</div>
 																<TD>
 															</TR>
-															<tr>
+															<tr class="table-warning">
 																<td>
 																	<div class="cspf_n d-none">
 																		<div class="form-inline">
 																			<div class="form-group ">
-																				<label for="paypfsp1" class="table-warning">額外點數:</label>
+																				<label for="payexpfkey1" class="table-warning">額外點數:</label>
 																				<select id="payexpfkey1" name="payexpfkey1" class="selectpicker"
 																					data-width="fit" title="額外1"></select> 
 																				<input type="text" id="paypfsp1" class="form-control number" maxlength="3" size="3" /> 
@@ -2905,12 +2922,12 @@ $(function(){
 																		size="22" disabled></td>
 																	<td>
 																		<!-- 收入--> <input class="form-control text-right "
-																		type="text" id="o_payamt" name="payamtp" value=""
+																		type="text" id="o_payamt" name="payamtP" value=""
 																		maxlength="10" size="10" disabled>
 																	</td>
 																	<td>
 																		<!-- 支出--> <input class="form-control text-right "
-																		type="text" id="o_payamt" name="payamtd" value=""
+																		type="text" id="o_payamt" name="payamtD" value=""
 																		maxlength="10" size="10" disabled>
 																	</td>
 																	<td>
@@ -2972,17 +2989,17 @@ $(function(){
 																	</button>
 																</td>
 																<td>
-																	<!-- 支扣代碼 --> <select class="form-control paycodeSelect"
+																	<!-- 支扣代碼 --> <select class="form-control paycodeSelect" 
 																	id="n_paycode" name="paycode"></select>
 																</td>
 																<td>
 																	<!-- 收入--> <input class="form-control text-right keypay"
-																	type="text" id="n_payamt" name="payamtp" value=""
+																	type="text" id="n_payamt" name="payamtP" value=""
 																	maxlength="10" size="10">
 																</td>
 																<td>
 																	<!-- 支出--> <input class="form-control text-right keypay"
-																	type="text" id="n_payamt" name="payamtd" value=""
+																	type="text" id="n_payamt" name="payamtD" value=""
 																	maxlength="10" size="10">
 																</td>
 																<td>
