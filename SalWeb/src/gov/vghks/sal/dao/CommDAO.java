@@ -194,7 +194,7 @@ public class CommDAO {
 			degre=(!object_in_data.has("degre")) ? ""  : object_in_data.getString("degre");
 			odegre=(!object_in_data.has("odegre")) ? ""  : object_in_data.getString("odegre");
 			inflg=(!object_in_data.has("inflg")) ? ""  : object_in_data.getString("inflg");
-			pflag=(!object_in_data.has("pflag")) ? 0  : object_in_data.getInt("pflag");
+			pflag=(!object_in_data.has("pflag")) ? 0  : ("").equals(StringUtil.nullToString(object_in_data.getString("pflag"))) ? 0 : object_in_data.getInt("pflag");
 			dpno=(!object_in_data.has("dpno")) ? ""  : object_in_data.getString("dpno");
 			tracod=(!object_in_data.has("tracod")) ? 0  : object_in_data.getInt("tracod");
 			idno=(!object_in_data.has("idno")) ? ""  : object_in_data.getString("idno");
@@ -767,6 +767,8 @@ public class CommDAO {
 	private JSONArray getReissue(JSONArray nPay,JSONArray oPay,int tracod,String effdt,int monno,int dayno,int lbig,String orank,String rank,String ojt,String jt,String odegre,int pflag,HashMap<String,Papayitm> payitmMap,String hid) {
 		String me = ".getReissue()";
 		JSONArray jsonRtn = new JSONArray();
+		JSONArray l_Pay = new JSONArray();
+		String jsonString ="";
 		JSONObject l_payObj=null;
 		JSONObject o_payObj=null;
 		JSONObject jsonOne=null;	
@@ -814,14 +816,19 @@ public class CommDAO {
 		else
 			l_degre=Integer.parseInt(odegre);
 		
-		//先設定返回值=新支扣
-		jsonRtn=nPay;
+		//先設定返回值=新支扣 共用同一個記憶體位置
+		jsonRtn= nPay;
+		
 		//1新進2復職
 		if (tracod==1 ||tracod==2) {
 			if (nPay != null) {
-				for (int i = 0; i < nPay.size(); i++) {
+				// （建立全新且獨立的陣列，互不影響）
+				jsonString = nPay.toString();
+				l_Pay= JSONArray.fromObject(jsonString);
+				
+				for (int i = 0; i < l_Pay.size(); i++) {
 				    // 根據實際型別使用 getJSONObject, getString 或 getInt
-				    l_payObj = nPay.getJSONObject(i);
+				    l_payObj = l_Pay.getJSONObject(i);
 				    l_paycode= l_payObj.getString("paycode");
 				    l_payamt = l_payObj.getInt("payamt");
 				    r_payamt=0;
@@ -861,9 +868,11 @@ public class CommDAO {
 		//退出 21離職 22退休 23留職停薪 24逾期請假
 		else if (tracod >=21 && tracod <=24) {
 			if (oPay != null) {
-				for (int i = 0; i < oPay.size(); i++) {
+				jsonString = oPay.toString();
+				l_Pay= JSONArray.fromObject(jsonString);
+				for (int i = 0; i < l_Pay.size(); i++) {
 					 // 根據實際型別使用 getJSONObject, getString 或 getInt
-				    l_payObj = oPay.getJSONObject(i);
+				    l_payObj = l_Pay.getJSONObject(i);
 				    l_paycode= l_payObj.getString("paycode");
 				    l_payamt = l_payObj.getInt("payamt");
 				    r_payamt=0;
@@ -921,9 +930,11 @@ public class CommDAO {
 		//FD040「全月基金費用提撥總額 × 實際加入日數 ÷ 當月實際天數（四捨五入）」
 		else if ( (tracod >=31 && tracod <=38) || tracod ==11 ) {
 			if (nPay != null) {
-				for (int i = 0; i < nPay.size(); i++) {
+				jsonString = nPay.toString();
+				l_Pay= JSONArray.fromObject(jsonString);
+				for (int i = 0; i < l_Pay.size(); i++) {
 				    // 根據實際型別使用 getJSONObject, getString 或 getInt
-				    l_payObj = nPay.getJSONObject(i);
+				    l_payObj = l_Pay.getJSONObject(i);
 				    l_paycode= l_payObj.getString("paycode");
 				    l_payamt = l_payObj.getInt("payamt");
 				    r_payamt=0;
@@ -983,8 +994,10 @@ public class CommDAO {
 		//2026.7.13 出納詢問人事,折合率不再使用,用本薪(CB聘用住院醫師 CH契約住院醫師 AL一年有證不分科住院醫師 AN一年無證不分科住院醫師)==>月支報酬 = 報酬薪點 × 薪點折合率（計算至元為止，未達整數者，小數點以下無條件捨去）
 		else if ( tracod ==51 ) {
 			if (oPay != null) {
-				for (int i = 0; i < oPay.size(); i++) {
-					l_payObj = oPay.getJSONObject(i);
+				jsonString = oPay.toString();
+				l_Pay= JSONArray.fromObject(jsonString);
+				for (int i = 0; i < l_Pay.size(); i++) {
+					l_payObj = l_Pay.getJSONObject(i);
 				    l_paycode= l_payObj.getString("paycode");
 				    l_payamt = l_payObj.getInt("payamt");
 				    
@@ -1048,8 +1061,10 @@ public class CommDAO {
 		//12考績獎金 金額須計算至元位，小數點後無條件四捨五入（四捨五入至個位數）。
 		else if ( tracod ==12 ) {
 			if (oPay != null) {
-				for (int i = 0; i < oPay.size(); i++) {
-					l_payObj = oPay.getJSONObject(i);
+				jsonString = oPay.toString();
+				l_Pay= JSONArray.fromObject(jsonString);
+				for (int i = 0; i < l_Pay.size(); i++) {
+					l_payObj = l_Pay.getJSONObject(i);
 				    l_paycode= l_payObj.getString("paycode");
 				    l_payamt = l_payObj.getInt("payamt");
 				    
