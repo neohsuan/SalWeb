@@ -294,7 +294,14 @@ public class SalNTDAO {
 			sql = "SELECT PAYCODE, PACODNMC, PACODDEL, PAYAUTH, PAYIFTAX, PAUPBAS, PAYREWARD, PAYUPDID, PAYUPDAT, HID "+
 				    "from "+this.tPayItm +" where HID=? order by PAYCODE with ur";
 			params.add(hid);
-		}else if ("PADPINTBL".equals(tbl)){
+		}
+		//支扣代碼,限讀[刪除=N]
+		else if ("PAPAYITM_N".equals(tbl)){
+			sql = "SELECT PAYCODE, PACODNMC, PACODDEL, PAYAUTH, PAYIFTAX, PAUPBAS, PAYREWARD, PAYUPDID, PAYUPDAT, HID "+
+				    "from "+this.tPayItm +" where HID=? and PACODDEL='N' order by PAYCODE with ur";
+			params.add(hid);
+		}
+		else if ("PADPINTBL".equals(tbl)){
 			sql = "SELECT DPINLOW, case DPINHIGH WHEN 999999 THEN "+Globals.gDpinMax+" ELSE dpinhigh END dpinhigh, DPINAMT, PAYUPDID, DPINDEPT1, DPINDEPT3 "+
 					"from "	+this.tDpinTbl+
 			 	  " order by DPINLOW with ur";
@@ -331,7 +338,7 @@ public class SalNTDAO {
 			result = null;
 			if (tbl.matches("PARANKCODE|PARNK4TBL|PAEXPFTBL|PATRACODE|PADPINTBL|TAXCATG")){
 				result = da.arraylistbyQuery(sql,META_TYPE);
-			}else if (tbl.matches("PATITLE|PABANK|PABANK_2M|PADEPT|PAPAYITM|TAXPSNYR|TAXTRANYR|NHIPAYDT|NHIPAYYR")){
+			}else if (tbl.matches("PATITLE|PABANK|PABANK_2M|PADEPT|PAPAYITM|PAPAYITM_N|TAXPSNYR|TAXTRANYR|NHIPAYDT|NHIPAYYR")){
 				result = da.arraylistbyQuery(sql,params,META_TYPE);
 			}
 			log.info(me+"  ...size:"+result.size());
@@ -377,7 +384,7 @@ public class SalNTDAO {
 						PropertyUtils.copyProperties(tmptracd, data);
 						aryRtn.add(tmptracd);
 					}
-					else if ("PAPAYITM".equals(tbl)){	//支扣代碼  
+					else if (tbl.matches("PAPAYITM|PAPAYITM_N")){	//支扣代碼  
 						tmppayitm = new Papayitm();
 						PropertyUtils.copyProperties(tmppayitm, data);
 						aryRtn.add(tmppayitm);
@@ -585,8 +592,8 @@ public class SalNTDAO {
 			//sql
 			//地址
 			sqlAdr_inq =" select PAYIDNO, PAYADDRS from "+ this.tBasAdr+ " where PAYIDNO=? ";
-			sqlAdr_upd =" update "+ this.tBasAdr+ " set (PAYADDRS, "+this.tmpZbasadr+") = (?, current timestamp) where PAYIDNO=? ";
-			sqlAdr_ins =" INSERT INTO "+ this.tBasAdr+ " (PAYADDRS, "+this.tmpZbasadr+", PAYIDNO) VALUES(?, current timestamp, ?);";
+			sqlAdr_upd =" update "+ this.tBasAdr+ " set (PAYADDRS, " + tmpZbasadr + ") = (?, current timestamp) where PAYIDNO=? ";
+			sqlAdr_ins =" INSERT INTO "+ this.tBasAdr+ " (PAYADDRS, " + tmpZbasadr + ",PAYIDNO) VALUES(?, current timestamp, ?);";
 			if ("PABASPSN".equals(tblname)){
 				strKey=StringUtil.nullToString(object_pk_data.getString("payidno"));
 				hid=StringUtil.nullToString(object_pk_data.getString("hid"));
@@ -651,7 +658,7 @@ public class SalNTDAO {
 				sqlTrapsn_upd=" update "+ this.tTraPsn + " set (PAEFFDT, SALNUM, PAYLVEFG, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, PAYEMPDT, PAYSGNDT, PAYRSGDT, PAYINFLG, PAYDPNO, PAYPFLAG, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PAYMONNO, PAYDAYNO, PAOTITLE, PAORNK2N, PAORANK3, PAODEGR2, PAODEGRE, PAORANK, PAORANK2, PAORANKC, PAOPFDOC, PAOCSFLA, PAOPFSP1, PAOPFSP2, PAOPFSP3, PAYTAXNO, PAYUPDID, PAYUPDTM, TRANUM, PAOEXPFKEY1, PAOEXPFKEY2, PAOEXPFKEY3, PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3, PAORANK4, PAYRANK4, PAYCTCBACNO, PAYCTCBGEDNO, INSUAMT, "+tmpZtrapsn+")" +
 						" =(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,current timestamp,?,?,?,?,?,?,?,?,?,?,?,?,current timestamp) where PAYIDNO=? and PATRADT=? and PATRACOD=? and HID=? ";
 				sqlTrapsn_ins=" insert into "+ this.tTraPsn + " (PAEFFDT, SALNUM, PAYLVEFG, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, PAYEMPDT, PAYSGNDT, PAYRSGDT, PAYINFLG, PAYDPNO, PAYPFLAG, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PAYMONNO, PAYDAYNO, PAOTITLE, PAORNK2N, PAORANK3, PAODEGR2, PAODEGRE, PAORANK, PAORANK2, PAORANKC, PAOPFDOC, PAOCSFLA, PAOPFSP1, PAOPFSP2, PAOPFSP3, PAYTAXNO, PAYUPDID, PAYUPDTM, TRANUM, PAOEXPFKEY1, PAOEXPFKEY2, PAOEXPFKEY3, PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3, PAORANK4, PAYRANK4, PAYCTCBACNO, PAYCTCBGEDNO, INSUAMT, "+tmpZtrapsn+",PAYIDNO,PATRADT, PATRACOD,  HID)" +
-			       " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,current timestamp,?,?,?,?,?,?,?,?,?,?,?,?,current timestamp,?,?,?,?) ";
+						" values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,current timestamp,?,?,?,?,?,?,?,?,?,?,?,?,current timestamp,?,?,?,?) ";
 				//異動檔(異動個人+異動支扣)全刪
 				sqlTrapsn_del = "delete from "+ this.tTraPsn + " where HID=? and PAYIDNO=? and PATRADT=? and PATRACOD=? ";
 				sqlTrapay_del = "delete from "+ this.tTraPay + " where HID=? and PAYIDNO=? and PATRADT=? and PAYSORT=?  ";
@@ -1030,24 +1037,28 @@ public class SalNTDAO {
 												param = new ArrayList<Object>();
 												//sqlTrapay_inq = "select TRANUM, PAYAMT, PAYAUTH, PAYIFTAX, PAYUPDTM, PAYIDNO, PATRADT, PAYSORT, PAYCODE, HID from "+ this.tTraPay + 
 												//" where HID=? and PAYIDNO=? and PATRADT=? and PAYSORT=? ";
-												param.add(hid);
-												param.add(StringUtil.nullToString(object_pk_data.getString("payidno")));
-												param.add(StringUtil.nullToString(object_pk_data.getString("patradt")));
-												param.add("O");
+												param.add( hid );
+												param.add( StringUtil.nullToString(object_pk_data.getString("payidno")) );
+												param.add( StringUtil.nullToString(object_pk_data.getString("patradt")) );
+												param.add( "O" );
+												//sqlTrapay_cnt = "select count(*) cnt from "+ this.tTraPay + " where HID=? and PAYIDNO=? and PATRADT=? and PAYSORT=? ";
 												log.info(me+"  " + sqlTrapay_cnt+"...params:"+ param.toString());
 												rs = da.query(sqlTrapay_cnt,param);
 												blnTraPay = true;
-												while (rs.next()){
-													blnTraPay = false;				
+												if (rs.next()) {
+													if (rs.getInt("cnt") != 0) {
+														blnTraPay = false;
+													}
 												}
 												log.info(me+"  blnTraPayO:" + blnTraPay);
-											}else if (formnm.matches("TraPayN")){
+											}
+											else if (formnm.matches("TraPayN")){
 												//sqlTrapay_del = "delete from "+ this.tTraPay + " where HID=? and PAYIDNO=? and PATRADT=? and PAYSORT=?  ";
 												param = new ArrayList<Object>();
-												param.add(hid);
-												param.add(StringUtil.nullToString(object_pk_data.getString("payidno")));
-												param.add(StringUtil.nullToString(object_pk_data.getString("patradt")));
-												param.add("N");
+												param.add( hid );
+												param.add( StringUtil.nullToString(object_pk_data.getString("payidno")) );
+												param.add( StringUtil.nullToString(object_pk_data.getString("patradt")) );
+												param.add( "N" );
 												log.info(me+" "+formnm + " "+sqlTrapay_del+"...params:"+ param.toString());
 												sql_stmts.add(sqlTrapay_del);
 												params.add(param);
@@ -1079,16 +1090,14 @@ public class SalNTDAO {
 											}
 											param = new ArrayList<Object>();
 											param.add( intTraNum );
-											param.add((!obj_item.has("payamt")) ? 0 : ("").equals(StringUtil.nullToString(obj_item.getString("payamt"))) ? "0" :StringUtil.nullToString(obj_item.getString("payamt")));
+											param.add( (!obj_item.has("payamt")) ? 0 : ("").equals(StringUtil.nullToString(obj_item.getString("payamt"))) ? "0" :StringUtil.nullToString(obj_item.getString("payamt")));
 											param.add( strPayauth );
 											param.add( strPayiftax );
-											
-											param.add(strPaycode);
-											param.add(hid);
-											param.add(StringUtil.nullToString(object_pk_data.getString("payidno")));
-											param.add(StringUtil.nullToString(object_pk_data.getString("patradt")));
-											param.add( (!obj_item.has("paysort")) ? "" : obj_item.getString("paysort") );
-											
+											param.add( strPaycode );
+											param.add( hid );
+											param.add( StringUtil.nullToString(object_pk_data.getString("payidno")) );
+											param.add( StringUtil.nullToString(object_pk_data.getString("patradt")) );
+											param.add( strPaysort );
 											
 											sql_stmts.add(sqlTrapay_ins);
 											params.add(param);
@@ -11376,10 +11385,10 @@ public class SalNTDAO {
 			salnum=(!object_in_data.has("salnum")) ? "" : object_in_data.getString("salnum");
 		}
 		//讀取pa.padatpsn+pa.padatpsn_dw
-		strSelect=" SALNUM, PAYBANK, A.PAYIDNO, A.PAYCARD, A.PAYEMPNO, A.PAYNAMEC, A.PAYDEPT, A.PAYTITLE, A.PAYRNK2N, "+
+		strSelect=" a.SALNUM, PAYBANK, A.PAYIDNO, A.PAYCARD, A.PAYEMPNO, A.PAYNAMEC, A.PAYDEPT, A.PAYTITLE, A.PAYRNK2N, "+
 					"COALESCE(A.PAYRANK3,0) as PAYRANK3, COALESCE(A.PAYDEGR2,0) as PAYDEGR2, COALESCE(A.PAYDEGRE,0) as PAYDEGRE, A.PAYRANK, A.PAYRANK2, A.PAYRANKC, COALESCE(A.PAYPFDOC,0) as PAYPFDOC, A.PACSFLAG, "+
 					"COALESCE(A.PAYPFSP1,0) as PAYPFSP1, COALESCE(A.PAYPFSP2,0) as PAYPFSP2, COALESCE(A.PAYPFSP3,0) as PAYPFSP3, A.PAYUPDID, A.PAYUPDTM, A.PAYRANK4, A.HID, A.INSUAMT, "+
-					"B.PADEPNMC,C.PAYTITLP,D.RANKNAME,E.RNK4NAME,F.PAYGOVDT,F.PAYEMPDT ";
+					"B.PADEPNMC,C.PAYTITLP,D.RANKNAME,E.RNK4NAME,COALESCE(F.PAYGOVDT, G.PAYGOVDT) as PAYGOVDT ,COALESCE(F.PAYEMPDT, G.PAYEMPDT) as PAYEMPDT ";
 		sql = "select " + strSelect +
 			   " from " + this.tDatPsn +" A "+
 			   " left outer join "+ this.tDept+" B on A.PAYDEPT=B.PADEPCOD and A.HID=B.HID "+
@@ -11387,7 +11396,8 @@ public class SalNTDAO {
 			   " left outer join "+ this.tRankCode+" D on A.PAYRANK=D.RANKCODE "+
 			   " left outer join "+ this.tRnk4Tbl+" E on A.PAYRANK4=E.RNK4KEY "+
 			   " left outer join "+ this.tBasPsn+" F on A.PAYIDNO=F.PAYIDNO AND A.HID=F.HID "+
-			   " where SALNUM=? and A.PAYIDNO=? and A.HID=? "+
+			   " left outer join "+ this.tTraPsn+" G on A.PAYIDNO=G.PAYIDNO and A.SALNUM=G.SALNUM AND A.HID=G.HID "+
+			   " where a.SALNUM=? and A.PAYIDNO=? and A.HID=? "+
 			  " union all "+
 		  	 " select " + strSelect +
 			   " from " + this.tDatPsnDw +" A "+
@@ -11396,7 +11406,8 @@ public class SalNTDAO {
 			   " left outer join "+ this.tRankCode+" D on A.PAYRANK=D.RANKCODE "+
 			   " left outer join "+ this.tRnk4Tbl+" E on A.PAYRANK4=E.RNK4KEY "+
 			   " left outer join "+ this.tBasPsn+" F on A.PAYIDNO=F.PAYIDNO AND A.HID=F.HID "+
-			  " where SALNUM=? and A.PAYIDNO=? and A.HID=? with ur ";
+			   " left outer join "+ this.tTraPsn+" G on A.PAYIDNO=G.PAYIDNO and A.SALNUM=G.SALNUM AND A.HID=G.HID "+
+			  " where a.SALNUM=? and A.PAYIDNO=? and A.HID=? with ur ";
 		params.add(salnum);
 		params.add(idtno);
 		params.add(hid);
