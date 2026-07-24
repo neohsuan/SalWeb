@@ -88,7 +88,7 @@ public class WPSAutoLogon extends HttpServlet {
 				    String hostname =request.getServerName();				    
 				    String programName=this.getClass().getName();
 					LDAPUtil ldapUtilObj = LDAPUtil.getInstance() ;
-					//strUsrId="LA38";
+					//strUsrId="7074";
 					// 成本中心英文
 					dept = ldapUtilObj.getDeptNo(strUsrId, hostname, programName);
 					if(dept.length()>=3  && dept.substring(0,3).equals("NUR")) 
@@ -97,7 +97,13 @@ public class WPSAutoLogon extends HttpServlet {
 					userName = ldapUtilObj.getUserNm(strUsrId);
 					
 					strOUName = ldapUtilObj.getDeptName(strUsrId,hostname,programName);
-					userHID=ldapUtilObj.getLdapAttr(strUsrId,"HID",hostname,programName);	
+					//2A0林介閩7074 T785
+					if (strUsrId.equals("7074")) {
+						userHID ="2A0";
+					}else {	
+						userHID = ldapUtilObj.getLdapAttr(strUsrId,"HID",hostname,programName);
+					}
+					
 					user_psWkTypd=ldapUtilObj.getLdapAttr(strUsrId,"payWkTyd",hostname,programName);
 					
 					WPSUser user = new WPSUser();

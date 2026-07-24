@@ -325,6 +325,7 @@ var numConfig = {
 	    	if($(this).val() == "") return;
 	    	if ( $(this).val().length == 4 ){
 	    		$(this).val($(this).val().toUpperCase());
+	    		//加條件,2A0,3A0各查各的
 	    		var xuserName = getNamebyID($(this).val().toUpperCase());
 	    		
 		    	if(xuserName != ""){
@@ -332,7 +333,7 @@ var numConfig = {
 		    	}else{
 		    		$("#agentText").val("");
 		    		$("#agentnm").text("");
-		    		showSysMsgTxt("提示訊息","3","卡號輸入錯誤","","關閉","",""); //引用include.jsp的訊息視窗
+		    		showSysMsgTxt("提示訊息","3","卡號輸入錯誤或不同院區","","關閉","",""); //引用include.jsp的訊息視窗
 		    	}
 	    	} else {
 	    		//查不到卡號就清除資料
@@ -342,15 +343,16 @@ var numConfig = {
 	
 	});
 	
-	//依卡號帶入人名
+	//依卡號帶入人名,加登入者HID
 	var agentData;
 	function getNamebyID(xuserid){
 		var foundUserName = "";
 		$.ajax({
 			url:"${pageContext.request.contextPath}/salController.do",
 			data: {
-				method  : 'getNamebyID',
-				cardno  : xuserid,
+				method   : 'getNamebyID',
+				cardno   : xuserid,
+				loginHid : hid,	
 			},
 			dataType: "json",
 			async: false,	//逐步執行
@@ -384,11 +386,11 @@ var numConfig = {
 			agentdeptnm = agentData.userDeptName;//使用者成本中心中文
 			agenthid = agentData.userHid;//使用者醫院別
 			agentpswktypd =agentData.userPsWkTypd;//使用者職稱代碼
-			agentAdmin=agentData.userAdmin;//代理人角色
-			agentEdit=agentData.userEdit;//代理人角色
-			agentView=agentData.userView;//代理人角色
-			agentBones=agentData.userBones;//代理人角色
-			agentTax=agentData.userTax;//代理人角色
+			agentAdmin=agentData.userAdmin;//代理人_Admin
+			agentEdit=agentData.userEdit;//代理人_Edit
+			agentView=agentData.userView;//代理人_View
+			agentBones=agentData.userBones;//代理人_Bones
+			agentTax=agentData.userTax;//代理人_Tax
  		}
 
 		$.ajax({
@@ -398,15 +400,15 @@ var numConfig = {
 					"agent"       : agent,
 					"agentname"   : agentname,
 					"agentcostid" : agentcostid,
-					"agentdeptno"   : agentdeptno,
+					"agentdeptno" : agentdeptno,
 					"agentdeptnm" : agentdeptnm,
 					"agenthid"    : agenthid,
 					"agentpswktypd" : agentpswktypd,
-					"agentAdmin" : agentAdmin,
-					"agentEdit" : agentEdit,
-					"agentView" : agentView,
-					"agentBones" : agentBones,
-					"agentTax" : agentTax,
+					"agentAdmin"  : agentAdmin,
+					"agentEdit"   : agentEdit,
+					"agentView"   : agentView,
+					"agentBones"  : agentBones,
+					"agentTax"    : agentTax,
 				},
 // 				dataType: "json",
 				async: false,	//逐步執行

@@ -173,7 +173,7 @@ $(function(){
 				}
 				
 				//餉單編號
-				if (data.alBankDtTbl[0]!=null){
+				/* if (data.alBankDtTbl[0]!=null){
 					select = $('#qry_padatpsn_salnum,#qry_check_salnum');
 					select.empty();
 					options = "<option value=''>";
@@ -193,7 +193,7 @@ $(function(){
 						select.append(options);
 					});
 					select.selectpicker('refresh');
-				}
+				} */
 				//餉單編號(2個月內)
 				if (data.alBankDtTbl_2M[0]!=null){
 					select = $('#qry_set_datyr,#prod_SalNum,#prt_SalNum,#print_SalNum,#file_SalNum');
@@ -335,9 +335,10 @@ $(function(){
 			}
   		}
   		else if (btn== 'btn_qryDatPsn'){	//發薪明細_查詢
+  			//($("#qry_padatpsn_salnum option:selected").val()=='' || typeof($("#qry_padatpsn_salnum option:selected").val())=='undefined' )&& 
+  			//  ($("#qry_padatpsn_paybank option:selected").val()=='' || typeof($("#qry_padatpsn_paybank option:selected").val())=='undefined' )&&
   			if($("#qryCardno").val()==''  && $("#qryIdtno").val()=='' && $("#qryNamec").val()=='' && 
-  			  ($("#qry_padatpsn_salnum option:selected").val()=='' || typeof($("#qry_padatpsn_salnum option:selected").val())=='undefined' )&& 
-  			  ($("#qry_padatpsn_paybank option:selected").val()=='' || typeof($("#qry_padatpsn_paybank option:selected").val())=='undefined' )&& 
+  			   $("#qry_padatpsn_salnum").val()==''   && $("#qry_padatpsn_paybank").val()==''  && 
   			  ($("#qry_payrank option:selected").val()=='' || typeof($("#qry_payrank option:selected").val())=='undefined') && 
   			  ($("#qryDept option:selected").val()=='' || typeof($("#qryDept option:selected").val())=='undefined')  && 
   			  ($("#qryTitle option:selected").val()=='' || typeof($("#qryTitle option:selected").val())=='undefined') && 
@@ -347,8 +348,9 @@ $(function(){
   			}
   		}
   		else if (btn== 'btn_qryCheck'){	//檢驗_查詢
-  			if( ( $("#qry_check_salnum option:selected").val()=='' || typeof($("#qry_check_salnum option:selected").val())=='undefined' ) && 
-  			    ( $("#qry_check_paybank option:selected").val()=='' ||typeof($("#qry_check_paybank option:selected").val())=='undefined' ) ){
+//   			if( ( $("#qry_check_salnum option:selected").val()=='' || typeof($("#qry_check_salnum option:selected").val())=='undefined' ) && 
+//   			    ( $("#qry_check_paybank option:selected").val()=='' ||typeof($("#qry_check_paybank option:selected").val())=='undefined' ) ){
+			if (  $("#qry_check_salnum").val()=='' && $("#qry_check_paybank").val()=='' ){
  				msg = '請輸入條件值!!';
  			}	
  		}
@@ -469,8 +471,10 @@ $(function(){
 				cardno=$("#qryCardno").val().toUpperCase();
 				idtno=$("#qryIdtno").val().toUpperCase();
 				namec=$("#qryNamec").val();
-				salnum=$.getSelectVals("qry_padatpsn_salnum");				
-				paybank=$.getSelectVals("qry_padatpsn_paybank");
+				salnum=$("#qry_padatpsn_salnum").val();
+				paybank=$("#qry_padatpsn_paybank").val();
+				//salnum=$.getSelectVals("qry_padatpsn_salnum");				
+				//paybank=$.getSelectVals("qry_padatpsn_paybank");
 				var payrank=$.getSelectVals("qry_payrank");
 				var paytitle=$.getSelectVals("qryTitle");
 				paydept=$.getSelectVals("qryDept");
@@ -1902,7 +1906,7 @@ $(function(){
 			{ "sTitle":"房租津貼"    ,"mData": "paymhous"},
 			{ "sTitle":"醫療互助金"    ,"mData": "paynspfd"},
 			{ "sTitle":"代扣停車費"    ,"mData": "paypark1" },
-			{ "sTitle":"眷舍停車費","mData": "paypark2" },
+			{ "sTitle":"其他代收款","mData": "paypark2" },//#11504112 2026.5.27
 			{ "sTitle":"公共設施使用費"   ,"mData": "paygym"},
 			{ "sTitle":"清償債款"  ,"mData": "paylien" },
 			{ "sTitle":"餐費"    ,"mData": "paymeal"},
@@ -1922,14 +1926,100 @@ $(function(){
 							
 						 ];
 	}
+ 	//20260604
 	else if (pahid=="2A0"){			
 		objCopyF.aoColumns = [	
 							{ "sTitle":"","mData": null},
+							{ "sTitle":"離職"   	,"mData": "paylvefg"},
+							{ "sTitle":"異動原因"  ,"mData": "traname" },
+							{ "sTitle":"生效日期"  	,"mData": "paeffdt" },
+							{ "sTitle":"上月<br>支薪日數"    ,"mData": "lastdayno"},
+							{ "sTitle":"本月<br>支薪日數"    ,"mData": "paydayno"},
+							{ "sTitle":"發薪日"  ,"mData": "paybank" },
 							{ "sTitle":"身份證2A0"   ,"mData": "payidno"},
 							{ "sTitle":"發薪日2A0"  ,"mData": "paybank" },
 							{ "sTitle":"卡號2A0"    ,"mData": "paycard"},
 							{ "sTitle":"姓名2A0"    ,"mData": "paynamec"},
 							{ "sTitle":"職號2A0"    ,"mData": "payempno" },
+							{ "sTitle":"帳號"	,"mData": "payacno" },
+							{ "sTitle":"公儲"   	,"mData": "paygedno"},
+							{ "sTitle":"單位代碼"   	,"mData": "paydept" },
+							{ "sTitle":"單位中文"    ,"mData": "padepnmc"},
+							{ "sTitle":"職稱<br>群組"    ,"mData": "patitsub"},
+							{ "sTitle":"職稱<br>代碼"    ,"mData": "paytitle" },
+							{ "sTitle":"職稱中文",	"mData": "paytitlp" },
+							{ "sTitle":"階別代碼"   ,	"mData": "payrank"},
+							{ "sTitle":"階別縮寫"  ,"mData": "rankabbr" },
+							{ "sTitle":"職等"    ,	"mData": "payrnk2n"},
+							{ "sTitle":"本功"    	,"mData": "payrank3"},
+							{ "sTitle":"級別"    ,	"mData": "paydegr2" },
+							{ "sTitle":"俸點",		"mData": "paydegre" },
+							{ "sTitle":"上月<br>本薪"    ,"mData": "payobase" },
+							{ "sTitle":"上月<br>專業加給","mData": "payospsu" },
+							{ "sTitle":"上月<br>主管加給","mData": "payochalw" },
+							{ "sTitle":"上月<br>證照加給","mData": "payostbn" },
+							{ "sTitle":" ","mData": "payosuply" },
+							{ "sTitle":"本薪"  ,			"mData": "paybase" },
+			                { "sTitle":"本薪補發扣"    ,		"mData": "payrbase"},
+			                { "sTitle":"專業加給"    ,		"mData": "payspsu"},
+			    			{ "sTitle":"專業加給補發扣"    ,	"mData": "payrspsu" },
+			    			{ "sTitle":"專業加給差額",			"mData": "payspsd" },
+			    			{ "sTitle":"專業加給差額補發扣",		"mData": "payrspsd" },
+			    			{ "sTitle":"主管加給"   ,		"mData": "paychalw"},
+			    			{ "sTitle":"主管加給補發扣"  ,		"mData": "payrchalw" },
+			    			{ "sTitle":"證照/院區", "mData": "paystbnt" },
+			    			{ "sTitle":"證照/院區補發扣","mData": "payrstbn" },
+			    			{ "sTitle":"身心障礙","mData": "paytrans" },
+			    			{ "sTitle":"特別津貼","mData": "paysuply" },
+			    			{ "sTitle":"護理能力進階","mData": "payrsuply" },
+			    			{ "sTitle":"獎勵金_行政及醫事","mData": "paypfnt" },
+			    			{ "sTitle":"專勤醫師費","mData": "paystal" }, //PAREPDETAIL42
+			    			{ "sTitle":"專勤醫師費二"    ,			"mData": "paystald"},//專二跟專勤醫師費二是一樣的嗎??payrstbn
+			    			{ "sTitle":"夜班費"    ,		"mData": "paynight"},
+			    			{ "sTitle":"不休假加班費"    ,"mData": "payyear" },
+			    			{ "sTitle":"年終獎金",		"mData": "payaddhl" },
+			    			{ "sTitle":"考績獎金",		"mData": "paygrade" },
+			    			{ "sTitle":"晉級補發"   ,	"mData": "paypromo"},
+			    			{ "sTitle":"休假補助"  ,	"mData": "payadrtn" },
+			    			{ "sTitle":"補助_生日禮金"   ,	"mData": "paycplm1"},
+			    			{ "sTitle":"簽約留任金"  ,	"mData": "paycplm2" },
+			    			{ "sTitle":"加班費"    ,"mData": "paycplm3" },
+			    			{ "sTitle":" "    ,"mData": "payempfd" },
+			    			{ "sTitle":"病歷罰扣"  ,	"mData": "paysars" },  //專勤醫師費--病歷罰扣 PAREPDETAIL 43但是屏榮月報表上寫的是paysars 65超盈餘獎金
+			    			{ "sTitle":"值班費"  ,"mData": "payextra" }, //屏榮月報表寫對應PAYEXTRA，但PAREPDETAIL 55寫的中文是顧問費
+			    			{ "sTitle":"公保費"  ,"mData": "paygeins" },
+			                { "sTitle":"健保費"    ,"mData": "paydpins"},
+			                { "sTitle":"勞保費"    ,"mData": "paylbins"},
+			                { "sTitle":"退撫離職金"    ,"mData": "payretir" },
+			                { "sTitle":"所得稅","mData": "paytax" },
+			    			{ "sTitle":"公教儲金","mData": "paygedp" },
+			    			{ "sTitle":" "    ,"mData": "payvetd1" },  //這七格跟VB版產出的報表檔多一格 VB板只有六格 但是屏榮月報表有7格
+			    			{ "sTitle":" "    ,"mData": "payhloa1" },
+			    			{ "sTitle":" "    ,"mData": "payhloa2" },
+			    			{ "sTitle":" "    ,"mData": "payhloa3" },
+			    			{ "sTitle":" "    ,"mData": "payhloa4" },
+			    			{ "sTitle":" "    ,"mData": "payhloa5" },
+			    			{ "sTitle":" "    ,"mData": "payhloa6" },
+			    			{ "sTitle":"勞工退休金"    ,"mData": "paydloan"}, 
+			    			{ "sTitle":"房租津貼"    ,"mData": "paymhous"},
+			                { "sTitle":"醫療互助金"    ,"mData": "paynspfd"},
+			                { "sTitle":"停車費"    ,"mData": "paypark1" },
+			                { "sTitle":" "    ,"mData": "paypark2" },
+			                { "sTitle":"遺孤認養金"  ,"mData": "paygym" },
+			                { "sTitle":"清償債款"  ,"mData": "paylien" },
+			                { "sTitle":" "    ,"mData": "paymeal" },
+			                { "sTitle":" "    ,"mData": "paycardf" },
+			                { "sTitle":"宿舍管理費"    ,"mData": "paydorm1" }, 
+			                { "sTitle":"宿舍電費"    ,"mData": "paydorm2" },
+			                { "sTitle":"醫療救助捐款"    ,"mData": "paydorm3" },
+			                { "sTitle":"補充保險費"    ,"mData": "payother1"},
+			                { "sTitle":"高榮代收代付"    ,"mData": "payother2" },
+			                { "sTitle":" "    ,"mData": "payother3" },
+			                { "sTitle":"弱勢醫療捐款"    ,"mData": "payagen1" },
+			                { "sTitle":"總所得","mData": "paytotal" },
+			                { "sTitle":"薪津表<br>_補發扣"   ,"mData": "paytotis"},
+			                { "sTitle":"扣款數"  ,"mData": "paytlded" },
+			                { "sTitle":"薪津表_實發數"    ,"mData": "paynet"}, //這個是要帶paynet還是payreal? 
 							{ "sTitle":"餉單編單2A0","mData": "salnum" }
 							
 							
@@ -2184,7 +2274,7 @@ $(function(){
 							{ "sTitle":"顧問費","mData": "P19"},
 							{ "sTitle":"超盈餘獎金","mData": "P20"},
 							{ "sTitle":"超額獎金","mData": "P21"},
-							{ "sTitle":"津貼_教學主治醫師","mData": "P22"},
+							{ "sTitle":"醫療收入績優獎勵","mData": "P22"},
 							{ "sTitle":"專勤醫師費二","mData": "P23"},
 							{ "sTitle":"津貼-值班費","mData": "P24"},
 							{ "sTitle":"獎勵-教職獎勵","mData": "P25"},
@@ -2275,7 +2365,7 @@ $(function(){
 							{ "sTitle":"房屋津貼","mData": "D11"},
 							{ "sTitle":"醫療互助金","mData": "D12"},
 							{ "sTitle":"代扣停車費","mData": "D13"},
-							{ "sTitle":"眷舍停車費","mData": "D14"},
+							{ "sTitle":"其它代收款","mData": "D14"},
 							{ "sTitle":"公共設施使用費","mData": "D15"},
 							{ "sTitle":"清償債款","mData": "D16"},
 							{ "sTitle":"餐費","mData": "D17"},
@@ -2382,7 +2472,7 @@ $(function(){
 				<div class="col-10">
 					<div class="form-inline">
 		    			<div class="input-group">
-		    				<select id="qry_padatpsn_salnum"  class="selectpicker SALNUM" data-width="fit" multiple title="餉單編號">
+		    				<%-- <select id="qry_padatpsn_salnum"  class="selectpicker SALNUM" data-width="fit" multiple title="餉單編號">
 		    					<option value=""></option>
 								<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
 									<option value="${bitem.salnum}">${bitem.salnum}</option>
@@ -2393,10 +2483,12 @@ $(function(){
 								<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
 									<option value="${bitem.paybank}">${bitem.paybank}</option>
 								</c:forEach>
-							</select>
-		    				<input type="text" id="qryCardno" size="4" class="form-control-sm text-uppercase" placeholder="卡號" >
-							<input type="text" id="qryIdtno" size="10" class="form-control-sm text-uppercase" placeholder="身分證" >
-							<input type="text" id="qryNamec" size="12" class="form-control-sm " placeholder="姓名" >
+							</select> --%>
+							<input type="text" id="qry_padatpsn_salnum" size="4" class="form-control" placeholder="餉單編號" >
+							<input type="text" id="qry_padatpsn_paybank" size="10" class="form-control gclsCalTxt" placeholder="發薪日" >
+		    				<input type="text" id="qryCardno" size="4" class="form-control text-uppercase" placeholder="卡號" >
+							<input type="text" id="qryIdtno" size="10" class="form-control text-uppercase" placeholder="身分證" >
+							<input type="text" id="qryNamec" size="12" class="form-control" placeholder="姓名" >
 
 							<select id="qryDept" name="qryDept" class="selectpicker" data-width="fit" data-live-search="true" multiple title="單位">
 								<option value=""></option>
@@ -2658,7 +2750,7 @@ $(function(){
 				<div class="col-10">
 					<div class="form-inline">
 		    			<div class="input-group">
-		    				<select id="qry_check_salnum"  class="selectpicker SALNUM" data-width="fit" title="餉單編號">
+		    				<%-- <select id="qry_check_salnum"  class="selectpicker SALNUM" data-width="fit" title="餉單編號">
 		    					<option value=""></option>
 								<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
 									<option value="${bitem.salnum}">${bitem.salnum}</option>
@@ -2669,7 +2761,10 @@ $(function(){
 								<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
 									<option value="${bitem.paybank}">${bitem.paybank}</option>
 								</c:forEach>
-							</select>
+							</select> --%>
+							<input type="text" id="qry_check_salnum" size="4" class="form-control" placeholder="餉單編號" >
+							<input type="text" id="qry_check_paybank" size="10" class="form-control gclsCalTxt" placeholder="發薪日" maxlength="10">
+		    				
 						</div>		 
 					</div>
 				</div>

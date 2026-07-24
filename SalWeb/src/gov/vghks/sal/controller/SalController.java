@@ -23,6 +23,7 @@ import gov.vghks.common.util.VGHDataAccess;
 import gov.vghks.sal.Globals;
 import gov.vghks.sal.Hospitals;
 import gov.vghks.sal.dao.CommDAO;
+import gov.vghks.sal.dao.PsDSNDAO;
 import gov.vghks.sal.dao.SalNTDAO;
 import gov.vghks.sal.model.Pabaspsn;
 import gov.vghks.sal.model.Pabatpay;
@@ -33,6 +34,7 @@ import gov.vghks.sal.model.Pataximp;
 import gov.vghks.sal.model.Pataxpsn;
 import gov.vghks.sal.model.Patrapay;
 import gov.vghks.sal.model.Patrapsn;
+import gov.vghks.sal.model.Psbasic;
 import gov.vghks.sal.model.WPSUser;
 import gov.vghks.sal.pdf.BankTran_1A0;
 import gov.vghks.sal.pdf.BankTran_2A0;
@@ -90,7 +92,9 @@ public class SalController{
 	JSONArray jsonArrRtn = null;
 	JSONObject jsonObj = new JSONObject();
 	VGHDataAccess da=null;
+	VGHDataAccess daDSN=null;
 	SalNTDAO tDAO = null;
+	PsDSNDAO psDAO = null;
 	String hid="";
 	String userid="";
 	
@@ -298,7 +302,10 @@ public class SalController{
 			alexpfTbl= (ArrayList) request.getSession().getAttribute("alexpfTbl");
 			altracdTbl= (ArrayList) request.getSession().getAttribute("altracdTbl");
 		}
-		else if(item.matches("tranPay|payDetail")){
+		else if(item.matches("tranPay|batchPay")){
+			alpayitmTbl= (ArrayList) request.getSession().getAttribute("alpayitmTbl");
+		}
+		else if(item.matches("payDetail")){
 			alpayitmTbl= (ArrayList) request.getSession().getAttribute("alpayitmTbl");
 		}
 		else if("payTax".equals(item)){
@@ -355,9 +362,15 @@ public class SalController{
 					request.getSession().setAttribute("alDpinTbl", alDpinTbl);  
 				}
 				System.out.println("7.PAPAYITM:");
-				if (item.matches("tranPay|batchPay|payDetail")){	
+				if (item.matches("payDetail")){	
 					if (alpayitmTbl==null||alpayitmTbl.size()==0 || flag.equals("Y")){	
 						alpayitmTbl=tDAO.getLoadCodeTbl("PAPAYITM",userid,hid,da);
+						request.getSession().setAttribute("alpayitmTbl", alpayitmTbl);  
+					}
+				}
+				if (item.matches("tranPay|batchPay")){	
+					if (alpayitmTbl==null||alpayitmTbl.size()==0 || flag.equals("Y")){	
+						alpayitmTbl=tDAO.getLoadCodeTbl("PAPAYITM_N",userid,hid,da);
 						request.getSession().setAttribute("alpayitmTbl", alpayitmTbl);  
 					}
 				}
@@ -616,6 +629,7 @@ public class SalController{
 				jsonObj.element("taxViewList", jsonArrRtn);  
 			}catch(Exception e){	
 				log.info(me+"失敗=="+e.toString());
+				jsonObj.element("taxViewList", e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -947,6 +961,7 @@ public class SalController{
 	}
 	/**
 	 * 依卡號取的人名
+	 * 2026.5.27 加HID,2A0,3A0限查自家
 	 */
 	@RequestMapping(params="method=getNamebyID")
 	public void getNamebyID(HttpServletRequest request, HttpServletResponse response){
@@ -954,11 +969,12 @@ public class SalController{
 		String me = getClass().getName() + ".getNamebyID()";
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String cardno = request.getParameter("cardno")==null?"":request.getParameter("cardno");		
-		
+		String loginHid = request.getParameter("loginHid")==null?"":request.getParameter("loginHid");
 		try{
 			tDAO = new SalNTDAO();
 			try{
-				jsonObj = tDAO.queryNamebyID(cardno);
+				jsonObj = tDAO.queryNamebyID(cardno,loginHid);
+				
 			}catch(Exception e){	
 				log.info(me+"失敗=="+e.toString());
 				e.printStackTrace();
@@ -1037,6 +1053,7 @@ public class SalController{
 		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//傳入json
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
+		String tracod = request.getParameter("tracod")==null?"0":request.getParameter("tracod");
 		String dataSourceNT="";
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
 		dataSourceNT=hospInfo.dataSourceNT;
@@ -1050,12 +1067,15 @@ public class SalController{
 				//個人明細
 				psnitem=tDAO.getBasPsnBykey(code_data,userid,da);
 				jsonObj.element("basPsnItem", psnitem,cfg);
-				//個人支扣
-				basPayMap=tDAO.getBasPayList(code_data,userid,hid,da);
-				jsonObj.element("basPayList", basPayMap.get("baspay_json"));
-				//歷史資料
-				histListMap=tDAO.getHistList(code_data,userid,hid,da);
-				jsonObj.element("histList", histListMap.get("pahist_json"),cfg);
+				//tracod>0是異動檔,不用讀取個人支扣:1新進
+				if ( psnitem != null && !tracod.matches("1") ) {
+					//個人支扣
+					basPayMap=tDAO.getBasPayList(psnitem.getPayidno(),tracod,userid,hid,da);
+					jsonObj.element("basPayList", basPayMap.get("baspay_json"));
+					//歷史資料
+					histListMap=tDAO.getHistList(psnitem.getPayidno(),userid,hid,da);
+					jsonObj.element("histList", histListMap.get("pahist_json"),cfg);
+				}
 			}catch(Exception e){	
 				log.info(me+"失敗=="+e.toString());
 				e.printStackTrace();
@@ -1074,7 +1094,55 @@ public class SalController{
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * 依ID,取得主機人事資料
+	 */
+	@RequestMapping(params="method=getPSBasicById")
+	public void getPSBasicById(HttpServletRequest request, HttpServletResponse response){
+		String me = getClass().getName() + ".getPSBasicById()";
+		//如果有中文，避免亂碼
+		response.setCharacterEncoding("utf-8");
+		
+		AmJsonConfig cfg = new AmJsonConfig();
+		Pabaspsn psnitem=null;
+		
+		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//傳入json
+		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
+		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
+		
+		Hospitals hospInfo = Hospitals.getOneHosp(hid);
+		String dataSourceDSN=hospInfo.dataSourceDSN;
+		daDSN=new VGHDataAccess(dataSourceDSN);
+		
+		String dataSourceNT=hospInfo.dataSourceNT;		
+		da=new VGHDataAccess(dataSourceNT);
+		
+		try{
+			tDAO = new SalNTDAO(da,daDSN,hid);
+			try{
+				jsonObj = new JSONObject();
+				//個人明細
+				psnitem=tDAO.getPSBasicById(code_data,userid,da,daDSN);
+				jsonObj.element("basPsnItem", psnitem,cfg);				
+				
+			}catch(Exception e){	
+				log.info(me+"失敗=="+e.toString());
+				e.printStackTrace();
+			}finally{
+				tDAO=null;
+				da.close();
+				da = null;
+			}
+			
+			PrintWriter out = response.getWriter();
+			// 寫出至JSP頁面
+			out.print(jsonObj.toString());
+			out.flush();
+		}catch (Exception e) {
+			log.info(me + " fail, " + e);
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * 依餉單編號/發薪日期,取得月支支扣pa.padatpay_Sum
 	 */
@@ -1858,6 +1926,9 @@ public class SalController{
 			response.setCharacterEncoding("utf-8");
 			cDAO = new CommDAO(da,hid);
 			try{
+				if (StringUtil.nullToString(vRank3).equals("")) {
+					vRank3="0";
+				}
 				rtnMap=cDAO.getCsPfByKey(Integer.valueOf(vRank3),vJt,vRank,vRnk2n,Integer.valueOf(vDegr2),vTradt,hid,da);
 				jsonObj.element("cspfData", rtnMap);
 				
@@ -1880,40 +1951,38 @@ public class SalController{
 		}
 	}
 	/**
-	 * 傳回 俸點對應
+	 * 傳回 A俸點對應 B取得新俸點 C計算補發扣
 	 */
 	@RequestMapping(params="method=getDegreByRank")
 	public void getDegreByRank(HttpServletRequest request, HttpServletResponse response)throws IOException{
 		String me = getClass().getName() + ".getDegreByRank()";
-		//職稱
-		String vJt=request.getParameter("jt")==null?"":request.getParameter("jt");
-		//職等
-		String vRnk2n=request.getParameter("rnk2n")==null?"":request.getParameter("rnk2n");
-		//階別
-		String vRank=request.getParameter("rank")==null?"":request.getParameter("rank");
-		//級別
-		String vDegr2=request.getParameter("degr2")==null?"":request.getParameter("degr2");
-		//本功別
-		String vRank3=request.getParameter("rank3")==null?"":request.getParameter("rank3");
-		//發薪日
-		String vTradt=request.getParameter("tradt")==null?"":request.getParameter("tradt");
-		
+		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
+		userid=request.getParameter("userid");
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//傳入json
+		String fun = request.getParameter("fun")==null?"":request.getParameter("fun");	//A俸點對應,B支扣明細
+			
 		HashMap rtnMap=new HashMap();
 		Parank oneObj=null;
 		String dataSourceNT="";
+		String dataSourceDSN="";
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
+		
 		dataSourceNT=hospInfo.dataSourceNT;
 		da=new VGHDataAccess(dataSourceNT);
+		
+		dataSourceDSN=hospInfo.dataSourceDSN;		
+		daDSN=new VGHDataAccess(dataSourceDSN);
+		
 		jsonObj = new JSONObject();
 		CommDAO cDAO = null;
 		try{			//如果有中文，避免亂碼
 			response.setCharacterEncoding("utf-8");
-			cDAO = new CommDAO(da,hid);
+			cDAO = new CommDAO(da,daDSN,hid);
 			try{
-				//rtnMap=cDAO.getCsPfByKey(Integer.valueOf(vRank3),vJt,vRank,vRnk2n,Integer.valueOf(vDegr2),vTradt,hid,da);
-				rtnMap=cDAO.getDegreByRank(vRank3,vJt,vRank,vRnk2n,vDegr2,hid,da);
+				rtnMap=cDAO.getDegreByRank(in_data,fun,hid,da,daDSN);
 				jsonObj.element("rankItem",rtnMap.get("rankItem"));
-				
+				jsonObj.element("payItemList",rtnMap.get("payitm_json"));
+				jsonObj.element("insu_dpin",rtnMap.get("insu_dpin"));
 			}catch(Exception e){	
 				log.info(me+"失敗=="+e.toString());
 				e.printStackTrace();
@@ -1921,6 +1990,8 @@ public class SalController{
 				tDAO=null;
 				da.close();
 				da = null;
+				daDSN.close();
+				daDSN = null;
 			}
 			
 			PrintWriter out = response.getWriter();
