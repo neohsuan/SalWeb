@@ -302,7 +302,10 @@ public class SalController{
 			alexpfTbl= (ArrayList) request.getSession().getAttribute("alexpfTbl");
 			altracdTbl= (ArrayList) request.getSession().getAttribute("altracdTbl");
 		}
-		else if(item.matches("tranPay|payDetail")){
+		else if(item.matches("tranPay|batchPay")){
+			alpayitmTbl= (ArrayList) request.getSession().getAttribute("alpayitmTbl");
+		}
+		else if(item.matches("payDetail")){
 			alpayitmTbl= (ArrayList) request.getSession().getAttribute("alpayitmTbl");
 		}
 		else if("payTax".equals(item)){
@@ -359,9 +362,15 @@ public class SalController{
 					request.getSession().setAttribute("alDpinTbl", alDpinTbl);  
 				}
 				System.out.println("7.PAPAYITM:");
-				if (item.matches("tranPay|batchPay|payDetail")){	
+				if (item.matches("payDetail")){	
 					if (alpayitmTbl==null||alpayitmTbl.size()==0 || flag.equals("Y")){	
 						alpayitmTbl=tDAO.getLoadCodeTbl("PAPAYITM",userid,hid,da);
+						request.getSession().setAttribute("alpayitmTbl", alpayitmTbl);  
+					}
+				}
+				if (item.matches("tranPay|batchPay")){	
+					if (alpayitmTbl==null||alpayitmTbl.size()==0 || flag.equals("Y")){	
+						alpayitmTbl=tDAO.getLoadCodeTbl("PAPAYITM_N",userid,hid,da);
 						request.getSession().setAttribute("alpayitmTbl", alpayitmTbl);  
 					}
 				}
