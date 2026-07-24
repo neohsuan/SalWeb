@@ -1,5 +1,6 @@
 package gov.vghks.sal;
 
+//test 0724
 public enum Tables {
 	KSVGH(
 			"1A0", 
