@@ -329,7 +329,9 @@ public class Padatpsn implements Serializable{
 	}
 	//到院日_string
 	public String getStrempdt() {
-		return sdf_d.format(this.payempdt);
+		String rtnTmp="";
+		rtnTmp = (this.payempdt == null) ? "" : sdf_d.format(this.payempdt);
+		return rtnTmp;		
 	}
 
 	//契約
@@ -340,20 +342,22 @@ public class Padatpsn implements Serializable{
 		String rtnTmp="";
 		try {
 			String empdt=this.getStrempdt();
-			if (this.getHid().equals("3A0"))
-				rtnTmp="Y";
-			else if (this.getHid().equals("2A0")){
-				if (("F".equals(payrank) && !this.paytitlp.contains("醫師")))
-					rtnTmp="N";
-				else
+			if (!empdt.equals("")) {
+				if (this.getHid().equals("3A0"))
 					rtnTmp="Y";
-			}
-			else if (this.getHid().equals("1A0")){	
-				if (("F".equals(payrank) && !this.paytitlp.contains("醫師"))){
-					if( DateUtil.compareDate(empdt, Globals.gNcontract) )
+				else if (this.getHid().equals("2A0")){
+					if (("F".equals(payrank) && !this.paytitlp.contains("醫師")))
 						rtnTmp="N";
 					else
 						rtnTmp="Y";
+				}
+				else if (this.getHid().equals("1A0")){	
+					if (("F".equals(payrank) && !this.paytitlp.contains("醫師"))){
+						if( DateUtil.compareDate(empdt, Globals.gNcontract) )
+							rtnTmp="N";
+						else
+							rtnTmp="Y";
+					}
 				}
 			}	
 		} catch (ParseException e) {
@@ -366,7 +370,9 @@ public class Padatpsn implements Serializable{
 		return sdf_d.format(this.paybank);
 	}
 	public String getStrgovdt() {
-		return sdf_d.format(this.paygovdt);
+		String rtnTmp="";
+		rtnTmp = (this.paygovdt == null) ? "" : sdf_d.format(this.paygovdt);
+		return rtnTmp;
 	}
 	public int getInsuamt() {
 		return insuamt;
