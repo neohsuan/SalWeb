@@ -86,6 +86,145 @@
 
 
 <style>
+/* 專門處理這種「多組 label+input 並排」且希望間距一致的情況 */
+.basother-panel .form-row--equal {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.basother-panel .form-row--equal .form-group {
+  display: flex;
+  align-items: center;
+  min-width: 220px;   /* 每組 label+input 固定佔用寬度，讓下一組起始位置對齊 */
+  margin-right: 0;
+  margin-bottom: 8px;
+}
+
+.basother-panel .form-row--equal .form-group label {
+  min-width: 90px;     /* 統一 label 寬度，含「身份證字號:」5字 */
+  text-align: right;
+  margin: 0 8px 0 0;
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+  .basother-panel {
+    padding: 12px 8px;
+    border: 1px solid #e0e0e0;
+    
+    background: #fafafa;
+  }
+
+  .basother-panel .form-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .basother-panel .form-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .basother-panel .form-group {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+    margin-bottom: 0;
+  }
+
+  .basother-panel .form-group label {
+    min-width: 130px;      /* 統一 label 寬度,依實際最長文字調整 */
+    text-align: right;
+    margin: 0 8px 0 0;
+    white-space: nowrap;
+    font-weight: bold;      /* 新增：文字粗體 */
+  }
+
+  .basother-panel .form-control {
+    height: 30px;
+    padding: 4px 8px;
+  }
+
+  /* 戶籍地址欄位較長,獨立一行時 label 對齊方式相同即可 */
+  .basother-panel input[readonly] {
+    background-color: #f0f0f0;
+  }
+  
+  .basother-panel .form-group label.required::after {
+    content: " *";
+    color: #dc3545;
+    font-weight: bold;
+  }
+  
+  .basother-filter-group {
+    gap: 10px 14px;
+  }
+
+  .filter-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 100px;
+  }
+
+  .filter-item-wide {
+    min-width: 160px;
+  }
+
+  .filter-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 2px;
+    white-space: nowrap;
+  }
+
+  .filter-item .form-control,
+  .filter-item .bootstrap-select {
+    height: 30px;
+  }
+  /*篩選按鈕置中*/
+ .basother-btn-group {
+	position: relative;
+	left: 50%;
+	right: 50%;
+	margin-left: -50vw;
+	margin-right: -50vw;
+	width: 100vw;
+	display: flex;
+	justify-content: center;
+	gap: 0.5rem;
+	padding-top: 10px;
+	padding-bottom: 10px;
+ }
+/*基本資料*/
+/* 左右兩欄間距與邊框 */
+ .basother-detail-row {
+	gap: 12px 0;
+ }
+
+ .baspsnListDiv-wrap {
+	border: 1px solid #dee2e6;
+	border-radius: 6px;
+	overflow: hidden;
+ }
+
+ .basother-card-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+ }
+ /* 讓查詢/清空/更改三顆按鈕寬度一致，方便精準對齊 */
+ .basother-fixed-btn {
+	width: 78px;
+ }
+
+ /* 清空按鈕寬度(90px) + gap(8px，對應 .gap-2) = 98px
+   讓「更改」往右多留 98px，使其左邊界對齊「查詢」的左邊界 */
+ .basother-align-under-qry {
+	margin-right: 112px;
+ }
+ 
 	@font-face {
 		font-family: EUDC;
 		src: url(https://zwac01p.vghks.gov.tw:4436/PUBService/PUB/CORSProxy/OutputStream?url=https://wwwhf.vghks.gov.tw/Kai_EUDC.WOFF) format("woff"),
