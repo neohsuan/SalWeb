@@ -196,15 +196,24 @@ $(function(){
 				} */
 				//餉單編號(2個月內)
 				if (data.alBankDtTbl_2M[0]!=null){
-					select = $('#qry_set_datyr,#prod_SalNum,#prt_SalNum,#print_SalNum,#file_SalNum');
+					//餉單編號設定,先塞預設值0
+					select = $('#prod_set_SalNum');
 					select.empty();
+					options = "<option value='0:0'>0";
+					select.append(options);
+					$.each(data.alBankDtTbl_2M, function(idx) {
+						options = "<option value='" + data.alBankDtTbl_2M[idx].salnum +":"+ data.alBankDtTbl_2M[idx].paybank.dts +"'>" + data.alBankDtTbl_2M[idx].paybank.dts+" "+data.alBankDtTbl_2M[idx].salnum ;
+						select.append(options);
+					});
+					//其他
+					select = $('#prod_SalNum,#prt_SalNum,#print_SalNum,#file_SalNum');
+					select.empty();					
 					options = "<option value=''>";
 					select.append(options);
 					$.each(data.alBankDtTbl_2M, function(idx) {
 						options = "<option value='" + data.alBankDtTbl_2M[idx].salnum +":"+ data.alBankDtTbl_2M[idx].paybank.dts +"'>" + data.alBankDtTbl_2M[idx].paybank.dts+" "+data.alBankDtTbl_2M[idx].salnum ;
 						select.append(options);
 					});
-					
 				}
 				
 				/* 健保級距 */
@@ -272,9 +281,9 @@ $(function(){
 				day = '0' + day;
  			var today = now.getFullYear() + '-' + month + '-' + day;
  			patradt = $("#prt_SalNum").val().split(':')[1];
-  			/*if (patradt < today) {
+  			if (patradt < today) {
   				msg+=' 請勾選 大於 今日!!';
-  			}*/
+  			}
   			if (typeof($("#qry_prt_cond option:selected").val()) == 'undefined' ){
   				msg+=' 請勾選[條件]項目!!';  		
 			}
@@ -318,7 +327,7 @@ $(function(){
 			}
   		}
   		else if (btn== 'btn_prodSalNum'){	//餉單編號設定_執行
-  			if( $("#prod_set_SalNum").val()==''){
+  			if (typeof($("#prod_set_SalNum option:selected").val()) == 'undefined' ){
   				msg = '[新編號值]請勿空白';
   			}
   			
@@ -651,7 +660,9 @@ $(function(){
 				selCode=$("#prod_selCode option:selected").val().split(':')[0];
 				selNm=$("#prod_selCode option:selected").val().split(':')[1];
 				selEn=$("#prod_selCode option:selected").val().split(':')[2];
-				var salnum_n =$("#prod_set_SalNum").val();
+				//2026.7.31新編號用下拉式選單
+				//var salnum_n =$("#prod_set_SalNum").val();
+				var salnum_n =$("#prod_set_SalNum option:selected").val() == "" ? "0":$("#prod_set_SalNum option:selected").val().split(':')[0];
 // 				var salnum_o =$("#qry_set_datyr option:selected").val() == "" ? "0":$("#qry_set_datyr option:selected").val().split(':')[0];
 // 				var patradt_o=$("#qry_set_datyr option:selected").val() == "" ? "":$("#qry_set_datyr option:selected").val().split(':')[1];
  				var salnum_o =$("#qry_set_salnum").val() == "" ? "0":$("#qry_set_salnum").val();
@@ -2859,8 +2870,8 @@ $(function(){
 							<button id="btn_qrySalNum" class="btn btn-info" type="button" ><i class="fa fa-search"></i>查詢</button>
 						</div>
 						<div class="input-group">
-							<span class="input-group-text">新編號值</span>	
-							<input type="text" class="form-control" id="prod_set_SalNum" size="4">
+							<span class="input-group-text">新編號值</span>
+							<select id="prod_set_SalNum" class="form-control" title="餉單編號-發薪日"></select>	
 							<button id="btn_prodSalNum" class="btn btn-success" type="button"><i class="fa fa-cog"></i>執行</button>
 						</div>	
 						<button id="btn_clnSalNum" class="btn btn-warning ml-auto" type="button"><i class="fa fa-eraser"></i>清空</button>	
