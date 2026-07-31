@@ -1360,13 +1360,13 @@ $(function(){
 
 <ul class="nav nav-pills mb-3" id="pills-tab" role="tab">
   <li class="nav-item">
-    <a class="nav-link active" id="pills-nhical-tab" data-toggle="pill" href="#byNhiCalMain" role="tab" aria-controls="pills-home" aria-selected="true">補充保險費</a>
+    <a class="nav-link active" id="pills-nhiprod-tab" data-toggle="pill" href="#byNhiProdMain" role="tab" aria-controls="pills-home" aria-selected="true">計算/匯出</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="pills-nhical-tab" data-toggle="pill" href="#byNhiCalMain" role="tab" aria-controls="pills-profile" aria-selected="false">補充保險費</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" id="pills-nhidet-tab" data-toggle="pill" href="#byNhiDetMain" role="tab" aria-controls="pills-profile" aria-selected="false">申報扣費明細</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="pills-nhiprod-tab" data-toggle="pill" href="#byNhiProdMain" role="tab" aria-controls="pills-profile" aria-selected="false">計算/匯出</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" id="pills-nhiaccu-tab" data-toggle="pill" href="#byNhiAccuMain" role="tab" aria-controls="pills-profile" aria-selected="false">累積獎金</a>
@@ -1375,7 +1375,7 @@ $(function(){
 
 <div class="tab-content" id="pills-tabContent">
 	<!--補充保險費-->
-  	<div class="tab-pane fade show active" id="byNhiCalMain" role="tabpanel" aria-labelledby="pills-nhical-tab">
+  	<div class="tab-pane fade" id="byNhiCalMain" role="tabpanel" aria-labelledby="pills-nhical-tab">
 		<div class="container-fluid">
 			<div class="row" id="qryNhiCalItem">
 				<div class="col-7">
@@ -1522,7 +1522,7 @@ $(function(){
  		</div>
 	</div>
 	<!--計算/匯出-->
-	<div class="tab-pane fade" id="byNhiProdMain" role="tabpanel" aria-labelledby="pills-nhidet-tab">
+	<div class="tab-pane fade show active" id="byNhiProdMain" role="tabpanel" aria-labelledby="pills-nhidet-tab">
 		<div class="container-fluid">
 			<div class="row" >
 				<div class="col-10">

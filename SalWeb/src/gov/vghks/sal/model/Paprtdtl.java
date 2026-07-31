@@ -334,7 +334,9 @@ public class Paprtdtl implements Serializable{
 	}
 	//到院日_string
 	public String getStrempdt() {
-		return sdf_d.format(this.payempdt);
+		String rtnTmp="";
+		rtnTmp = (this.payempdt == null) ? "" : sdf_d.format(this.payempdt);
+		return rtnTmp;		
 	}
 
 	//契約
