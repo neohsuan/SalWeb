@@ -22,6 +22,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -737,15 +738,19 @@ public class CommDAO {
 					if (monno != 0 || dayno != 0) {
 						getReissue(jsonRtn,o_basPayAry,tracod,effdt,monno,dayno,l_lbinig,orank,rank,ojt,jt,odegre,pflag,payitmMap,hid);
 					}	
+					//sort
+					jsonRtn = jsonArySort(jsonRtn);
 					
 					rtnMap.put("payitm_json", jsonRtn);
 				}
 			}
-			else if(fun.equals("C")){	//計算計發扣
+			else if(fun.equals("C")){	//計算補發扣
 				//--計算當月實際日數 
 				if (monno != 0 || dayno != 0 || tracod==12) {
 					getReissue(jsonRtn,o_basPayAry,tracod,effdt,monno,dayno,l_lbinig,orank,rank,ojt,jt,odegre,pflag,payitmMap,hid);
 				}	
+				//sort
+				jsonRtn = jsonArySort(jsonRtn);
 				
 				rtnMap.put("payitm_json", jsonRtn);
 			}
@@ -760,6 +765,22 @@ public class CommDAO {
 		}
 		return rtnMap;
 	}
+	//jsonArray排序
+	private JSONArray jsonArySort(JSONArray jsonTmp) {
+		JSONArray jsonRtn = new JSONArray();
+		// 【升序排序】 (A -> Z) 筆數>0,才排序
+		if (jsonTmp.size()>0) {
+			jsonTmp.sort((o1, o2) -> {
+	            String s1 = ((JSONObject) o1).getString("paycode");
+	            String s2 = ((JSONObject) o2).getString("paycode");
+	            return s1.compareTo(s2); 
+	        });
+	        //System.out.println("字母升序: " + jsonTmp);
+		}
+        jsonRtn = jsonTmp;
+		return jsonRtn;
+	}
+	
 	//計算補發扣 
 	//nPay新支扣,oPay原支扣,tracod異動別,effdt生效日,monno月數,dayno日數,lbig勞保級距,orank原階別,rank新階別,ojt原職稱,jt職稱,odegre原俸點,pflag考績獎金月數/年終獎金比例,payitmMap支扣碼集合,hid
 	//2007-4-1 公保破月計算修正,以實際加保日數計算 
