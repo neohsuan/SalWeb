@@ -84,13 +84,13 @@ $(function(){
 				var options ="";
 				var select;
 				//資料賦值
-				if (data.alBankDtTbl[0]!=null){
+				if (data.alBankDtTbl_3Y[0]!=null){
 					select = $('#base_patradt,#filter_patradt');
 					select.empty();
 					options = "<option value=''>";
 					select.append(options);
-					$.each(data.alBankDtTbl, function(idx) {
-						options = "<option value='" + data.alBankDtTbl[idx].paybank.dts + "'>" + data.alBankDtTbl[idx].paybank.dts ;
+					$.each(data.alBankDtTbl_3Y, function(idx) {
+						options = "<option value='" + data.alBankDtTbl_3Y[idx].paybank.dts + "'>" + data.alBankDtTbl_3Y[idx].paybank.dts ;
 						select.append(options);
 					});
 					select.selectpicker('refresh');
@@ -957,10 +957,7 @@ $(function(){
 							</div>
 							<div class="filter-item">							
 								<select id="base_patradt" class="selectpicker PATRADT" data-width="100%" data-live-search="true" multiple title="異動日">
-									<option value=""></option>
-									<c:forEach var="bitem" items="${alBankDtTbl}" varStatus="loop">
-										<option value="${bitem.paybank}">${bitem.paybank}</option>
-									</c:forEach>
+									
 								</select>
 							</div>
 						</div>

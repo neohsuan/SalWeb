@@ -277,12 +277,18 @@ public class SalNTDAO {
 			sql = "SELECT SALNUM, PAYBANK, PAYSALDT, PAYUPDID, PAYUPDAT,HID, "+tmpZbank+" from "+this.tBankDtTbl +" where HID=? and PAYBANK BETWEEN CURRENT DATE -1 month AND CURRENT DATE +1 month order by SALNUM desc with ur";
 			params.add(hid);
 		}
+		else if ("PABANK_3Y".equals(tbl)){//3年內
+			sql = "SELECT SALNUM, PAYBANK, PAYSALDT, PAYUPDID, PAYUPDAT,HID, "+tmpZbank+" from "+this.tBankDtTbl +" where HID=? and PAYBANK BETWEEN CURRENT DATE -3 year AND CURRENT DATE order by SALNUM desc with ur";
+			params.add(hid);
+		}
 		else if ("PADEPT".equals(tbl)){
 			sql = "SELECT PADEPCOD, PACSTNO, PADEPNMC, PAYUPDID, PAYUPDAT, HID, PBWKCODE,"+tmpZdept+" from "+this.tDept +" where HID=? order by PACSTNO,PADEPCOD with ur";
 			params.add(hid);
-		}else if ("PARNK4TBL".equals(tbl)){
+		}
+		else if ("PARNK4TBL".equals(tbl)){
 			sql = "SELECT RNK4KEY, RNK4NAME, PAYUPDTM, "+tmpZrnk4+" from "+this.tRnk4Tbl +" order by RNK4KEY with ur";			
-		}else if ("PAEXPFTBL".equals(tbl)){
+		}
+		else if ("PAEXPFTBL".equals(tbl)){
 			sql = "SELECT EXPFKEY, EXPFNAME, PAYUPDID, PAYUPDAT, "+tmpZexpf+" from "+this.tExpfTbl +" order by EXPFKEY with ur";			
 		}
 		//異動碼
@@ -338,7 +344,7 @@ public class SalNTDAO {
 			result = null;
 			if (tbl.matches("PARANKCODE|PARNK4TBL|PAEXPFTBL|PATRACODE|PADPINTBL|TAXCATG")){
 				result = da.arraylistbyQuery(sql,META_TYPE);
-			}else if (tbl.matches("PATITLE|PABANK|PABANK_2M|PADEPT|PAPAYITM|PAPAYITM_N|TAXPSNYR|TAXTRANYR|NHIPAYDT|NHIPAYYR")){
+			}else if (tbl.matches("PATITLE|PABANK|PABANK_2M|PABANK_3Y|PADEPT|PAPAYITM|PAPAYITM_N|TAXPSNYR|TAXTRANYR|NHIPAYDT|NHIPAYYR")){
 				result = da.arraylistbyQuery(sql,params,META_TYPE);
 			}
 			log.info(me+"  ...size:"+result.size());
@@ -354,12 +360,7 @@ public class SalNTDAO {
 						PropertyUtils.copyProperties(tmpTitle, data);
 						aryRtn.add(tmpTitle);
 					}
-					else if ("PABANK".equals(tbl)){	//發薪日及入帳日對應檔
-						tmpBank = new Pabank();
-						PropertyUtils.copyProperties(tmpBank, data);
-						aryRtn.add(tmpBank);
-					}
-					else if ("PABANK_2M".equals(tbl)){	//發薪日及入帳日對應檔(2個月內)
+					else if (tbl.matches("PABANK|PABANK_2M|PABANK_3Y")){	//發薪日及入帳日對應檔
 						tmpBank = new Pabank();
 						PropertyUtils.copyProperties(tmpBank, data);
 						aryRtn.add(tmpBank);
@@ -958,7 +959,7 @@ public class SalNTDAO {
 //									payupdtm, *payflag, +tranum+, *upmastdt, *paypsw,paoexpfkey1, paoexpfkey2, paoexpfkey3
 //									param.add((!obj_item.has("payflag")) ? "" : obj_item.getString("payflag"));
 									if (editMode.matches("insert")){
-										intTraNum = intTraNum_max;
+										intTraNum = intTraNum_max+1;	//2026.8.3fix
 									}else{
 										intTraNum = (Integer) (!obj_item.has("tranum") ? "" : ("").equals(StringUtil.nullToString(obj_item.getString("tranum"))) ? 0 : obj_item.getInt("tranum"));
 									}
@@ -12082,7 +12083,10 @@ public class SalNTDAO {
 				pabaspsn.setPayidno(psbasic.getPbidtno());
 				pabaspsn.setPaycard(StringUtil.nullToString(psbasic.getPbcardno()));
 				pabaspsn.setPaynamec(StringUtil.trimWideEmpty(psbasic.getPbnamefd()));
-				pabaspsn.setPaygovdt(psbasic.getPbgocdat());//初任公職日
+				if ( "9999-12-31".equals(psbasic.getPbgocdat().toString()) )
+					pabaspsn.setPaygovdt(psbasic.getPbgoadat());//初任公職日,空值改抓到院日
+				else
+					pabaspsn.setPaygovdt(psbasic.getPbgocdat());//初任公職日
 				pabaspsn.setPayempdt(psbasic.getPbgoadat());//到院日
 				pabaspsn.setPaysgndt(psbasic.getPbposdat());//現職日
 				pabaspsn.setPayrsgdt(java.sql.Date.valueOf("9999-12-31"));//離職日
