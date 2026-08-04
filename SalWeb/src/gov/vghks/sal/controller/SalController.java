@@ -278,6 +278,7 @@ public class SalController{
 		ArrayList alTitleCodeTbl= null;
 		ArrayList alBankDtTbl= null;
 		ArrayList alBankDtTbl_2M= null;
+		ArrayList alBankDtTbl_3Y= null;
 		ArrayList alDeptCodeTbl= null;
 		ArrayList alRnk4Tbl= null;
 		ArrayList alexpfTbl= null;
@@ -295,6 +296,7 @@ public class SalController{
 		alTitleCodeTbl= (ArrayList) request.getSession().getAttribute("alTitleCodeTbl");
 		alBankDtTbl= (ArrayList) request.getSession().getAttribute("alBankDtTbl");
 		alBankDtTbl_2M= (ArrayList) request.getSession().getAttribute("alBankDtTbl_2M");
+		alBankDtTbl_3Y= (ArrayList) request.getSession().getAttribute("alBankDtTbl_3Y");
 		alDeptCodeTbl= (ArrayList) request.getSession().getAttribute("alDeptCodeTbl");
 		alDpinTbl= (ArrayList) request.getSession().getAttribute("alDpinTbl");
 		if ("psnBasic".equals(item)){
@@ -349,6 +351,11 @@ public class SalController{
 				if (alBankDtTbl_2M==null||alBankDtTbl_2M.size()==0 || flag.equals("Y")){	
 					alBankDtTbl_2M=tDAO.getLoadCodeTbl("PABANK_2M",userid,hid,da);
 					request.getSession().setAttribute("alBankDtTbl_2M", alBankDtTbl_2M);  
+				}
+				System.out.println("4-1.PABANK_3Y:");
+				if (alBankDtTbl_3Y==null||alBankDtTbl_3Y.size()==0 || flag.equals("Y")){	
+					alBankDtTbl_3Y=tDAO.getLoadCodeTbl("PABANK_3Y",userid,hid,da);
+					request.getSession().setAttribute("alBankDtTbl_3Y", alBankDtTbl_3Y);  
 				}
 				System.out.println("5.PADEPT:");
 				if (alDeptCodeTbl==null||alDeptCodeTbl.size()==0 || flag.equals("Y")){	
@@ -419,6 +426,7 @@ public class SalController{
 				jsonObj.element("alTitleCodeTbl", alTitleCodeTbl);
 				jsonObj.element("alBankDtTbl", alBankDtTbl,cfg);
 				jsonObj.element("alBankDtTbl_2M", alBankDtTbl_2M,cfg);
+				jsonObj.element("alBankDtTbl_3Y", alBankDtTbl_3Y,cfg);
 				jsonObj.element("alDeptCodeTbl", alDeptCodeTbl);
 				jsonObj.element("alDpinTbl", alDpinTbl);
 				if (item.matches("psnBasic|tranPay")){
@@ -1495,7 +1503,7 @@ public class SalController{
 				}
 				//報表檔[PDF]
 				else if (fun.equals("printPrt") ){
-					//資料夾路徑
+					//資料夾路徑 2026.7.29
 					strDir = hospInfo.fileSRV+"prt\\";
 					//strDir = hospInfo.fileSRV+"bak\\";
 					//冊子最大數
