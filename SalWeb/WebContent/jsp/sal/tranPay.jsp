@@ -343,7 +343,7 @@ $(function(){
  			if (hid=="1A0" && $("#payidno").val()=='')//要擷取人事保險檔,要有IDNO
  				msg += '請輸入[身份證字號]!!';
  			patracod=getInt($("#patracod option:selected").val());
-			if (patracod >=21 && patracod <=24){//退出
+			if (patracod >=21 && patracod <=22){//21離職 22退出
 				if ($("#payrsgdt").val()=='' ){
 					msg += "請輸入[離職日]";
 				}
