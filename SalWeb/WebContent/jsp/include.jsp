@@ -225,6 +225,19 @@
 	margin-right: 112px;
  }
  
+.ui-datepicker-header select.ui-datepicker-month,
+.ui-datepicker-header select.ui-datepicker-year {
+    display: inline-block;
+    width: 45%;      /* 依實際寬度微調 */
+    float: none;
+    vertical-align: middle;
+}
+
+.ui-datepicker-title {
+    text-align: center;
+    white-space: nowrap;
+}
+ 
 	@font-face {
 		font-family: EUDC;
 		src: url(https://zwac01p.vghks.gov.tw:4436/PUBService/PUB/CORSProxy/OutputStream?url=https://wwwhf.vghks.gov.tw/Kai_EUDC.WOFF) format("woff"),
