@@ -216,7 +216,8 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 					      	<div class="list-group">
 					      		<a class="list-group-item list-group-item-action" id="CodeList" href="<c:url value="/jsp/sal/codeSetting.jsp"/>"><span class="big-size">代碼設定</span></a>
 					      		<a class="list-group-item list-group-item-action" id="tranPay3" href="<c:url value="/jsp/sal/tranPay.jsp"/>"><span class="big-size">x年度作業</span></a>
-					      		<a class="list-group-item list-group-item-action" id="batchPay3" href="<c:url value="/jsp/sal/batchPay.jsp"/>"><span class="big-size">x法令變更</span></a>		      		
+					      		<a class="list-group-item list-group-item-action" id="batchPay3" href="<c:url value="/jsp/sal/batchPay.jsp"/>"><span class="big-size">x法令變更</span></a>
+					      		<a class="list-group-item list-group-item-action" id="SYSList" href="<c:url value="/jsp/sal/SYSSetting.jsp"/>"><span class="big-size">系統作業</span></a>      		
 							</div>
 				    	</div>
 					</div>
@@ -233,7 +234,8 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 					      	<div class="list-group">
 					      		<a class="list-group-item list-group-item-action" id="CodeList" href="<c:url value="/jsp/sal/codeSetting.jsp"/>"><span class="big-size">代碼設定</span></a>
 					      		<a class="list-group-item list-group-item-action" id="tranPay3" href="<c:url value="/jsp/sal/tranPay.jsp"/>"><span class="big-size">x年度作業</span></a>
-					      		<a class="list-group-item list-group-item-action" id="batchPay3" href="<c:url value="/jsp/sal/batchPay.jsp"/>"><span class="big-size">x法令變更</span></a>		      		
+					      		<a class="list-group-item list-group-item-action" id="batchPay3" href="<c:url value="/jsp/sal/batchPay.jsp"/>"><span class="big-size">x法令變更</span></a>
+					      		<a class="list-group-item list-group-item-action" id="SYSList" href="<c:url value="/jsp/sal/SYSSetting.jsp"/>"><span class="big-size">系統作業</span></a>	      		
 							</div>
 				    	</div>
 					</div>
