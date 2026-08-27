@@ -180,7 +180,7 @@ public class ItemSum_2A0 {
 			cellContent.setBorder(Rectangle.NO_BORDER);
 			contentTable.addCell(cellContent);
 			
-			tmp = "台銀國際商業銀行";
+			tmp = "台新國際商業銀行";
 			cellContent.setPhrase(new Phrase( tmp , font8));
 			cellContent.setBorder(Rectangle.NO_BORDER);
 			contentTable.addCell(cellContent);
@@ -498,7 +498,25 @@ public class ItemSum_2A0 {
 			cellContent.setBorder(Rectangle.NO_BORDER);
 			contentTable.addCell(cellContent);
 			
-			//第19行
+			//2026-08-12新增第19行長照機構責任險
+			tmp = "長照機構責任險";
+			cellContent.setPhrase(new Phrase( tmp , font12));
+			cellContent.setHorizontalAlignment(Element.ALIGN_LEFT); //垂直置左
+			cellContent.setBorder(Rectangle.NO_BORDER);
+			contentTable.addCell(cellContent);
+			
+			tmp = "";
+			cellContent.setPhrase(new Phrase( tmp , font12));
+			cellContent.setBorder(Rectangle.NO_BORDER);
+			contentTable.addCell(cellContent);
+			
+			tmp = "$" +fm.format( prtobj.getPayvetd1());
+			cellContent.setPhrase(new Phrase( tmp , font12));
+			cellContent.setHorizontalAlignment(Element.ALIGN_RIGHT); //垂直置左
+			cellContent.setBorder(Rectangle.NO_BORDER);
+			contentTable.addCell(cellContent);
+			
+			//第20行
 			tmp = "應發總金額";
 			cellContent.setPhrase(new Phrase( tmp , font12));
 			cellContent.setHorizontalAlignment(Element.ALIGN_LEFT); //垂直置左

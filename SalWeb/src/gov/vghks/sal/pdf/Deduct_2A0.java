@@ -74,7 +74,8 @@ public class Deduct_2A0 {
 		int intCellSum_5A=0,intCellSum_5B=0,intCellSum_6A=0,intCellSum_6B=0;
 		int intCellSum_7A=0,intCellSum_7B=0,intCellSum_8A=0,intCellSum_8B=0;
 		int intCellSum_9A=0,intCellSum_9B=0,intCellSum_10A=0,intCellSum_10B=0;
-		int intCellSum_11A=0,intCellSum_12A=0,intCellSum_13A=0;
+		//2026-08-13新增長照機構責任險
+		int intCellSum_11A=0,intCellSum_11B=0,intCellSum_12A=0,intCellSum_13A=0;
 		try {
 			//新增資料夾路徑
 			if (!FileUtil.FileToSmbFile(strDir,hid).exists()){
@@ -85,8 +86,8 @@ public class Deduct_2A0 {
 			
 			// 步驟1 - 設定產生的PDF文件大小
 			document = new Document(PageSize.A4.rotate(), 30,25,25,20);//left, right, top, bottom
-			
-			String titleName[]={"職號\n卡號","階級","職稱","姓名","公保費\n弱勢醫療捐款","健保費\n遺孤認養","勞保費\n清償債款","退撫離職金\n補充保險費","勞工退休金\n高榮代收代付","醫療互助金\n醫療救助捐款","所得稅\n　","公教儲金\n　","房屋津貼\n　","停車費\n　","宿舍管理費\n　","宿舍水電費\n　","扣款合計"};
+			//2026-08-13新增長照機構責任險
+			String titleName[]={"職號\n卡號","階級","職稱","姓名","公保費\n弱勢醫療捐款","健保費\n遺孤認養","勞保費\n清償債款","退撫離職金\n補充保險費","勞工退休金\n高榮代收代付","醫療互助金\n醫療救助捐款","所得稅\n　","公教儲金\n　","房屋津貼\n　","停車費\n　","宿舍管理費\n宿舍水電費　","長照機構責任險\n　","扣款合計"};
 			int pdfCol = 17; // 內文有幾欄
 			float[] floatCol = {0.045f, 0.06f, 0.08f, 0.06f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.058f, 0.06f}; //欄位比例
 			
@@ -218,10 +219,11 @@ public class Deduct_2A0 {
 				intCellSum_9A += data.getPaymhous();
 				//停車費PAYPARK1
 				intCellSum_10A += data.getPaypark1();
-				//宿舍管理費PAYDORM1
+				//宿舍管理費PAYDORM1,宿舍水電費PAYDORM2
 				intCellSum_11A += data.getPaydorm1();
-				//宿舍水電費PAYDORM2
-				intCellSum_12A += data.getPaydorm2();
+				intCellSum_11B += data.getPaydorm2();
+				//2026-08-13新增長照機構責任險PAYVETD1
+				intCellSum_12A += data.getPayvetd1();
 				//扣款合計PAYTLDED
 				intCellSum_13A += data.getPaytlded();	
 				
@@ -296,12 +298,12 @@ public class Deduct_2A0 {
 					tmp=String.valueOf( data.getPaypark1() ) +"\n　" ;
 					cellContent.setPhrase(new Phrase(tmp, fontColCent));
 					contentTable.addCell(cellContent);
-					//宿舍管理費PAYDORM1
-					tmp=String.valueOf( data.getPaydorm1() ) +"\n　"  ;
+					//宿舍管理費PAYDORM1,宿舍水電費PAYDORM2
+					tmp=String.valueOf( data.getPaydorm1() ) +"\n　" +String.valueOf( data.getPaydorm2() )  ;
 					cellContent.setPhrase(new Phrase(tmp, fontColCent));			
 					contentTable.addCell(cellContent);
-					//宿舍水電費PAYDORM2
-					tmp=String.valueOf( data.getPaydorm2() ) +"\n　"  ;
+					//2026-08-13新增長照機構責任險
+					tmp=String.valueOf( data.getPayvetd1() ) +"\n　"  ;
 					cellContent.setPhrase(new Phrase(tmp, fontColCent));			
 					contentTable.addCell(cellContent);
 					//扣款合計PAYTLDED
@@ -380,11 +382,11 @@ public class Deduct_2A0 {
 			tmp = String.valueOf(intCellSum_10A)+"\n\n　";
 			sumCell.setPhrase(new Phrase( tmp, fontColCent));
 			sumTable.addCell(sumCell);
-			//宿舍管理費PAYDORM1
-			tmp = String.valueOf(intCellSum_11A)+"\n\n　";
+			//宿舍管理費PAYDORM1,宿舍水電費PAYDORM2
+			tmp = String.valueOf(intCellSum_11A)+"\n\n　"+String.valueOf(intCellSum_11B);
 			sumCell.setPhrase(new Phrase( tmp, fontColCent));
 			sumTable.addCell(sumCell);
-			//宿舍水電費PAYDORM2
+			//2026-08-13新增長照機構責任險
 			tmp = String.valueOf(intCellSum_12A)+"\n\n　";
 			sumCell.setPhrase(new Phrase( tmp, fontColCent));
 			sumTable.addCell(sumCell);
