@@ -381,11 +381,11 @@ $(function(){
 				var paytitle=$.getSelectVals("filter_title");
 				var paydept=$.getSelectVals("filter_dept");
 				var expfkey1=$.getSelectVals("filter_expfkey1");
-				var expfkey2=$.getSelectVals("filter_expfkey2");
-				var expfkey3=$.getSelectVals("filter_expfkey3");
+// 				var expfkey2=$.getSelectVals("filter_expfkey2");
+// 				var expfkey3=$.getSelectVals("filter_expfkey3");
 				var insuamt=$.getSelectVals("filter_insuamt");
 				
- 				console.log("卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec+" 職號:"+empno+" patradt:"+patradt+" payrank:"+payrank+" paytitle:"+paytitle+" paydept:"+paydept+" expfkey1:"+expfkey1+" expfkey2:"+expfkey2+" expfkey3:"+expfkey3+" 支領:"+csflag+" 點數:"+expfsp+" 專2:"+paret+" 異動原因:"+tracod+" 保險補助:"+inflg+" 保險級距:"+insuamt);
+ 				console.log("卡號:"+cardno+" 身分證:"+idtno+" 姓名:"+namec+" 職號:"+empno+" patradt:"+patradt+" payrank:"+payrank+" paytitle:"+paytitle+" paydept:"+paydept+" expfkey1:"+expfkey1+" 支領:"+csflag+" 點數:"+expfsp+" 專2:"+paret+" 異動原因:"+tracod+" 保險補助:"+inflg+" 保險級距:"+insuamt);
 
 				code_data="";
 				code_data={
@@ -399,8 +399,8 @@ $(function(){
 		        		paytitle   :paytitle,
 		        		paydept    :paydept,
 		        		expfkey1   :expfkey1,
-		        		expfkey2   :expfkey2,
-		        		expfkey3   :expfkey3,
+// 		        		expfkey2   :expfkey2,
+// 		        		expfkey3   :expfkey3,
 		        		csflag     :csflag,
 		        		expfsp     :expfsp,
 		        		paret      :paret,
@@ -1405,20 +1405,20 @@ $(function(){
 							</select>
 						</div>
 						<div class="filter-item cspf d-none">
-							<select id="filter_expfsp" class="selectpicker" data-width="100%" title="點數">
+							<select id="filter_expfsp" class="selectpicker" data-width="100%" title="額外點數">
 								<option value=""></option>
 								<option value="Y">Y</option>
 								<option value="N">N</option>
 							</select>
 						</div>
 						<div class="filter-item cspf d-none">
-							<select id="filter_expfkey1" class="selectpicker" data-width="100%" title="額外1">
+							<select id="filter_expfkey1" class="selectpicker" data-width="100%" title="額外代碼">
 								<c:forEach var="uitem" items="${alexpfTbl}" varStatus="loop">
 									<option value="${uitem.expfkey}">${uitem.expfname}</option>
 								</c:forEach>
 							</select>
 						</div>
-						<div class="filter-item cspf d-none">
+						<%-- <div class="filter-item cspf d-none">
 							<select id="filter_expfkey2" class="selectpicker" data-width="100%" title="額外2">
 								<c:forEach var="uitem" items="${alexpfTbl}" varStatus="loop">
 									<option value="${uitem.expfkey}">${uitem.expfname}</option>
@@ -1431,7 +1431,7 @@ $(function(){
 									<option value="${uitem.expfkey}">${uitem.expfname}</option>
 								</c:forEach>
 							</select>
-						</div>
+						</div> --%>
 						<div class="filter-item cspf d-none">
 							<select id="filter_paret" class="selectpicker" data-width="100%" title="專2">
 								<option value=""></option>

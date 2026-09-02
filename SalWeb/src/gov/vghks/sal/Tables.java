@@ -160,7 +160,7 @@ public enum Tables {
 		"PA.LHTRAPSN",  //30異動個人明細
 		"PA.LHTR#APSN", //31異動個人明細_歷史
 		"PA.LHTRAPAY",  //32異動支扣明細
-		"PA.LHTRAPAY",  //33異動支扣明細_歷史
+		"PA.LHTR#APAY", //33異動支扣明細_歷史
 		"PA.LHRPDTL",   //34製作報表明細
 		"PA.LHREPORT",  //35報表檔架構
 		"PA.LHNHICAL",  //二代健保(補充保險費_獎金)
@@ -393,5 +393,5 @@ public enum Tables {
 		}
 		return rs;
 	}
-	//test
+	
 }

@@ -88,7 +88,7 @@ public class WPSAutoLogon extends HttpServlet {
 				    String hostname =request.getServerName();				    
 				    String programName=this.getClass().getName();
 					LDAPUtil ldapUtilObj = LDAPUtil.getInstance() ;
-					//strUsrId="7074";
+					//strUsrId="P008";
 					// 成本中心英文
 					dept = ldapUtilObj.getDeptNo(strUsrId, hostname, programName);
 					if(dept.length()>=3  && dept.substring(0,3).equals("NUR")) 

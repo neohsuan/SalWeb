@@ -35,6 +35,10 @@ var delCheck;
 var pk_data;
 var i;
 var o_basPay;
+var salNm;
+var selEn;
+var selCode;
+var traItm;
 //考績獎金月數
 var pflgAOptions = {
     '0' : '0',
@@ -94,6 +98,18 @@ $(function(){
 	$(window).on('load', function() {
 		$('.selectpicker').selectpicker('refresh');
 	});
+//查詢角色,將編輯功能隱藏
+	if (pa_view=="Y"){
+		$(".roleQry").addClass("d-none");	
+	}else{
+		$(".roleQry").removeClass("d-none");
+	}
+	//編輯角色,將編輯功能show
+	if ((pa_admin=="Y" && agent =="") || pa_edit=="Y" || (agent !="" && "${sessionScope.agentEdit}"=="Y" )){
+		$(".roleQry").removeClass("d-none");	
+	}else{
+		$(".roleQry").addClass("d-none");
+	}
 	
 	$.getLoadCodeTbl = function(item,flag){		
 		$.ajax({
@@ -132,7 +148,18 @@ $(function(){
 						select.append(options);
 					});
 					select.selectpicker('refresh');
-				}*/					
+				}*/
+				//餉單編號(2個月內)
+				if (data.alBankDtTbl_2M[0]!=null){
+					select = $('#handing_tradt');
+					select.empty();
+					select.append(options);
+					$.each(data.alBankDtTbl_2M, function(idx) {
+						options = "<option value='" + data.alBankDtTbl_2M[idx].paybank.dts +"'>" + data.alBankDtTbl_2M[idx].paybank.dts;
+						select.append(options);
+					});
+				}
+									
 			 	if (data.alTitleCodeTbl[0]!=null){
 					select = $('#paytitle,#paotitle');
 					select.empty();
@@ -143,7 +170,6 @@ $(function(){
 						select.append(options);
 					});
 					select.selectpicker('refresh');
-					
 				}
 				if (data.alRankCodeTbl[0]!=null){
 					select = $('#payrank,#paorank');
@@ -280,7 +306,22 @@ $(function(){
 	};
  	/*預先載入代碼檔 */
   	$.getLoadCodeTbl("tranPay","Y");
- 	
+  	
+	//代碼選單切換
+	$("#qryType").change(function(){
+		$("#divfield_1,#divfield_2,#divfield_3,#divfield_4,#divfield_5,#explan_1,#explan_2,#explan_3").addClass("d-none");	//隱藏
+  		selCode=(typeof($("#qryType option:selected").val().split(':')[0]) == "undefined" )? "1":$("#qryType option:selected").val().split(':')[0];
+  		console.log(selCode);
+  		if (selCode=="1" ){			//1.[匯入]晉級調薪 
+			$("#divfield_1").removeClass("d-none");
+			$("#explan_1").removeClass("d-none");
+		}
+		else if (selCode=="2"){		//2.[刪除]晉級調薪 
+			$("#divfield_1").removeClass("d-none");
+			$("#explan_2").removeClass("d-none");
+		}	 
+  	});
+  	 	
 	//編輯欄位檢查
   	$.checkFields = function(btn){
   		msg = '';
@@ -363,6 +404,19 @@ $(function(){
 			} 
  
  		}
+ 		else if (btn == 'btn_handelTra'){	//異動處理--1[匯入]晉級調薪,2[刪除]晉級調薪
+			if (typeof($("#qryType option:selected").val())=='undefined'){
+  				msg = '請勾選[選單]項目!!';
+  			}
+  			else{
+  				selCode=$("#qryType option:selected").val().split(':')[0];
+  				if (selCode=='1' || selCode=='2'){		//1:[匯入]晉級調薪 2:[刪除]晉級調薪
+  					if ($("#handing_tradt").val()=='' ){
+		  				msg += '請勾選[發薪日]!!';
+		  			}
+  				}
+  			}
+		}
   		return msg;	
 	};
 	
@@ -588,6 +642,7 @@ $(function(){
 							oTable.fnAddData(data.traPsnList);//重新給資料
 						}else{
 							alert("無資料");
+							$("#btn_cln_tran_TranPsn").trigger( "click" );
 						} 
 						oTable.fnDraw();
 						
@@ -701,8 +756,8 @@ $(function(){
 				var paytitle=$.getSelectVals("filter_title");
 				var paydept=$.getSelectVals("filter_dept");
 				var expfkey1=$.getSelectVals("filter_expfkey1");
-				var expfkey2=$.getSelectVals("filter_expfkey2");
-				var expfkey3=$.getSelectVals("filter_expfkey3");
+// 				var expfkey2=$.getSelectVals("filter_expfkey2");
+// 				var expfkey3=$.getSelectVals("filter_expfkey3");
 				
  				code_data="";
 				code_data={
@@ -716,8 +771,8 @@ $(function(){
 		        		paytitle   :paytitle,
 		        		paydept    :paydept,
 		        		expfkey1   :expfkey1,
-		        		expfkey2   :expfkey2,
-		        		expfkey3   :expfkey3,
+// 		        		expfkey2   :expfkey2,
+// 		        		expfkey3   :expfkey3,
 		        		csflag     :csflag,
 		        		expfsp     :expfsp,
 		        		paret      :paret,
@@ -865,7 +920,7 @@ $(function(){
 					async: true,	//逐步執行
 					contentType: "application/x-www-form-urlencoded;charset=utf-8",  
 					success:function(data) {
-						$("#btn_cln_tran_TranPsn").trigger( "click" );
+						//$("#btn_cln_tran_TranPsn").trigger( "click" );
 						if (data.msg!=null){
 							alert(data.msg);
 							$("#btn_qry_tran_TranPsn").trigger( "click" );
@@ -924,7 +979,57 @@ $(function(){
 				alert(msg);
 				return false;
 			} 
-		}		
+		}
+		else if (id == 'btn_handelTra'){	//異動處理--1[匯入]晉級調薪,2[刪除]晉級調薪
+			msg = $.checkFields(id);
+			if(msg == ''){
+				in_data="";
+				//selCode:selNm:selEn 1:[匯入]晉級調薪:ImpPromoInTra
+				selCode = $("#qryType option:selected").val().split(':')[0];
+				selNm   = $("#qryType option:selected").val().split(':')[1];
+				selEn   = $("#qryType option:selected").val().split(':')[2];
+				patradt = $('#handing_tradt').val();        		
+        		in_data={
+							selCode :selCode,
+							selNm   :selNm,
+							selEn   :selEn,
+							patradt :patradt
+						   };
+				console.log("異動處理:in_data:"+JSON.stringify(in_data));		   
+			    //return false;
+			    
+			    $.ajax({
+						url:"${pageContext.request.contextPath}/salController.do",
+						data:{
+							method	: "handelTran",
+							fun     : 'execTra',
+							selNm   : selNm,
+							hid     : pahid,
+							userid  : paUserid,
+							in_data : JSON.stringify(in_data),
+						},
+						type:"POST",			//type:POST, GET(default:GET)
+						dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+						async: true,	//逐步執行
+						contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+						success:function(data) {
+							if (data.msg!=null){
+								
+								alert(data.msg);
+							}	
+						},
+						error: function(xhr){					
+							alert("[異動處理_"+selNm+"]失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
+						}
+				});
+			}	
+			else{
+				alert(msg);
+				return false;
+			}    
+		}
+		
+				
 	});
 	//取得新支扣
 	$.doDegre = function(in_data,fun,tracod){
@@ -2319,12 +2424,9 @@ $(function(){
 <body>
 
 	<ul class="nav nav-pills mb-3" id="pills-tab" role="tab">
-		<li class="nav-item"><a class="nav-link active"
-			id="pills-basic-tab" data-toggle="pill" href="#byTranDetailMain"
-			role="tab" aria-controls="pills-home" aria-selected="true">異動資料</a></li>
-		<li class="nav-item"><a class="nav-link" id="pills-query-tab"
-			data-toggle="pill" href="#byTranFilterMain" role="tab"
-			aria-controls="pills-profile" aria-selected="false">篩選</a></li>
+		<li class="nav-item"><a class="nav-link active" id="pills-basic-tab"   data-toggle="pill" href="#byTranDetailMain"  role="tab" aria-controls="pills-home" aria-selected="true">異動資料</a></li>
+		<li class="nav-item"><a class="nav-link"        id="pills-query-tab"   data-toggle="pill" href="#byTranFilterMain"  role="tab" aria-controls="pills-profile" aria-selected="false">篩選</a></li>
+		<li class="nav-item"><a class="nav-link"        id="pills-handing-tab" data-toggle="pill" href="#byTranHandingMain" role="tab" aria-controls="pills-profile" aria-selected="false">異動處理</a></li>
 	</ul>
 
 	<div class="tab-content" id="pills-tabContent">
@@ -2401,22 +2503,17 @@ $(function(){
 								<div id="accordion">
 									<div class="card">
 										<div class="card-header">
-											<a class="card-link" data-toggle="collapse"
-												href="#collapseOne">【異動個人明細】 </a>
-											<button type="button" class="btn btn-success"
-												id="subPATRAPSN_Newbtn">
+											<a class="card-link" data-toggle="collapse" href="#collapseOne">【異動個人明細】 </a>
+											<button type="button" class="btn btn-success roleQry" id="subPATRAPSN_Newbtn">
 												<i class="fa fa-plus"></i>新增一筆
 											</button>
-											<button type="button" class="btn btn-success"
-												id="subPATRAPSN_Insbtn" disabled>
+											<button type="button" class="btn btn-success roleQry" id="subPATRAPSN_Insbtn" disabled>
 												<i class="fa fa-save"></i>存檔
 											</button>
-											<button type="button" class="btn btn-primary"
-												id="subPATRAPSN_Updbtn" disabled>
+											<button type="button" class="btn btn-primary roleQry" id="subPATRAPSN_Updbtn" disabled>
 												<i class="fa fa-edit"></i>更改
 											</button>
-											<button type="button" class="btn btn-danger"
-												id="subPATRAPSN_Delbtn" disabled>
+											<button type="button" class="btn btn-danger roleQry" id="subPATRAPSN_Delbtn" disabled>
 												<i class="fa fa-trash-alt"></i>刪除
 											</button>
 										</div>
@@ -2715,7 +2812,7 @@ $(function(){
 																				class="form-control selectpicker calRank calCSPF "
 																				data-width="fit" data-live-search="true" title="職稱">
 																			</select>
-																			<button type="button" class="btn btn-info" id="btn_calDegre" disabled> <i class="fa fa-arrows-alt"></i>取得新支扣</button>
+																			<button type="button" class="btn btn-info roleQry" id="btn_calDegre" disabled> <i class="fa fa-arrows-alt"></i>取得新支扣</button>
 																		</div>
 																	</div>
 																	<div class="form-inline">
@@ -2829,16 +2926,16 @@ $(function(){
 															</tr>
 
 															<tr>
-																<td><a href="#basother" class="btn btn-info" data-toggle="collapse">其他</a>
+																<td><a href="#basother" class="btn btn-info" data-toggle="collapse" id="otherCollapse">其他</a>
 																	<div id="basother" class="collapse">
 																		<div class="form-inline">
 																			<div class="form-group">
 																				<label for="payctcbacno" class="table-warning">薪資帳號:</label>
 																				<input type="text" id="payctcbacno"
-																					class="form-control number" maxlength="12" size="12" />
+																					class="form-control number" maxlength="14" size="14" />
 																				<label for="payctcbgedno" class="table-warning">公儲帳號:</label>
 																				<input type="text" id="payctcbgedno"
-																					class="form-control number" maxlength="12" size="12" />
+																					class="form-control number" maxlength="14" size="14" />
 																			</div>
 																		</div>
 																		<div class="form-inline">
@@ -3096,8 +3193,7 @@ $(function(){
 		</div>
 
 		<!--篩選-->
-		<div class="tab-pane fade" id="byTranFilterMain" role="tabpanel"
-			aria-labelledby="pills-query-tab">
+		<div class="tab-pane fade" id="byTranFilterMain" role="tabpanel" aria-labelledby="pills-query-tab">
 			<div class="container-fluid">
 				<div class="row" id="filterItem">
 					<div class="col-10">
@@ -3161,16 +3257,17 @@ $(function(){
 									<option value="Y">Y</option>
 									<option value="N">N</option>
 								</select> <select id="filter_expfsp" class="selectpicker"
-									data-width="fit" title="點數">
+									data-width="fit" title="額外點數">
 									<option value=""></option>
 									<option value="Y">Y</option>
 									<option value="N">N</option>
 								</select> <select id="filter_expfkey1" class="selectpicker"
-									data-width="fit" title="額外1">
+									data-width="fit" title="額外代碼">
 									<c:forEach var="uitem" items="${alexpfTbl}" varStatus="loop">
 										<option value="${uitem.expfkey}">${uitem.expfname}</option>
 									</c:forEach>
-								</select> <select id="filter_expfkey2" class="selectpicker"
+								</select> 
+								<%-- <select id="filter_expfkey2" class="selectpicker"
 									data-width="fit" title="額外2">
 									<c:forEach var="uitem" items="${alexpfTbl}" varStatus="loop">
 										<option value="${uitem.expfkey}">${uitem.expfname}</option>
@@ -3180,7 +3277,8 @@ $(function(){
 									<c:forEach var="uitem" items="${alexpfTbl}" varStatus="loop">
 										<option value="${uitem.expfkey}">${uitem.expfname}</option>
 									</c:forEach>
-								</select> <select id="filter_paret" class="selectpicker" data-width="fit"
+								</select>  --%>
+								<select id="filter_paret" class="selectpicker" data-width="fit"
 									title="專2">
 									<option value=""></option>
 									<option value="Y">Y</option>
@@ -3220,8 +3318,49 @@ $(function(){
 				</div>
 			</div>
 		</div>
-
-	</div>
+	<!--異動處理-->
+	  	<div class="tab-pane fade" id="byTranHandingMain" role="tabpanel" aria-labelledby="pills-handing-tab">
+	  		<div class="row p-1 mb-1 bg-secondary">
+				<div class="col-md-10">
+					<div class="form-inline">
+						<div class="input-group">
+							<span class="input-group-text">選單</span>
+			  	
+							<select id="qryType" class="form-control">
+								<option value="1:[匯入]晉級調薪:ImpPromoInTra">1[匯入]晉級調薪</option>
+								<option value="2:[刪除]晉級調薪:DelPromoInTra">2[刪除]晉級調薪</option>     					
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-2">
+					<button id="btn_handelTra" class="btn btn-info roleQry" type="button" ><i class="fa fa-cog"></i>執行</button>					
+				</div>
+			</div>
+			
+	  		<div class="row">
+				<div class="col-md-12">
+					<div id="explan_1" class="text-danger">選擇[發薪日]執行產生</div>
+					<div id="explan_2" class="text-danger d-none" >回復處理:依[發薪日]刪除</div>
+					<div id="explan_3" class="text-danger d-none"></div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-inline">
+						<div class="input-group">
+							<div class="input-group" id="divfield_1">	
+								<label for="handing_tradt" >發薪日</label>
+								<select id="handing_tradt" class="form-control" title="發薪日">
+									
+								</select>							
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
 </body>
 </html>

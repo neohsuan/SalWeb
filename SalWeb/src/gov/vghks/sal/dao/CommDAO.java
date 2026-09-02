@@ -13,12 +13,16 @@ import gov.vghks.sal.model.Papayitm;
 import gov.vghks.sal.model.Paposi;
 import gov.vghks.sal.model.Parank;
 import gov.vghks.sal.model.Patitle;
+import gov.vghks.sal.model.Patrapay;
+import gov.vghks.sal.model.Patrapsn;
 import gov.vghks.sal.model.PsInsu;
+import gov.vghks.sal.util.AmJsonConfig;
 
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -41,6 +45,7 @@ public class CommDAO {
 	static ArrayList<Map<String, Object>> result = null;
 	static ArrayList<Object> params = new ArrayList<Object>();
 	static Logger log = Logger.getLogger(SalNTDAO.class);  //呼叫log4j
+	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	private VGHDataAccess da = null;
 	private VGHDataAccess daDSN = null;
 	private static final int META_TYPE = 2; 			//回傳map中欄位名稱是小寫
@@ -100,17 +105,18 @@ public class CommDAO {
 	 * @param 
 	 * 		  RANK3:本功別     Title:職稱                     RANK:階別  RNK2N:職等  DEGR2:級別 RANK2:權理
 '			  rankc:主管權理  rank4:適用專業加給表 inflg:保險補助比率  idno:身分證 tracod:異動碼
+'			  trapsnobj:異動個人 trapayMap:異動原支扣明細 tpreday:生效日前一段日數
 '			  vhid : 醫院別		
 '             da(NT) daDSN(主機)
 	 * @throws SQLException  
 	 */
 	
-	public HashMap getDegreByRank(String in_data,String fun,String vHid,VGHDataAccess da,VGHDataAccess daDSN) throws Exception{
+	public HashMap getDegreByRank(String in_data,String fun,Patrapsn trapsnObj,ArrayList<Patrapay> tpayAry,int tpreday,String vHid,VGHDataAccess da,VGHDataAccess daDSN) throws Exception{
 		String me = getClass().getName() + ".getDegreByRank()";
 		log.info(me +  "fun="+fun+" in_data = " + in_data+ " hid = " + vHid);
 		JSONObject object_in_data =null;
 		Parank oneObj=null;
-		
+		AmJsonConfig cfg = new AmJsonConfig();
 		HashMap rtnMap=new HashMap();
 		HashMap<String,Integer> itmMap=new HashMap();//寫入新支扣-錢 集合
 		HashMap<String,Papayitm> payitmMap= new HashMap();	//支扣項目map
@@ -181,7 +187,7 @@ public class CommDAO {
 		
 		starttime = System.currentTimeMillis();
 		
-		if (in_data!=null && !in_data.equals("")){
+		if (in_data!=null && !in_data.equals("")){	//異動檔前端傳來
 			object_in_data = JSONObject.fromObject(in_data);
 			jt=(!object_in_data.has("jt")) ? "" : object_in_data.getString("jt");
 			rnk2n=(!object_in_data.has("rnk2n")) ? "" : object_in_data.getString("rnk2n");
@@ -205,6 +211,30 @@ public class CommDAO {
 			ojt=(!object_in_data.has("ojt")) ? "" : object_in_data.getString("ojt");
 			orank=(!object_in_data.has("orank")) ? "" : object_in_data.getString("orank");	
 			effdt=(!object_in_data.has("effdt")) ? ""  : object_in_data.getString("effdt");
+		}
+		else if(trapsnObj !=null) {	//晉級
+			jt    = trapsnObj.getPaytitle();
+			rnk2n = trapsnObj.getPayrnk2n();
+			rank  = trapsnObj.getPayrank();
+			rank2 = trapsnObj.getPayrank2();
+			rank3 = Integer.toString(trapsnObj.getPayrank3());
+			degr2 = Integer.toString(trapsnObj.getPaydegr2());
+			govdt = formatter.format (trapsnObj.getPaygovdt());
+			rank4 = Integer.toString(trapsnObj.getPayrank4());
+			rankc = trapsnObj.getPayrankc();
+			degre = Integer.toString(trapsnObj.getPaydegre());
+			odegre= Integer.toString(trapsnObj.getPaodegre());;
+			inflg = Integer.toString(trapsnObj.getPayinflg());
+			pflag = Integer.parseInt(trapsnObj.getPaypflag());
+			dpno  = trapsnObj.getPaydpno();
+			tracod= trapsnObj.getPatracod();
+			idno  = trapsnObj.getPayidno();
+			monno = trapsnObj.getPaymonno();
+			dayno = trapsnObj.getPaydayno();
+			ojt   = trapsnObj.getPaotitle();
+			orank = trapsnObj.getPaorank();	
+			effdt = formatter.format (trapsnObj.getPaeffdt());
+			o_basPayAry = JSONArray.fromObject(tpayAry,cfg);
 		}
 		
 		try{
@@ -338,9 +368,9 @@ public class CommDAO {
 						}else {
 							tLabor="Y";
 							//1A0勞保身分取人事保險檔psinsu
-							if (hid.equals("1A0")) {
-								psDAO = new PsDSNDAO(daDSN,hid);
-								insuObj=psDAO.getInsuByidno(idno, hid, daDSN);
+							if (vHid.equals("1A0")) {
+								psDAO = new PsDSNDAO(daDSN,vHid);
+								insuObj=psDAO.getInsuByidno(idno, vHid, daDSN);
 							}
 						}
 							
@@ -392,7 +422,7 @@ public class CommDAO {
 										if (tNewServant.equals("Y") )
 											strPaycode="FD040";
 									}else if (fieldname.equals("paylbinf")){//勞保費PAYLBINF ((1)H警察人員 (2)2A0 CG契主治
-										if ( (hid.equals("3A0") && rank.matches("H")) || (hid.equals("2A0") && jt.matches("CG")) ) {
+										if ( (vHid.equals("3A0") && rank.matches("H")) || (vHid.equals("2A0") && jt.matches("CG")) ) {
 											strPaycode="FD030";
 											l_lbins=false;
 										}	
@@ -412,11 +442,11 @@ public class CommDAO {
 							else if (!"".equals(rnk2n) && !"00".equals(rnk2n))
 								l_posi = rnk2n ;
 							else if ("F".equals(rank) ) {
-								if ( "3A0".equals(hid)) { //3A0契約 payposik=NF,degrlow=級別
+								if ( "3A0".equals(vHid)) { //3A0契約 payposik=NF,degrlow=級別
 									l_posi = "N"+rank ;
 									l_degrlow = intDegr2;
 								}	
-								else if ( "2A0".equals(hid) && (intDegr2 >=201 && intDegr2 <=240) ) //2A0契約 degrlow=級別201-240
+								else if ( "2A0".equals(vHid) && (intDegr2 >=201 && intDegr2 <=240) ) //2A0契約 degrlow=級別201-240
 									l_posi = jt; 
 							}else if (rank.matches("5|6") ) //5技工 6工友
 								l_posi = "N"+rank;
@@ -475,7 +505,7 @@ public class CommDAO {
 									if ( rank4.matches("3") || 
 										( rank4.matches("0|") && l_titSub.matches("C"))  )
 										strPaycode="FP010";
-									else if ( hid.equals("2A0") && l_titSub.matches("I") )
+									else if ( vHid.equals("2A0") && l_titSub.matches("I") )
 										strPaycode="FP100";
 								}else if (fieldname.equals("paypsp7")){
 									//1.適用專業加給對照表=7 工程(7)  
@@ -494,14 +524,14 @@ public class CommDAO {
 									//3.聯醫3A0警察,rank=H
 									if ( rank4.matches("1") || 
 										( rank4.matches("0|") && ( l_titSub.matches("G|Y") || 
-												                ( hid.matches("2A0|3A0") && l_titSub.matches("I")) ) ) ||
-										( hid.matches("3A0") && rank.matches("H")) )
+												                ( vHid.matches("2A0|3A0") && l_titSub.matches("I")) ) ) ||
+										( vHid.matches("3A0") && rank.matches("H")) )
 										strPaycode="FP010";
 								}
 								
 								if (!"".equals(strPaycode) && intvalue>0){
 									//聯醫,小於最低工資,補在專業加給
-									if ( hid.matches("3A0") && l_titSub.matches("I") ) {
+									if ( vHid.matches("3A0") && l_titSub.matches("I") ) {
 										if ( n_FP000+ intvalue < Globals.gSalStandard3A0 )
 											intvalue = intvalue + ( Globals.gSalStandard3A0 - intvalue - n_FP000);
 		                            }
@@ -549,7 +579,7 @@ public class CommDAO {
  						//1.1A0高榮擷取人事保險級距 
  						//2.2A0/3A0 [新進]計算
  						if (tLabor.equals("Y") && !l_intern ) {
- 							if (hid.equals("1A0")) {
+ 							if (vHid.equals("1A0")) {
  								//勞保費FD030
  								if (insuObj != null) {
 	 								l_insuLBin = insuObj.getLbinig();//投保金額--勞保
@@ -567,6 +597,7 @@ public class CommDAO {
 	 								l_insuDpin = insuObj.getDpinig();//投保金額--健保 
 	 								if (dpno=="")
 	 									dpno="1";
+	 								//健保補助標準及口數,計算出保費 
 	 								l_dpinMap  = GetHealthInsuRelief(inflg, dpno,l_insuDpin, da);	
 	 								if ( l_dpinMap!=null ) {
 	 									strPaycode="FD020";
@@ -578,7 +609,7 @@ public class CommDAO {
 	 									rtnMap.put("insu_dpin", l_dpinMap.get("dpinig"));	//存放投保級距
 	 								}
  								}
- 							}else if (hid.matches("2A0|3A0")) {
+ 							}else if (vHid.matches("2A0|3A0")) {
  								if (tracod == 1) {
  									//勞保
 	 								strPaycode= "FD030";
@@ -607,8 +638,8 @@ public class CommDAO {
  						//------醫療互助金FD210
  						strPaycode="";
  						intvalue=0;
- 						if (hid.matches("1A0|2A0") && !l_intern ) {
- 							if (hid.equals("1A0")) {
+ 						if (vHid.matches("1A0|2A0") && !l_intern ) {
+ 							if (vHid.equals("1A0")) {
  								if (l_titSub.matches("V")) {
  									if (jt.equals("16"))	//'16住院醫師$200 主治醫師以上$400   2004-1-1生效
  										intvalue=200;
@@ -624,12 +655,12 @@ public class CommDAO {
  								else if (l_titSub.matches("I")) {
  									if (jt.matches("CH|CI|CJ|CK"))	//'CH契約住院醫師(證書) CI契約住院醫師 CK 2年有證不分科住院醫師 CJ二年無證不分科住院醫師
  										intvalue=200;
- 									else if (jt.matches("DM|DN|EJ|DS|DW"))	//'DM契約護理 DN契約藥師 EJ契約麻醉護理 DS半日契約護理DW半日契約藥師
+ 									else if (jt.matches("DM|DN|EJ|DS|DW|E9"))	//'DM契約護理 DN契約藥師 EJ契約麻醉護理 DS半日契約護理DW半日契約藥師(2026.8.12 E9契約實習護理)
  										intvalue=100;
  									else if (jt.matches("CG"))	//'CG契約主治醫師
  										intvalue=400;
  								}
- 							}else if (hid.equals("2A0")) {
+ 							}else if (vHid.equals("2A0")) {
  								if (l_titSub.matches("V")) {	//醫師
  									intvalue=1500;
  								}
@@ -667,7 +698,7 @@ public class CommDAO {
 								    	if (itmMap.get(strPaycode)==null) {//找新支扣map是否有在內,如果有,就不用寫入								    		
 								    		if (strPaycode.equals("FP080") )
 								    			o_FP080=o_basPay.getInt("payamt");//專業加給差額,
-								    		if ( hid.matches("3A0")) {
+								    		if ( vHid.matches("3A0")) {
 								    			if (strPaycode.equals("FP090") )
 								    				o_FP090=o_basPay.getInt("payamt");//3A0責任加給FP090
 								    			if (strPaycode.equals("FP100") )
@@ -736,7 +767,7 @@ public class CommDAO {
 					
 					//--計算補發扣 
 					if (monno != 0 || dayno != 0) {
-						getReissue(jsonRtn,o_basPayAry,tracod,effdt,monno,dayno,l_lbinig,orank,rank,ojt,jt,odegre,pflag,payitmMap,hid);
+						getReissue(jsonRtn,o_basPayAry,tracod,effdt,monno,dayno,l_lbinig,orank,rank,ojt,jt,odegre,pflag,payitmMap,tpreday,vHid);
 					}	
 					//sort
 					jsonRtn = jsonArySort(jsonRtn);
@@ -747,7 +778,7 @@ public class CommDAO {
 			else if(fun.equals("C")){	//計算補發扣
 				//--計算當月實際日數 
 				if (monno != 0 || dayno != 0 || tracod==12) {
-					getReissue(jsonRtn,o_basPayAry,tracod,effdt,monno,dayno,l_lbinig,orank,rank,ojt,jt,odegre,pflag,payitmMap,hid);
+					getReissue(jsonRtn,o_basPayAry,tracod,effdt,monno,dayno,l_lbinig,orank,rank,ojt,jt,odegre,pflag,payitmMap,tpreday,vHid);
 				}	
 				//sort
 				jsonRtn = jsonArySort(jsonRtn);
@@ -782,11 +813,12 @@ public class CommDAO {
 	}
 	
 	//計算補發扣 
-	//nPay新支扣,oPay原支扣,tracod異動別,effdt生效日,monno月數,dayno日數,lbig勞保級距,orank原階別,rank新階別,ojt原職稱,jt職稱,odegre原俸點,pflag考績獎金月數/年終獎金比例,payitmMap支扣碼集合,hid
+	//nPay新支扣,oPay原支扣,tracod異動別,effdt生效日,monno月數,dayno日數,lbig勞保級距,orank原階別,rank新階別,ojt原職稱,jt職稱,odegre原俸點,pflag考績獎金月數/年終獎金比例,payitmMap支扣碼集合,tpreday破月前一段日數,hid
 	//2007-4-1 公保破月計算修正,以實際加保日數計算 
 	//2024.12.13 破月新進 無條件進位,離職 無條件捨去
-	private JSONArray getReissue(JSONArray nPay,JSONArray oPay,int tracod,String effdt,int monno,int dayno,int lbig,String orank,String rank,String ojt,String jt,String odegre,int pflag,HashMap<String,Papayitm> payitmMap,String hid) {
+	private JSONArray getReissue(JSONArray nPay,JSONArray oPay,int tracod,String effdt,int monno,int dayno,int lbig,String orank,String rank,String ojt,String jt,String odegre,int pflag,HashMap<String,Papayitm> payitmMap,int tpreday,String hid) {
 		String me = ".getReissue()";
+		log.info(me + " tracod:"+tracod+" effdt = " + effdt+ " monno = " + monno+ " dayno = " + dayno+ " lbig = " + lbig+ " orank = " + orank+ " rank = " + rank+ " ojt = " + ojt+ " jt = " + jt+ " odegre = " + odegre+ " pflag = " + pflag+ " tpreday = " + tpreday+ " hid = " + hid);
 		JSONArray jsonRtn = new JSONArray();
 		JSONArray l_Pay = new JSONArray();
 		String jsonString ="";
@@ -800,6 +832,7 @@ public class CommDAO {
 		int l_prof=0;	//專業加給+專業加給差額
 		int l_payamt=0;
 		int o_payamt=0;
+		int real_payamt=0;//實際補發金額
 		int r_payamt=0;//補發金額
 		String r_paycode="";//補發支扣碼
 		int l_effdt=30;
@@ -949,7 +982,7 @@ public class CommDAO {
         //2005-2-2 新增待遇調整,要追溯至生效日期 2024.2.7 契約,勞,健保,不變
 		//FD010公保依據當月實際加保日數佔當月實際天數的比例來按日計算，且每次計算步驟皆須獨立執行四捨五入
 		//FD040「全月基金費用提撥總額 × 實際加入日數 ÷ 當月實際天數（四捨五入）」
-		else if ( (tracod >=31 && tracod <=38) || tracod ==11 ) {
+		else if ( (tracod >=32 && tracod <=38) || tracod ==11 ) {
 			if (nPay != null) {
 				jsonString = nPay.toString();
 				l_Pay= JSONArray.fromObject(jsonString);
@@ -996,6 +1029,53 @@ public class CommDAO {
 				    			r_payamt=(int) ((l_payamt-o_payamt) * monno+ Math.round((double)(l_payamt-o_payamt) * dayno / l_effdt));				    			
 				    		}	
 				    	}
+				    }
+				    
+				    if (r_payamt != 0) {
+				    	System.out.println("補發扣:"+l_paycode+" "+ o_payamt+" l_payamt:"+l_payamt+" r_payamt:"+r_payamt);
+				    	//取得支扣代碼
+					    jsonOne = new JSONObject();
+					    jsonOne=getPayitemBycode(r_paycode,r_payamt,payitmMap);
+					    if (jsonOne !=null) {
+					    	jsonRtn.add(jsonOne);
+					    }	
+				    }
+				} 
+			}
+		}
+		//31晉級調薪,FP000本薪,FD040退撫,要依前一段,後一段計算實際金額
+		else if ( tracod ==31 ) {
+			l_effdt=l_caldt;	//依實際日數
+			System.out.println("更改後.有效日期的當月實際日數:"+l_effdt);
+			if (nPay != null) {
+				jsonString = nPay.toString();
+				l_Pay= JSONArray.fromObject(jsonString);
+				for (int i = 0; i < l_Pay.size(); i++) {
+				    // 根據實際型別使用 getJSONObject, getString 或 getInt
+				    l_payObj = l_Pay.getJSONObject(i);
+				    l_paycode= l_payObj.getString("paycode");
+				    l_payamt = l_payObj.getInt("payamt");
+				    r_payamt=0;
+				    r_paycode=l_paycode.substring(0,4)+"9";
+				    o_payamt=0;
+				    for (int j = 0; j < oPay.size(); j++) {
+				        o_payObj = oPay.getJSONObject(j);
+				        // 確認 key 是否存在以避免錯誤
+				        if (o_payObj.has( "paycode" )) {
+				        	o_paycode = o_payObj.getString("paycode");
+				        	if ( o_paycode.equals(l_paycode) ) {
+				        		o_payamt = o_payObj.getInt("payamt");
+				        	}
+				        }
+				    }
+				    if (o_payamt > 0 && o_payamt != l_payamt && l_paycode.matches("FP000|FD040")) {				    	
+			    		if (l_paycode.matches("FP000|FD040") ) {
+			    			//前一段
+			    			real_payamt=(int) (Math.round( (double)((double)o_payamt * (double)tpreday / (double)l_effdt )));
+			    			//前一段+後一段
+			    			real_payamt+=(int) (Math.round( (double)((double)l_payamt * (double)dayno / (double)l_effdt )));			    			
+			    		}
+			    		r_payamt=real_payamt-l_payamt;	
 				    }
 				    
 				    if (r_payamt != 0) {
@@ -1228,9 +1308,9 @@ public class CommDAO {
 		    if (l_dpno > 1) {
 		        //眷屬健保人數上限3口 2004-1-20
 		        if (l_dpno > 4)
-		        	l_dpinamt = tmpamt + (3 * tmpamt);
+		        	l_dpinamt = l_dpinamt + (3 * tmpamt);
 		        else
-		        	l_dpinamt = tmpamt + (int) Math.round( (double)(l_dpno - 1) * tmpamt);
+		        	l_dpinamt = l_dpinamt + (int) Math.round( (double)(l_dpno - 1) * tmpamt);
 		    }
 		    rtnMap.put("dpinig", l_dpinig);	//健保級距
 			rtnMap.put("dpinamt", l_dpinamt);	//健保費
@@ -1244,7 +1324,9 @@ public class CommDAO {
 	}
 		
 	//勞保費 
-	//---健保費若有補助二分之一（如中度身心障礙者之自付保費補助），其金額若產生小數點，處理原則為無條件進位，即小數點以下無論多少一律進位為整數。
+	//---勞保局計算保險費一律以新台幣「元」為單位，小數點後（角以下）一律採四捨五入
+	//以勞保費 1,145 元、補助 1/4（即補助 286.25 元）為例： 計算補助金額：(1145 *1/4= 286.25) 元
+	//採四捨五入後：補助金額為 286 元 個人實際負擔：1145 - 286 = 859 元
 	//而一般健保費繳納，以元為單位，角以下則是採「四捨五入」法。
 	//Inflg保險補助比率   vpay
 	// 1-1/4 2-1/2 3-全額 4-全額有上限 5-公勞1/4、健免  6-公勞1/2、健免  7-公勞有、健免 8-公勞有、健1/4 9-公勞有、健1/2
@@ -1283,9 +1365,9 @@ public class CommDAO {
 			
 			
 			if (inflg.matches("1|5")) 
-				lbinamt = (int) (tmpamt - Math.ceil((double) tmpamt * 0.25));
+				lbinamt = (int) (tmpamt - Math.round((double) tmpamt * 0.25));
 			else if (inflg.matches("2|6"))
-				lbinamt = (int) (tmpamt - Math.ceil((double) tmpamt * 0.5));
+				lbinamt = (int) (tmpamt - Math.round((double) tmpamt * 0.5));
 			else if (inflg.matches("3"))
 				lbinamt = 0;
 			else
@@ -1416,7 +1498,7 @@ public class CommDAO {
 		vDEGR2=StringUtil.fillChar(StringUtil.nullToString(vDEGR2),2,"0",false);
 		//實際支領KEY 本功別=0,表示pfkey組成為職稱+"00000"
 		if (vRANK.equals("F") && !vTitle.matches("CG|CH|CK")){
-			if (hid.equals("1A0")){ // >2024-9-1 加級數
+			if (vHid.equals("1A0")){ // >2024-9-1 加級數
 				if ( DateUtil.compareDate( Globals.gPFNew , vBANKDT ) ){
 					vPFKEY=vTitle+"000"+StringUtil.fillChar(vDEGR2,2,"0",false);
 				}else{
@@ -1425,7 +1507,7 @@ public class CommDAO {
 					else
 						vPFKEY=vTitle+"00000";
 				}
-			}else if(hid.equals("2A0")){
+			}else if(vHid.equals("2A0")){
 				vPFKEY=vTitle+"00000";
 			}
 		}else{
@@ -2226,6 +2308,7 @@ public class CommDAO {
 		}
 		return rtnMap;
 	}
+	
 	/**
 	 * 關閉VGHDataAccess與ResultSet
 	 * 
