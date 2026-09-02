@@ -1856,6 +1856,8 @@ public class SalController{
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
 		dataSourceNT=hospInfo.dataSourceNT;
 		da=new VGHDataAccess(dataSourceNT);
+		String dataSourceDSN=hospInfo.dataSourceDSN;
+		daDSN=new VGHDataAccess(dataSourceDSN);
 		Pabaspsn psnobj=null;
 		Pabatpay batpayobj=null;
 		Patrapay trapayobj=null;
@@ -1865,7 +1867,7 @@ public class SalController{
 		jsonObj = new JSONObject();
 		try{			//如果有中文，避免亂碼
 			response.setCharacterEncoding("utf-8");
-			tDAO = new SalNTDAO(da,hid);
+			tDAO = new SalNTDAO(da,daDSN,hid);
 			try{
 				//更新異動檔個人明細
 				if (fun.matches("updTraPsn")){
@@ -1885,6 +1887,18 @@ public class SalController{
 					traPayMap=tDAO.getTraPayList(in_data,userid,da);
 					jsonObj.element("otraPayList", traPayMap.get("otrapay_json"));
 					jsonObj.element("ntraPayList", traPayMap.get("ntrapay_json"));
+				}
+				//異動檔各項操作
+				else if (fun.matches("execTra")){
+					strRtn=tDAO.handelTran(in_data,userid,hid,da,daDSN);
+					if ("".equals(strRtn)) {
+						jsonObj.put("msg", selNm+"成功");
+						jsonObj.put("status", "Y");																				
+					}else{							
+						jsonObj.put("status", "N");
+						jsonObj.put("msg", selNm+"  失敗\n\r"+strRtn);			   
+					}
+					
 				}
 			}catch(Exception e){	
 				log.info(me+"失敗=="+e.toString());
@@ -1987,7 +2001,7 @@ public class SalController{
 			response.setCharacterEncoding("utf-8");
 			cDAO = new CommDAO(da,daDSN,hid);
 			try{
-				rtnMap=cDAO.getDegreByRank(in_data,fun,hid,da,daDSN);
+				rtnMap=cDAO.getDegreByRank(in_data,fun,null,null,0,hid,da,daDSN);
 				jsonObj.element("rankItem",rtnMap.get("rankItem"));
 				jsonObj.element("payItemList",rtnMap.get("payitm_json"));
 				jsonObj.element("insu_dpin",rtnMap.get("insu_dpin"));

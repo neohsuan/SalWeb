@@ -14,6 +14,7 @@ public class Globals implements Serializable{
 	public static final String dataSource_NT_LH =	"salds_lh";		//連接NT mgtdb 聯醫
 	
 	public static final String gNcontract =	"2015-1-1";	//新制契約生效日期
+	public static final String gNcontract_2A0 =	"2023-1-1";	//新制契約生效日期_屏榮
 	public static final String gPFNew =	"2024-8-1";		//契約績效組成KEY,含此日期前,職稱+00000
 	public static final String gPensionFund =	"2021-1-1";	//退撫基金溯自110年1月1日免納入所得稅
 	public static final String gCivilServants =	"2023-7-1";	//112年7月公保及退撫新制上路

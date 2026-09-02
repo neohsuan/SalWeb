@@ -1242,13 +1242,13 @@ $(function(){
     <a class="nav-link active" id="pills-battask-tab" data-toggle="pill" href="#byBatTaskMain" role="tab" aria-controls="pills-home" aria-selected="true">批次編輯</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="pills-bathanding-tab" data-toggle="pill" href="#byBatHandingMain" role="tab" aria-controls="pills-home" aria-selected="true">批次處理</a>
+    <a class="nav-link" id="pills-batHanding-tab" data-toggle="pill" href="#byBatHandingMain" role="tab" aria-controls="pills-profile" aria-selected="false">批次處理</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="pills-payleave-tab" data-toggle="pill" href="#byPayLeaveMain" role="tab" aria-controls="pills-home" aria-selected="true">事病假扣薪</a>
+    <a class="nav-link" id="pills-payleave-tab" data-toggle="pill" href="#byPayLeaveMain" role="tab" aria-controls="pills-profile" aria-selected="false">事病假扣薪</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="pills-teacheraw-tab" data-toggle="pill" href="#byTeacherawMain" role="tab" aria-controls="pills-home" aria-selected="true">教職及論文獎勵 </a>
+    <a class="nav-link" id="pills-teacheraw-tab" data-toggle="pill" href="#byTeacherawMain" role="tab" aria-controls="pills-profile" aria-selected="true">教職及論文獎勵 </a>
   </li>
 </ul>
 
@@ -1388,7 +1388,7 @@ $(function(){
 		</div>
 	</div>
 	<!--批次檔處理-->
-  	<div class="tab-pane fade show" id="byBatHandingMain" role="tabpanel" aria-labelledby="pills-bathanding-tab">
+  	<div class="tab-pane fade" id="byBatHandingMain" role="tabpanel" aria-labelledby="pills-batHanding-tab">
   		<div class="row p-1 mb-1 bg-secondary">
 			<div class="col-md-10">
 				<div class="form-inline">
@@ -1438,7 +1438,7 @@ $(function(){
 		</div>
   	</div>
   	<!--事病假扣薪-->
-  	<div class="tab-pane fade show" id="byPayLeaveMain" role="tabpanel" aria-labelledby="pills-payleave-tab">
+  	<div class="tab-pane fade" id="byPayLeaveMain" role="tabpanel" aria-labelledby="pills-payleave-tab">
   		<div class="row">
   			<div class="col-md-9">
   				<div class="form-inline">
@@ -1480,7 +1480,7 @@ $(function(){
 		</div>
   	</div>
   	<!--教職及論文獎勵 -->
-  	<div class="tab-pane fade show" id="byTeacherawMain" role="tabpanel" aria-labelledby="pills-teacheraw-tab">
+  	<div class="tab-pane fade" id="byTeacherawMain" role="tabpanel" aria-labelledby="pills-teacheraw-tab">
   		<div class="row">
   			<div class="col-md-9">
   				<div class="form-inline">

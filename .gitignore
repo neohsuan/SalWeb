@@ -1,0 +1,6 @@
+# 保留 Eclipse 專案設定
+!.classpath
+!.project
+
+# Compiled class files
+*.class
