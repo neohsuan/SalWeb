@@ -6587,27 +6587,30 @@ public class SalNTDAO {
 		boolean tmpflag = true;
 		int l_PAYEXPFKEY1=0,l_PAYEXPFKEY2=0,l_PAYEXPFKEY3=0;
 		int l_PAYPFSP1=0,l_PAYPFSP2=0,l_PAYPFSP3=0;
-		int l_Paydegr2=0;//新級別
-		
+		int l_Paydegr2=0;	//新級別
+		int l_Insuamt=0;	//新投保級距
+		int l_FD020=0,l_FD030=0;
 		// 找異動檔.tranum最大值
 		String sqlTranum_max = "select max(TRANUM) as MAX_TRANUM from " + this.tTraPsn + " where HID= ? with ur";
 
 		// 找異動檔.晉級調薪 
 		String sqlTran_31 = "select PAYCARD from " + this.tTraPsn
 						  + " where year(PATRADT)=? and month(PATRADT)=? and PATRACOD=31 and PAYRANK in('E','F') and HID=? with ur";
-		// 找基本檔符合晉級條件_高榮,月尾+月頭(含聘用) and paycard in ('A612')
+		// 找基本檔符合晉級條件_高榮,月尾+月頭(含聘用) 
+		String sqltmp="";
+		//sqltmp=" and paycard in ('HE73') ";
 		String sqlBasAdj_1A0 = "select PAYTITLP,A.* " + " from " + this.tBasPsn + " A " + 
 								" LEFT OUTER JOIN "+ this.tTitle + " B ON A.PAYTITLE = B.PAYTITLK and a.hid=b.hid "+ 
 				               " where (PAYRSGDT IS NULL or PAYRSGDT='9999-12-31') and A.PATRACOD NOT IN (23, 24)  "+
 				                 " and A.PAYRANK in ('F' )  and MONTH(A.PAYSGNDT) = ? and a.HID= ?  "+
-				                 " and (A.PAYEMPDT >= ? AND NOT B.PAYTITLP LIKE '%醫師%')  " + 
+				                 " and (A.PAYEMPDT >= ? AND NOT B.PAYTITLP LIKE '%醫師%') " + sqltmp + 
 				               " union " + 
 				               "select PAYTITLP,A.* "+
 				                " from " + this.tBasPsn + " A " + 
 				                " LEFT OUTER JOIN " + this.tTitle+ " B ON A.PAYTITLE = B.PAYTITLK and a.hid=b.hid "+
 				               " where (PAYRSGDT IS NULL or PAYRSGDT='9999-12-31') and A.PATRACOD NOT IN (23, 24) "+
 				                 " and A.PAYRANK in ( 'E','F' )  and MONTH(A.PAYSGNDT) = ? and a.HID= ?  "+
-				                 " AND (A.PAYEMPDT < ? or B.PAYTITLP LIKE '%醫師%') AND a.paytitle NOT IN ('CG') "+
+				                 " AND (A.PAYEMPDT < ? or B.PAYTITLP LIKE '%醫師%') AND a.paytitle NOT IN ('CG') "+sqltmp +
 				               " order by PAYCARD with ur ";
 		String sqlBasAdj_2A0 = "select PAYTITLP,A.* " + " from " + this.tBasPsn + " A " 
 							  + " LEFT OUTER JOIN "+ this.tTitle + " B ON A.PAYTITLE = B.PAYTITLK and a.hid=b.hid "+
@@ -6879,7 +6882,8 @@ public class SalNTDAO {
 										}
 									}
 								}
-								
+								// 異動支扣--新
+								// 從新支扣取得,寫入tpayAry->trapayMap(id,tpayAry)
 								dataMap = new HashMap();
 								dataMap.put("hid", hid);
 								dataMap.put("tradt", patradt);
@@ -6903,13 +6907,13 @@ public class SalNTDAO {
 								dataMap.put("pfsp1", l_PAYPFSP1);
 								dataMap.put("pfsp2", l_PAYPFSP2);
 								dataMap.put("pfsp3", l_PAYPFSP3);
-																// 異動檔.tranum最大值,要加1
-								intTraNum_max++;
+																
+								intTraNum_max++;		// 異動檔.tranum最大值,要加1
 
 								// 寫入異動個人
 								trapsnobj = new Patrapsn();
 								trapsnobj = putTraPsnObj(baspsnobj, dataMap, intTraNum_max, userid);
-								trapsnMap.put(baspsnobj.getPayidno(), trapsnobj);
+								
 								// 異動支扣--原
 								dataMap = new HashMap();
 								dataMap.put("hid", hid);
@@ -6917,12 +6921,26 @@ public class SalNTDAO {
 								dataMap.put("sort", "O");
 								// 每筆取得基本支扣ary,放入tpayAry,再放入map(id,tpayAry)
 								bpayAry = bpayMap.get(baspsnobj.getPayidno());
+								
 								if (bpayAry != null) {
+									l_FD020=0;
+									l_FD030=0;
+									for (Pabaspay basobj : bpayAry) {
+										//原支(FD020健保,FD030勞保)
+										if (basobj.getPaycode().equals("FD020")) {
+											l_FD020 =basobj.getPayamt();
+										}
+										if (basobj.getPaycode().equals("FD030")) {
+											l_FD030 =basobj.getPayamt();
+										}
+									}
+									
 									tpayAry = putTraPayAry(bpayAry, dataMap, intTraNum_max, userid);
 								}
 								// 異動支扣--新
 								// 從新支扣取得,寫入tpayAry->trapayMap(id,tpayAry)
 								NSalMap = cDAO.getDegreByRank("", "B", trapsnobj, tpayAry, l_LastDay, hid, da, null);
+															
 								JSONArray NSalAry = (JSONArray) NSalMap.get("payitm_json");
 								dataMap = new HashMap();
 								dataMap.put("hid", hid);
@@ -6930,8 +6948,28 @@ public class SalNTDAO {
 								dataMap.put("sort", "N");
 								dataMap.put("payidno", baspsnobj.getPayidno());
 								tpayAry = putTraPayJson(NSalAry, dataMap, intTraNum_max, tpayAry);
-
+								/*//把原支(FD020健保,FD030勞保) 寫回新支,因user要一致,不重算
+								if (tpayAry != null) {
+									for (Patrapay traobj : tpayAry) {
+										
+										if (traobj.getPaycode().equals("FD020")) {
+											traobj.setPayamt(l_FD020);
+										}
+										if (traobj.getPaycode().equals("FD030")) {
+											traobj.setPayamtl_FD030);
+										}
+									}
+									
+								}*/
 								trapayMap.put(baspsnobj.getPayidno(), tpayAry);
+								//更新投保額
+								l_Insuamt=(int) NSalMap.get("insu_dpin"); 	//新投保級距
+								if ( l_Insuamt >0) {
+									trapsnobj.setInsuamt(l_Insuamt);
+								}
+								//寫入異動個人
+								trapsnMap.put(baspsnobj.getPayidno(), trapsnobj);
+								
 								log.info(me + "  3.晉級名單: " + cnt++ + " " + baspsnobj.getPaycard() + " 月頭N/月尾Y:"
 										+ l_contract + " 級數:" + l_DEGR2 + " 範圍:" + intDEGR2Low + "-" + intDEGR2High
 										+ " 人事限制:" + intDEGR2HighPS + " 有效日數:" + l_effDD + " 補發日數:" + l_PAYDAYNO
