@@ -54,8 +54,8 @@ $(function(){
 	}
 	//依醫院角色,欄位show/hide或標題調整
 	if (pahid=="2A0"){
-		$('#label_acno').text('台銀薪資帳號');
-		$('#label_gedno').html('台銀薪資公儲帳號');				
+		$('#label_acno').text('台新薪資帳號');
+		$('#label_gedno').html('台新薪資公儲帳號');				
 	}else if (pahid=="3A0"){
 		$('#label_acno').html('玉山薪資帳號');
 		$('#label_gedno').html('玉山優惠儲蓄帳號');		
