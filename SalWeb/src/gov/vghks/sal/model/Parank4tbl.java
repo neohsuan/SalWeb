@@ -3,21 +3,21 @@ package gov.vghks.sal.model;
 import gov.vghks.common.util.StringUtil;
 
 import java.io.Serializable;
-//¾A¥Î±M·~¥[µ¹¹ï·Óªí
+//é©ç”¨å°ˆæ¥­åŠ çµ¦å°ç…§è¡¨
 public class Parank4tbl implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ¥N½X*/
+	/** ä»£ç¢¼*/
     private int rnk4key;
-    /** ¤¤¤å»¡©ú*/
+    /** ä¸­æ–‡èªªæ˜*/
     private String rnk4name;
-    /** §ó§ï¤é´Á */
+    /** æ›´æ”¹æ—¥æœŸ */
     private java.sql.Timestamp payupdtm;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zparank4tbl;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zptrank4tbl;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhrank4tbl;
     
 	public String getRnk4name() {

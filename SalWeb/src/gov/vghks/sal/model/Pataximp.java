@@ -5,35 +5,35 @@ import gov.vghks.common.util.StringUtil;
 import java.io.Serializable;
 
 public class Pataximp implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ¦~*/
+	/** å¹´*/
     private int payear;
-    /** ¤ë*/
+    /** æœˆ*/
     private int paymonth;
-    /** ¥d¸¹*/
+    /** å¡è™Ÿ*/
     private String paycard;
-    /** ¨­¤ÀÃÒ¸¹*/
+    /** èº«åˆ†è­‰è™Ÿ*/
     private String payidno;
-    /** Âà±b¶µ¥Ø*/
+    /** è½‰å¸³é …ç›®*/
     private String catgnm;
-    /** Âà±b¶µ¥Ø¥N½X*/
+    /** è½‰å¸³é …ç›®ä»£ç¢¼*/
     private String catgcd;
-    /** ©Ò±o®æ¦¡*/
+    /** æ‰€å¾—æ ¼å¼*/
     private String payformat;
-    /** ¶Ç²¼»s²¼¸¹*/
+    /** å‚³ç¥¨è£½ç¥¨è™Ÿ*/
     private String paycitation;
-    /** À³µ|©Ò±oPAYTAXPAY*/
+    /** æ‡‰ç¨…æ‰€å¾—PAYTAXPAY*/
     private int paytaxpay;
-    /** ¤w¦©©Ò±oµ|PAYTAXDEDUCT*/
+    /** å·²æ‰£æ‰€å¾—ç¨…PAYTAXDEDUCT*/
     private int paytaxdeduct;
-    /** ©m¦W*/
+    /** å§“å*/
     private String paynamec;
-    /** ©Ò±o¶}©l¤é´Á*/
+    /** æ‰€å¾—é–‹å§‹æ—¥æœŸ*/
     private String paybegin;
-    /** ©Ò±oµ²§ô¤é´Á*/
+    /** æ‰€å¾—çµæŸæ—¥æœŸ*/
     private String payend;
-    /** ¤áÄy¦a§}*/
+    /** æˆ¶ç±åœ°å€*/
     private String payaddrs;
     
 	public int getPayear() {

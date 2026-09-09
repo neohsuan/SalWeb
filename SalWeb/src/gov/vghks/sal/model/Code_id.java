@@ -1,11 +1,11 @@
 package gov.vghks.sal.model;
 
 public class Code_id {
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 2366284486426627547L;
-	/** ¨­¤À¥N½X*/
+	/** èº«åˆ†ä»£ç¢¼*/
     private String id;
-    /** ¨­¤À¤¤¤å*/
+    /** èº«åˆ†ä¸­æ–‡*/
     private String id_name;
     
 	public String getId() {

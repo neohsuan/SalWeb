@@ -1,41 +1,41 @@
 package gov.vghks.sal.model;
 
 import java.io.Serializable;
-//Â¾µ¥¤ä¦©--±M·~¥[µ¹¤Î¥DºŞ¥[µ¹ 
+//è·ç­‰æ”¯æ‰£--å°ˆæ¥­åŠ çµ¦åŠä¸»ç®¡åŠ çµ¦ 
 public class Paposi implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** Â¾µ¥¥N½X*/
+	/** è·ç­‰ä»£ç¢¼*/
     private String payposik; 
-    /** ³Ì§C­ÄÂI*/
+    /** æœ€ä½ä¿¸é»*/
     private int degrlow;
-    /** ³Ì°ª­ÄÂI*/
+    /** æœ€é«˜ä¿¸é»*/
     private int degrhigh;
-    /** Âå®v¤Î¬ã¨s¤H­û(¤G¥|-¤@)(¤G¥|-¤G) */
+    /** é†«å¸«åŠç ”ç©¶äººå“¡(äºŒå››-ä¸€)(äºŒå››-äºŒ) */
     private int paypsp1;
-    /** Âå°È§Ş³N¤H­û±M·~¥[µ¹(¤G¤»)(¤G¥|-¤G)*/
+    /** é†«å‹™æŠ€è¡“äººå“¡å°ˆæ¥­åŠ çµ¦(äºŒå…­)(äºŒå››-äºŒ)*/
     private int paypsp2;
-    /** ¦æ¬F¤H­û±M·~¥[µ¹(¤@)*/
+    /** è¡Œæ”¿äººå“¡å°ˆæ¥­åŠ çµ¦(ä¸€)*/
     private int paypsp3;
-    /** ¸ê°T¤H­û±M·~¥[µ¹(¤G¤Q)*/
+    /** è³‡è¨Šäººå“¡å°ˆæ¥­åŠ çµ¦(äºŒå)*/
     private int paypsp4;
-    /** ¥DºŞ¥[µ¹*/
+    /** ä¸»ç®¡åŠ çµ¦*/
     private int paypsp5;
-    /** Âå¾Ç¤uµ{*/
+    /** é†«å­¸å·¥ç¨‹*/
     private int paypsp6;
-    /** ­×§ï¤H­û*/
+    /** ä¿®æ”¹äººå“¡*/
     private String payposid;
-    /** ¤uµ{¤H­û*/
+    /** å·¥ç¨‹äººå“¡*/
     private int paypsp7;
-    /** ªÀ¤u(¤G)*/
+    /** ç¤¾å·¥(äºŒ)*/
     private int paypsp8;
-    /** §ó§ï¤é´Á */
+    /** æ›´æ”¹æ—¥æœŸ */
     private java.sql.Timestamp payupdat;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpaposi;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zptposi;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhposi;
     
 	public String getPayposik() {

@@ -151,7 +151,7 @@ $(function(){
 				}*/
 				//餉單編號(2個月內)
 				if (data.alBankDtTbl_2M[0]!=null){
-					select = $('#handing_tradt');
+					select = $('#handingA_tradt,#handingB_tradt');
 					select.empty();
 					select.append(options);
 					$.each(data.alBankDtTbl_2M, function(idx) {
@@ -309,7 +309,7 @@ $(function(){
   	
 	//代碼選單切換
 	$("#qryType").change(function(){
-		$("#divfield_1,#divfield_2,#divfield_3,#divfield_4,#divfield_5,#explan_1,#explan_2,#explan_3").addClass("d-none");	//隱藏
+		$("#divfield_1,#divfield_2,#explan_1,#explan_2,#explan_3,#explan_4").addClass("d-none");	//隱藏
   		selCode=(typeof($("#qryType option:selected").val().split(':')[0]) == "undefined" )? "1":$("#qryType option:selected").val().split(':')[0];
   		console.log(selCode);
   		if (selCode=="1" ){			//1.[匯入]晉級調薪 
@@ -319,6 +319,16 @@ $(function(){
 		else if (selCode=="2"){		//2.[刪除]晉級調薪 
 			$("#divfield_1").removeClass("d-none");
 			$("#explan_2").removeClass("d-none");
+		}
+		else if (selCode=="3" ){	//3:[匯入]待遇調整:ImpRemuInTra
+			$("#divfield_2").removeClass("d-none");
+			$("#explan_3").removeClass("d-none");
+			$("#handingB_monno_lbl,#handingB_monno").removeClass("d-none");
+		}
+		else if (selCode=="4"){		//4:[刪除]待遇調整:DelRemuInTra
+			$("#divfield_2").removeClass("d-none");
+			$("#explan_4").removeClass("d-none");
+			$("#handingB_monno_lbl,#handingB_monno").addClass("d-none");
 		}	 
   	});
   	 	
@@ -404,17 +414,33 @@ $(function(){
 			} 
  
  		}
- 		else if (btn == 'btn_handelTra'){	//異動處理--1[匯入]晉級調薪,2[刪除]晉級調薪
+ 		else if (btn == 'btn_handelTra'){	//異動處理--1[匯入]晉級調薪,2[刪除]晉級調薪,3[匯入]待遇調整 4[刪除]待遇調整
 			if (typeof($("#qryType option:selected").val())=='undefined'){
   				msg = '請勾選[選單]項目!!';
   			}
   			else{
   				selCode=$("#qryType option:selected").val().split(':')[0];
   				if (selCode=='1' || selCode=='2'){		//1:[匯入]晉級調薪 2:[刪除]晉級調薪
-  					if ($("#handing_tradt").val()=='' ){
+  					if ($("#handingA_tradt").val()=='' ){
 		  				msg += '請勾選[發薪日]!!';
 		  			}
   				}
+				else if (selCode=='3' || selCode=='4'){		//3[匯入]待遇調整 4[刪除]待遇調整
+					if ($("#handingB_tradt").val()=='' ){
+		  				msg += '請勾選[發薪日]!!';
+		  			}
+					if (typeof($("#handingB_range option:selected").val())=='undefined'){
+						msg += '請勾選[範圍]!!';
+					}	
+					if ($("#handingB_effdt").val()=='' ){
+		  				msg += '請勾選[生效日]!!';
+		  			}
+					if( selCode=='3' ){
+						if ($("#handingB_monno").val()=='' ){
+		  					msg += '[追補月數]空白!!';
+		  				}	
+					}
+				}	
   			}
 		}
   		return msg;	
@@ -980,7 +1006,7 @@ $(function(){
 				return false;
 			} 
 		}
-		else if (id == 'btn_handelTra'){	//異動處理--1[匯入]晉級調薪,2[刪除]晉級調薪
+		else if (id == 'btn_handelTra'){	//異動處理--1[匯入]晉級調薪,2[刪除]晉級調薪,3[匯入]待遇調整 4[刪除]待遇調整
 			msg = $.checkFields(id);
 			if(msg == ''){
 				in_data="";
@@ -988,13 +1014,33 @@ $(function(){
 				selCode = $("#qryType option:selected").val().split(':')[0];
 				selNm   = $("#qryType option:selected").val().split(':')[1];
 				selEn   = $("#qryType option:selected").val().split(':')[2];
-				patradt = $('#handing_tradt').val();        		
-        		in_data={
+				if (selCode=='1' || selCode=='2'){
+					patradt = $('#handingA_tradt').val();
+					in_data={
 							selCode :selCode,
 							selNm   :selNm,
 							selEn   :selEn,
 							patradt :patradt
 						   };
+				}	
+				else if (selCode=='3' || selCode=='4'){		//3[匯入]待遇調整 4[刪除]待遇調整
+					patradt       = $('#handingB_tradt').val();
+					var effdt     = $('#handingB_effdt').val();
+					var rangeNm   = $("#handingB_range option:selected").val().split(':')[1];
+					var rangeEn   = $("#handingB_range option:selected").val().split(':')[2];
+					var monno     = $('#handingB_monno').val();
+					in_data={
+							selCode :selCode,
+							selNm   :selNm,
+							selEn   :selEn,
+							patradt :patradt,
+							effdt   :effdt,
+							rangeNm   :rangeNm,
+							rangeEn   :rangeEn,
+							monno     :monno   	
+						   };
+				}
+        		
 				console.log("異動處理:in_data:"+JSON.stringify(in_data));		   
 			    //return false;
 			    
@@ -3328,7 +3374,9 @@ $(function(){
 			  	
 							<select id="qryType" class="form-control">
 								<option value="1:[匯入]晉級調薪:ImpPromoInTra">1[匯入]晉級調薪</option>
-								<option value="2:[刪除]晉級調薪:DelPromoInTra">2[刪除]晉級調薪</option>     					
+								<option value="2:[刪除]晉級調薪:DelPromoInTra">2[刪除]晉級調薪</option>
+								<option value="3:[匯入]待遇調整:ImpRemuInTra">3[匯入]待遇調整</option>
+								<option value="4:[刪除]待遇調整:DelRemuInTra">4[刪除]待遇調整</option>     					
 							</select>
 						</div>
 					</div>
@@ -3340,9 +3388,10 @@ $(function(){
 			
 	  		<div class="row">
 				<div class="col-md-12">
-					<div id="explan_1" class="text-danger">選擇[發薪日]執行產生</div>
-					<div id="explan_2" class="text-danger d-none" >回復處理:依[發薪日]刪除</div>
-					<div id="explan_3" class="text-danger d-none"></div>
+					<div id="explan_1" class="text-danger">執行產生:請選擇[發薪日]</div>
+					<div id="explan_2" class="text-danger d-none">回復處理:依[發薪日]刪除</div>
+					<div id="explan_3" class="text-danger d-none">1.階級支扣數、職等支扣數要先設定。<br>2.執行產生:[範圍][發薪日][生效日][追補月日],4項欄位必填.</div>
+					<div id="explan_4" class="text-danger d-none">回復處理:[範圍][發薪日][生效日],3項欄位必填,依條件刪除</div>
 				</div>
 			</div>
 			
@@ -3350,11 +3399,34 @@ $(function(){
 				<div class="col-md-12">
 					<div class="form-inline">
 						<div class="input-group">
+							<!--晉級調薪 -->
 							<div class="input-group" id="divfield_1">	
-								<label for="handing_tradt" >發薪日</label>
-								<select id="handing_tradt" class="form-control" title="發薪日">
-									
+								<label for="handingA_tradt" class="table-warning">發薪日</label>
+								<select id="handingA_tradt" class="form-control" title="發薪日">									
 								</select>							
+							</div>
+							<!--待遇調整 -->
+							<div class="input-group d-none" id="divfield_2">
+								<label for="handingB_range" class="table-warning">範圍</label>
+								<select id="handingB_range" class="form-control w-auto" title="範圍">
+									<option value="1:公保正式人員:Remu_1">1:公保正式人員</option>
+									<option value="2:勞保正式人員:Remu_2">2:勞保正式人員</option>
+									<option value="3:聘用住院醫師、聘實習醫師:Remu_3">3:聘用住院醫師、聘實習醫師</option>
+									<option value="4:契約人員_月頭:Remu_4">4:契約人員_月頭</option>
+									<option value="5:契約人員_月尾:Remu_5">5:契約人員_月尾</option>
+									<option value="6:契約人員_住院醫師:Remu_6">6:契約人員_住院醫師</option>
+									<option value="7:契約人員_主治醫師:Remu_7">7:契約人員_主治醫師</option>
+									<option value="8:屏榮契約_不含醫師,半日:Remu_8">8:屏榮契約_不含醫師,半日</option>
+									<option value="9:聯醫契約_不含半日:Remu_9">9:聯醫契約_不含半日</option>
+								</select>
+								<label for="handingB_tradt" class="table-warning">發薪日</label>
+								<select id="handingB_tradt" class="form-control w-auto" title="發薪日">
+									
+								</select>	
+								<label for="handingB_effdt" class="table-warning">生效日</label>
+								<input type="text" id="handingB_effdt" class="gclsCalTxt form-control w-auto" maxlength="10" size="10"/>
+								<label for="handingB_monno" id="handingB_monno_lbl" class="table-warning">追補月數</label> 
+								<input type="text" id="handingB_monno" class="form-control" maxlength="3" size="3" />		
 							</div>
 						</div>
 					</div>

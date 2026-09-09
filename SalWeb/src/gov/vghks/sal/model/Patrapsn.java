@@ -7,204 +7,204 @@ import gov.vghks.sal.Globals;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-//²§°Ê­Ó¤H©ú²Ó
+//ç•°å‹•å€‹äººæ˜ç´°
 public class Patrapsn implements Serializable{
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	SimpleDateFormat sdf_d=new SimpleDateFormat("yyyy-MM-dd");
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ²§°Ê¥N½X*/
+	/** ç•°å‹•ä»£ç¢¼*/
     private int patracod;
-    /** ²§°Ê¤é´Á*/
+    /** ç•°å‹•æ—¥æœŸ*/
     private java.sql.Date patradt;	
-    /** ¨­¥÷ÃÒ¦r¸¹*/
+    /** èº«ä»½è­‰å­—è™Ÿ*/
     private String payidno;
-    /** Âå°|§O*/
+    /** é†«é™¢åˆ¥*/
     private String hid;
-    /** ¥Í®Ä¤é´Á*/
+    /** ç”Ÿæ•ˆæ—¥æœŸ*/
     private java.sql.Date paeffdt;
-    /** »è³æ½s¸¹*/
+    /** é¤‰å–®ç·¨è™Ÿ*/
     private int salnum;
-    /** Â÷Â¾§_(Y/N)*/
+    /** é›¢è·å¦(Y/N)*/
     private String paylvefg;
-    /** ¥d¸¹*/
+    /** å¡è™Ÿ*/
     private String paycard;
-    /** Â¾°È½s¸¹*/
+    /** è·å‹™ç·¨è™Ÿ*/
     private String payempno;
-    /** ©m¦W*/
+    /** å§“å*/
     private String paynamec;
-    /** ³¡ªù¥N½X*/
+    /** éƒ¨é–€ä»£ç¢¼*/
     private String paydept;
-    /** ªì¥ô¤½Â¾¤é´Á*/
+    /** åˆä»»å…¬è·æ—¥æœŸ*/
     private java.sql.Date paygovdt;
-    /** ¨ì°|¤é´Á*/
+    /** åˆ°é™¢æ—¥æœŸ*/
     private java.sql.Date payempdt;
-    /** ²{Â¾¤é´Á*/
+    /** ç¾è·æ—¥æœŸ*/
     private java.sql.Date paysgndt;
-    /** Â÷Â¾¤é´Á*/
+    /** é›¢è·æ—¥æœŸ*/
     private java.sql.Date payrsgdt;
-    /** »È¦æ±b¸¹¬ì¥Ø*/
+    /** éŠ€è¡Œå¸³è™Ÿç§‘ç›®*/
     private String paybkid;
-    /** »È¦æ±b¸¹*/
+    /** éŠ€è¡Œå¸³è™Ÿ*/
     private String payacno;
-    /** ¤½Àx±b¸¹*/
+    /** å…¬å„²å¸³è™Ÿ*/
     private String paygedno;
-    /** «OÀI¶O¤ñ²v(1,1/4,1/2,0,¤W­­)*/
+    /** ä¿éšªè²»æ¯”ç‡(1,1/4,1/2,0,ä¸Šé™)*/
     private int payinflg;
-    /** °·«O¼Æ*/
+    /** å¥ä¿æ•¸*/
     private String paydpno;
-    /** ¦ÒÁZ*/
+    /** è€ƒç¸¾*/
     private String paypflag;
-    /** Â¾ºÙ¥N½X*/
+    /** è·ç¨±ä»£ç¢¼*/
     private String paytitle;
-    /** Â¾µ¥01-15,P1-P3,T1*/
+    /** è·ç­‰01-15,P1-P3,T1*/
     private String payrnk2n;
-    /** ¥»¥\1/2*/
+    /** æœ¬åŠŸ1/2*/
     private int payrank3;
-    /** ¯Å§O*/
+    /** ç´šåˆ¥*/
     private int paydegr2;
-    /** ­ÄÂI*/
+    /** ä¿¸é»*/
     private int paydegre;
-    /** ¶¥§O,1-9,A-F*/
+    /** éšåˆ¥,1-9,A-F*/
     private String payrank;
-    /** Åv²zÂ¾µ¥*/
+    /** æ¬Šç†è·ç­‰*/
     private String payrank2;
-    /** ¥DºŞ(Åv²z)*/
+    /** ä¸»ç®¡(æ¬Šç†)*/
     private String payrankc;
-    /** ±M¶Ô°ò¥»ÃB«×*/
+    /** å°ˆå‹¤åŸºæœ¬é¡åº¦*/
     private int paypfdoc;
-    /** ¤u§@¼úª÷(Y/N)*/
+    /** å·¥ä½œçé‡‘(Y/N)*/
     private String pacsflag;
-    /** ÃB¥~ÂI¼Æ1*/
+    /** é¡å¤–é»æ•¸1*/
     private int paypfsp1;
-    /** ÃB¥~ÂI¼Æ2*/
+    /** é¡å¤–é»æ•¸2*/
     private int paypfsp2;
-    /** ÃB¥~ÂI¼Æ3*/
+    /** é¡å¤–é»æ•¸3*/
     private int paypfsp3;
-    /** ÃB¥~ÂI¼Æ1¥N½X*/
+    /** é¡å¤–é»æ•¸1ä»£ç¢¼*/
     private int payexpfkey1;
-    /** ÃB¥~ÂI¼Æ2¥N½X*/
+    /** é¡å¤–é»æ•¸2ä»£ç¢¼*/
     private int payexpfkey2;
-    /** ÃB¥~ÂI¼Æ3¥N½X*/
+    /** é¡å¤–é»æ•¸3ä»£ç¢¼*/
     private int payexpfkey3;    
-    /** ¾A¥Î±M·~¥[µ¹ªí*/
+    /** é©ç”¨å°ˆæ¥­åŠ çµ¦è¡¨*/
     private int payrank4;
-    /** ­ìÂ¾ºÙ¥N½X*/
+    /** åŸè·ç¨±ä»£ç¢¼*/
     private String paotitle;
-    /** ­ìÂ¾µ¥01-15,P1-P3,T1*/
+    /** åŸè·ç­‰01-15,P1-P3,T1*/
     private String paornk2n;
-    /** ­ì¥»¥\1/2*/
+    /** åŸæœ¬åŠŸ1/2*/
     private int paorank3;
-    /** ­ì¯Å§O*/
+    /** åŸç´šåˆ¥*/
     private int paodegr2;
-    /** ­ì­ÄÂI*/
+    /** åŸä¿¸é»*/
     private int paodegre;
-    /** ­ì¶¥§O,1-9,A-F*/
+    /** åŸéšåˆ¥,1-9,A-F*/
     private String paorank;
-    /** ­ìÅv²zÂ¾µ¥*/
+    /** åŸæ¬Šç†è·ç­‰*/
     private String paorank2;
-    /** ­ì¥DºŞ(Åv²z)*/
+    /** åŸä¸»ç®¡(æ¬Šç†)*/
     private String paorankc;
-    /** ­ì±M¶Ô°ò¥»ÃB«×*/
+    /** åŸå°ˆå‹¤åŸºæœ¬é¡åº¦*/
     private int paopfdoc;
-    /** ­ì¤u§@¼úª÷(Y/N)*/
+    /** åŸå·¥ä½œçé‡‘(Y/N)*/
     private String paocsfla;
-    /** ­ìÃB¥~ÂI¼Æ1*/
+    /** åŸé¡å¤–é»æ•¸1*/
     private int paopfsp1;
-    /** ­ìÃB¥~ÂI¼Æ2*/
+    /** åŸé¡å¤–é»æ•¸2*/
     private int paopfsp2;
-    /** ­ìÃB¥~ÂI¼Æ3*/
+    /** åŸé¡å¤–é»æ•¸3*/
     private int paopfsp3;
-    /** ­ìÃB¥~ÂI¼Æ1¥N½X*/
+    /** åŸé¡å¤–é»æ•¸1ä»£ç¢¼*/
     private int paoexpfkey1;
-    /** ­ìÃB¥~ÂI¼Æ2¥N½X*/
+    /** åŸé¡å¤–é»æ•¸2ä»£ç¢¼*/
     private int paoexpfkey2;
-    /** ­ìÃB¥~ÂI¼Æ3¥N½X*/
+    /** åŸé¡å¤–é»æ•¸3ä»£ç¢¼*/
     private int paoexpfkey3;
-    /** ­ì¾A¥Î±M·~¥[µ¹ªí*/
+    /** åŸé©ç”¨å°ˆæ¥­åŠ çµ¦è¡¨*/
     private int paorank4;
     
-    /** §ß¾i¤H¼Æ*/
+    /** æ‰¶é¤Šäººæ•¸*/
     private int paytaxno;
-    /** ¸ÉµoÃº¦^¤ë¼Æ*/
+    /** è£œç™¼ç¹³å›æœˆæ•¸*/
     private int paymonno;
-    /** ¸ÉµoÃº¦^¤é¼Æ*/
+    /** è£œç™¼ç¹³å›æ—¥æ•¸*/
     private int paydayno;
-    /** ³Ì«á§ó§ïID*/
+    /** æœ€å¾Œæ›´æ”¹ID*/
     private String payupdid;
-    /** ³Ì«á§ó§ïTIME*/
+    /** æœ€å¾Œæ›´æ”¹TIME*/
     private java.sql.Timestamp payupdtm;
-    /** ³B²zºX¼Ğ*/
+    /** è™•ç†æ——æ¨™*/
     private String payflag;
-    /** ©M²§°Ê¤ä¦©¦W²ÓÃöÁp*/
+    /** å’Œç•°å‹•æ”¯æ‰£åç´°é—œè¯*/
     private int tranum;
-    /** ®Æ¹L±b¦Ü¥DÀÉ*/
+    /** æ–™éå¸³è‡³ä¸»æª”*/
     private String upmastdt;
     /** PASSWORD*/
     private String paypsw;
     
-    /** ¤¤°ê«H°UÁ~¬z±b¸¹*/
+    /** ä¸­åœ‹ä¿¡è¨—è–ªæ´¥å¸³è™Ÿ*/
     private String payctcbacno;
-    /** ¤¤°ê«H°U¤½Àx±b¸¹*/
+    /** ä¸­åœ‹ä¿¡è¨—å…¬å„²å¸³è™Ÿ*/
     private String payctcbgedno;
-    /** §ë«Oª÷ÃB*/
+    /** æŠ•ä¿é‡‘é¡*/
     private int insuamt;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpatrapsn;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpttrapsn;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhtrapsn;
-    /** ³¡ªù¤¤¤å*/
+    /** éƒ¨é–€ä¸­æ–‡*/
     private String padepnmc;
     
-    /** ·s¤ä*/    
-    /** ¶¥§O¤¤¤å*/
+    /** æ–°æ”¯*/    
+    /** éšåˆ¥ä¸­æ–‡*/
     private String rankname;
-    /** Â¾ºÙ¤¤¤å*/
+    /** è·ç¨±ä¸­æ–‡*/
     private String paytitlp;
-    /** Â¾ºÙÃş§O*/
+    /** è·ç¨±é¡åˆ¥*/
     private String patitsub;
-    /** ¾A¥Î±M·~¥[µ¹ªí¤¤¤å*/
+    /** é©ç”¨å°ˆæ¥­åŠ çµ¦è¡¨ä¸­æ–‡*/
     private String rnk4name;
-    /** ¥»¥\1/2 ¤¤¤å*/
+    /** æœ¬åŠŸ1/2 ä¸­æ–‡*/
     private String rank3name;
-    /** ¹ê»Ú¤ä»âKEY*/
+    /** å¯¦éš›æ”¯é ˜KEY*/
     private String pfkey;
-    /** °ò¥»ÂI¼Æ*/
+    /** åŸºæœ¬é»æ•¸*/
     private String pfbas;
-    /** Â¾µ¥ÂI¼Æ*/
+    /** è·ç­‰é»æ•¸*/
     private String pfdat;
     
-    /** ­ì¤ä*/
-    /** ¹ê»Ú¤ä»âKEY*/
+    /** åŸæ”¯*/
+    /** å¯¦éš›æ”¯é ˜KEY*/
     private String pokey;
-    /** °ò¥»ÂI¼Æ*/
+    /** åŸºæœ¬é»æ•¸*/
     private String pobas;
-    /** Â¾µ¥ÂI¼Æ*/
+    /** è·ç­‰é»æ•¸*/
     private String podat;
-    /** ¶¥§O¤¤¤å*/
+    /** éšåˆ¥ä¸­æ–‡*/
     private String ranknamo;
-    /** Â¾ºÙ¤¤¤å*/
+    /** è·ç¨±ä¸­æ–‡*/
     private String paytitlo;
-    /** Â¾ºÙÃş§O*/
+    /** è·ç¨±é¡åˆ¥*/
     private String patitsuo;
-    /** ¾A¥Î±M·~¥[µ¹ªí¤¤¤å*/
+    /** é©ç”¨å°ˆæ¥­åŠ çµ¦è¡¨ä¸­æ–‡*/
     private String rnk4namo;
-    /** ²§°Ê¤é´Á_String*/
+    /** ç•°å‹•æ—¥æœŸ_String*/
     private String strtradt;
-    /** ªì¥ô¤½Â¾¤é´Á_String*/
+    /** åˆä»»å…¬è·æ—¥æœŸ_String*/
     private String strgovdt;
-    /** ¨ì°|¤é´Á_String*/
+    /** åˆ°é™¢æ—¥æœŸ_String*/
     private String strempdt;
-    /** ·s¨î«´¬ù  «´¬ù°£Âå®v¥~,¨ì°|¤é2015/1°_¬°·s¨î*/
+    /** æ–°åˆ¶å¥‘ç´„  å¥‘ç´„é™¤é†«å¸«å¤–,åˆ°é™¢æ—¥2015/1èµ·ç‚ºæ–°åˆ¶*/
     private String contract;
-    /** ·s¨î«´¬ù  «´¬ù°£Âå®v¥~,¨ì°|¤é2015/1°_¬°·s¨î*/
+    /** æ–°åˆ¶å¥‘ç´„  å¥‘ç´„é™¤é†«å¸«å¤–,åˆ°é™¢æ—¥2015/1èµ·ç‚ºæ–°åˆ¶*/
     private String contraco;
     
-    /** ¤áÄy¦a§}*/
+    /** æˆ¶ç±åœ°å€*/
     private String payaddrs;
-    /** ²§°Ê­ì¦]¤¤¤å*/
+    /** ç•°å‹•åŸå› ä¸­æ–‡*/
     private String traname;
     
 	public String getPayidno() {
@@ -402,15 +402,15 @@ public class Patrapsn implements Serializable{
 	public void setPayempdt(java.sql.Date payempdt) {
 		this.payempdt = payempdt;
 	}
-	//¨ì°|¤é_string
+	//åˆ°é™¢æ—¥_string
 	public String getStrempdt() {
 		return sdf_d.format(this.payempdt);
 	}
 
-	//«´¬ù
-	//°ªºa1A0--Âå®v:ÂÂ¨îN,«´¬ù:¨ì°|¤é2015/1°_¬°·s¨îY,ÂÂ¨îN
-	//«Ìºa2A0--Âå®v:ÂÂ¨îN,«´¬ù:·s¨îY
-	//ÁpÂå3A0--·s¨îY
+	//å¥‘ç´„
+	//é«˜æ¦®1A0--é†«å¸«:èˆŠåˆ¶N,å¥‘ç´„:åˆ°é™¢æ—¥2015/1èµ·ç‚ºæ–°åˆ¶Y,èˆŠåˆ¶N
+	//å±æ¦®2A0--é†«å¸«:èˆŠåˆ¶N,å¥‘ç´„:æ–°åˆ¶Y
+	//è¯é†«3A0--æ–°åˆ¶Y
 	public String getContract() { 
 		String rtnTmp="";
 		try {
@@ -418,13 +418,13 @@ public class Patrapsn implements Serializable{
 			if (this.getHid().equals("3A0"))
 				rtnTmp="Y";
 			else if (this.getHid().equals("2A0")){
-				if (("F".equals(payrank) && !this.paytitlp.contains("Âå®v")))
+				if (("F".equals(payrank) && !this.paytitlp.contains("é†«å¸«")))
 					rtnTmp="N";
 				else
 					rtnTmp="Y";
 			}
 			else if (this.getHid().equals("1A0")){	
-				if (("F".equals(payrank) && !this.paytitlp.contains("Âå®v"))){
+				if (("F".equals(payrank) && !this.paytitlp.contains("é†«å¸«"))){
 					if( DateUtil.compareDate(empdt, Globals.gNcontract) )
 						rtnTmp="N";
 					else
@@ -432,16 +432,16 @@ public class Patrapsn implements Serializable{
 				}
 			}
 		} catch (ParseException e) {
-			// TODO ¦Û°Ê²£¥Í catch °Ï¶ô
+			// TODO è‡ªå‹•ç”¢ç”Ÿ catch å€å¡Š
 			e.printStackTrace();
 		}
 		return rtnTmp;
 	}
 	
-	//«´¬ù
-	//°ªºa1A0--Âå®v:ÂÂ¨îN,«´¬ù:¨ì°|¤é2015/1°_¬°·s¨îY,ÂÂ¨îN
-	//«Ìºa2A0--Âå®v:ÂÂ¨îN,«´¬ù:·s¨îY
-	//ÁpÂå3A0--·s¨îY
+	//å¥‘ç´„
+	//é«˜æ¦®1A0--é†«å¸«:èˆŠåˆ¶N,å¥‘ç´„:åˆ°é™¢æ—¥2015/1èµ·ç‚ºæ–°åˆ¶Y,èˆŠåˆ¶N
+	//å±æ¦®2A0--é†«å¸«:èˆŠåˆ¶N,å¥‘ç´„:æ–°åˆ¶Y
+	//è¯é†«3A0--æ–°åˆ¶Y
 	public String getContraco() { 
 		String rtnTmp="";
 		try {
@@ -449,13 +449,13 @@ public class Patrapsn implements Serializable{
 			if (this.getHid().equals("3A0"))
 				rtnTmp="Y";
 			else if (this.getHid().equals("2A0")){
-				if (("F".equals(paorank) && !this.paytitlo.contains("Âå®v")))
+				if (("F".equals(paorank) && !this.paytitlo.contains("é†«å¸«")))
 					rtnTmp="N";
 				else
 					rtnTmp="Y";
 			}
 			else if (this.getHid().equals("1A0")){	
-				if (("F".equals(paorank) && !this.paytitlo.contains("Âå®v"))){
+				if (("F".equals(paorank) && !this.paytitlo.contains("é†«å¸«"))){
 					if( DateUtil.compareDate(empdt, Globals.gNcontract) )
 						rtnTmp="N";
 					else
@@ -464,7 +464,7 @@ public class Patrapsn implements Serializable{
 			}
 			
 		} catch (ParseException e) {
-			// TODO ¦Û°Ê²£¥Í catch °Ï¶ô
+			// TODO è‡ªå‹•ç”¢ç”Ÿ catch å€å¡Š
 			e.printStackTrace();
 		}
 		return rtnTmp;

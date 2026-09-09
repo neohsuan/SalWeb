@@ -3,35 +3,35 @@ package gov.vghks.sal.model;
 import gov.vghks.common.util.StringUtil;
 
 import java.io.Serializable;
-//¤ä¦©¥N½X 
+//æ”¯æ‰£ä»£ç¢¼ 
 public class Papayitm implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ¥N½X*/
+	/** ä»£ç¢¼*/
     private String paycode;
-    /** ¤¤¤å»¡©ú*/
+    /** ä¸­æ–‡èªªæ˜*/
     private String pacodnmc;
-    /** §R°£§_*/
+    /** åˆªé™¤å¦*/
     private String pacoddel;
-    /** ±ÂÅv½X*/
+    /** æˆæ¬Šç¢¼*/
     private String payauth;
-    /** ¬O§_¦C¤J©Ò±o*/
+    /** æ˜¯å¦åˆ—å…¥æ‰€å¾—*/
     private String payiftax;
-    /** ¬O§_¦C¤J¼g¤J°ò¥»ÀÉ*/
+    /** æ˜¯å¦åˆ—å…¥å¯«å…¥åŸºæœ¬æª”*/
     private String paupbas;
-    /** ¬O§_¤J©Ò±oµ|À³­p¦¬¤J*/
+    /** æ˜¯å¦å…¥æ‰€å¾—ç¨…æ‡‰è¨ˆæ”¶å…¥*/
     private String payreward;;
-    /** §ó§ïªÌ*/
+    /** æ›´æ”¹è€…*/
     private String payupdid;
-    /** ³Ì«á§ó§ïTIME*/
+    /** æœ€å¾Œæ›´æ”¹TIME*/
     private java.sql.Timestamp payupdat;
-    /** Âå°|§O*/
+    /** é†«é™¢åˆ¥*/
     private String hid;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpapayitm;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zptpayitm;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhpayitm;
     
 	public String getPaycode() {

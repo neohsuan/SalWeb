@@ -6,43 +6,43 @@ import org.apache.log4j.Logger;
 public class PsInsu {
 	SimpleDateFormat sdf_d=new SimpleDateFormat("yyyy-MM-dd");
 	private static final long serialVersionUID = 1L;
-	static Logger log = Logger.getLogger(PsInsu.class); //©I¥slog4j
+	static Logger log = Logger.getLogger(PsInsu.class); //å‘¼å«log4j
 	
-	private String pbidtno="";      	//¨­¤ÀÃÒ¦r¸¹
-	private int inver=0;	      		//ª©¦¸:0³Ì·sª©,¦³²§°Ê+1
-	private String hid="";      		//Âå°|¥N½X
-	private String pbsupfg="";      	//¤u§@°|°Ï
-	private String paycard="";      	//¥d¸¹
-	private String pbnamefd="";      	//©m¦W
-	private java.sql.Date pbbirthd;      	//¥X¥Í¤é´Á
-	private String pbposino;      		//Â¾°È½s¸¹
-	private String pbporank;      		//©xÂ¾µ¥
-	private String pbpagrad;      		//­Ä¯Å
-	private String pbpapont;	      	//­ÄÂI
-	private String pbpchief;	      	//¥DºŞ¯Å§O
-	private String pbtitcod;			//Â¾ºÙ¥N½X
-	private String pbtitnme;			//Â¾ºÙ¤¤¤å
-	private String instus;				//¦b«Oª¬ºA 2°h«O,3Á~¸ê½Õ¾ã,4¥[«O,5¯dÂ¾°±Á~Äò«O,6¯d°±Äò«O¤H­û¦^Â¾´_Á~
-	private java.sql.Date pblsvdat;		//¥Í®Ä¤é
-	private int inreal;					//°·«O¹ê»Ú¤u¸ê
-	private int lbreal;					//³Ò«O¹ê»Ú¤u¸ê
-	private int dpinig;					//°·«O§ë«O¯Å¶Z
-	private int lbinig;					//³Ò«O§ë«O¯Å¶Z
-	private int wrinig;					//³Ò°h§ë«O¯Å¶Z 1500-150000
-	private int occinig;				//Â¾¨a§ë«O¯Å¶Z 26400-72800
-	private int selfvol;				//­Ó¤H¦ÛÄ@´£Ãº²v 0-6
-	private String lbspflg;				//³Ò«O¯S®í¨­¤À§O ¤@¯ë¡BB2¡BP0¡BS0¡BV0¡BH0¡BH3¡BH4
-	private String dpspflg;				//°·«O¯S®í¨­¤À§O 0¤@¯ë¡B3_¥ş§K¡B4_¥ş§K¦³¤W­­¡B2_¸É§U1/2¡B1_¸É§U1/4
-	private java.sql.Date inupdt;		//¶×¥X¤é´Á
-	private String inrmk;				//³Æµù
-	private String updnm;				//°O¿ı¤H­û
-	private java.sql.Timestamp updtm;//¤é´Á®ÉÂW  
+	private String pbidtno="";      	//èº«åˆ†è­‰å­—è™Ÿ
+	private int inver=0;	      		//ç‰ˆæ¬¡:0æœ€æ–°ç‰ˆ,æœ‰ç•°å‹•+1
+	private String hid="";      		//é†«é™¢ä»£ç¢¼
+	private String pbsupfg="";      	//å·¥ä½œé™¢å€
+	private String paycard="";      	//å¡è™Ÿ
+	private String pbnamefd="";      	//å§“å
+	private java.sql.Date pbbirthd;      	//å‡ºç”Ÿæ—¥æœŸ
+	private String pbposino;      		//è·å‹™ç·¨è™Ÿ
+	private String pbporank;      		//å®˜è·ç­‰
+	private String pbpagrad;      		//ä¿¸ç´š
+	private String pbpapont;	      	//ä¿¸é»
+	private String pbpchief;	      	//ä¸»ç®¡ç´šåˆ¥
+	private String pbtitcod;			//è·ç¨±ä»£ç¢¼
+	private String pbtitnme;			//è·ç¨±ä¸­æ–‡
+	private String instus;				//åœ¨ä¿ç‹€æ…‹ 2é€€ä¿,3è–ªè³‡èª¿æ•´,4åŠ ä¿,5ç•™è·åœè–ªçºŒä¿,6ç•™åœçºŒä¿äººå“¡å›è·å¾©è–ª
+	private java.sql.Date pblsvdat;		//ç”Ÿæ•ˆæ—¥
+	private int inreal;					//å¥ä¿å¯¦éš›å·¥è³‡
+	private int lbreal;					//å‹ä¿å¯¦éš›å·¥è³‡
+	private int dpinig;					//å¥ä¿æŠ•ä¿ç´šè·
+	private int lbinig;					//å‹ä¿æŠ•ä¿ç´šè·
+	private int wrinig;					//å‹é€€æŠ•ä¿ç´šè· 1500-150000
+	private int occinig;				//è·ç½æŠ•ä¿ç´šè· 26400-72800
+	private int selfvol;				//å€‹äººè‡ªé¡˜æç¹³ç‡ 0-6
+	private String lbspflg;				//å‹ä¿ç‰¹æ®Šèº«åˆ†åˆ¥ ä¸€èˆ¬ã€B2ã€P0ã€S0ã€V0ã€H0ã€H3ã€H4
+	private String dpspflg;				//å¥ä¿ç‰¹æ®Šèº«åˆ†åˆ¥ 0ä¸€èˆ¬ã€3_å…¨å…ã€4_å…¨å…æœ‰ä¸Šé™ã€2_è£œåŠ©1/2ã€1_è£œåŠ©1/4
+	private java.sql.Date inupdt;		//åŒ¯å‡ºæ—¥æœŸ
+	private String inrmk;				//å‚™è¨»
+	private String updnm;				//è¨˜éŒ„äººå“¡
+	private java.sql.Timestamp updtm;//æ—¥æœŸæ™‚æˆ³  
     
-    /** ¥X¥Í¤é´Á_String*/
+    /** å‡ºç”Ÿæ—¥æœŸ_String*/
     private String strbirthd;
-    /** ¥Í®Ä¤é_String*/
+    /** ç”Ÿæ•ˆæ—¥_String*/
     private String strlsvdat;
-    /** ¶×¥X¤é´Á_String*/
+    /** åŒ¯å‡ºæ—¥æœŸ_String*/
     private String strinupdt;
     
   

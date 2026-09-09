@@ -1,19 +1,19 @@
 package gov.vghks.sal.model;
 
 public class Pscode {
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ¥N½XÃş§O*/
+	/** ä»£ç¢¼é¡åˆ¥*/
     private String pctype;
-    /** ¥N½X½s¸¹*/
+    /** ä»£ç¢¼ç·¨è™Ÿ*/
     private String pcsysno;
-    /** ¥N½X¦WºÙ*/
+    /** ä»£ç¢¼åç¨±*/
     private String pcsysnm;
-    /** °±¥Îµù°O*/
+    /** åœç”¨è¨»è¨˜*/
     private String pccanel;
-    /**Åã¥Ü±Æ¦C¶¶§Ç*/
+    /**é¡¯ç¤ºæ’åˆ—é †åº*/
     private String pcsort;
-    /**¯Å¼Æ¤W­­*/
+    /**ç´šæ•¸ä¸Šé™*/
     private int maxlevel;
     
 	public String getPctype() {

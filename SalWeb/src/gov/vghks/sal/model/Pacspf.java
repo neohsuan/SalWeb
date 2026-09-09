@@ -1,23 +1,23 @@
 package gov.vghks.sal.model;
 
 public class Pacspf {
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
 	/** key*/
     private String pacskey;
-    /** °ò¥»¿n¤À*/
+    /** åŸºæœ¬ç©åˆ†*/
     private int pacsbase;
-    /** ­Ä¯Å¿n¤À*/
+    /** ä¿¸ç´šç©åˆ†*/
     private int pacsdata;
-    /** Â¾ºÙ*/
+    /** è·ç¨±*/
     private String pacsname;
-    /** ­t³d¤HID*/
+    /** è² è²¬äººID*/
     private String payupdid;
-    /** ³Ì«á§ó§ïTIME*/
+    /** æœ€å¾Œæ›´æ”¹TIME*/
     private java.sql.Timestamp payupdat;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpacspf;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zptcspf;
     
 	public String getPacskey() {

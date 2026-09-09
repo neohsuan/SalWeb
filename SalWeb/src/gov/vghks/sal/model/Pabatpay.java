@@ -1,47 +1,47 @@
 package gov.vghks.sal.model;
 
 public class Pabatpay {
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ²§°Ê¤é´Á*/
+	/** ç•°å‹•æ—¥æœŸ*/
     private java.sql.Date patradt;
-	/** ¨­¥÷ÃÒ¦r¸¹*/
+	/** èº«ä»½è­‰å­—è™Ÿ*/
     private String payidno;
-    /** »è³æ½s¸¹*/
+    /** é¤‰å–®ç·¨è™Ÿ*/
     private int salnum;
-    /** ¥d¸¹*/
+    /** å¡è™Ÿ*/
     private String paycard;
-    /** ¤ä¦©¥N½X*/
+    /** æ”¯æ‰£ä»£ç¢¼*/
     private String paycode;
-    /** Y§ó·s¦Ü¥DÀÉ N¨C¤ëÂk¹s*/
+    /** Yæ›´æ–°è‡³ä¸»æª” Næ¯æœˆæ­¸é›¶*/
     private String paupbas;
-    /** ª÷ÃB*/
+    /** é‡‘é¡*/
     private int payamt;
-    /** ¿é¤JID*/
+    /** è¼¸å…¥ID*/
     private String padutyid;
-    /** ³Ì«á§ó§ïTIME*/
+    /** æœ€å¾Œæ›´æ”¹TIME*/
     private java.sql.Timestamp payupdat;
-    /** ³B²zºX¼Ğ*/
+    /** è™•ç†æ——æ¨™*/
     private String payflag;
-    /** ¸ê®Æ¹L±b¦Ü¥DÀÉ*/
+    /** è³‡æ–™éå¸³è‡³ä¸»æª”*/
     private String upmastdt;
-    /** Âå°|§O*/
+    /** é†«é™¢åˆ¥*/
     private String hid;
-    /** ¤ä¦©¥N½X ¤¤¤å*/
+    /** æ”¯æ‰£ä»£ç¢¼ ä¸­æ–‡*/
     private String pacodnmc;
-    /** ±ÂÅv½X*/
+    /** æˆæ¬Šç¢¼*/
     private String payauth;
-    /** ¬O§_¦C¤JÀ³µ|©Ò±o*/
+    /** æ˜¯å¦åˆ—å…¥æ‡‰ç¨…æ‰€å¾—*/
     private String payiftax;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhbatpay;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpabatpay;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zptbatpay;
-    /** ¦~*/
+    /** å¹´*/
     private String yy;
-    /** ¤ë*/
+    /** æœˆ*/
     private String mm;
     
 	public java.sql.Date getPatradt() {

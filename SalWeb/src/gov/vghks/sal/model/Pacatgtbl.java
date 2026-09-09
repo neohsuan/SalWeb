@@ -1,21 +1,21 @@
 package gov.vghks.sal.model;
 
 public class Pacatgtbl {
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** Âà±b¶µ¥Ø¥N½X*/
+	/** è½‰å¸³é …ç›®ä»£ç¢¼*/
     private int paycatg;
-    /** Âà±b¶µ¥Ø¤¤¤å*/
+    /** è½‰å¸³é …ç›®ä¸­æ–‡*/
     private String catgname;
-    /** ­t³d¤HID*/
+    /** è² è²¬äººID*/
     private String payupdid;
-    /** ³Ì«á§ó§ïTIME*/
+    /** æœ€å¾Œæ›´æ”¹TIME*/
     private java.sql.Timestamp payupdat;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpacatgtbl;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zptcatgtbl;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhcatgtbl;
 	
 	public String getPayupdid() {

@@ -86,56 +86,58 @@ public class SalNTDAO {
 	private String sql = "";
 	static ArrayList<Map<String, Object>> result = null;
 	ArrayList<Object> params = new ArrayList<Object>();
-	static Logger log = Logger.getLogger(SalNTDAO.class); // ©I¥slog4j
+	static Logger log = Logger.getLogger(SalNTDAO.class); // å‘¼å«log4j
 	private VGHDataAccess da = null;
 	private VGHDataAccess daDSN = null;
-	private static final int META_TYPE = 2; // ¦^¶Çmap¤¤Äæ¦ì¦WºÙ¬O¤p¼g
-	private static boolean connFlg = false; // false:¥Ñ¦¹ª«¥ónew conn¡Atrue:¥Ñ©I¥sª«¥ó¶Ç¤Jconn
+	private static final int META_TYPE = 2; // å›å‚³mapä¸­æ¬„ä½åç¨±æ˜¯å°å¯«
+	private static boolean connFlg = false; // false:ç”±æ­¤ç‰©ä»¶new connï¼Œtrue:ç”±å‘¼å«ç‰©ä»¶å‚³å…¥conn
 	private String hid = "";
 	static String g_dataSourceNT = "";
 	static String g_dataSource = "";
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-	private String tBasPay = "PA.PABASPAY"; // °ò¥»¤ä¦©
-	private String tBasPsn = "PA.PABASPSN"; // °ò¥»ÀÉ
-	private String tBatPay = "PA.PABASPSN"; // §å¦¸ÀÉ
-	private String tTraCode = "PA.PATRACODE"; // 1²§°Ê¥N½X
-	private String tDept = "PA.PADEPT"; // 2³æ¦ì¥N½X
-	private String tTitle = "PA.PATITLE"; // 3Â¾ºÙ
-	private String tRankCode = "PA.PARANKCODE"; // 4¶¥§O¥N½X
-	private String tCatgTbl = "PA.PACATGTBL"; // 5¤H¤u³y¥UÀ³­pÂà±b¶µ¥Ø¥N½X
-	private String tExpfTbl = "PA.PAEXPFTBL"; // 6ÁZ®ÄÃB¥~ÂI¼Æ¹ï·Óªí
-	private String tRnk4Tbl = "PA.PARNK4TBL"; // 7¾A¥Î±M·~¥[µ¹¹ï·Óªí
-	private String tBankDtTbl = "PA.PABANK"; // 1µoÁ~¤é¤Î¤J±b¤é¹ïÀ³ÀÉ
-	private String tTaxTbl = "PA.PATAXTBL"; // 9Á~¸ê©Ò±o¦©Ãºµ|ÃBªí
-	private String tPftlTbl = "PA.PAPFTL"; // 10¥ş°|ÁZ®Ä·JÁ`
-	private String tDpinTbl = "PA.PADPINTBL"; // ¥ş¥Á°·±d«OÀI­t¾áª÷ÃBªí
-	private String tLbinTbl = "PA.PALBINTBL"; // ³Ò«O§ë«Oª÷ÃB¹ï·Óªí
-	private String tLbrpTbl = "PA.PALBRPTBL"; // ³Ò¤u°h¥ğª÷¤ë´£Ãº¤u¸ê¤À¯Åªí
-	private String tPosiTbl = "PA.PAPOSI"; // Â¾µ¥¤ä¦©--±M·~¥[µ¹¤Î¥DºŞ¥[µ¹
-	private String tRankTbl = "PA.PARANK"; // ¶¥¯Å¤ä¦©
-	private String tCspfTbl = "PA.PACSPF"; // ¤u§@¼úª÷¤ä¦©
-	private String tDatPsn = "PA.PADATPSN"; // ¤ë¤ä­Ó¤H©ú²Ó
-	private String tDatPsnDw = "PA.PADATPSN_DW"; // ¤ë¤ä­Ó¤H©ú²Ó_¾ú¥v
-	private String tDatPay = "PA.PADATPAY"; // ¤ë¤ä¤ä¦©©ú²Ó
-	private String tDatPayDw = "PA.PADATPAY_DW"; // ¤ë¤ä¤ä¦©©ú²Ó_¾ú¥v
-	private String tPayItm = "PA.PAPAYITM"; // ¤ä¦©¶µ¥Ø·JÁ`
-	private String tBasAdr = "PA.PABASADR"; // ¦a§}
-	private String tHist = "PA.PAHIST"; // ¾ú¥vÀÉ
-	private String tTraPsn = "PA.PATRAPSN"; // ²§°Ê­Ó¤H©ú²Ó
-	private String tTraPsnDw = "PA.PATRAPSN_DW"; // ²§°Ê­Ó¤H©ú²Ó_¾ú¥v
-	private String tTraPay = "PA.PATRAPAY"; // ²§°Ê¤ä¦©©ú²Ó
-	private String tTraPayDw = "PA.PATRAPAY_DW"; // ²§°Ê¤ä¦©©ú²Ó_¾ú¥v
-	private String tTaxPsn = "PA.PATAXPSN"; // ©Ò±oµ|­Ó¤H©ú²Ó
-	private String tTaxTran = "PA.PATAXTRAN"; // ©Ò±oµ|Âà±b©ú²Ó
-	private String tTaxCash = "PA.PATAXCASH"; // ©Ò±oµ|²{ª÷©ú²Ó
-	private String tRPDTL = "PA.PAREPDETAIL"; // »s§@³øªí©ú²Ó
-	private String tRPPRT = "PA.PAREPORT"; // ³øªíÀÉ¬[ºc
-	private String tNhiCal = "PA.PANHICAL"; // ¤G¥N°·«O(¸É¥R«OÀI¶O_¼úª÷)
-	private String tNhiDet = "PA.PANHIDET"; // ¤G¥N°·«O¥Ó³ø¦©¶O©ú²Ó
-	private String tTeaChaw = "PA.PATEACHAW"; // ±ĞÂ¾¤Î½×¤å¼úÀy
-
-	private String tmpZtitle = "ZPATITLE"; // ®ÉÂW
+	private String tBasPay = "PA.PABASPAY"; // åŸºæœ¬æ”¯æ‰£
+	private String tBasPsn = "PA.PABASPSN"; // åŸºæœ¬æª”
+	private String tBatPay = "PA.PABATPAY"; // æ‰¹æ¬¡æª”
+	private String tTraCode = "PA.PATRACODE"; // 1ç•°å‹•ä»£ç¢¼
+	private String tDept = "PA.PADEPT"; // 2å–®ä½ä»£ç¢¼
+	private String tTitle = "PA.PATITLE"; // 3è·ç¨±
+	private String tRankCode = "PA.PARANKCODE"; // 4éšåˆ¥ä»£ç¢¼
+	private String tCatgTbl = "PA.PACATGTBL"; // 5äººå·¥é€ å†Šæ‡‰è¨ˆè½‰å¸³é …ç›®ä»£ç¢¼
+	private String tExpfTbl = "PA.PAEXPFTBL"; // 6ç¸¾æ•ˆé¡å¤–é»æ•¸å°ç…§è¡¨
+	private String tRnk4Tbl = "PA.PARNK4TBL"; // 7é©ç”¨å°ˆæ¥­åŠ çµ¦å°ç…§è¡¨
+	private String tBankDtTbl = "PA.PABANK"; // 1ç™¼è–ªæ—¥åŠå…¥å¸³æ—¥å°æ‡‰æª”
+	private String tTaxTbl = "PA.PATAXTBL"; // 9è–ªè³‡æ‰€å¾—æ‰£ç¹³ç¨…é¡è¡¨
+	private String tPftlTbl = "PA.PAPFTL"; // 10å…¨é™¢ç¸¾æ•ˆå½™ç¸½
+	private String tDpinTbl = "PA.PADPINTBL"; // å…¨æ°‘å¥åº·ä¿éšªè² æ“”é‡‘é¡è¡¨
+	private String tLbinTbl = "PA.PALBINTBL"; // å‹ä¿æŠ•ä¿é‡‘é¡å°ç…§è¡¨
+	private String tLbrpTbl = "PA.PALBRPTBL"; // å‹å·¥é€€ä¼‘é‡‘æœˆæç¹³å·¥è³‡åˆ†ç´šè¡¨
+	private String tPosiTbl = "PA.PAPOSI"; // è·ç­‰æ”¯æ‰£--å°ˆæ¥­åŠ çµ¦åŠä¸»ç®¡åŠ çµ¦
+	private String tRankTbl = "PA.PARANK"; // éšç´šæ”¯æ‰£
+	private String tCspfTbl = "PA.PACSPF"; // å·¥ä½œçé‡‘æ”¯æ‰£
+	private String tDatPsn = "PA.PADATPSN"; // æœˆæ”¯å€‹äººæ˜ç´°
+	private String tDatPsnDw = "PA.PADATPSN_DW"; // æœˆæ”¯å€‹äººæ˜ç´°_æ­·å²
+	private String tDatPay = "PA.PADATPAY"; // æœˆæ”¯æ”¯æ‰£æ˜ç´°
+	private String tDatPayDw = "PA.PADATPAY_DW"; // æœˆæ”¯æ”¯æ‰£æ˜ç´°_æ­·å²
+	private String tPayItm = "PA.PAPAYITM"; // æ”¯æ‰£é …ç›®å½™ç¸½
+	private String tBasAdr = "PA.PABASADR"; // åœ°å€
+	private String tHist = "PA.PAHIST"; // æ­·å²æª”
+	private String tTraPsn = "PA.PATRAPSN"; // ç•°å‹•å€‹äººæ˜ç´°
+	private String tTraPsnDw = "PA.PATRAPSN_DW"; // ç•°å‹•å€‹äººæ˜ç´°_æ­·å²
+	private String tTraPay = "PA.PATRAPAY"; // ç•°å‹•æ”¯æ‰£æ˜ç´°
+	private String tTraPayDw = "PA.PATRAPAY_DW"; // ç•°å‹•æ”¯æ‰£æ˜ç´°_æ­·å²
+	private String tTaxPsn = "PA.PATAXPSN"; // æ‰€å¾—ç¨…å€‹äººæ˜ç´°
+	private String tTaxTran = "PA.PATAXTRAN"; // æ‰€å¾—ç¨…è½‰å¸³æ˜ç´°
+	private String tTaxCash = "PA.PATAXCASH"; // æ‰€å¾—ç¨…ç¾é‡‘æ˜ç´°
+	private String tRPDTL = "PA.PAREPDETAIL"; // è£½ä½œå ±è¡¨æ˜ç´°
+	private String tRPPRT = "PA.PAREPORT"; // å ±è¡¨æª”æ¶æ§‹
+	private String tNhiCal = "PA.PANHICAL"; // äºŒä»£å¥ä¿(è£œå……ä¿éšªè²»_çé‡‘)
+	private String tNhiDet = "PA.PANHIDET"; // äºŒä»£å¥ä¿ç”³å ±æ‰£è²»æ˜ç´°
+	private String tTeaChaw = "PA.PATEACHAW"; // æ•™è·åŠè«–æ–‡çå‹µ
+	private String tLMONT = "PA.PALMONT";				//39è£½ä½œå ±è¡¨æ˜ç´°
+	private String tWKRETIR = "PA.PAWKRETIR";				//40å‹å·¥é€€ä¼‘é‡‘æª”
+	
+	private String tmpZtitle = "ZPATITLE"; // æ™‚æˆ³
 	private String tmpZrankce = "ZPARANKCODE";
 	private String tmpZbank = "ZPABANK";
 	private String tmpZdept = "ZPADEPT";
@@ -154,8 +156,16 @@ public class SalNTDAO {
 	private String tmpZpayitm = "ZPAPAYITM";
 	private String tmpZtaxtran = "ZPATAXTRAN";
 	private String tmpZtaxcash = "ZPATAXCASH";
-	private String tmpZbasadr = "ZLHBASADR";
-
+	private String tmpZbasadr ="ZPABASADR";
+	private String tmpZtaxpsn ="ZPATAXPSN";
+	private String tmpZdatpay ="ZPADATPAY";
+	private String tmpZdatpsn ="ZPADATPSN";
+	private String tmpZnhical ="ZPANHICAL";
+	private String tmpZnhidet ="ZPANHIDET";
+	private String tmpZrpdtl ="ZPAREPDETAIL";
+	private String tmpZwkretir ="ZPAWKRETIR";
+	private String tmpZlmont ="ZPAREPDETAIL";
+	
 	public SalNTDAO() {
 		super();
 	}
@@ -173,10 +183,10 @@ public class SalNTDAO {
 		this.hid = hid;
 		Tables tabInfo = Tables.getTables(hid);
 
-		tTaxPsn = tabInfo.tTaxPsn; // ©Ò±oµ|­Ó¤H©ú²Ó
-		tTaxTran = tabInfo.tTaxTran; // ©Ò±oµ|Âà±b©ú²Ó
-		tTaxCash = tabInfo.tTaxCash; // ©Ò±oµ|²{ª÷©ú²Ó
-		tBankDtTbl = tabInfo.tBankDtTbl; // µoÁ~¤é¤Î¤J±b¤é¹ïÀ³ÀÉ
+		tTaxPsn = tabInfo.tTaxPsn; // æ‰€å¾—ç¨…å€‹äººæ˜ç´°
+		tTaxTran = tabInfo.tTaxTran; // æ‰€å¾—ç¨…è½‰å¸³æ˜ç´°
+		tTaxCash = tabInfo.tTaxCash; // æ‰€å¾—ç¨…ç¾é‡‘æ˜ç´°
+		tBankDtTbl = tabInfo.tBankDtTbl; // ç™¼è–ªæ—¥åŠå…¥å¸³æ—¥å°æ‡‰æª”
 		tBasPsn = tabInfo.tBasPsn;
 		tBasPay = tabInfo.tBasPay;
 		tBatPay = tabInfo.tBatPay;
@@ -212,7 +222,9 @@ public class SalNTDAO {
 		tNhiCal = tabInfo.tNhiCal;
 		tNhiDet = tabInfo.tNhiDet;
 		tTeaChaw = tabInfo.tTeaChaw;
-
+		tLMONT=tabInfo.tLMONT;
+		tWKRETIR=tabInfo.tWKRETIR;
+		
 		tmpZtitle = tabInfo.tmpZtitle;
 		tmpZrankce = tabInfo.tmpZrankce;
 		tmpZbank = tabInfo.tmpZbank;
@@ -233,6 +245,14 @@ public class SalNTDAO {
 		tmpZtaxcash = tabInfo.tmpZtaxcash;
 		tmpZpayitm = tabInfo.tmpZpayitm;
 		tmpZbasadr = tabInfo.tmpZbasadr;
+		tmpZtaxpsn=tabInfo.tmpZtaxpsn;
+		tmpZdatpay=tabInfo.tmpZdatpay;
+		tmpZdatpsn=tabInfo.tmpZdatpsn;
+		tmpZnhical=tabInfo.tmpZnhical;
+		tmpZnhidet=tabInfo.tmpZnhidet;
+		tmpZrpdtl=tabInfo.tmpZrpdtl;
+		tmpZwkretir=tabInfo.tmpZwkretir;
+		tmpZlmont=tabInfo.tmpZlmont;
 	}
 
 	public SalNTDAO(VGHDataAccess da1, VGHDataAccess da2, String hid) {
@@ -243,10 +263,10 @@ public class SalNTDAO {
 		this.hid = hid;
 		Tables tabInfo = Tables.getTables(hid);
 
-		tTaxPsn = tabInfo.tTaxPsn; // ©Ò±oµ|­Ó¤H©ú²Ó
-		tTaxTran = tabInfo.tTaxTran; // ©Ò±oµ|Âà±b©ú²Ó
-		tTaxCash = tabInfo.tTaxCash; // ©Ò±oµ|²{ª÷©ú²Ó
-		tBankDtTbl = tabInfo.tBankDtTbl; // µoÁ~¤é¤Î¤J±b¤é¹ïÀ³ÀÉ
+		tTaxPsn = tabInfo.tTaxPsn; // æ‰€å¾—ç¨…å€‹äººæ˜ç´°
+		tTaxTran = tabInfo.tTaxTran; // æ‰€å¾—ç¨…è½‰å¸³æ˜ç´°
+		tTaxCash = tabInfo.tTaxCash; // æ‰€å¾—ç¨…ç¾é‡‘æ˜ç´°
+		tBankDtTbl = tabInfo.tBankDtTbl; // ç™¼è–ªæ—¥åŠå…¥å¸³æ—¥å°æ‡‰æª”
 		tBasPsn = tabInfo.tBasPsn;
 		tBasPay = tabInfo.tBasPay;
 		tBatPay = tabInfo.tBatPay;
@@ -282,6 +302,8 @@ public class SalNTDAO {
 		tNhiCal = tabInfo.tNhiCal;
 		tNhiDet = tabInfo.tNhiDet;
 		tTeaChaw = tabInfo.tTeaChaw;
+		tLMONT=tabInfo.tLMONT;
+		tWKRETIR=tabInfo.tWKRETIR;
 
 		tmpZtitle = tabInfo.tmpZtitle;
 		tmpZrankce = tabInfo.tmpZrankce;
@@ -303,10 +325,17 @@ public class SalNTDAO {
 		tmpZtaxcash = tabInfo.tmpZtaxcash;
 		tmpZpayitm = tabInfo.tmpZpayitm;
 		tmpZbasadr = tabInfo.tmpZbasadr;
-
+		tmpZtaxpsn=tabInfo.tmpZtaxpsn;
+		tmpZdatpay=tabInfo.tmpZdatpay;
+		tmpZdatpsn=tabInfo.tmpZdatpsn;
+		tmpZnhical=tabInfo.tmpZnhical;
+		tmpZnhidet=tabInfo.tmpZnhidet;
+		tmpZrpdtl=tabInfo.tmpZrpdtl;
+		tmpZwkretir=tabInfo.tmpZwkretir;
+		tmpZlmont=tabInfo.tmpZlmont;
 	}
 
-	// ¥N¤J¥N½XÀÉ
+	// ä»£å…¥ä»£ç¢¼æª”
 	public ArrayList<Object> getLoadCodeTbl(String tbl, String userid, String hid, VGHDataAccess da)
 			throws SQLException {
 		String me = getClass().getName() + ".getLoadCodeTbl(),userid = " + userid;
@@ -328,20 +357,20 @@ public class SalNTDAO {
 			sql = "SELECT RANKCODE, RANKNAME, RANKABBR, " + tmpZrankce + " from " + this.tRankCode
 					+ " order by RANKCODE with ur";
 		}
-		// Â¾ºÙ
+		// è·ç¨±
 		else if ("PATITLE".equals(tbl)) {
 			sql = "SELECT PAYTITLK, PATITSUB, PACHIEF, PAYTITLP, PAYTITLC, PACODDEL, PAYUPDID, PAYUPDAT, HID, "
 					+ tmpZtitle + " from " + this.tTitle + " where hid=? order by PATITSUB,PAYTITLK with ur";
 			params.add(hid);
-		} else if ("PABANK".equals(tbl)) {// 6­Ó¤ë¤º
+		} else if ("PABANK".equals(tbl)) {// 6å€‹æœˆå…§
 			sql = "SELECT SALNUM, PAYBANK, PAYSALDT, PAYUPDID, PAYUPDAT,HID, " + tmpZbank + " from " + this.tBankDtTbl
 					+ " where HID=? and PAYBANK BETWEEN CURRENT DATE AND CURRENT DATE +6 month order by SALNUM desc with ur";
 			params.add(hid);
-		} else if ("PABANK_2M".equals(tbl)) {// 2­Ó¤ë¤º
+		} else if ("PABANK_2M".equals(tbl)) {// 2å€‹æœˆå…§
 			sql = "SELECT SALNUM, PAYBANK, PAYSALDT, PAYUPDID, PAYUPDAT,HID, " + tmpZbank + " from " + this.tBankDtTbl
 					+ " where HID=? and PAYBANK BETWEEN CURRENT DATE -1 month AND CURRENT DATE +1 month order by SALNUM desc with ur";
 			params.add(hid);
-		} else if ("PABANK_3Y".equals(tbl)) {// 3¦~¤º
+		} else if ("PABANK_3Y".equals(tbl)) {// 3å¹´å…§
 			sql = "SELECT SALNUM, PAYBANK, PAYSALDT, PAYUPDID, PAYUPDAT,HID, " + tmpZbank + " from " + this.tBankDtTbl
 					+ " where HID=? and PAYBANK BETWEEN CURRENT DATE -3 year AND CURRENT DATE order by SALNUM desc with ur";
 			params.add(hid);
@@ -356,17 +385,17 @@ public class SalNTDAO {
 			sql = "SELECT EXPFKEY, EXPFNAME, PAYUPDID, PAYUPDAT, " + tmpZexpf + " from " + this.tExpfTbl
 				+ " order by EXPFKEY with ur";
 		}
-		// ²§°Ê½X
+		// ç•°å‹•ç¢¼
 		else if ("PATRACODE".equals(tbl)) {
 			sql = "SELECT TRACODE, TRANAME, " + tmpZtracd + " from " + this.tTraCode + " order by TRACODE with ur";
 		}
-		// ¤ä¦©¥N½X
+		// æ”¯æ‰£ä»£ç¢¼
 		else if ("PAPAYITM".equals(tbl)) {
 			sql = "SELECT PAYCODE, PACODNMC, PACODDEL, PAYAUTH, PAYIFTAX, PAUPBAS, PAYREWARD, PAYUPDID, PAYUPDAT, HID "
 					+ "from " + this.tPayItm + " where HID=? order by PAYCODE with ur";
 			params.add(hid);
 		}
-		// ¤ä¦©¥N½X,­­Åª[§R°£=N]
+		// æ”¯æ‰£ä»£ç¢¼,é™è®€[åˆªé™¤=N]
 		else if ("PAPAYITM_N".equals(tbl)) {
 			sql = "SELECT PAYCODE, PACODNMC, PACODDEL, PAYAUTH, PAYIFTAX, PAUPBAS, PAYREWARD, PAYUPDID, PAYUPDAT, HID "
 					+ "from " + this.tPayItm + " where HID=? and PACODDEL='N' order by PAYCODE with ur";
@@ -391,7 +420,7 @@ public class SalNTDAO {
 			sql = "SELECT PAYCATG, CATGNAME from " + this.tCatgTbl
 					+ " where (NOT CATGNAME LIKE '%x%' and not PAYCATG in (0) ) ORDER BY PAYCATG WITH ur";
 		}
-		// ¤wÂà±b©Ò±oµ|¦~¤ë....2026.6.17§ï¦¨¥u­­Åª2­Ó¤ë¤é´Á
+		// å·²è½‰å¸³æ‰€å¾—ç¨…å¹´æœˆ....2026.6.17æ”¹æˆåªé™è®€2å€‹æœˆæ—¥æœŸ
 		else if ("TAXTRANYR".equals(tbl)) {
 			// sql = "SELECT PAYEAR,PAYMONTH,PAYCATG from "+this.tTaxTran +" where HID=? and
 			// PAYEAR IN (SELECT MAX(PAYEAR) FROM "+this.tTaxTran +" where HID=?) GROUP BY
@@ -403,7 +432,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -420,55 +449,55 @@ public class SalNTDAO {
 			log.info(me + "  ...size:" + result.size());
 			if (result != null && result.size() > 0) {
 				for (Map<String, Object> data : result) {
-					if ("PARANKCODE".equals(tbl)) { // ¶¥¯Å¥N½X
+					if ("PARANKCODE".equals(tbl)) { // éšç´šä»£ç¢¼
 						tmpRank = new RankCode();
 						PropertyUtils.copyProperties(tmpRank, data);
 						aryRtn.add(tmpRank);
-					} else if ("PATITLE".equals(tbl)) { // Â¾ºÙ¥N½X
+					} else if ("PATITLE".equals(tbl)) { // è·ç¨±ä»£ç¢¼
 						tmpTitle = new Patitle();
 						PropertyUtils.copyProperties(tmpTitle, data);
 						aryRtn.add(tmpTitle);
-					} else if (tbl.matches("PABANK|PABANK_2M|PABANK_3Y")) { // µoÁ~¤é¤Î¤J±b¤é¹ïÀ³ÀÉ
+					} else if (tbl.matches("PABANK|PABANK_2M|PABANK_3Y")) { // ç™¼è–ªæ—¥åŠå…¥å¸³æ—¥å°æ‡‰æª”
 						tmpBank = new Pabank();
 						PropertyUtils.copyProperties(tmpBank, data);
 						aryRtn.add(tmpBank);
-					} else if ("PADEPT".equals(tbl)) { // ³æ¦ì
+					} else if ("PADEPT".equals(tbl)) { // å–®ä½
 						tmpDept = new Padept();
 						PropertyUtils.copyProperties(tmpDept, data);
 						aryRtn.add(tmpDept);
-					} else if ("PARNK4TBL".equals(tbl)) { // ¾A¥Î±M·~¥[µ¹¹ï·Óªí
+					} else if ("PARNK4TBL".equals(tbl)) { // é©ç”¨å°ˆæ¥­åŠ çµ¦å°ç…§è¡¨
 						tmpRnk4 = new Parank4tbl();
 						PropertyUtils.copyProperties(tmpRnk4, data);
 						aryRtn.add(tmpRnk4);
-					} else if ("PAEXPFTBL".equals(tbl)) { // ÁZ®ÄÃB¥~ÂI¼Æ¹ï·Óªí
+					} else if ("PAEXPFTBL".equals(tbl)) { // ç¸¾æ•ˆé¡å¤–é»æ•¸å°ç…§è¡¨
 						tmpexpf = new Paexpftbl();
 						PropertyUtils.copyProperties(tmpexpf, data);
 						aryRtn.add(tmpexpf);
-					} else if ("PATRACODE".equals(tbl)) { // ²§°Ê¥N½X
+					} else if ("PATRACODE".equals(tbl)) { // ç•°å‹•ä»£ç¢¼
 						tmptracd = new Patracode();
 						PropertyUtils.copyProperties(tmptracd, data);
 						aryRtn.add(tmptracd);
-					} else if (tbl.matches("PAPAYITM|PAPAYITM_N")) { // ¤ä¦©¥N½X
+					} else if (tbl.matches("PAPAYITM|PAPAYITM_N")) { // æ”¯æ‰£ä»£ç¢¼
 						tmppayitm = new Papayitm();
 						PropertyUtils.copyProperties(tmppayitm, data);
 						aryRtn.add(tmppayitm);
-					} else if ("PADPINTBL".equals(tbl)) { // °·«O¯Å¶Z
+					} else if ("PADPINTBL".equals(tbl)) { // å¥ä¿ç´šè·
 						tmpdpintbl = new Padpintbl();
 						PropertyUtils.copyProperties(tmpdpintbl, data);
 						aryRtn.add(tmpdpintbl);
-					} else if ("TAXPSNYR".equals(tbl)) { // ©Ò±oµ|¦~«×
+					} else if ("TAXPSNYR".equals(tbl)) { // æ‰€å¾—ç¨…å¹´åº¦
 						aryRtn.add(StringUtil.nullToString(data.get("payear")));
-					} else if ("TAXCATG".equals(tbl)) { // ©Ò±oµ|Âà±b¶µ¥Ø
+					} else if ("TAXCATG".equals(tbl)) { // æ‰€å¾—ç¨…è½‰å¸³é …ç›®
 						tmpcatgtbl = new Pacatgtbl();
 						PropertyUtils.copyProperties(tmpcatgtbl, data);
 						aryRtn.add(tmpcatgtbl);
-					} else if ("TAXTRANYR".equals(tbl)) { // ¤wÂà±b©Ò±oµ|¦~¤ë
+					} else if ("TAXTRANYR".equals(tbl)) { // å·²è½‰å¸³æ‰€å¾—ç¨…å¹´æœˆ
 						tmptaxtran = new Pataxtran();
 						PropertyUtils.copyProperties(tmptaxtran, data);
 						aryRtn.add(tmptaxtran);
-					} else if ("NHIPAYDT".equals(tbl)) { // ¸É¥R¶Oµ¹¥I¤é´Á
+					} else if ("NHIPAYDT".equals(tbl)) { // è£œå……è²»çµ¦ä»˜æ—¥æœŸ
 						aryRtn.add(StringUtil.nullToString(data.get("papaydt")));
-					} else if ("NHIPAYYR".equals(tbl)) { // ¸É¥R¶Oµ¹¥I¦~«× PAPAYYR
+					} else if ("NHIPAYYR".equals(tbl)) { // è£œå……è²»çµ¦ä»˜å¹´åº¦ PAPAYYR
 						aryRtn.add(StringUtil.nullToString(data.get("papayyr")));
 					}
 				}
@@ -482,11 +511,11 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * ¨Ìtable¦W³æ¤ÎKEY,§R°£record
+	 * ä¾tableåå–®åŠKEY,åˆªé™¤record
 	 * 
 	 * @throws SQLException
-	 * @param code_data(°Ñ¼Æmap)
-	 *            userid(µn¤JªÌ) hid(Âå°|¥N¸¹)
+	 * @param code_data(åƒæ•¸map)
+	 *            userid(ç™»å…¥è€…) hid(é†«é™¢ä»£è™Ÿ)
 	 */
 
 	public boolean delTblCode(String code_data, String tblname, String userid, String hid, VGHDataAccess da)
@@ -576,7 +605,7 @@ public class SalNTDAO {
 		try {
 			if (da == null) {
 				connFlg = false;
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -597,8 +626,10 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * editMode:update/insert table pa.pabasic(Á~¸ê°ò¥»ÀÉ) panhical¸É¥R¶O_¼úª÷ panhidet¥Ó³ø¦©¶O©ú²Ó
-	 * pabatpay§å¦¸ÀÉ patrapsn(²§°ÊÀÉ) tblname:table pk_data:key tabJson:¦UÄæ ¶Ç¥X:true/false
+	 * editMode:update/insert 
+	 * table  pa.pabasic(è–ªè³‡åŸºæœ¬æª”) panhicalè£œå……è²»_çé‡‘ panhidetç”³å ±æ‰£è²»æ˜ç´° pabatpayæ‰¹æ¬¡æª” patrapsn(ç•°å‹•æª”)
+	 * tblname:table pk_data:key tabJson:å„æ¬„
+	 * å‚³å‡º:true/false
 	 */
 	public boolean updPATblByKey(String editMode, String tblname, String pk_data, String tabJson, String userid,
 			String hid, VGHDataAccess da) throws SQLException {
@@ -646,7 +677,7 @@ public class SalNTDAO {
 		boolean blnAdr = false;
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -654,7 +685,7 @@ public class SalNTDAO {
 			}
 			da.setAutoCommit(false);
 			// sql
-			// ¦a§}
+			// åœ°å€
 			sqlAdr_inq = " select PAYIDNO, PAYADDRS from " + this.tBasAdr + " where PAYIDNO=? ";
 			sqlAdr_upd = " update " + this.tBasAdr + " set (PAYADDRS, " + tmpZbasadr
 					+ ") = (?, current timestamp) where PAYIDNO=? ";
@@ -664,22 +695,22 @@ public class SalNTDAO {
 				strKey = StringUtil.nullToString(object_pk_data.getString("payidno"));
 				hid = StringUtil.nullToString(object_pk_data.getString("hid"));
 				if (editMode.equals("update")) {
-					// °ò¥»ÀÉ
+					// åŸºæœ¬æª”
 					sql = " update " + this.tBasPsn
 							+ " set (PAYEMPNO,PAYNAMEC, PAYDEPT,PAYSGNDT,PAYTAXNO, INSUAMT,PACSFLAG, PARETENTION,PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3,PAYPFSP1, PAYPFSP2, PAYPFSP3,PAYCTCBACNO,PAYCTCBGEDNO,PAYUPDID, PAYUPDTM) "
 							+ "= (?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,current timestamp) where PAYIDNO=? and HID=? ";
 				}
-				// ¦a§}ªÅ¥Õ¤£³B²z
+				// åœ°å€ç©ºç™½ä¸è™•ç†
 				paramA = new ArrayList<Object>();
 				paramA.add(strKey);
 				rs = da.query(sqlAdr_inq, paramA);
 				blnAdr = false;
 				while (rs.next()) {
-					log.info(me + " ¦a§}-> " + rs.getString("PAYIDNO"));
+					log.info(me + " åœ°å€-> " + rs.getString("PAYIDNO"));
 					blnAdr = true;
 				}
 			}
-			// ¸É¥R¶O_¼úª÷ , PAPAYDT PAYSOURCE, ITEMNUM, PAYIDNO,
+			// è£œå……è²»_çé‡‘ , PAPAYDT PAYSOURCE, ITEMNUM, PAYIDNO,
 			else if ("PANHICAL".equals(tblname)) {
 				if (editMode.equals("update")) {
 					sql = " update " + this.tNhiCal
@@ -694,7 +725,7 @@ public class SalNTDAO {
 							+ " where PAPAYDT=? and PAYSOURCE=? and ITEMNUM=? and PAYIDNO=? and HID=? ";
 				}
 			}
-			// ¥Ó³ø¦©¶O©ú²Ó , PAPAYDT PAYIDNO, PAYITEM HID
+			// ç”³å ±æ‰£è²»æ˜ç´° , PAPAYDT PAYIDNO, PAYITEM HID
 			else if ("PANHIDET".equals(tblname)) {
 				if (editMode.equals("update")) {
 					sql = " update " + this.tNhiDet
@@ -708,7 +739,7 @@ public class SalNTDAO {
 					sql = " delete from " + this.tNhiDet + " where PAPAYDT=? and PAYIDNO=? and PAYITEM=? and HID=? ";
 				}
 			}
-			// §å¦¸ÀÉ PAtradt+PAYIDNO+salnum+paycode+HID
+			// æ‰¹æ¬¡æª” PAtradt+PAYIDNO+salnum+paycode+HID
 			else if ("PABATPAY".equals(tblname)) {
 				if (editMode.equals("update")) {
 					sql = " update " + this.tBatPay
@@ -725,8 +756,8 @@ public class SalNTDAO {
 							+ " where PATRADT=? and PAYIDNO=? and SALNUM=? and PAYCODE=? and HID=? ";
 				}
 			}
-			// ²§°ÊÀÉ PAtradt+PAYIDNO+paytracod+HID
-			// ¤£¼g¤JPAYBKID, PAYACNO,PAYGEDNO,UPMASTDT, PAYPSW, payflag
+			// ç•°å‹•æª” PAtradt+PAYIDNO+paytracod+HID
+			// ä¸å¯«å…¥PAYBKID, PAYACNO,PAYGEDNO,UPMASTDT, PAYPSW, payflag
 			else if ("PATRAPSN".equals(tblname)) {
 				sqlTranum_max = "select max(TRANUM) as MAX_TRANUM from " + this.tTraPsn + " where HID= ? with ur";
 				sqlTrapsn_upd = " update " + this.tTraPsn
@@ -737,14 +768,14 @@ public class SalNTDAO {
 						+ " (PAEFFDT, SALNUM, PAYLVEFG, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, PAYEMPDT, PAYSGNDT, PAYRSGDT, PAYINFLG, PAYDPNO, PAYPFLAG, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PAYMONNO, PAYDAYNO, PAOTITLE, PAORNK2N, PAORANK3, PAODEGR2, PAODEGRE, PAORANK, PAORANK2, PAORANKC, PAOPFDOC, PAOCSFLA, PAOPFSP1, PAOPFSP2, PAOPFSP3, PAYTAXNO, PAYUPDID, PAYUPDTM, TRANUM, PAOEXPFKEY1, PAOEXPFKEY2, PAOEXPFKEY3, PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3, PAORANK4, PAYRANK4, PAYCTCBACNO, PAYCTCBGEDNO, INSUAMT, "
 						+ tmpZtrapsn + ",PAYIDNO,PATRADT, PATRACOD,  HID)"
 						+ " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,current timestamp,?,?,?,?,?,?,?,?,?,?,?,?,current timestamp,?,?,?,?) ";
-				// ²§°ÊÀÉ(²§°Ê­Ó¤H+²§°Ê¤ä¦©)¥ş§R
+				// ç•°å‹•æª”(ç•°å‹•å€‹äºº+ç•°å‹•æ”¯æ‰£)å…¨åˆª
 				sqlTrapsn_del = "delete from " + this.tTraPsn
 						+ " where HID=? and PAYIDNO=? and PATRADT=? and PATRACOD=? ";
 				sqlTrapay_del = "delete from " + this.tTraPay
 						+ " where HID=? and PAYIDNO=? and PATRADT=? and PAYSORT=?  ";
 				sqlTrapay_cnt = "select count(*) cnt from " + this.tTraPay
 						+ " where HID=? and PAYIDNO=? and PATRADT=? and PAYSORT=? ";
-				// ¤ä¦©©ú²Ó payflag=''
+				// æ”¯æ‰£æ˜ç´° payflag=''
 				sqlTrapay_ins = "insert into " + this.tTraPay
 						+ " (TRANUM, PAYAMT, PAYAUTH, PAYIFTAX, PAYFLAG,PAYUPDTM, " + tmpZtrapay
 						+ ", PAYCODE, HID, PAYIDNO, PATRADT, PAYSORT)"
@@ -752,7 +783,7 @@ public class SalNTDAO {
 			}
 			// delete
 			if (editMode.matches("delete")) {
-				// ¸É¥R¶O_¼úª÷
+				// è£œå……è²»_çé‡‘
 				if ("PANHICAL".equals(tblname)) {
 					// key
 					param.add(StringUtil.nullToString(object_pk_data.getString("papaydt")));
@@ -763,7 +794,7 @@ public class SalNTDAO {
 					sql_stmts.add(sql);
 					params.add(param);
 				}
-				// ¥Ó³ø¦©¶O©ú²Ó
+				// ç”³å ±æ‰£è²»æ˜ç´°
 				else if ("PANHIDET".equals(tblname)) {
 					// key
 					param.add(StringUtil.nullToString(object_pk_data.getString("papaydt")));
@@ -773,7 +804,7 @@ public class SalNTDAO {
 					sql_stmts.add(sql);
 					params.add(param);
 				}
-				// §å¦¸¶O
+				// æ‰¹æ¬¡è²»
 				else if ("PABATPAY".equals(tblname)) {
 					// key
 					param.add(StringUtil.nullToString(object_pk_data.getString("patradt")));
@@ -784,7 +815,7 @@ public class SalNTDAO {
 					sql_stmts.add(sql);
 					params.add(param);
 				}
-				// ²§°ÊÀÉ(²§°Ê­Ó¤H+²§°Ê¤ä¦©)¥ş§R
+				// ç•°å‹•æª”(ç•°å‹•å€‹äºº+ç•°å‹•æ”¯æ‰£)å…¨åˆª
 				else if ("PATRAPSN".equals(tblname)) {
 					// sqlTrapsn_del = "delete from "+ this.tTraPsn + " where HID=? and PAYIDNO=?
 					// and PATRADT=? and PATRACOD=? ";
@@ -798,7 +829,7 @@ public class SalNTDAO {
 					params.add(param);
 					// sqlTrapay_del = "delete from "+ this.tTraPay + " where HID=? and PAYIDNO=?
 					// and PATRADT=? and PAYSORT=? ";
-					// ­ì¤ä¦©©ú²Ó
+					// åŸæ”¯æ‰£æ˜ç´°
 					param = new ArrayList<Object>();
 					param.add(StringUtil.nullToString(object_pk_data.getString("hid")));
 					param.add(StringUtil.nullToString(object_pk_data.getString("payidno")));
@@ -806,7 +837,7 @@ public class SalNTDAO {
 					param.add("O");
 					sql_stmts.add(sqlTrapay_del);
 					params.add(param);
-					// ·s¤ä¦©©ú²Ó
+					// æ–°æ”¯æ‰£æ˜ç´°
 					param = new ArrayList<Object>();
 					param.add(StringUtil.nullToString(object_pk_data.getString("hid")));
 					param.add(StringUtil.nullToString(object_pk_data.getString("payidno")));
@@ -826,7 +857,7 @@ public class SalNTDAO {
 					if (obj != null && obj.has("formnm")) {
 						formnm = StringUtil.nullToString(obj.getString("formnm"));
 						blnTraPay = true;
-						if ("PABASPSN".equals(formnm)) {// °ò¥»ÀÉ
+						if ("PABASPSN".equals(formnm)) {// åŸºæœ¬æª”
 							array = obj.getJSONArray("value");
 							if (null != array && array.size() > 0) {
 								for (int j = 0; j < array.size(); j++) {
@@ -898,7 +929,7 @@ public class SalNTDAO {
 									}
 								}
 							}
-						} // ¸É¥R¶O_¼úª÷
+						} // è£œå……è²»_çé‡‘
 						else if ("PANHICAL".equals(formnm)) {
 							array = obj.getJSONArray("value");
 							if (null != array && array.size() > 0) {
@@ -950,7 +981,7 @@ public class SalNTDAO {
 								}
 							}
 						}
-						// ¥Ó³ø¦©¶O©ú²Ó
+						// ç”³å ±æ‰£è²»æ˜ç´°
 						else if ("PANHIDET".equals(formnm)) {
 							array = obj.getJSONArray("value");
 							if (null != array && array.size() > 0) {
@@ -994,7 +1025,7 @@ public class SalNTDAO {
 								}
 							}
 						}
-						// §å¦¸ÀÉ paycard, paupbas, payamt, padutyid, payupdat, payflag, upmastdt,
+						// æ‰¹æ¬¡æª” paycard, paupbas, payamt, padutyid, payupdat, payflag, upmastdt,
 						// zpabatpay
 						else if ("PABATPAY".equals(formnm)) {
 							array = obj.getJSONArray("value");
@@ -1025,19 +1056,19 @@ public class SalNTDAO {
 								}
 							}
 						}
-						// ²§°ÊÀÉ--­Ó¤H©ú²Ó
+						// ç•°å‹•æª”--å€‹äººæ˜ç´°
 						else if ("PATRAPSN".equals(formnm)) {
-							// §ä¦a§}
+							// æ‰¾åœ°å€
 							paramA = new ArrayList<Object>();
 							paramA.add(StringUtil.nullToString(object_pk_data.getString("payidno")));
 							log.info(me + "  " + sqlAdr_inq + "...params:" + paramA.toString());
 							rs = da.query(sqlAdr_inq, paramA);
 							blnAdr = false;
 							while (rs.next()) {
-								log.info(me + " ¦a§}-> " + rs.getString("PAYIDNO"));
+								log.info(me + " åœ°å€-> " + rs.getString("PAYIDNO"));
 								blnAdr = true;
 							}
-							// insert--¨ú±otranum³Ì¤j­È
+							// insert--å–å¾—tranumæœ€å¤§å€¼
 							if (editMode.matches("insert")) {
 								paramA = new ArrayList<Object>();
 								paramA.add(hid);
@@ -1224,7 +1255,7 @@ public class SalNTDAO {
 
 									params.add(param);
 
-									// ¦a§},ªÅ¥Õ¤£³B²z
+									// åœ°å€,ç©ºç™½ä¸è™•ç†
 									strAddr = (!obj_item.has("payaddrs")) ? ""
 											: StringUtil.toWideCase(StringUtil.trimWideEmpty(
 													StringUtil.nullToString(obj_item.getString("payaddrs"))));
@@ -1243,7 +1274,7 @@ public class SalNTDAO {
 								}
 							}
 						}
-						// ¦a§}
+						// åœ°å€
 						else if ("PABASADR".equals(formnm)) {
 							array = obj.getJSONArray("value");
 							if (null != array && array.size() > 0) {
@@ -1263,19 +1294,19 @@ public class SalNTDAO {
 								}
 							}
 						}
-						// ²§°ÊÀÉ--¤ä¦©©ú²Ó
-						// ­ì¤ä,insert­n¼g¤J,Update¤£³B²z, ·s¤ä(insert/update)¥ı§R°£,¦A·s¼W,
+						// ç•°å‹•æª”--æ”¯æ‰£æ˜ç´°
+						// åŸæ”¯,insertè¦å¯«å…¥,Updateä¸è™•ç†, æ–°æ”¯(insert/update)å…ˆåˆªé™¤,å†æ–°å¢,
 						else if (formnm.matches("TraPayO|TraPayN")) {
 							array = obj.getJSONArray("value");
 							if (null != array && array.size() > 0) {
 								for (int j = 0; j < array.size(); j++) {
 									obj_item = array.getJSONObject(j);
-									// µ§¼Æ=1,paycode="",ªí¥ÜªÅ¥Õ°O¿ı,¤£¥Î¼g¤J
+									// ç­†æ•¸=1,paycode="",è¡¨ç¤ºç©ºç™½è¨˜éŒ„,ä¸ç”¨å¯«å…¥
 									if (array.size() == 1 && !obj_item.has("paycode")) {
 
 									} else {
-										// 1.TraPayO ¥ı¬d¸ß,­Y¦³,¤£¥Î³B²z,­YµL,insert
-										// 2.TraPayN ¥ı§R°£,¦A¥ş³¡insert
+										// 1.TraPayO å…ˆæŸ¥è©¢,è‹¥æœ‰,ä¸ç”¨è™•ç†,è‹¥ç„¡,insert
+										// 2.TraPayN å…ˆåˆªé™¤,å†å…¨éƒ¨insert
 										if (j == 0) {
 											if (formnm.matches("TraPayO")) {
 												param = new ArrayList<Object>();
@@ -1393,8 +1424,8 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * »È¦æ¦^¶Ç¤ñ¹ï(»È¦æ¦^¶ÇªºÁ~¬z¦³§t°±Á~) ¶Ç¤J:vobjs,tradtµoÁ~¤é,salnum»è³æ½s¸¹,filename,ÀÉ®×,hid°|°Ï
-	 * selNm:Á~¸êBank_PayC,¤½Àx:Bank_PayS ¶Ç¥X:rtn¤å¦r°T®§
+	 * éŠ€è¡Œå›å‚³æ¯”å°(éŠ€è¡Œå›å‚³çš„è–ªæ´¥æœ‰å«åœè–ª) å‚³å…¥:vobjs,tradtç™¼è–ªæ—¥,salnumé¤‰å–®ç·¨è™Ÿ,filename,æª”æ¡ˆ,hidé™¢å€
+	 * selNm:è–ªè³‡Bank_PayC,å…¬å„²:Bank_PayS å‚³å‡º:rtnæ–‡å­—è¨Šæ¯
 	 **/
 	public String impByBankC(ArrayList<Paprtdtl> vobjs, String tradt, String salnum, String selEn, String filename,
 			String userid, String hid, VGHDataAccess da) throws Exception {
@@ -1432,34 +1463,34 @@ public class SalNTDAO {
 		try {
 			Hospitals hospInfo = Hospitals.getOneHosp(hid);
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
 				connFlg = true;
 			}
 			strYM = tradt.substring(0, 4) + tradt.substring(5, 7);
-			// ¼g¤J¸ê®Æ§¨³]©w
+			// å¯«å…¥è³‡æ–™å¤¾è¨­å®š
 			FileUtil fileUtil = new FileUtil();
 			String folderPath = hospInfo.fileSRV + "bank\\" + strYM + "\\";
 			filename = filename.substring(0, filename.lastIndexOf(".") == -1 ? 0 : filename.lastIndexOf("."));
 			String filePath = folderPath + filename + "log.csv";
-			log.info(me + "  0.¸ê®Æ§¨: " + filePath);
+			log.info(me + "  0.è³‡æ–™å¤¾: " + filePath);
 
 			if (!FileUtil.FileToSmbFile(folderPath, hid).exists()) {
 				fileUtil.FileToSmbFile(folderPath, hid).mkdirs();
 			}
-			// «Ø¥ßÀÉ®×
+			// å»ºç«‹æª”æ¡ˆ
 			SmbFile payfile = fileUtil.FileToSmbFile(filePath, hid);
 			bfw = new BufferedWriter(new OutputStreamWriter(new SmbFileOutputStream(payfile, false), "Big5"));
 
 			// sb.setLength(0);
 
-			// §ä³øªíÀÉ,¼g¤Jmap
+			// æ‰¾å ±è¡¨æª”,å¯«å…¥map
 			starttime = System.currentTimeMillis();
 			paramA = new ArrayList<Object>();
 			paramA.add(hid);
 			paramA.add(salnum);
-			log.info(me + "  1.§ä³øªíÀÉ,¼g¤Jmap " + sqlPrtdtl + "...params:" + paramA.toString());
+			log.info(me + "  1.æ‰¾å ±è¡¨æª”,å¯«å…¥map " + sqlPrtdtl + "...params:" + paramA.toString());
 			result = da.arraylistbyQuery(sqlPrtdtl, paramA, META_TYPE);
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
@@ -1470,10 +1501,10 @@ public class SalNTDAO {
 					prtdtlMap.put(strIdno, oneobj);
 				}
 			}
-			log.info(me + "  1.§ä³øªíÀÉ,¼g¤Jmap,size: " + result.size() + " ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime)
-					+ "²@¬í");
+			log.info(me + "  1.æ‰¾å ±è¡¨æª”,å¯«å…¥map,size: " + result.size() + " å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime)
+					+ "æ¯«ç§’");
 
-			// §ä°±Á~,Á~¬zÀÉ¤~¼g¤Jmap
+			// æ‰¾åœè–ª,è–ªæ´¥æª”æ‰å¯«å…¥map
 			if ("Bank_PayC".equals(selEn)) {
 				starttime = System.currentTimeMillis();
 				paramA = new ArrayList<Object>();
@@ -1482,7 +1513,7 @@ public class SalNTDAO {
 				paramA.add(hid);
 				paramA.add(hid);
 				paramA.add(salnum);
-				log.info(me + "  1-1.§ä°±Á~,¼g¤Jmap " + sqlStop + "...params:" + paramA.toString());
+				log.info(me + "  1-1.æ‰¾åœè–ª,å¯«å…¥map " + sqlStop + "...params:" + paramA.toString());
 				result = da.arraylistbyQuery(sqlStop, paramA, META_TYPE);
 				if (result.size() > 0) {
 					for (Map<String, Object> data : result) {
@@ -1493,28 +1524,28 @@ public class SalNTDAO {
 						stopMap.put(strIdno, oneobj);
 					}
 				}
-				log.info(me + "  1-1.§ä°±Á~,¼g¤Jmap,size: " + result.size() + " ¦@ªá¶O¡G"
-						+ (System.currentTimeMillis() - starttime) + "²@¬í");
+				log.info(me + "  1-1.æ‰¾åœè–ª,å¯«å…¥map,size: " + result.size() + " å…±èŠ±è²»ï¼š"
+						+ (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 			}
-			// 2.Åª¨úalPrtDtl ,§ä³øªíÀÉ,§ä¨ì,¤ñ¹ï,¤@¤@¼g¤Jlog
+			// 2.è®€å–alPrtDtl ,æ‰¾å ±è¡¨æª”,æ‰¾åˆ°,æ¯”å°,ä¸€ä¸€å¯«å…¥log
 			starttime = System.currentTimeMillis();
-			log.info(me + "  2.Åª¨úalPrtDtl ,§ä³øªíÀÉ,§ä¨ì,¤ñ¹ï,¤@¤@¼g¤Jlog,¨Ã¼g¤Jobj.comp ");
+			log.info(me + "  2.è®€å–alPrtDtl ,æ‰¾å ±è¡¨æª”,æ‰¾åˆ°,æ¯”å°,ä¸€ä¸€å¯«å…¥log,ä¸¦å¯«å…¥obj.comp ");
 			for (Paprtdtl itm : vobjs) {
 				if (itm != null) {
 					++docnt;
 					strIdno = StringUtil.nullToString(itm.getPayidno());
-					// °±Á~=ª÷ÃB¬°0,§ï§ìstopmap
+					// åœè–ª=é‡‘é¡ç‚º0,æ”¹æŠ“stopmap
 					if (itm.getPayamt() == 0) {
 						strLine = "=\"" + itm.getPayacno() + "\","
 								+ StringUtil.addZero(Integer.toString(itm.getPayamt()), 10) + "," + itm.getPayidno()
 								+ "," + itm.getBankflag() + ",";
 						oneobj = (Paprtdtl) stopMap.get(strIdno);
 						if (oneobj != null) {
-							// ¦³¤ñ¹ï¨ì,¼g¤JY
+							// æœ‰æ¯”å°åˆ°,å¯«å…¥Y
 							oneobj.setComp("Y");
-							strLine += "°±Á~§ä¨ì";
+							strLine += "åœè–ªæ‰¾åˆ°";
 						} else {
-							strLine += "°±Á~¨S§ä¨ì";
+							strLine += "åœè–ªæ²’æ‰¾åˆ°";
 						}
 						/*
 						 * sb.append(strLine); sb.append(newline);
@@ -1525,54 +1556,54 @@ public class SalNTDAO {
 					} else {
 						oneobj = (Paprtdtl) prtdtlMap.get(strIdno);
 						if (oneobj != null) {
-							// ¦³¤ñ¹ï¨ì,¼g¤JY
+							// æœ‰æ¯”å°åˆ°,å¯«å…¥Y
 							oneobj.setComp("Y");
-							strComp = "²Å¦X";
+							strComp = "ç¬¦åˆ";
 							strCompNM = "";
-							// Á~¬z
+							// è–ªæ´¥
 							if ("Bank_PayC".equals(selEn)) {
 								strLine = "=\"" + itm.getPayacno() + "\","
 										+ StringUtil.addZero(Integer.toString(itm.getPayamt()), 10) + ","
 										+ itm.getPayidno() + "," + itm.getBankflag() + ",";
 								if (!StringUtil.nullToString(oneobj.getPayacno())
 										.equals(StringUtil.nullToString(itm.getPayacno()))) {
-									strComp = "¤£²Å¦X";
-									strCompNM = "±b¸¹¤£²Å";
+									strComp = "ä¸ç¬¦åˆ";
+									strCompNM = "å¸³è™Ÿä¸ç¬¦";
 								}
 								if (itm.getBankflag().equals("2")) {
-									strComp = "¤£²Å¦X";
-									strCompNM += "»È¦æ¦C¬°±b¸¹¤£²Å¦X";
+									strComp = "ä¸ç¬¦åˆ";
+									strCompNM += "éŠ€è¡Œåˆ—ç‚ºå¸³è™Ÿä¸ç¬¦åˆ";
 								}
 								if (itm.getPayamt() != (oneobj.getPaynet() + oneobj.getPaytotis())) {
-									strComp = "¤£²Å¦X";
-									strCompNM += "ª÷ÃB¤£²Å";
+									strComp = "ä¸ç¬¦åˆ";
+									strCompNM += "é‡‘é¡ä¸ç¬¦";
 								}
 							}
-							// ¤½Àx
+							// å…¬å„²
 							else if ("Bank_PayS".equals(selEn)) {
 								strLine = "=\"" + itm.getPaygedno() + "\","
 										+ StringUtil.addZero(Integer.toString(itm.getPayamt()), 10) + ","
 										+ itm.getPayidno() + "," + itm.getBankflag() + ",";
-								strComp = "²Å¦X";
+								strComp = "ç¬¦åˆ";
 								oneobj.setComp("Y");
 								if (!StringUtil.nullToString(oneobj.getPaygedno())
 										.equals(StringUtil.nullToString(itm.getPaygedno()))) {
-									strComp = "¤£²Å¦X";
-									strCompNM = "±b¸¹¤£²Å";
+									strComp = "ä¸ç¬¦åˆ";
+									strCompNM = "å¸³è™Ÿä¸ç¬¦";
 								}
 								if (itm.getBankflag().equals("2")) {
-									strComp = "¤£²Å¦X";
-									strCompNM += "»È¦æ¦C¬°±b¸¹¤£²Å¦X";
+									strComp = "ä¸ç¬¦åˆ";
+									strCompNM += "éŠ€è¡Œåˆ—ç‚ºå¸³è™Ÿä¸ç¬¦åˆ";
 								}
 								if (itm.getPayamt() != oneobj.getPaygedp()) {
-									strComp = "¤£²Å¦X";
-									strCompNM += "ª÷ÃB¤£²Å";
+									strComp = "ä¸ç¬¦åˆ";
+									strCompNM += "é‡‘é¡ä¸ç¬¦";
 								}
 							}
 						} else {
 							strLine = "," + "," + itm.getPayidno() + "," + itm.getBankflag() + ",";
-							strComp = "¤£²Å¦X";
-							strCompNM = "¨­¤ÀÃÒ§ä¤£¨ì";
+							strComp = "ä¸ç¬¦åˆ";
+							strCompNM = "èº«åˆ†è­‰æ‰¾ä¸åˆ°";
 						}
 						strLine += strComp + "," + strCompNM;
 						/*
@@ -1587,21 +1618,21 @@ public class SalNTDAO {
 					}
 				}
 			}
-			// §ä¥XprtdtlMap,¨Sµù°O
-			log.info(me + "  2.§ä¥XalPrtDtl,¨Sµù°O ");
-			// ¨Ï¥Î foreach °j°é¹M¾ú HashMap
+			// æ‰¾å‡ºprtdtlMap,æ²’è¨»è¨˜
+			log.info(me + "  2.æ‰¾å‡ºalPrtDtl,æ²’è¨»è¨˜ ");
+			// ä½¿ç”¨ foreach è¿´åœˆéæ­· HashMap
 			for (Map.Entry<String, Paprtdtl> entry : prtdtlMap.entrySet()) {
 				System.out.println(entry.getKey() + " : " + entry.getValue());
 				Paprtdtl data = entry.getValue();
 				if (data != null) {
 					if (!"Y".equals(data.getComp())) {
-						// Á~¬z
+						// è–ªæ´¥
 						if ("Bank_PayC".equals(selEn))
 							strLine = data.getPayacno() + "," + Integer.toString(data.getPaynet() + data.getPaytotis())
-									+ "," + data.getPayidno() + "," + ",¤£²Å¦X,°ªºa¦³_»È¦æµL¸ê®Æ";
+									+ "," + data.getPayidno() + "," + ",ä¸ç¬¦åˆ,é«˜æ¦®æœ‰_éŠ€è¡Œç„¡è³‡æ–™";
 						else if ("Bank_PayS".equals(selEn))
 							strLine = data.getPaygedno() + "," + data.getPaygedp() + "," + data.getPayidno() + ","
-									+ ",¤£²Å¦X,°ªºa¦³_»È¦æµL¸ê®Æ";
+									+ ",ä¸ç¬¦åˆ,é«˜æ¦®æœ‰_éŠ€è¡Œç„¡è³‡æ–™";
 						/*
 						 * sb.append(strLine); sb.append(newline);
 						 */
@@ -1612,16 +1643,16 @@ public class SalNTDAO {
 				}
 			}
 
-			log.info(me + "  ...********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
-			rtn = "¼g¤Jµ§¼Æ:" + docnt + " ********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í";
+			log.info(me + "  ...********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
+			rtn = "å¯«å…¥ç­†æ•¸:" + docnt + " ********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’";
 			/*
 			 * starttime = System.currentTimeMillis();
-			 * log.info(me+"  ¶}©l¼g¥X¤å¦rÀÉ¡G"+filePath+"..."); outputstring = sb.toString(); File
+			 * log.info(me+"  é–‹å§‹å¯«å‡ºæ–‡å­—æª”ï¼š"+filePath+"..."); outputstring = sb.toString(); File
 			 * file = new File(filePath); output = new BufferedWriter(new FileWriter(file));
-			 * System.out.println("¶}©l¼g¥X¤å¦rÀÉ "+filePath+"..."); output.write(outputstring);
+			 * System.out.println("é–‹å§‹å¯«å‡ºæ–‡å­—æª” "+filePath+"..."); output.write(outputstring);
 			 * output.close();
-			 * log.info(me+"  ...********* ¼g¤J¦¨¥\...¦@ªá¶O¡G"+(System.currentTimeMillis()-
-			 * starttime)+"²@¬í");
+			 * log.info(me+"  ...********* å¯«å…¥æˆåŠŸ...å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-
+			 * starttime)+"æ¯«ç§’");
 			 */
 		} catch (Exception e) {
 			da.rollback();
@@ -1639,7 +1670,7 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * §å¦¸¤H¤u¤Jµ| ¶Ç¤J:vobjs,intYY¦~,userid¨Ï¥ÎªÌ,hid°|°Ï ¶Ç¥X:rtn¤å¦r°T®§
+	 * æ‰¹æ¬¡äººå·¥å…¥ç¨… å‚³å…¥:vobjs,intYYå¹´,useridä½¿ç”¨è€…,hidé™¢å€ å‚³å‡º:rtnæ–‡å­—è¨Šæ¯
 	 **/
 	public String impTaxByBat(ArrayList<Pataximp> vobjs, int intYY, String filename, String userid, String hid,
 			VGHDataAccess da) throws Exception {
@@ -1654,23 +1685,23 @@ public class SalNTDAO {
 		ArrayList<Object> params = new ArrayList<Object>();
 		ArrayList<Object> paramA = new ArrayList<Object>();
 		ArrayList<Object> obj = new ArrayList<Object>();
-		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql ¸ê®Æ
+		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql è³‡æ–™
 		HashMap taxpsnIdMap = new HashMap();
 		HashMap taxpsnCardMap = new HashMap();
 		HashMap baspsnIdMap = new HashMap();
 		HashMap baspsnCardMap = new HashMap();
 		HashMap taxCashMap = new HashMap();
 		HashMap baspsnAdrMap = new HashMap();
-		Pataxpsn taxpsnobj = null; // ©Ò±oµ|­Ó¤Hobj
-		Pataxcash taxcashobj = null; // ©Ò±oµ|_¤H¤uobj
-		Pabaspsn baspsnobj = null; // °ò¥»ÀÉ­Ó¤Hobj
-		Pabasadr basadrobj = null; // °ò¥»ÀÉ¦a§}obj
+		Pataxpsn taxpsnobj = null; // æ‰€å¾—ç¨…å€‹äººobj
+		Pataxcash taxcashobj = null; // æ‰€å¾—ç¨…_äººå·¥obj
+		Pabaspsn baspsnobj = null; // åŸºæœ¬æª”å€‹äººobj
+		Pabasadr basadrobj = null; // åŸºæœ¬æª”åœ°å€obj
 		String strIdno = "";
 		String strCita = "";
 		String strMon = "";
-		String strCatg = ""; // ¤å¦rÀÉ_Âà±b¶µ¥Ø
-		String mCatg = ""; // Âà±b¶µ¥Ø·s­È
-		String tmpCatg = ""; // obj_Âà±b¶µ¥Ø
+		String strCatg = ""; // æ–‡å­—æª”_è½‰å¸³é …ç›®
+		String mCatg = ""; // è½‰å¸³é …ç›®æ–°å€¼
+		String tmpCatg = ""; // obj_è½‰å¸³é …ç›®
 		String strCard = "";
 		String tmpIdno = "";
 		String tmpCita = "";
@@ -1678,8 +1709,8 @@ public class SalNTDAO {
 		String tmpCard = "";
 		String strMsg = "";
 		int limitcnt = 100;
-		int write_cnt = 0;// ¼g¤Jtable²ÄNµ§
-		int docnt = 0; // °õ¦æ²ÄNµ§
+		int write_cnt = 0;// å¯«å…¥tableç¬¬Nç­†
+		int docnt = 0; // åŸ·è¡Œç¬¬Nç­†
 		long starttime = 0;
 		long starttimeM = 0;
 		int int_year = 0;
@@ -1713,23 +1744,23 @@ public class SalNTDAO {
 		try {
 			Hospitals hospInfo = Hospitals.getOneHosp(hid);
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
 				connFlg = true;
 			}
 
-			// ¼g¤J¸ê®Æ§¨³]©w
+			// å¯«å…¥è³‡æ–™å¤¾è¨­å®š
 			FileUtil fileUtil = new FileUtil();
 
-			String folderPath = hospInfo.fileSRV + "log\\¤H¤u¤Jµ|\\";
+			String folderPath = hospInfo.fileSRV + "log\\äººå·¥å…¥ç¨…\\";
 			filename = filename.substring(0, filename.lastIndexOf(".") == -1 ? 0 : filename.lastIndexOf("."));
 			String filePath = folderPath + filename + "log.csv";
 
 			if (!FileUtil.FileToSmbFile(folderPath, hid).exists()) {
 				fileUtil.FileToSmbFile(folderPath, hid).mkdirs();
 			}
-			// «Ø¥ßÀÉ®×
+			// å»ºç«‹æª”æ¡ˆ
 			SmbFile payfile = fileUtil.FileToSmbFile(filePath, hid);
 			bfw = new BufferedWriter(new OutputStreamWriter(new SmbFileOutputStream(payfile, false), "Big5"));
 			// sb.setLength(0);
@@ -1737,11 +1768,11 @@ public class SalNTDAO {
 			da.setAutoCommit(false);
 			params.clear();
 
-			// §ä°ò¥»ÀÉ­Ó¤H
+			// æ‰¾åŸºæœ¬æª”å€‹äºº
 			starttime = System.currentTimeMillis();
 			paramA = new ArrayList<Object>();
 			paramA.add(hid);
-			log.info(me + "  1.§ä°ò¥»ÀÉ­Ó¤H " + sqlBasPsn + "...params:" + paramA.toString());
+			log.info(me + "  1.æ‰¾åŸºæœ¬æª”å€‹äºº " + sqlBasPsn + "...params:" + paramA.toString());
 			result = da.arraylistbyQuery(sqlBasPsn, paramA, META_TYPE);
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
@@ -1754,14 +1785,14 @@ public class SalNTDAO {
 					baspsnCardMap.put(strCard, baspsnobj);
 				}
 			}
-			log.info(me + "  1.§ä°ò¥»ÀÉ­Ó¤H,size: " + result.size() + " ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime)
-					+ "²@¬í");
+			log.info(me + "  1.æ‰¾åŸºæœ¬æª”å€‹äºº,size: " + result.size() + " å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime)
+					+ "æ¯«ç§’");
 
-			// §ä°ò¥»ÀÉ¦a§}
+			// æ‰¾åŸºæœ¬æª”åœ°å€
 			starttime = System.currentTimeMillis();
 			paramA = new ArrayList<Object>();
 			paramA.add(hid);
-			log.info(me + "  1-1.§ä°ò¥»ÀÉ¦a§} " + sqlBasAdr);
+			log.info(me + "  1-1.æ‰¾åŸºæœ¬æª”åœ°å€ " + sqlBasAdr);
 			result = da.arraylistbyQuery(sqlBasAdr, META_TYPE);
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
@@ -1771,12 +1802,12 @@ public class SalNTDAO {
 					baspsnAdrMap.put(strIdno, basadrobj);
 				}
 			}
-			log.info(me + "  1-1.§ä°ò¥»ÀÉ¦a§},size: " + result.size() + " ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime)
-					+ "²@¬í");
+			log.info(me + "  1-1.æ‰¾åŸºæœ¬æª”åœ°å€,size: " + result.size() + " å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime)
+					+ "æ¯«ç§’");
 
-			// 2.Åª¨úPataximp ary,¤@¤@¼g¤Jpataxpsn pataxcash
+			// 2.è®€å–Pataximp ary,ä¸€ä¸€å¯«å…¥pataxpsn pataxcash
 			starttimeM = System.currentTimeMillis();
-			log.info(me + "  3.Åª¨úPataximp ary,¤@¤@¼g¤Jpataxpsn pataxcash ");
+			log.info(me + "  3.è®€å–Pataximp ary,ä¸€ä¸€å¯«å…¥pataxpsn pataxcash ");
 			Calendar calendar = Calendar.getInstance();
 			for (Pataximp itm : vobjs) {
 				if (itm != null) {
@@ -1790,7 +1821,7 @@ public class SalNTDAO {
 					strMsg = "";
 					if ("".equals(strIdno) && "".equals(strCard)) {
 						blnFlag = false;
-						strMsg = "¨­¤ÀÃÒ_¥d¸¹[ªÅ¥Õ],";
+						strMsg = "èº«åˆ†è­‰_å¡è™Ÿ[ç©ºç™½],";
 						strMsg += itm.getPayidno() + "," + itm.getPaycard() + "," + itm.getPaynamec();
 						/*
 						 * sb.append(strMsg); sb.append(newline);
@@ -1800,14 +1831,14 @@ public class SalNTDAO {
 						bfw.flush();
 					}
 					if (blnFlag) {
-						// [°_]
+						// [èµ·]
 						if (blnTaxPsn) {
-							// ¨Ì¦~,§ä©Ò±oµ|­Ó¤H
+							// ä¾å¹´,æ‰¾æ‰€å¾—ç¨…å€‹äºº
 							starttime = System.currentTimeMillis();
 							paramA = new ArrayList<Object>();
 							paramA.add(intYY);
 							paramA.add(hid);
-							log.info(me + "  2.¨Ì¦~,§ä©Ò±oµ|­Ó¤H " + sqlTaxPsn + "...params:" + paramA.toString());
+							log.info(me + "  2.ä¾å¹´,æ‰¾æ‰€å¾—ç¨…å€‹äºº " + sqlTaxPsn + "...params:" + paramA.toString());
 							result = da.arraylistbyQuery(sqlTaxPsn, paramA, META_TYPE);
 							if (result.size() > 0) {
 								for (Map<String, Object> data : result) {
@@ -1820,14 +1851,14 @@ public class SalNTDAO {
 										taxpsnCardMap.put(tmpCard, taxpsnobj);
 								}
 							}
-							log.info(me + "  2.¨Ì¦~,§ä©Ò±oµ|­Ó¤H,size: " + result.size() + " ¦@ªá¶O¡G"
-									+ (System.currentTimeMillis() - starttime) + "²@¬í");
-							// ¨Ì¦~,§ä©Ò±oµ|¤H¤u¤Jµ|
+							log.info(me + "  2.ä¾å¹´,æ‰¾æ‰€å¾—ç¨…å€‹äºº,size: " + result.size() + " å…±èŠ±è²»ï¼š"
+									+ (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
+							// ä¾å¹´,æ‰¾æ‰€å¾—ç¨…äººå·¥å…¥ç¨…
 							starttime = System.currentTimeMillis();
 							paramA = new ArrayList<Object>();
 							paramA.add(intYY);
 							paramA.add(hid);
-							log.info(me + "  2-1.¨Ì¦~,§ä©Ò±oµ|¤H¤u¤Jµ| " + sqlTaxCash + "...params:" + paramA.toString());
+							log.info(me + "  2-1.ä¾å¹´,æ‰¾æ‰€å¾—ç¨…äººå·¥å…¥ç¨… " + sqlTaxCash + "...params:" + paramA.toString());
 							result = da.arraylistbyQuery(sqlTaxCash, paramA, META_TYPE);
 							if (result.size() > 0) {
 								for (Map<String, Object> data : result) {
@@ -1839,8 +1870,8 @@ public class SalNTDAO {
 									taxCashMap.put(tmpIdno + tmpCita + tmpMon, taxpsnobj);
 								}
 							}
-							log.info(me + "  2-1.¨Ì¦~,§ä©Ò±oµ|¤H¤u¤Jµ|,size: " + result.size() + " ¦@ªá¶O¡G"
-									+ (System.currentTimeMillis() - starttime) + "²@¬í");
+							log.info(me + "  2-1.ä¾å¹´,æ‰¾æ‰€å¾—ç¨…äººå·¥å…¥ç¨…,size: " + result.size() + " å…±èŠ±è²»ï¼š"
+									+ (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 
 							blnTaxPsn = false;
 						}
@@ -1848,18 +1879,18 @@ public class SalNTDAO {
 						calendar.set(int_year, int_month, 1);
 						mBegin = java.sql.Date.valueOf(formatter.format(calendar.getTime()));
 						;
-						// §ä¥X[°W]
+						// æ‰¾å‡º[è¨–]
 						calendar.add(Calendar.MONTH, 1);
 						calendar.add(Calendar.DATE, -1);
 						mEnd = java.sql.Date.valueOf(formatter.format(calendar.getTime()));
 
-						// 1.¥ı§ätaxpsn©Ò±oµ|­Ó¤H(¥ı¨Ì¨­¤ÀÃÒ,¦A¨Ì¥d¸¹)
+						// 1.å…ˆæ‰¾taxpsnæ‰€å¾—ç¨…å€‹äºº(å…ˆä¾èº«åˆ†è­‰,å†ä¾å¡è™Ÿ)
 						if (!"".equals(strIdno))
 							taxpsnobj = (Pataxpsn) taxpsnIdMap.get(strIdno);
 						else
 							taxpsnobj = (Pataxpsn) taxpsnCardMap.get(strCard);
 
-						// 2.©Ò±oµ|taxpsn­Ó¤H µL,§ä°ò¥»ÀÉ­Ó¤H
+						// 2.æ‰€å¾—ç¨…taxpsnå€‹äºº ç„¡,æ‰¾åŸºæœ¬æª”å€‹äºº
 						if (taxpsnobj == null) {
 							if (!"".equals(strIdno))
 								baspsnobj = (Pabaspsn) baspsnIdMap.get(strIdno);
@@ -1867,7 +1898,7 @@ public class SalNTDAO {
 								baspsnobj = (Pabaspsn) baspsnCardMap.get(strCard);
 
 							if (baspsnobj == null) {
-								// ©Ò±oµ|­Ó¤H(µL)+°ò¥»ÀÉ­Ó¤H(µL)+°_°W¤é´Á(¦³)+¤å¦rÀÉIDNO(¦³),¥icsv·s¼W
+								// æ‰€å¾—ç¨…å€‹äºº(ç„¡)+åŸºæœ¬æª”å€‹äºº(ç„¡)+èµ·è¨–æ—¥æœŸ(æœ‰)+æ–‡å­—æª”IDNO(æœ‰),å¯csvæ–°å¢
 								if ((!("").equals(StringUtil.nullToString(itm.getPayidno())))
 										&& (!("").equals(StringUtil.nullToString(itm.getPaybegin())))
 										&& (!("").equals(StringUtil.nullToString(itm.getPaybegin())))) {
@@ -1882,13 +1913,13 @@ public class SalNTDAO {
 									obj.add(userid);
 									obj.add(hid);
 									params.add(obj);
-									strMsg = "¨Ì¨­¤ÀÀÉ§ä¤£¨ì[©Ò±oµ|­Ó¤HÀÉ¤Î°ò¥»­Ó¤HÀÉ]_°_°W¤é´Á[¦³],";
+									strMsg = "ä¾èº«åˆ†æª”æ‰¾ä¸åˆ°[æ‰€å¾—ç¨…å€‹äººæª”åŠåŸºæœ¬å€‹äººæª”]_èµ·è¨–æ—¥æœŸ[æœ‰],";
 									strMsg += itm.getPayidno() + "," + itm.getPaycard() + "," + itm.getPaynamec() + ",";
 								}
-								// ©Ò±oµ|­Ó¤H(µL)+°ò¥»ÀÉ­Ó¤H(µL)+°_°W¤é´Á(µL)<==log
+								// æ‰€å¾—ç¨…å€‹äºº(ç„¡)+åŸºæœ¬æª”å€‹äºº(ç„¡)+èµ·è¨–æ—¥æœŸ(ç„¡)<==log
 								else {
 									blnFlag = false;
-									strMsg = "¨Ì¨­¤ÀÀÉ§ä¤£¨ì[©Ò±oµ|­Ó¤HÀÉ¤Î°ò¥»­Ó¤HÀÉ]_°_°W¤é´Á[µL],";
+									strMsg = "ä¾èº«åˆ†æª”æ‰¾ä¸åˆ°[æ‰€å¾—ç¨…å€‹äººæª”åŠåŸºæœ¬å€‹äººæª”]_èµ·è¨–æ—¥æœŸ[ç„¡],";
 									strMsg += itm.getPayidno() + "," + itm.getPaycard() + "," + itm.getPaynamec() + ",";
 									/*
 									 * sb.append(strMsg); sb.append(newline);
@@ -1898,8 +1929,8 @@ public class SalNTDAO {
 									bfw.flush();
 								}
 							} else {
-								// ©Ò±oµ|­Ó¤H(µL)+°ò¥»ÀÉ­Ó¤H(¦³)
-								// <==¥Î¥d¸¹§ä,­n§ï¥Î°ò¥»ÀÉidno,¥h§ä©Ò±oµ|­Ó¤Hidno(maybe´«¥d¸¹),update©Ò±oµ|­Ó¤H_¥d¸¹,else insert¥Î°ò¥»ÀÉ­Ó¤H
+								// æ‰€å¾—ç¨…å€‹äºº(ç„¡)+åŸºæœ¬æª”å€‹äºº(æœ‰)
+								// <==ç”¨å¡è™Ÿæ‰¾,è¦æ”¹ç”¨åŸºæœ¬æª”idno,å»æ‰¾æ‰€å¾—ç¨…å€‹äººidno(maybeæ›å¡è™Ÿ),updateæ‰€å¾—ç¨…å€‹äºº_å¡è™Ÿ,else insertç”¨åŸºæœ¬æª”å€‹äºº
 								if ("".equals(strIdno)) {
 									strIdno = baspsnobj.getPayidno();
 									taxpsnobj = (Pataxpsn) taxpsnIdMap.get(strIdno);
@@ -1913,12 +1944,12 @@ public class SalNTDAO {
 									obj.add(itm.getPayear());
 									obj.add(hid);
 									params.add(obj);
-									strMsg = "update--©Ò±oµ|­Ó¤HÀÉ¥d¸¹,";
+									strMsg = "update--æ‰€å¾—ç¨…å€‹äººæª”å¡è™Ÿ,";
 									strMsg += itm.getPayidno() + "," + itm.getPaycard() + "," + itm.getPaynamec() + ","
 											+ taxpsnobj.getPaycard() + ",";
 
 								} else {
-									// ¥Îpabaspsn·s¼W
+									// ç”¨pabaspsnæ–°å¢
 									batch_sql.add(sqlTaxPsn_ins);
 									obj = new ArrayList<Object>();
 									obj.add(baspsnobj.getPayidno());
@@ -1936,17 +1967,17 @@ public class SalNTDAO {
 									obj.add(userid);
 									obj.add(hid);
 									params.add(obj);
-									strMsg = "¥Îpabaspsn·s¼W,";
+									strMsg = "ç”¨pabaspsnæ–°å¢,";
 									strMsg += baspsnobj.getPayidno() + "," + itm.getPaycard() + ","
 											+ baspsnobj.getPaynamec() + ",";
 
 								}
 							}
 						}
-						// ©Ò±oµ|­Ó¤H¦³§ä¨ì,§ó·s[©Ò±oµ²§ô¤é´Á]payend
+						// æ‰€å¾—ç¨…å€‹äººæœ‰æ‰¾åˆ°,æ›´æ–°[æ‰€å¾—çµæŸæ—¥æœŸ]payend
 						else {
 							strIdno = taxpsnobj.getPayidno();
-							// ¶×¤J¤é´Á¦³KEY,­Yµ²§ô¤é´Á < ¶×¤J¤é´Á,­nupdate ¨SKEY,§ï¥ÎmEndÅÜ¼Æ
+							// åŒ¯å…¥æ—¥æœŸæœ‰KEY,è‹¥çµæŸæ—¥æœŸ < åŒ¯å…¥æ—¥æœŸ,è¦update æ²’KEY,æ”¹ç”¨mEndè®Šæ•¸
 							if (itm.getPayend() != null) {
 								batch_sql.add(sqlTaxPsn_end_upd);
 								obj = new ArrayList<Object>();
@@ -1961,22 +1992,22 @@ public class SalNTDAO {
 								obj.add(itm.getPayear());
 								obj.add(hid);
 								params.add(obj);
-								strMsg += "©Ò±oµ|­Ó¤H¦³§ä¨ì§ó·s[©Ò±oµ²§ô¤é´Á]payend,";
+								strMsg += "æ‰€å¾—ç¨…å€‹äººæœ‰æ‰¾åˆ°æ›´æ–°[æ‰€å¾—çµæŸæ—¥æœŸ]payend,";
 								strMsg += itm.getPayidno() + "," + itm.getPaycard() + "," + itm.getPaynamec() + ",";
 
 							}
 						}
 
 						if (blnFlag) {
-							// ¦a§}
+							// åœ°å€
 							if (!"".equals(StringUtil.trimWideEmpty(itm.getPayaddrs()))) {
 								basadrobj = (Pabasadr) baspsnAdrMap.get(strIdno);
 								if (basadrobj != null) {
 									batch_sql.add(sqlBasAdr_upd);
-									strMsg += "¦a§}update,";
+									strMsg += "åœ°å€update,";
 								} else {
 									batch_sql.add(sqlBasAdr_ins);
-									strMsg += "¦a§}insert,";
+									strMsg += "åœ°å€insert,";
 								}
 								obj = new ArrayList<Object>();
 								obj.add(StringUtil.trimWideEmpty(itm.getPayaddrs()));
@@ -1984,11 +2015,11 @@ public class SalNTDAO {
 								params.add(obj);
 							}
 							// PATAXCASH
-							// ©]¯Z¶O1,15 ¬ã¨s§U²z24,25,52 ¤G¥N°·«O 35,57,58 Â÷Â¾2,7,8,9,13
-							// °|¥~¤H¤h14,20,21,22,23,39,40,46,47,48,49
-							// ¦bÂ¾3,5,6,10,11,12,30,31,32,33,41,42,43,44,45
+							// å¤œç­è²»1,15 ç ”ç©¶åŠ©ç†24,25,52 äºŒä»£å¥ä¿ 35,57,58 é›¢è·2,7,8,9,13
+							// é™¢å¤–äººå£«14,20,21,22,23,39,40,46,47,48,49
+							// åœ¨è·3,5,6,10,11,12,30,31,32,33,41,42,43,44,45
 							taxcashobj = (Pataxcash) taxCashMap.get(strIdno + strCita + strMon);
-							// §ä¨ì ¶Ç²¼»s²¼¸¹³Ì¤j­È,³]©wÂà±b¶µ¥Ø
+							// æ‰¾åˆ° å‚³ç¥¨è£½ç¥¨è™Ÿæœ€å¤§å€¼,è¨­å®šè½‰å¸³é …ç›®
 							if (taxcashobj == null) {
 								mCatg = strCatg;
 							} else {
@@ -2009,7 +2040,7 @@ public class SalNTDAO {
 											bfw.newLine();
 											bfw.flush();
 										}
-										strMsg = "$$µLªk¶×¤JPATAXCASH(INSERT)¤w¹F³Ì¤j­È_­n¸É¥N½X$$,";
+										strMsg = "$$ç„¡æ³•åŒ¯å…¥PATAXCASH(INSERT)å·²é”æœ€å¤§å€¼_è¦è£œä»£ç¢¼$$,";
 										strMsg += itm.getPayidno() + "," + itm.getPaycard() + "," + itm.getPaynamec()
 												+ "," + itm.getCatgcd() + "," + itm.getCatgnm() + ","
 												+ itm.getPayformat() + "," + itm.getPaycitation() + ","
@@ -2035,14 +2066,14 @@ public class SalNTDAO {
 								obj.add("");
 								obj.add(hid);
 								params.add(obj);
-								strMsg += "¤H¤u¤Jµ|insert," + itm.getPaycard() + "," + itm.getPaynamec() + ","
+								strMsg += "äººå·¥å…¥ç¨…insert," + itm.getPaycard() + "," + itm.getPaynamec() + ","
 										+ itm.getCatgcd() + "," + itm.getCatgnm() + "," + itm.getPayformat() + ","
 										+ itm.getPaycitation() + "," + itm.getPaytaxpay() + "," + itm.getPaytaxdeduct()
 										+ ",";
 								;
 							}
 						}
-						// ¼glog
+						// å¯«log
 						if (!"".equals(strMsg)) {
 							/*
 							 * sb.append(strMsg); sb.append(newline);
@@ -2064,17 +2095,17 @@ public class SalNTDAO {
 					}
 				}
 			}
-			rtn = "¼g¤Jµ§¼Æ:" + write_cnt;
-			log.info(me + "  ...********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttimeM) + "²@¬í");
+			rtn = "å¯«å…¥ç­†æ•¸:" + write_cnt;
+			log.info(me + "  ...********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttimeM) + "æ¯«ç§’");
 
 			/*
 			 * starttime = System.currentTimeMillis();
-			 * log.info(me+"  ¶}©l¼g¥X¤å¦rÀÉ¡G"+filePath+"..."); outputstring = sb.toString(); File
+			 * log.info(me+"  é–‹å§‹å¯«å‡ºæ–‡å­—æª”ï¼š"+filePath+"..."); outputstring = sb.toString(); File
 			 * file = new File(filePath); output = new BufferedWriter(new FileWriter(file));
-			 * System.out.println("¶}©l¼g¥X¤å¦rÀÉ "+filePath+"..."); output.write(outputstring);
+			 * System.out.println("é–‹å§‹å¯«å‡ºæ–‡å­—æª” "+filePath+"..."); output.write(outputstring);
 			 * output.close();
-			 * log.info(me+"  ...********* ¼g¤J¦¨¥\...¦@ªá¶O¡G"+(System.currentTimeMillis()-
-			 * starttime)+"²@¬í");
+			 * log.info(me+"  ...********* å¯«å…¥æˆåŠŸ...å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-
+			 * starttime)+"æ¯«ç§’");
 			 */
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -2100,8 +2131,8 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * ¤ä¦©¶µ¥Ø¶×¤J§å¦¸ÀÉ ¶Ç¤J:vobjs,tradtµoÁ~¤é,paycode¤ä¦©¶µ¥Ø,chkbas(Y/N),userid¨Ï¥ÎªÌ,hid°|°Ï
-	 * ¶Ç¥X:rtn¤å¦r°T®§
+	 * æ”¯æ‰£é …ç›®åŒ¯å…¥æ‰¹æ¬¡æª” å‚³å…¥:vobjs,tradtç™¼è–ªæ—¥,paycodeæ”¯æ‰£é …ç›®,chkbas(Y/N),useridä½¿ç”¨è€…,hidé™¢å€
+	 * å‚³å‡º:rtnæ–‡å­—è¨Šæ¯
 	 **/
 	public String ImpPayInBat(ArrayList<Pabatpay> vobjs, String tradt, String paycode, String chkbas, String selEn,
 			String filename, String userid, String hid, VGHDataAccess da) throws Exception {
@@ -2117,17 +2148,17 @@ public class SalNTDAO {
 		ArrayList<Object> params = new ArrayList<Object>();
 		ArrayList<Object> paramA = new ArrayList<Object>();
 		ArrayList<Object> obj = new ArrayList<Object>();
-		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql ¸ê®Æ
+		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql è³‡æ–™
 
 		HashMap baspsnCardMap = new HashMap();
-		HashMap batwrtMap = new HashMap(); // ¨Ó·½ÀÉ¼g¤J¦Ümap
+		HashMap batwrtMap = new HashMap(); // ä¾†æºæª”å¯«å…¥è‡³map
 		HashMap batpayMap = new HashMap();
 		HashMap trapsnMap = new HashMap();
 		HashMap trapayMap = new HashMap();
-		Pabaspsn baspsnobj = null; // °ò¥»ÀÉ­Ó¤Hobj
-		Pabatpay batpayobj = null; // §å¦¸ÀÉobj
-		Patrapsn trapsnobj = null; // ²§°ÊÀÉ­Ó¤Hobj
-		Patrapay trapayobj = null; // ²§°ÊÀÉ¤ä¦©obj
+		Pabaspsn baspsnobj = null; // åŸºæœ¬æª”å€‹äººobj
+		Pabatpay batpayobj = null; // æ‰¹æ¬¡æª”obj
+		Patrapsn trapsnobj = null; // ç•°å‹•æª”å€‹äººobj
+		Patrapay trapayobj = null; // ç•°å‹•æª”æ”¯æ‰£obj
 		String strIdno = "";
 		String strCard = "";
 		String strCode = "";
@@ -2139,15 +2170,15 @@ public class SalNTDAO {
 		boolean blnFlag = true;
 		String strLine = "";
 		int limitcnt = 100;
-		int write_cnt = 0;// ¼g¤Jtable²ÄNµ§
-		int docnt = 0; // °õ¦æ²ÄNµ§
+		int write_cnt = 0;// å¯«å…¥tableç¬¬Nç­†
+		int docnt = 0; // åŸ·è¡Œç¬¬Nç­†
 		long starttime = 0;
 		long starttimeM = 0;
-		String l_newWorkfirst; // ¤ë§ÀÁ~ ¤u§@¤ë²Ä¤@¤Ñ
+		String l_newWorkfirst; // æœˆå°¾è–ª å·¥ä½œæœˆç¬¬ä¸€å¤©
 		String strYM = "";
-		String jsonStr = ""; // patrapsn¥Îjson¶Ç¤J°Ñ¼Æ
+		String jsonStr = ""; // patrapsnç”¨jsonå‚³å…¥åƒæ•¸
 
-		// or PATRACOD=33 or PATRACOD=37<==°ò¥»ÀÉ¥i¥H§ì,¤£¥Î³o¬q
+		// or PATRACOD=33 or PATRACOD=37<==åŸºæœ¬æª”å¯ä»¥æŠ“,ä¸ç”¨é€™æ®µ
 		String sqlTranPsn = "select A.*,B.PAYTITLP paytitlo,c.PAYTITLP,d.TRANAME " + " from " + this.tTraPsn + " A "
 				+ " left outer join " + this.tTitle + " B ON A.PAOTITLE=B.PAYTITLK and A.HID=B.HID "
 				+ " left outer join " + this.tTitle + " C ON A.PAYTITLE=C.PAYTITLK and A.HID=C.HID "
@@ -2166,23 +2197,23 @@ public class SalNTDAO {
 		try {
 			Hospitals hospInfo = Hospitals.getOneHosp(hid);
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
 				connFlg = true;
 			}
-			// log©ñªº¦ì¸m,¥[¦~¤ë
+			// logæ”¾çš„ä½ç½®,åŠ å¹´æœˆ
 			strYM = tradt.substring(0, 4) + tradt.substring(5, 7);
 			FileUtil fileUtil = new FileUtil();
-			String folderPath = hospInfo.fileSRV + "log\\§å¦¸ÀÉ\\" + strYM + "\\";
+			String folderPath = hospInfo.fileSRV + "log\\æ‰¹æ¬¡æª”\\" + strYM + "\\";
 
 			if (!FileUtil.FileToSmbFile(folderPath, hid).exists()) {
 				fileUtil.FileToSmbFile(folderPath, hid).mkdirs();
 			}
-			// ¼g¤J¸ê®Æ§¨³]©w
+			// å¯«å…¥è³‡æ–™å¤¾è¨­å®š
 			filename = filename.substring(0, filename.lastIndexOf(".") == -1 ? 0 : filename.lastIndexOf("."));
 			String filePath = folderPath + filename + "log.csv";
-			// «Ø¥ßÀÉ®×
+			// å»ºç«‹æª”æ¡ˆ
 			SmbFile payfile = fileUtil.FileToSmbFile(filePath, hid);
 			bfw = new BufferedWriter(new OutputStreamWriter(new SmbFileOutputStream(payfile, false), "Big5"));
 
@@ -2192,16 +2223,16 @@ public class SalNTDAO {
 			params.clear();
 
 			starttimeM = System.currentTimeMillis();
-			// §ä°ò¥»ÀÉ­Ó¤H
+			// æ‰¾åŸºæœ¬æª”å€‹äºº
 			baspsnCardMap = getBasEmpCardMap(hid, da);
 
-			// §ä§å¦¸ÀÉ_µoÁ~¤é+¤ä¦©¥N½X
+			// æ‰¾æ‰¹æ¬¡æª”_ç™¼è–ªæ—¥+æ”¯æ‰£ä»£ç¢¼
 			starttime = System.currentTimeMillis();
 			paramA = new ArrayList<Object>();
 			paramA.add(hid);
 			paramA.add(tradt);
 			paramA.add(paycode);
-			log.info(me + "  2.§ä§å¦¸ÀÉ_µoÁ~¤é+¤ä¦©¥N½X " + sqlBatPay_inq + "...params:" + paramA.toString());
+			log.info(me + "  2.æ‰¾æ‰¹æ¬¡æª”_ç™¼è–ªæ—¥+æ”¯æ‰£ä»£ç¢¼ " + sqlBatPay_inq + "...params:" + paramA.toString());
 			result = da.arraylistbyQuery(sqlBatPay_inq, paramA, META_TYPE);
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
@@ -2211,28 +2242,28 @@ public class SalNTDAO {
 					batpayMap.put(strCard, batpayobj);
 				}
 			}
-			log.info(me + "  2.§ä§å¦¸ÀÉ_µoÁ~¤é+¤ä¦©¥N½X ,size: " + result.size() + " ¦@ªá¶O¡G"
-					+ (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  2.æ‰¾æ‰¹æ¬¡æª”_ç™¼è–ªæ—¥+æ”¯æ‰£ä»£ç¢¼ ,size: " + result.size() + " å…±èŠ±è²»ï¼š"
+					+ (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 
-			// §ä²§°Ê­Ó¤H_µoÁ~¤é
+			// æ‰¾ç•°å‹•å€‹äºº_ç™¼è–ªæ—¥
 			// String jsonStr = "{\"city\":\"Taipei\", \"pop\":2600000}";
 			jsonStr = "{hid:" + hid + ", tradt:" + tradt + "}";
 			trapsnMap = getTraPsnMap(jsonStr, 1, da);
-			// 2026.3.30§ä²§°Ê©ú²Ó_µoÁ~¤é_¤ä¦©¥N½X(·s)
+			// 2026.3.30æ‰¾ç•°å‹•æ˜ç´°_ç™¼è–ªæ—¥_æ”¯æ‰£ä»£ç¢¼(æ–°)
 			trapayMap = getTraPayMap(hid, tradt, paycode, da);
 
-			// ¤ë§ÀÁ~,2026-4-1µoÁ~¤é,¤u§@¤ë²Ä¤@¤Ñ2026-3-1,§PÂ_¦³®Ä¤é´Á (2026/3/1-2026/3/31)
+			// æœˆå°¾è–ª,2026-4-1ç™¼è–ªæ—¥,å·¥ä½œæœˆç¬¬ä¸€å¤©2026-3-1,åˆ¤æ–·æœ‰æ•ˆæ—¥æœŸ (2026/3/1-2026/3/31)
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(DateUtil.StringToDate(tradt));
 			calendar.add(Calendar.MONTH, -1);
 			// calendar.add(Calendar.DATE,1);
 			l_newWorkfirst = formatter.format(calendar.getTime());
-			log.info(me + "  2-1.¤ë§ÀÁ~¤u§@¤ë²Ä¤@¤Ñ: " + l_newWorkfirst);
-			// 2.Åª¨úary,¤@¤@¼g¤Jpabatpay
+			log.info(me + "  2-1.æœˆå°¾è–ªå·¥ä½œæœˆç¬¬ä¸€å¤©: " + l_newWorkfirst);
+			// 2.è®€å–ary,ä¸€ä¸€å¯«å…¥pabatpay
 			starttime = System.currentTimeMillis();
-			log.info(me + "  3.Åª¨ú ary,¤@¤@¼g¤Jpabatpay ");
+			log.info(me + "  3.è®€å– ary,ä¸€ä¸€å¯«å…¥pabatpay ");
 
-			strLine = "¦~,¤ë,¥d¸¹,ª÷ÃB,©m¦W,°T®§,¼g¤J§å¦¸ÀÉ";
+			strLine = "å¹´,æœˆ,å¡è™Ÿ,é‡‘é¡,å§“å,è¨Šæ¯,å¯«å…¥æ‰¹æ¬¡æª”";
 			bfw.write(strLine);
 			bfw.newLine();
 			bfw.flush();
@@ -2254,7 +2285,7 @@ public class SalNTDAO {
 					strLine = itm.getYy() + "," + itm.getMm() + "," + itm.getPaycard() + "," + itm.getPayamt();
 					if ("".equals(strCard)) {
 						blnFlag = false;
-						strLine += ",,¥d¸¹[ªÅ¥Õ],N";
+						strLine += ",,å¡è™Ÿ[ç©ºç™½],N";
 						bfw.write(strLine);
 						bfw.newLine();
 						bfw.flush();
@@ -2265,9 +2296,9 @@ public class SalNTDAO {
 						trapayobj = (Patrapay) trapayMap.get(strCard);
 						baspsnobj = (Pabaspsn) baspsnCardMap.get(strCard);
 
-						// °ò¥»ÀÉ,²§°ÊÀÉ¬Ò§ä¤£¨ì
+						// åŸºæœ¬æª”,ç•°å‹•æª”çš†æ‰¾ä¸åˆ°
 						if (trapsnobj == null && baspsnobj == null) {
-							strLine += ",,¥d¸¹[§ä¤£¨ì],N";
+							strLine += ",,å¡è™Ÿ[æ‰¾ä¸åˆ°],N";
 							bfw.write(strLine);
 							bfw.newLine();
 							bfw.flush();
@@ -2275,29 +2306,29 @@ public class SalNTDAO {
 							// sb.append(newline);
 							blnFlag = false;
 						} else {
-							if (trapsnobj != null) { // ¥ı§ä²§°ÊÀÉ
+							if (trapsnobj != null) { // å…ˆæ‰¾ç•°å‹•æª”
 								inttracod = trapsnobj.getPatracod();
-								// ·s¶i,´_Â¾
+								// æ–°é€²,å¾©è·
 								if (inttracod < 10) {
 									strIdno = StringUtil.nullToString(trapsnobj.getPayidno());
 								}
-								// Â÷Â¾,¯d°±
+								// é›¢è·,ç•™åœ
 								else {
-									// ¥Í®Ä¤édate2>µoÁ~¤édate1 2025-11-15>2025-11-1 boolean true:date1 < date2 ¡Afalse:
+									// ç”Ÿæ•ˆæ—¥date2>ç™¼è–ªæ—¥date1 2025-11-15>2025-11-1 boolean true:date1 < date2 ï¼Œfalse:
 									// date1 >= date2
 									if (DateUtil.compareDate(DateUtil.getDbDate(trapsnobj.getPatradt(), "-"),
 											DateUtil.getDbDate(trapsnobj.getPaeffdt(), "-"))) {
 										strIdno = StringUtil.nullToString(trapsnobj.getPayidno());
 									} else {
-										// 2025-10-15¥Í®Ä¤é < 2025-11-1µoÁ~¤é
-										// ÂÂ¨î(¤ëÀY) µoÁ~¤é2025/11/1 <¥Í®Ä¤é2025/11/1,¼g¤Jlog
-										// ·s¨î(¤ë§À) µoÁ~¤é2025/11/1 ¥Í®Ä¤é10/2-11/1 ­n¤J§å¦¸ÀÉ true:¤ë§À°_ < ¥Í®Ä¤é 10/2 < 10/15
+										// 2025-10-15ç”Ÿæ•ˆæ—¥ < 2025-11-1ç™¼è–ªæ—¥
+										// èˆŠåˆ¶(æœˆé ­) ç™¼è–ªæ—¥2025/11/1 <ç”Ÿæ•ˆæ—¥2025/11/1,å¯«å…¥log
+										// æ–°åˆ¶(æœˆå°¾) ç™¼è–ªæ—¥2025/11/1 ç”Ÿæ•ˆæ—¥10/2-11/1 è¦å…¥æ‰¹æ¬¡æª” true:æœˆå°¾èµ· < ç”Ÿæ•ˆæ—¥ 10/2 < 10/15
 										if ("Y".equals(trapsnobj.getContraco()) && DateUtil.compareDate(l_newWorkfirst,
 												DateUtil.getDbDate(trapsnobj.getPaeffdt(), "-"))) {
-											// 2026.3.26 H260¤ı©úÄ£ ­ì¯d°±,2026.4.1µoÁ~°µ2026.3.31Â÷Â¾,¦P¤é´_Â¾¦P¤éÂ÷Â¾,ÀË´ú°ò¥»ÀÉ=°±Á~,¤£¥Î¤J§å¦¸
+											// 2026.3.26 H260ç‹æ˜è€€ åŸç•™åœ,2026.4.1ç™¼è–ªåš2026.3.31é›¢è·,åŒæ—¥å¾©è·åŒæ—¥é›¢è·,æª¢æ¸¬åŸºæœ¬æª”=åœè–ª,ä¸ç”¨å…¥æ‰¹æ¬¡
 											if (baspsnobj.getPatracod() == 23 || baspsnobj.getPatracod() == 24) {
-												strLine += "," + trapsnobj.getPaynamec() + ",°ò¥»--"
-														+ baspsnobj.getTraname() + "/²§°Ê--" + trapsnobj.getTraname()
+												strLine += "," + trapsnobj.getPaynamec() + ",åŸºæœ¬--"
+														+ baspsnobj.getTraname() + "/ç•°å‹•--" + trapsnobj.getTraname()
 														+ trapsnobj.getPaeffdt() + ",N";
 												blnFlag = false;
 												bfw.write(strLine);
@@ -2306,11 +2337,11 @@ public class SalNTDAO {
 											} else
 												strIdno = StringUtil.nullToString(trapsnobj.getPayidno());
 										} else {
-											if ("N".equals(chkbas))// ¤£ÀË®Ö,¼g¤J§å¦¸ÀÉ
-												strLine += "," + trapsnobj.getPaynamec() + ",²§°Ê--"
+											if ("N".equals(chkbas))// ä¸æª¢æ ¸,å¯«å…¥æ‰¹æ¬¡æª”
+												strLine += "," + trapsnobj.getPaynamec() + ",ç•°å‹•--"
 														+ trapsnobj.getTraname() + trapsnobj.getPaeffdt() + ",Y";
-											else { // ÀË®Ö,¤£¼g¤J§å¦¸ÀÉ
-												strLine += "," + trapsnobj.getPaynamec() + ",²§°Ê--"
+											else { // æª¢æ ¸,ä¸å¯«å…¥æ‰¹æ¬¡æª”
+												strLine += "," + trapsnobj.getPaynamec() + ",ç•°å‹•--"
 														+ trapsnobj.getTraname() + trapsnobj.getPaeffdt() + ",N";
 												blnFlag = false;
 											}
@@ -2323,16 +2354,16 @@ public class SalNTDAO {
 									}
 								}
 							}
-							// §ä°ò¥»ÀÉ
+							// æ‰¾åŸºæœ¬æª”
 							else if (baspsnobj != null) {
 								inttracod = baspsnobj.getPatracod();
 								strIdno = StringUtil.nullToString(baspsnobj.getPayidno());
 								if (inttracod >= 20 && inttracod < 30) {
-									if ("N".equals(chkbas))// ¤£ÀË®Ö,¼g¤J§å¦¸ÀÉ
-										strLine += "," + baspsnobj.getPaynamec() + ",°ò¥»--" + baspsnobj.getTraname()
+									if ("N".equals(chkbas))// ä¸æª¢æ ¸,å¯«å…¥æ‰¹æ¬¡æª”
+										strLine += "," + baspsnobj.getPaynamec() + ",åŸºæœ¬--" + baspsnobj.getTraname()
 												+ ",Y";
-									else { // ÀË®Ö,¤£¼g¤J§å¦¸ÀÉ
-										strLine += "," + baspsnobj.getPaynamec() + ",°ò¥»--" + baspsnobj.getTraname()
+									else { // æª¢æ ¸,ä¸å¯«å…¥æ‰¹æ¬¡æª”
+										strLine += "," + baspsnobj.getPaynamec() + ",åŸºæœ¬--" + baspsnobj.getTraname()
 												+ ",N";
 										blnFlag = false;
 									}
@@ -2343,9 +2374,9 @@ public class SalNTDAO {
 									// sb.append(newline);
 								}
 							}
-							// §ä²§°Ê¤ä¦©¬O§_¦³¸Óµ§¶µ¥Ø
+							// æ‰¾ç•°å‹•æ”¯æ‰£æ˜¯å¦æœ‰è©²ç­†é …ç›®
 							if (trapayobj != null) {
-								strLine += "," + baspsnobj.getPaynamec() + ",²§°ÊÀÉ¤w¦³¸Ó¶µ¤ä¦©,N";
+								strLine += "," + baspsnobj.getPaynamec() + ",ç•°å‹•æª”å·²æœ‰è©²é …æ”¯æ‰£,N";
 								blnFlag = false;
 								bfw.write(strLine);
 								bfw.newLine();
@@ -2354,15 +2385,15 @@ public class SalNTDAO {
 
 							if (blnFlag) {
 
-								// §ä¬O§_¦³¦b¼g¤JMAP¤º,­Y¦³,¼glog,¤£¼g¤J§å¦¸ÀÉ
+								// æ‰¾æ˜¯å¦æœ‰åœ¨å¯«å…¥MAPå…§,è‹¥æœ‰,å¯«log,ä¸å¯«å…¥æ‰¹æ¬¡æª”
 								if (batwrtMap.containsKey(strCard)) {
-									strLine += "," + baspsnobj.getPaynamec() + ",­«½Æ,Y";
+									strLine += "," + baspsnobj.getPaynamec() + ",é‡è¤‡,Y";
 									bfw.write(strLine);
 									bfw.newLine();
 									bfw.flush();
 								} else {
 									batpayobj = null;
-									// 1A0 VP013±M¶ÔÂå®v--¯f¾ú¼úÀy»@¦© VD070¸É¥R«OÀI¶O §ä¨ì,ª÷ÃB¥[Á`update,¨S§ä¨ìinsert
+									// 1A0 VP013å°ˆå‹¤é†«å¸«--ç—…æ­·çå‹µç½°æ‰£ VD070è£œå……ä¿éšªè²» æ‰¾åˆ°,é‡‘é¡åŠ ç¸½update,æ²’æ‰¾åˆ°insert
 									if (paycode.equals("VP013|VD070") && hid.matches("1A0")) {
 										batpayobj = (Pabatpay) batpayMap.get(strCard);
 										if (batpayobj != null)
@@ -2417,22 +2448,22 @@ public class SalNTDAO {
 				}
 			}
 			if ("".equals(rtn)) {
-				rtn = "¼g¤Jµ§¼Æ:" + write_cnt;
-				log.info(me + "  ...********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+				rtn = "å¯«å…¥ç­†æ•¸:" + write_cnt;
+				log.info(me + "  ...********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 
 				// starttime = System.currentTimeMillis();
-				// log.info(me+" ¶}©l¼g¥X¤å¦rÀÉ¡G"+filePath+"...");
+				// log.info(me+" é–‹å§‹å¯«å‡ºæ–‡å­—æª”ï¼š"+filePath+"...");
 				// outputstring = sb.toString();
-				// log.info(me+" ¤å¦rÀÉ¤º®e¡G"+outputstring+"...");
+				// log.info(me+" æ–‡å­—æª”å…§å®¹ï¼š"+outputstring+"...");
 				// File file = new File(filePath);
 				// output = new BufferedWriter(new FileWriter(file));
 				// output.write(outputstring);
 				// output.close();
 				// log.info(me+" ...*********
-				// ..¦@ªá¶O¡G"+(System.currentTimeMillis()-starttime)+"²@¬í");
+				// ..å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-starttime)+"æ¯«ç§’");
 			}
 
-			rtn += "...*********..¦@ªá¶O¡G" + (System.currentTimeMillis() - starttimeM) + "²@¬í";
+			rtn += "...*********..å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttimeM) + "æ¯«ç§’";
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			log.info(me + " fail, " + e);
@@ -2457,10 +2488,10 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * ¨ú±omap
+	 * å–å¾—map
 	 * 
-	 * @param hid:°|§O
-	 *            selCode:1°ò¥»ÀÉ lparam:°Ñ¼Æ
+	 * @param hid:é™¢åˆ¥
+	 *            selCode:1åŸºæœ¬æª” lparam:åƒæ•¸
 	 * @return map
 	 * @throws SQLException
 	 */
@@ -2486,38 +2517,38 @@ public class SalNTDAO {
 		int cnt = 0;
 		HashMap<String, Object> rtnMap = new HashMap<String, Object>();
 		String tmp = "";
-		// tmp=" and a.paycard in ('P037')"; //´ú¸Õ¥Î
-		// µoÁ~©ú²Ó_²£¥Í_1_¨ú±o°ò¥»­Ó¤HÀÉ(¦bÂ¾),2024-7-12 ÁpÂå¯S¬ù¤£©ñ¤ëÁ~,payrank=I key:payidno
+		// tmp=" and a.paycard in ('P037')"; //æ¸¬è©¦ç”¨
+		// ç™¼è–ªæ˜ç´°_ç”¢ç”Ÿ_1_å–å¾—åŸºæœ¬å€‹äººæª”(åœ¨è·),2024-7-12 è¯é†«ç‰¹ç´„ä¸æ”¾æœˆè–ª,payrank=I key:payidno
 		String sqlBaspsnSgn_inq = "select PAYLVEFG, PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, PAYEMPDT, PAYSGNDT, PAYRSGDT, PAYBKID, PAYACNO, PAYGEDNO, PAYINFLG, PAYDPNO, PAYPSW, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, COALESCE(PAYPFDOC,0) PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PATRACOD, PATRADT, PAYTAXNO, PAYUPDID, PAYUPDTM, PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3, PAYRANK4, PAYCTCBACNO, PAYCTCBGEDNO, INSUAMT, PARETENTION, HID "
 				+ "from " + this.tBasPsn
 				+ " where PAYLVEFG = 'N' and PATRACOD not in (23,24) AND HID=? and PAYRANK NOT IN ('I') " + tmp
 				+ " order by paycard with ur";
-		// µoÁ~©ú²Ó_²£¥Í_1_¨ú±o°ò¥»­Ó¤HÀÉ(¥ş§ì)and (payrsgdt >= CURRENT date-1 year OR payrsgdt IS null)
-		// 2024-7-12 ÁpÂå¯S¬ù¤£©ñ¤ëÁ~,payrank=I key:payidno
+		// ç™¼è–ªæ˜ç´°_ç”¢ç”Ÿ_1_å–å¾—åŸºæœ¬å€‹äººæª”(å…¨æŠ“)and (payrsgdt >= CURRENT date-1 year OR payrsgdt IS null)
+		// 2024-7-12 è¯é†«ç‰¹ç´„ä¸æ”¾æœˆè–ª,payrank=I key:payidno
 		String sqlBaspsnAll_inq = "select PAYLVEFG, PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, PAYEMPDT, PAYSGNDT, PAYRSGDT, PAYBKID, PAYACNO, PAYGEDNO, PAYINFLG, PAYDPNO, PAYPSW, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, COALESCE(PAYPFDOC,0) PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PATRACOD, PATRADT, PAYTAXNO, PAYUPDID, PAYUPDTM, PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3, PAYRANK4, PAYCTCBACNO, PAYCTCBGEDNO, INSUAMT, PARETENTION, HID "
 				+ "from " + this.tBasPsn + " where HID=? " + tmp + " order by paycard with ur";
-		// µoÁ~©ú²Ó_²£¥Í_2_¨ú±o°ò¥»¤ä¦©ÀÉ,2024-7-12 ÁpÂå¯S¬ù¤£©ñ¤ëÁ~,payrank=I key:payidno
+		// ç™¼è–ªæ˜ç´°_ç”¢ç”Ÿ_2_å–å¾—åŸºæœ¬æ”¯æ‰£æª”,2024-7-12 è¯é†«ç‰¹ç´„ä¸æ”¾æœˆè–ª,payrank=I key:payidno
 		String sqlBaspay_inq = "select a.PAYIDNO, PAYCODE, PAYAMT, PAYAUTH, PAYIFTAX, PAYUPDTM, a.HID " + "from "
 				+ this.tBasPay + " a " + " inner join ( select PAYIDNO,HID from " + this.tBasPsn
 				+ " where PAYLVEFG = 'N' and PATRACOD not in (23,24) AND HID=? and PAYRANK NOT IN ('I') " + tmp
 				+ " ) b " + "    on a.payidno=b.payidno and a.hid=b.hid " + " order by a.payidno,a.paycode with ur";
-		// µoÁ~©ú²Ó_²£¥Í_3_¨ú±o²§°Ê­Ó¤HÀÉ key:payidno ÁpÂå¯S¬ù¤£©ñ¤ëÁ~,payrank=I
+		// ç™¼è–ªæ˜ç´°_ç”¢ç”Ÿ_3_å–å¾—ç•°å‹•å€‹äººæª” key:payidno è¯é†«ç‰¹ç´„ä¸æ”¾æœˆè–ª,payrank=I
 		String sqlTrapsn_inq = "select PATRACOD, PATRADT, PAEFFDT, SALNUM, PAYLVEFG, PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, PAYEMPDT, PAYSGNDT, PAYRSGDT, PAYBKID, PAYACNO, PAYGEDNO, PAYINFLG, PAYDPNO, PAYPFLAG, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PAYMONNO, PAYDAYNO, PAOTITLE, PAORNK2N, PAORANK3, PAODEGR2, PAODEGRE, PAORANK, PAORANK2, PAORANKC, PAOPFDOC, PAOCSFLA, PAOPFSP1, PAOPFSP2, PAOPFSP3, PAYTAXNO, PAYUPDID, PAYUPDTM, PAYFLAG, TRANUM, UPMASTDT, PAYPSW, PAOEXPFKEY1, PAOEXPFKEY2, PAOEXPFKEY3, PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3, PAORANK4, PAYRANK4, PAYCTCBACNO, PAYCTCBGEDNO, INSUAMT, HID "
 				+ "from " + this.tTraPsn
 				+ " where SALNUM=? AND HID=? and (PAYRANK NOT IN ('I') or PAORANK NOT IN ('I')) " + tmp
 				+ " order by paycard with ur";
-		// µoÁ~©ú²Ó_²£¥Í_4_¨ú±o²§°Ê¤ä¦©ÀÉ key:payidno
+		// ç™¼è–ªæ˜ç´°_ç”¢ç”Ÿ_4_å–å¾—ç•°å‹•æ”¯æ‰£æª” key:payidno
 		String sqlTrapay_inq = "select TRANUM, a.PAYIDNO, a.PATRADT, PAYSORT, PAYCODE, PAYAMT, PAYAUTH, PAYIFTAX, PAYUPDTM, PAYFLAG, a.HID "
 				+ "from " + this.tTraPay + " a " + " inner join ( select PAYIDNO,HID,PATRADT from " + this.tTraPsn
 				+ " where SALNUM=? AND HID=? and (PAYRANK NOT IN ('I') or PAORANK NOT IN ('I')) " + tmp + " ) b "
 				+ "    on a.payidno=b.payidno and a.hid=b.hid and a.PATRADT=b.PATRADT "
 				+ " where PAYSORT='N' order by a.payidno,a.paycode with ur";
-		// µoÁ~©ú²Ó_²£¥Í_5_¨ú±o§å¦¸ÀÉ key:payidno+paycode
+		// ç™¼è–ªæ˜ç´°_ç”¢ç”Ÿ_5_å–å¾—æ‰¹æ¬¡æª” key:payidno+paycode
 		String sqlBatpay_inq = "select PATRADT, PAYIDNO, SALNUM, PAYCARD, A.PAYCODE, a.PAUPBAS, PAYAMT, PADUTYID, a.PAYUPDAT, PAYFLAG, UPMASTDT, A.HID,PAYIFTAX,PAYAUTH "
 				+ "from " + this.tBatPay + " a " + " left outer join " + this.tPayItm
 				+ " b on a.PAYCODE=b.PAYCODE and a.HID=b.HID " + " where salnum=? AND A.HID=? " + tmp
 				+ " order by PAYIDNO,A.PAYCODE  with ur";
-		// ³øªíÀÉ_²£¥Í,¨ú±o¤ë¤ä­Ó¤HÀÉ key=salnum+hid
+		// å ±è¡¨æª”_ç”¢ç”Ÿ,å–å¾—æœˆæ”¯å€‹äººæª” key=salnum+hid
 		String sqlPrtDatpsn_inq = "SELECT COALESCE(e.PAYLVEFG,'N') PAYLVEFG, COALESCE(e.PAEFFDT,'9999-12-31') PAEFFDT,COALESCE(e.traname,'') traname,"
 				+ "COALESCE(e.patracod,0) patracod,A.PAYBANK, A.PAYIDNO, A.PAYCARD, A.PAYNAMEC, A.PAYEMPNO, "
 				+ "CASE WHEN COALESCE(D.PAYCTCBACNO,'')='' THEN COALESCE(E.PAYCTCBACNO,'') ELSE COALESCE(D.PAYCTCBACNO,'') END AS PAYACNO,"
@@ -2534,7 +2565,7 @@ public class SalNTDAO {
 				+ "WHERE salnum=? AND hid=? AND patracod NOT IN ('41','51')) E ON A.PAYIDNO  = E.PAYIDNO  AND A.HID=E.HID AND A.SALNUM=E.SALNUM  "
 				+ " where A.SALNUM=? and A.HID=? " + tmp + " order by paycard with ur";
 
-		// ³øªíÀÉ_²£¥Í,¨ú±o¤ë¤ä¤ä¦©ÀÉ key=salnum+hid
+		// å ±è¡¨æª”_ç”¢ç”Ÿ,å–å¾—æœˆæ”¯æ”¯æ‰£æª” key=salnum+hid
 		String sqlPrtDatpay_inq = "SELECT b.PAYIDNO, PAYCODE,'' paysort,b.SALNUM,  PAYAMT, PAYAUTH, PAYIFTAX,  PAYFLAG, b.HID "
 				+ "FROM " + this.tDatPay + " b " + "LEFT OUTER JOIN " + this.tDatPsn
 				+ " a ON a.hid=b.hid AND a.payidno=b.payidno AND a.salnum=b.salnum " + "where b.salnum=? AND b.hid=? "
@@ -2545,18 +2576,18 @@ public class SalNTDAO {
 				+ ") b ON a.hid=b.hid AND a.payidno=b.payidno AND a.patradt=b.patradt "
 				+ "where a.patradt =? and a.hid=? AND paysort='O' AND substr(paycode,1,2)='FP' "
 				+ " order by 1,2,3 with ur";
-		// ³øªí²£»s(¥D­p)_²£¥Í,¨ú±o¤ë¤ä¤ä¦©ÀÉ key=salnum+hid
+		// å ±è¡¨ç”¢è£½(ä¸»è¨ˆ)_ç”¢ç”Ÿ,å–å¾—æœˆæ”¯æ”¯æ‰£æª” key=salnum+hid
 		String sqlDatpay_inq = "SELECT b.PAYIDNO, PAYCODE,b.SALNUM,  PAYAMT, PAYAUTH, PAYIFTAX,  PAYFLAG, b.HID "
 				+ "FROM " + this.tDatPay + " b " + "LEFT OUTER JOIN " + this.tDatPsn
 				+ " a ON a.hid=b.hid AND a.payidno=b.payidno AND a.salnum=b.salnum " + "where b.salnum=? AND b.hid=? "
 				+ tmp + " order by 1,2,3 with ur";
-		// ³øªí¬[ºc
+		// å ±è¡¨æ¶æ§‹
 		String sqlPrtRpt = "select PAYTYPE, PAYNUM, PAYCODE, HID, COALESCE(PAYAMT,0) PAYAMT " + "from " + this.tRPPRT
 				+ " where hid=? and PAYTYPE=? " + "ORDER BY PAYNUM,PAYCODE " + "WITH UR";
-		// ³øªí²£»s(ÁZ®Ä²Õ)_²£¥Í,¨ú±o¤ë¤ä¤ä¦©ÀÉ (VP01,VP049,FD440)key=salnum+hid,¦^¶Ç id,payamt
-		// 2014-12-5 §ï¦¨¤£Åªªº¶µ¥Ø±Æ°£,VP01*¥ş³¡,±Æ°£VP013 VP010
-		// VP049±M¤G¸Éµo,FP440±M¶Ô¼úª÷¤@°ö°V¸É§U,FP80¤u§@-¦í±J¬z¶K
-		// ±ĞÂ¾¤Î½×¤å¼úÀy key=hid+paybank
+		// å ±è¡¨ç”¢è£½(ç¸¾æ•ˆçµ„)_ç”¢ç”Ÿ,å–å¾—æœˆæ”¯æ”¯æ‰£æª” (VP01,VP049,FD440)key=salnum+hid,å›å‚³ id,payamt
+		// 2014-12-5 æ”¹æˆä¸è®€çš„é …ç›®æ’é™¤,VP01*å…¨éƒ¨,æ’é™¤VP013 VP010
+		// VP049å°ˆäºŒè£œç™¼,FP440å°ˆå‹¤çé‡‘ä¸€åŸ¹è¨“è£œåŠ©,FP80å·¥ä½œ-ä½å®¿æ´¥è²¼
+		// æ•™è·åŠè«–æ–‡çå‹µ key=hid+paybank
 		String sqlDatdoc_inq = "SELECT a.payidno,'VP01' PAYCODE,SUM(PAYAMT) AS PAYAMT " + "FROM " + this.tDatPsn + " a "
 				+ "LEFT OUTER JOIN " + this.tDatPay + " b ON a.hid=b.hid AND a.payidno=b.payidno AND a.salnum=b.salnum "
 				+ "where a.hid=? and a.salnum=? " + tmp
@@ -2572,19 +2603,19 @@ public class SalNTDAO {
 				+ " SELECT payidno,PAYITEM PAYCODE,SUM(PAYAMT) AS PAYAMT " + " FROM " + this.tTeaChaw + " a "
 				+ " where a.hid=? " + tmp
 				+ " AND ? BETWEEN PABDATE AND PAVDATE GROUP BY payidno,PAYITEM ORDER BY payidno,paycode with ur ";
-		// §ä¥XÂå®v.Â¾°È½Õ¾ã,2­Ó¤ë«eµoÁ~©ú²ÓªºÂ¾µ¥
+		// æ‰¾å‡ºé†«å¸«.è·å‹™èª¿æ•´,2å€‹æœˆå‰ç™¼è–ªæ˜ç´°çš„è·ç­‰
 		String sqlDatdoc_Adj = "SELECT SALNUM, PAYBANK, SALNUM, PAYBANK, PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PAYUPDID, PAYUPDTM, PAYRANK4, HID, ZPADATPSN, INSUAMT, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PAYUPDID, PAYUPDTM, PAYRANK4, HID, INSUAMT"
 				+ " FROM " + this.tDatPsn + " WHERE hid=? AND payidno IN (SELECT payidno FROM " + this.tTraPsn + " a "
 				+ " LEFT OUTER JOIN " + this.tTitle + " b ON a.hid=b.hid and a.PAYTITLE=b.PAYTITLK "
 				+ " WHERE patradt BETWEEN ? AND ? AND patracod in (37) AND b.PATITSUB IN ('V') )"
 				+ " and paybank=? with ur";
-		// ½×¤å¤Î±ĞÂ¾¼úÀy_¨ú°ò¥»¤ä¦©FP420±ĞÂ¾¼úÀy FP430½×¤å¼úÀy
+		// è«–æ–‡åŠæ•™è·çå‹µ_å–åŸºæœ¬æ”¯æ‰£FP420æ•™è·çå‹µ FP430è«–æ–‡çå‹µ
 		String sqlBaspay_Tea = "select a.PAYIDNO, PAYCODE, PAYAMT, PAYAUTH, PAYIFTAX, a.HID " + "from " + this.tBasPay
 				+ " a " + " inner join ( select PAYIDNO,HID from " + this.tBasPsn
 				+ " where PAYLVEFG = 'N' and PATRACOD not in (23,24) and PAYRANK NOT IN ('I') " + tmp + " ) b "
 				+ "    on a.payidno=b.payidno and a.hid=b.hid " + " where paycode in ('FP420','FP430') and a.hid=?  "
 				+ " order by a.payidno,a.paycode with ur";
-		// ½×¤å¤Î±ĞÂ¾¼úÀy
+		// è«–æ–‡åŠæ•™è·çå‹µ
 		String sqlTeachaw = "select PAYIDNO, 'FP420' PAYCODE, PAYCARD, PAYNAMEC, PAYAMT,hid " + " from " + this.tTeaChaw
 				+ " where hid=? AND ? BETWEEN PABDATE AND PAVDATE  AND PAYITEM in ('00') " + " union "
 				+ " SELECT PAYIDNO, 'FP430' PAYCODE, PAYCARD, PAYNAMEC, sum(PAYAMT) PAYAMT,hid " + " from "
@@ -2594,7 +2625,7 @@ public class SalNTDAO {
 			starttime = System.currentTimeMillis();
 			Hospitals hospInfo = Hospitals.getOneHosp(hid);
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
 				connFlg = true;
@@ -2742,11 +2773,11 @@ public class SalNTDAO {
 					rtnMap.put(preKey, tpayAry);
 				}
 			}
-			log.info(me + "  ...*********" + tblNm + " size:" + result.size() + " ...¦@ªá¶O¡G"
-					+ (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...*********" + tblNm + " size:" + result.size() + " ...å…±èŠ±è²»ï¼š"
+					+ (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Throwable e) {
 			log.info(me + " fail, " + e);
-			throw new SQLException("¨ú±o map :" + e.toString());
+			throw new SQLException("å–å¾— map :" + e.toString());
 		} finally {
 			if (!connFlg)
 				closeAll(da, null, connFlg);
@@ -2754,7 +2785,7 @@ public class SalNTDAO {
 		return rtnMap;
 	}
 
-	// trapsnobj:²§°ÊÀÉ,bpsnobj:°ò¥»ÀÉ,salnum»è³æ½s¸¹,traflag:N(·s)O(­ì)patradt:µoÁ~¤é,userid:µn¤JªÌ,HID:Âå°|§O
+	// trapsnobj:ç•°å‹•æª”,bpsnobj:åŸºæœ¬æª”,salnumé¤‰å–®ç·¨è™Ÿ,traflag:N(æ–°)O(åŸ)patradt:ç™¼è–ªæ—¥,userid:ç™»å…¥è€…,HID:é†«é™¢åˆ¥
 	private Padatpsn setDatPsnObj(Patrapsn trapsnobj, Pabaspsn bpsnobj, int salnum, String traflag, String patradt,
 			String userid, String hid) {
 		Padatpsn rtnobj = new Padatpsn();
@@ -2840,18 +2871,18 @@ public class SalNTDAO {
 		return rtnobj;
 	}
 
-	// ¼g¤J³øªíÀÉ
-	// prtMap ¤ë¤ämap
+	// å¯«å…¥å ±è¡¨æª”
+	// prtMap æœˆæ”¯map
 	private String updPrtTblMap(HashMap<String, Paprtdtl> prtMap, VGHDataAccess da) {
 		String me = getClass().getName() + ".updPrtTblMap()";
 		String rtn = "";
 		ArrayList<Object> param = new ArrayList<Object>();
 		ArrayList<Object> params = new ArrayList<Object>();
-		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql ¸ê®Æ
+		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql è³‡æ–™
 		int write_cnt = 0;
 		int limitcnt = 100;
 		Map valMap = null;
-		// µoÁ~©ú²Ó_¼g¤J_1_rpdtl
+		// ç™¼è–ªæ˜ç´°_å¯«å…¥_1_rpdtl
 		String sqlRptDtl_ins = "INSERT INTO " + this.tRPDTL
 				+ " (PAYIDNO, PAYBANK, PAYCARD, PAYNAMEC, PAYEMPNO, PAYACNO, PAYGEDNO, PAYDEPT, PADEPNMC, PATITSUB, PAYTITLE, PAYTITLP, PAYRANK, RANKABBR, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYLVEFG, TRANAME, PAEFFDT, LASTDAYNO, PAYDAYNO, PAYOBASE, PAYOSPSU, PAYOCHALW, PAYOSTBN, PAYOSUPLY, PAYBASE, PAYRBASE, PAYSPSU, PAYRSPSU, PAYSPSD, PAYRSPSD, PAYCHALW, PAYRCHALW, PAYSTBNT, PAYRSTBN, PAYTRANS, PAYSUPLY, PAYRSUPLY, PAYPFNT, PAYSTAL, PAYSTALD, PAYNIGHT, PAYYEAR, PAYADDHL, PAYGRADE, PAYPROMO, PAYADRTN, PAYCPLM1, PAYCPLM2, PAYCPLM3, PAYEMPFD, PAYSARS, PAYEXTRA, PAYGEINS, PAYDPINS, PAYLBINS, PAYRETIR, PAYTAX, PAYGEDP, PAYVETD1, PAYHLOA1, PAYHLOA2, PAYHLOA3, PAYHLOA4, PAYHLOA5, PAYHLOA6, PAYDLOAN, PAYMHOUS, PAYNSPFD, PAYPARK1, PAYPARK2, PAYGYM, PAYLIEN, PAYMEAL, PAYCARDF, PAYDORM1, PAYDORM2, PAYDORM3, PAYOTHER1, PAYOTHER2, PAYOTHER3, PAYAGEN1, PAYTOTAL, PAYTOTIS, PAYTLDED, PAYNET, HID, SALNUM) "
 				+ " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -3238,7 +3269,7 @@ public class SalNTDAO {
 		return rtn;
 	}
 
-	// ¼g¤J²§°Ê­Ó¤H/¤ä¦©©ú²Ó,¥ı¼g²§°Ê­Ó¤H¤@µ§,¦AÅª²§°Ê­Ó¤H¤ä¦©©ú²Ó
+	// å¯«å…¥ç•°å‹•å€‹äºº/æ”¯æ‰£æ˜ç´°,å…ˆå¯«ç•°å‹•å€‹äººä¸€ç­†,å†è®€ç•°å‹•å€‹äººæ”¯æ‰£æ˜ç´°
 	// trapsnMap trapayMap
 	private String updTraTblMap(HashMap<String, Patrapsn> trapsnMap, HashMap<String, ArrayList<Patrapay>> trapayMap,
 			String hid, VGHDataAccess da) {
@@ -3246,7 +3277,7 @@ public class SalNTDAO {
 		String rtn = "";
 		ArrayList<Object> param = new ArrayList<Object>();
 		ArrayList<Object> params = new ArrayList<Object>();
-		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql ¸ê®Æ
+		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql è³‡æ–™
 		ArrayList<Object> paramA = new ArrayList<Object>();
 		ArrayList<Patrapay> oneAry = null;
 		String strKey = "";
@@ -3254,12 +3285,12 @@ public class SalNTDAO {
 		int write_cnt = 0;
 		int limitcnt = 100;
 
-		// ²§°ÊÀÉ_¼g¤J­Ó¤H©ú²Ó__patrapsn
+		// ç•°å‹•æª”_å¯«å…¥å€‹äººæ˜ç´°__patrapsn
 		String sqlTrapsn_ins = " insert into " + this.tTraPsn
 				+ " (PAEFFDT, SALNUM, PAYLVEFG, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, PAYEMPDT, PAYSGNDT, PAYRSGDT, PAYINFLG, PAYDPNO, PAYPFLAG, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PAYMONNO, PAYDAYNO, PAOTITLE, PAORNK2N, PAORANK3, PAODEGR2, PAODEGRE, PAORANK, PAORANK2, PAORANKC, PAOPFDOC, PAOCSFLA, PAOPFSP1, PAOPFSP2, PAOPFSP3, PAYTAXNO, PAYUPDID, PAYUPDTM, TRANUM, PAOEXPFKEY1, PAOEXPFKEY2, PAOEXPFKEY3, PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3, PAORANK4, PAYRANK4, PAYCTCBACNO, PAYCTCBGEDNO, INSUAMT, "
 				+ tmpZtrapsn + ",PAYIDNO,PATRADT, PATRACOD,  HID)"
 				+ " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,current timestamp,?,?,?,?,?,?,?,?,?,?,?,?,current timestamp,?,?,?,?) ";
-		// ²§°ÊÀÉ_¼g¤J¤ä¦©©ú²Ó_patrapay
+		// ç•°å‹•æª”_å¯«å…¥æ”¯æ‰£æ˜ç´°_patrapay
 		String sqlTrapay_ins = "insert into " + this.tTraPay + " (TRANUM, PAYAMT, PAYAUTH, PAYIFTAX, PAYFLAG,PAYUPDTM, "
 				+ tmpZtrapay + ", PAYCODE, HID, PAYIDNO, PATRADT, PAYSORT)"
 				+ " values(?,?,?,?,'',current timestamp,current timestamp,?,?,?,?,?) ";
@@ -3378,7 +3409,7 @@ public class SalNTDAO {
 						}
 
 						if (++write_cnt % limitcnt == 0) {
-							log.info(batch_sql + " ¼g¤J:" + batch_sql + " params:" + params);
+							log.info(batch_sql + " å¯«å…¥:" + batch_sql + " params:" + params);
 							da.batchupdatenocommit(batch_sql, params);
 							da.commit();
 
@@ -3404,23 +3435,23 @@ public class SalNTDAO {
 		return rtn;
 	}
 
-	// ¼g¤J¤ë¤ä­Ó¤H
-	// datpsnMap ¤ë¤ämap
+	// å¯«å…¥æœˆæ”¯å€‹äºº
+	// datpsnMap æœˆæ”¯map
 	private String updDatTblMap(HashMap<String, Padatpsn> datpsnMap, HashMap<String, Padatpay> datpayMap,
 			VGHDataAccess da) {
 		String me = getClass().getName() + ".updDatTblMap()";
 		String rtn = "";
 		ArrayList<Object> param = new ArrayList<Object>();
 		ArrayList<Object> params = new ArrayList<Object>();
-		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql ¸ê®Æ
+		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql è³‡æ–™
 		int write_cnt = 0;
 		int limitcnt = 100;
 
-		// µoÁ~©ú²Ó_¼g¤J_1_padatpsn
+		// ç™¼è–ªæ˜ç´°_å¯«å…¥_1_padatpsn
 		String sqlDatPsn_ins = "INSERT INTO " + this.tDatPsn
 				+ " (SALNUM, PAYBANK, PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PAYUPDID, PAYUPDTM, PAYRANK4, HID, INSUAMT) "
 				+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,current timestamp,?,?,?) ";
-		// µoÁ~©ú²Ó_¼g¤J_1_padatpay
+		// ç™¼è–ªæ˜ç´°_å¯«å…¥_1_padatpay
 		String sqlDatPay_ins = "INSERT INTO " + this.tDatPay
 				+ " (SALNUM, PAYIDNO, PAYCODE, PAYAMT, PAYAUTH, PAYIFTAX, PAYUPDTM, PAYFLAG, HID)  "
 				+ " VALUES(?, ?, ?, ?, ?, ?, current timestamp, ?, ?) ";
@@ -3520,9 +3551,9 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * [²£¥Í]³øªíÀÉ in_data:(1:»è³æ½s¸¹³]©w,salnum) 2²£¥ÍµoÁ~©ú²Ó
+	 * [ç”¢ç”Ÿ]å ±è¡¨æª” in_data:(1:é¤‰å–®ç·¨è™Ÿè¨­å®š,salnum) 2ç”¢ç”Ÿç™¼è–ªæ˜ç´°
 	 * 
-	 * ¶Ç¥X:rtn¤å¦r°T®§
+	 * å‚³å‡º:rtnæ–‡å­—è¨Šæ¯
 	 **/
 	public String prodPrtSal(String in_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".prodPrtSal(),userid = " + userid;
@@ -3531,61 +3562,61 @@ public class SalNTDAO {
 		int updcnt = 0;
 		boolean updOK = false;
 		int salnum = 0;
-		int salnum_prt = 0; // ³øªíÀÉªº»è³æ½s¸¹
+		int salnum_prt = 0; // å ±è¡¨æª”çš„é¤‰å–®ç·¨è™Ÿ
 		ResultSet rs = null;
-		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql ¸ê®Æ
+		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql è³‡æ–™
 		params = new ArrayList<Object>();
 		ArrayList<Object> param = new ArrayList<Object>();
 		JSONArray array = null;
 		JSONArray tabJsonary = null;
-		HashMap<String, Object> datpsnMap = new HashMap();// ¤ë¤ä­Ó¤HÀÉ map
-		HashMap datpayMap = new HashMap();// ¤ë¤ä¤ä¦©ÀÉ map
-		HashMap<String, Object> prPrtMap = new HashMap(); // ³øªí¬[ºc map
-		HashMap<String, Paprtdtl> prtMap = new HashMap(); // ³øªíÀÉ map
+		HashMap<String, Object> datpsnMap = new HashMap();// æœˆæ”¯å€‹äººæª” map
+		HashMap datpayMap = new HashMap();// æœˆæ”¯æ”¯æ‰£æª” map
+		HashMap<String, Object> prPrtMap = new HashMap(); // å ±è¡¨æ¶æ§‹ map
+		HashMap<String, Paprtdtl> prtMap = new HashMap(); // å ±è¡¨æª” map
 		ArrayList<Padatpay> datpayAry = null;
 		Map rowMap = new HashMap();
 		Map valMap = new HashMap();
 		Paprtdtl prtdtlobj = null;
-		Pareport prtrptobj = null; // ³øªíÀÉ¬[ºc
+		Pareport prtrptobj = null; // å ±è¡¨æª”æ¶æ§‹
 		long starttime = 0;
 		long starttime9 = 0;
-		String selEn = ""; // ³B²z¶µ¥Ø
-		String patradt = ""; // ²§°Ê¤é´Á
+		String selEn = ""; // è™•ç†é …ç›®
+		String patradt = ""; // ç•°å‹•æ—¥æœŸ
 		String l_Idtno = "";
 		Date nowdate3 = null;
-		int old_thisMDay = 0;// ÂÂ¨î ¥»¤ë¤é¼Æ
-		int old_lastMDay = 0;// ÂÂ¨î¤W¤ë¤é¼Æ
-		int new_thisMDay = 0;// ·s¨î ¥»¤ë¤é¼Æ
-		int new_lastMDay = 0;// ·s¨î¤W¤ë¤é¼Æ
-		int l_thisMday = 0; // ¥»¤ë¤é¼Æ
-		int l_lastMday = 0; // ¤W¤ë¤é¼Æ
-		String l_tracod = ""; // ²§°Ê­ì¦]
-		String l_lvefg = ""; // Â÷Â¾µù°OY
-		java.sql.Date l_oldWorkfirst; // ¤ëÀYÁ~ ¤u§@¤ë²Ä¤@¤Ñ
-		java.sql.Date l_oldWorkend; // ¤ëÀYÁ~ ¤u§@¤ë³Ì«á¤@¤Ñ
-		java.sql.Date l_newWorkfirst; // ¤ë§ÀÁ~ ¤u§@¤ë²Ä¤@¤Ñ
-		java.sql.Date l_newWorkend; // ¤ë§ÀÁ~ ¤u§@¤ë³Ì«á¤@¤Ñ
-		int l_pay = 0; // Á`©Ò±o--·í¤ë
-		int l_issue = 0; // Á`©Ò±o--¸Éµo
-		int l_duduct = 0; // Á`¦©±oÃB
+		int old_thisMDay = 0;// èˆŠåˆ¶ æœ¬æœˆæ—¥æ•¸
+		int old_lastMDay = 0;// èˆŠåˆ¶ä¸Šæœˆæ—¥æ•¸
+		int new_thisMDay = 0;// æ–°åˆ¶ æœ¬æœˆæ—¥æ•¸
+		int new_lastMDay = 0;// æ–°åˆ¶ä¸Šæœˆæ—¥æ•¸
+		int l_thisMday = 0; // æœ¬æœˆæ—¥æ•¸
+		int l_lastMday = 0; // ä¸Šæœˆæ—¥æ•¸
+		String l_tracod = ""; // ç•°å‹•åŸå› 
+		String l_lvefg = ""; // é›¢è·è¨»è¨˜Y
+		java.sql.Date l_oldWorkfirst; // æœˆé ­è–ª å·¥ä½œæœˆç¬¬ä¸€å¤©
+		java.sql.Date l_oldWorkend; // æœˆé ­è–ª å·¥ä½œæœˆæœ€å¾Œä¸€å¤©
+		java.sql.Date l_newWorkfirst; // æœˆå°¾è–ª å·¥ä½œæœˆç¬¬ä¸€å¤©
+		java.sql.Date l_newWorkend; // æœˆå°¾è–ª å·¥ä½œæœˆæœ€å¾Œä¸€å¤©
+		int l_pay = 0; // ç¸½æ‰€å¾—--ç•¶æœˆ
+		int l_issue = 0; // ç¸½æ‰€å¾—--è£œç™¼
+		int l_duduct = 0; // ç¸½æ‰£å¾—é¡
 		String l_paycode = "";
 		int l_prepaynum = 0;
 		int l_Dat_payamt = 0;
 		String rowName = "";
 
-		// ³øªíÀÉ_¬d¸ß,³øªíÀÉ¬O§_¤v²£,­Y¦³,¤~­n°µÁÙ­ì°Ê§@
+		// å ±è¡¨æª”_æŸ¥è©¢,å ±è¡¨æª”æ˜¯å¦å·±ç”¢,è‹¥æœ‰,æ‰è¦åšé‚„åŸå‹•ä½œ
 		String sqlDatpsn_inq = "select salnum from " + this.tRPDTL
 				+ " where SALNUM=? and HID=? group by SALNUM with ur";
 
-		// ³øªíÀÉ_§R°£,KEY=»è³æ½s¸¹
+		// å ±è¡¨æª”_åˆªé™¤,KEY=é¤‰å–®ç·¨è™Ÿ
 		String sqlRptDtl_del = "delete from " + this.tRPDTL + " where SALNUM=? and HID=? ";
 
-		// ¥HµoÁ~©ú²Ó¬°¥D,¼g¤J¨ì³øªíÀÉ
+		// ä»¥ç™¼è–ªæ˜ç´°ç‚ºä¸»,å¯«å…¥åˆ°å ±è¡¨æª”
 		String sqlRptDtl_inq = "select PAYOBASE, PAYOSPSU, PAYOCHALW, PAYOSTBN, PAYOSUPLY, PAYBASE, PAYRBASE, PAYSPSU, PAYRSPSU, PAYSPSD, PAYRSPSD, PAYCHALW, PAYRCHALW, PAYSTBNT, PAYRSTBN, PAYTRANS, PAYSUPLY, PAYRSUPLY, PAYPFNT, PAYSTAL, PAYSTALD, PAYNIGHT, PAYYEAR, PAYADDHL, PAYGRADE, PAYPROMO, PAYADRTN, PAYCPLM1, PAYCPLM2, PAYCPLM3, PAYEMPFD, PAYSARS, PAYEXTRA, PAYGEINS, PAYDPINS, PAYLBINS, PAYRETIR, PAYTAX, PAYGEDP, PAYVETD1, PAYHLOA1, PAYHLOA2, PAYHLOA3, PAYHLOA4, PAYHLOA5, PAYHLOA6, PAYDLOAN, PAYMHOUS, PAYNSPFD, PAYPARK1, PAYPARK2, PAYGYM, PAYLIEN, PAYMEAL, PAYCARDF, PAYDORM1, PAYDORM2, PAYDORM3, PAYOTHER1, PAYOTHER2, PAYOTHER3, PAYAGEN1, PAYTOTAL, PAYTOTIS, PAYTLDED, PAYNET, HID, SALNUM "
 				+ " from " + this.tRPDTL + " where SALNUM=? and HID=? ";
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -3595,65 +3626,65 @@ public class SalNTDAO {
 			JSONObject object_in_data = JSONObject.fromObject(in_data);
 
 			selEn = StringUtil.nullToString(object_in_data.getString("selEn"));
-			// ²£¥ÍµoÁ~³øªíÀÉ_¤ë
+			// ç”¢ç”Ÿç™¼è–ªå ±è¡¨æª”_æœˆ
 			if (selEn.matches("Prt_M")) {
 				starttime = System.currentTimeMillis();
 				salnum = object_in_data.getInt("salnum");
 				patradt = object_in_data.getString("patradt");
 
-				// §ä¥X[¥»¤ë¤é¼Æ][¥»¤ë¤ë©³][¤W¤ë¤é¼Æ][¤W¤ë¤ë©³]
+				// æ‰¾å‡º[æœ¬æœˆæ—¥æ•¸][æœ¬æœˆæœˆåº•][ä¸Šæœˆæ—¥æ•¸][ä¸Šæœˆæœˆåº•]
 				String nowdate2 = patradt.substring(0, 4) + "-" + patradt.substring(5, 7) + "-" + "01";
 				nowdate3 = DateUtil.StringToDate(nowdate2);
-				// ¤ëÀYÁ~ ¤u§@¤ë²Ä1¤Ñ
+				// æœˆé ­è–ª å·¥ä½œæœˆç¬¬1å¤©
 				l_oldWorkfirst = java.sql.Date.valueOf(nowdate2);
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(nowdate3);
 				calendar.add(Calendar.MONTH, 1);
 				calendar.add(Calendar.DATE, -1);
-				// ¤ëÀYÁ~ ¤u§@¤ë³Ì«á¤@¤Ñ=2025.7.31 µoÁ~¤é 2025.7.1 ÂÂ¨î(¤ëÀY,µo©ñ2025.7)¥»¤ë¤é¼Æ=31
+				// æœˆé ­è–ª å·¥ä½œæœˆæœ€å¾Œä¸€å¤©=2025.7.31 ç™¼è–ªæ—¥ 2025.7.1 èˆŠåˆ¶(æœˆé ­,ç™¼æ”¾2025.7)æœ¬æœˆæ—¥æ•¸=31
 				l_oldWorkend = java.sql.Date.valueOf(formatter.format(calendar.getTime()));
-				// µoÁ~¤é 2025.7.1 ÂÂ¨î(¤ëÀY,µo©ñ2025.7)¥»¤ë¤é¼Æ=31
+				// ç™¼è–ªæ—¥ 2025.7.1 èˆŠåˆ¶(æœˆé ­,ç™¼æ”¾2025.7)æœ¬æœˆæ—¥æ•¸=31
 				old_thisMDay = calendar.get(Calendar.DATE);
-				// µoÁ~¤é 2025.7.1 ·s¨î(¤ë§À,µo©ñ2025.6)¥»¤ë(6¤ë)¤é¼Æ=30
-				// µoÁ~¤é 2025.7.1 ÂÂ¨î(¤ëÀY,µo©ñ2025.7)¤W¤ë(6¤ë)¤é¼Æ=30
+				// ç™¼è–ªæ—¥ 2025.7.1 æ–°åˆ¶(æœˆå°¾,ç™¼æ”¾2025.6)æœ¬æœˆ(6æœˆ)æ—¥æ•¸=30
+				// ç™¼è–ªæ—¥ 2025.7.1 èˆŠåˆ¶(æœˆé ­,ç™¼æ”¾2025.7)ä¸Šæœˆ(6æœˆ)æ—¥æ•¸=30
 				calendar.setTime(nowdate3);
 				calendar.add(Calendar.DATE, -1);
-				// ¤ë§ÀÁ~ ¤u§@¤ë³Ì«á¤@¤Ñ=2025.6.30 µoÁ~¤é 2025.7. ·s¨î(¤ë§À,µo©ñ2025.6)¥»¤ë(6¤ë)¤é¼Æ=30
+				// æœˆå°¾è–ª å·¥ä½œæœˆæœ€å¾Œä¸€å¤©=2025.6.30 ç™¼è–ªæ—¥ 2025.7. æ–°åˆ¶(æœˆå°¾,ç™¼æ”¾2025.6)æœ¬æœˆ(6æœˆ)æ—¥æ•¸=30
 				l_newWorkend = java.sql.Date.valueOf(formatter.format(calendar.getTime()));
 				new_thisMDay = calendar.get(Calendar.DATE);
 				old_lastMDay = calendar.get(Calendar.DATE);
-				// µoÁ~¤é 2025.7.1 ·s¨î(¤ë§À,µo©ñ2025.6)¤W¤ë(5¤ë)¤é¼Æ=31
+				// ç™¼è–ªæ—¥ 2025.7.1 æ–°åˆ¶(æœˆå°¾,ç™¼æ”¾2025.6)ä¸Šæœˆ(5æœˆ)æ—¥æ•¸=31
 				calendar.setTime(nowdate3);
 				calendar.add(Calendar.MONTH, -1);
-				// ¤ë§ÀÁ~ ¤u§@¤ë²Ä1¤Ñ
+				// æœˆå°¾è–ª å·¥ä½œæœˆç¬¬1å¤©
 				l_newWorkfirst = java.sql.Date.valueOf(formatter.format(calendar.getTime()));
 				calendar.add(Calendar.DATE, -1);
 				java.sql.Date dd = java.sql.Date.valueOf(formatter.format(calendar.getTime()));
 				new_lastMDay = calendar.get(Calendar.DATE);
 
-				// ¨Ì»è³æ½s¸¹,¬d¸ß³øªíÀÉ.»è³æ½s¸¹
+				// ä¾é¤‰å–®ç·¨è™Ÿ,æŸ¥è©¢å ±è¡¨æª”.é¤‰å–®ç·¨è™Ÿ
 				param = new ArrayList<Object>();
 				param.add(salnum);
 				param.add(hid);
-				log.info(me + "  1.¥ı¬d¸ß¤ë¤ä­Ó¤HÀÉ,­Y¦³,¶i¦æ[ÁÙ­ì]°Ê§@" + sqlDatpsn_inq + "...params:" + param.toString());
+				log.info(me + "  1.å…ˆæŸ¥è©¢æœˆæ”¯å€‹äººæª”,è‹¥æœ‰,é€²è¡Œ[é‚„åŸ]å‹•ä½œ" + sqlDatpsn_inq + "...params:" + param.toString());
 				rs = da.query(sqlDatpsn_inq, param);
 				while (rs.next()) {
 					salnum_prt = (rs.getInt("SALNUM"));
 				}
-				log.info(me + "  1¬d¸ß³øªíÀÉ,SALNUM=" + salnum_prt);
+				log.info(me + "  1æŸ¥è©¢å ±è¡¨æª”,SALNUM=" + salnum_prt);
 				if (salnum_prt != 0) {
 					starttime9 = System.currentTimeMillis();
-					log.info(me + "  2-1§R°£³øªíÀÉ,SALNUM=" + salnum_prt);
+					log.info(me + "  2-1åˆªé™¤å ±è¡¨æª”,SALNUM=" + salnum_prt);
 					updcnt = 0;
 					updcnt = da.update(sqlRptDtl_del, param);
 					if (updcnt > 0)
 						updOK = true;
 					if (!updOK) {
-						log.info(me + "  2-1§R°£³øªíÀÉ,SALNUM=" + salnum_prt + "  ==>¥¢±Ñ");
-						throw new SQLException("2-1§R°£³øªíÀÉ,SALNUM=" + salnum_prt + "=>¥¢±Ñ");
+						log.info(me + "  2-1åˆªé™¤å ±è¡¨æª”,SALNUM=" + salnum_prt + "  ==>å¤±æ•—");
+						throw new SQLException("2-1åˆªé™¤å ±è¡¨æª”,SALNUM=" + salnum_prt + "=>å¤±æ•—");
 					} else
-						log.info(me + "  2-1§R°£³øªíÀÉ,SALNUM=" + salnum_prt + ",µ§¼Æ:" + updcnt + " ¦@ªá¶O¡G"
-								+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+						log.info(me + "  2-1åˆªé™¤å ±è¡¨æª”,SALNUM=" + salnum_prt + ",ç­†æ•¸:" + updcnt + " å…±èŠ±è²»ï¼š"
+								+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
 					da.commit();
 				}
@@ -3665,8 +3696,8 @@ public class SalNTDAO {
 				param.add(salnum);
 				param.add(hid);
 				datpsnMap = this.getPaItmMap(param, "PrtDATPSN", hid, da);
-				log.info(me + "  2-1.Åª¨ú¤ë¤ä­Ó¤H ,µ§¼Æ:" + datpsnMap.size() + ",¦@ªá¶O¡G"
-						+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+				log.info(me + "  2-1.è®€å–æœˆæ”¯å€‹äºº ,ç­†æ•¸:" + datpsnMap.size() + ",å…±èŠ±è²»ï¼š"
+						+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
 				starttime9 = System.currentTimeMillis();
 				param = new ArrayList<Object>();
@@ -3677,16 +3708,16 @@ public class SalNTDAO {
 				param.add(patradt);
 				param.add(hid);
 				datpayMap = this.getPaItmMap(param, "PrtDATPAY", hid, da);
-				log.info(me + "  2-2.Åª¨ú¤ë¤ä©ú²Ó ,µ§¼Æ:" + datpayMap.size() + "¦@ªá¶O¡G"
-						+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+				log.info(me + "  2-2.è®€å–æœˆæ”¯æ˜ç´° ,ç­†æ•¸:" + datpayMap.size() + "å…±èŠ±è²»ï¼š"
+						+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
 				starttime9 = System.currentTimeMillis();
 				param = new ArrayList<Object>();
 				param.add(hid);
 				param.add("1");
 				prPrtMap = this.getPaItmMap(param, "PrtRpt", hid, da);
-				log.info(me + "  2-3.Åª¨ú³øªí¬[ºc ,µ§¼Æ:" + prPrtMap.size() + "¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime9)
-						+ "²@¬í");
+				log.info(me + "  2-3.è®€å–å ±è¡¨æ¶æ§‹ ,ç­†æ•¸:" + prPrtMap.size() + "å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime9)
+						+ "æ¯«ç§’");
 
 				starttime9 = System.currentTimeMillis();
 				param = new ArrayList<Object>();
@@ -3703,14 +3734,14 @@ public class SalNTDAO {
 					rowMap.put(i, columnName);
 				}
 
-				log.info(me + "  2-4.Åª¨ú³øªíÀÉ ,µ§¼Æ:" + columnCount + "¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime9)
-						+ "²@¬í");
+				log.info(me + "  2-4.è®€å–å ±è¡¨æª” ,ç­†æ•¸:" + columnCount + "å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime9)
+						+ "æ¯«ç§’");
 
 				for (Map.Entry<String, Object> Entry : datpsnMap.entrySet()) {
 					datpayAry = null;
-					l_pay = 0; // Á`©Ò±o--·í¤ë
-					l_issue = 0; // Á`©Ò±o--¸Éµo
-					l_duduct = 0; // Á`¦©±oÃB
+					l_pay = 0; // ç¸½æ‰€å¾—--ç•¶æœˆ
+					l_issue = 0; // ç¸½æ‰€å¾—--è£œç™¼
+					l_duduct = 0; // ç¸½æ‰£å¾—é¡
 					l_paycode = "";
 					l_Idtno = Entry.getKey();
 					System.out.println(l_Idtno);
@@ -3718,7 +3749,7 @@ public class SalNTDAO {
 					 * if ("R224869259".equals(l_Idtno)){ System.out.println(l_Idtno); }
 					 */
 					l_lvefg = "N";
-					// ²MªÅ³øªí¬[ºc
+					// æ¸…ç©ºå ±è¡¨æ¶æ§‹
 					for (Map.Entry<String, Object> structEntry : prPrtMap.entrySet()) {
 						prtrptobj = (Pareport) structEntry.getValue();
 						prtrptobj.setPayamt(0);
@@ -3726,16 +3757,16 @@ public class SalNTDAO {
 
 					prtdtlobj = (Paprtdtl) Entry.getValue();
 					// System.out.println(prtdtlobj.getPayidno());
-					// ¤ëÀY
+					// æœˆé ­
 					if ("N".equals(prtdtlobj.getContract())) {
-						l_thisMday = old_thisMDay; // ¥»¤ë¤é¼Æ
-						l_lastMday = old_lastMDay; // ¤W¤ë¤é¼Æ
+						l_thisMday = old_thisMDay; // æœ¬æœˆæ—¥æ•¸
+						l_lastMday = old_lastMDay; // ä¸Šæœˆæ—¥æ•¸
 					} else if ("Y".equals(prtdtlobj.getContract())) {
 						l_thisMday = new_thisMDay;
 						l_lastMday = new_lastMDay;
 					}
 					l_tracod = Integer.toString(prtdtlobj.getPatracod());
-					// ·s¶i,´_Â¾
+					// æ–°é€²,å¾©è·
 					if (l_tracod.matches("1|2")) {
 						l_lastMday = 0;
 						if ("N".equals(prtdtlobj.getContract()))
@@ -3752,11 +3783,11 @@ public class SalNTDAO {
 							l_thisMday = DateUtil.calDays(l_newWorkfirst, prtdtlobj.getPaeffdt());
 					}
 
-					prtdtlobj.setPaylvefg(l_lvefg); // Â÷Â¾Y
-					prtdtlobj.setPaydayno(l_thisMday); // ¥»¤ë¤é¼Æ
-					prtdtlobj.setLastdayno(l_lastMday); // ¤W¤ë¤é¼Æ
+					prtdtlobj.setPaylvefg(l_lvefg); // é›¢è·Y
+					prtdtlobj.setPaydayno(l_thisMday); // æœ¬æœˆæ—¥æ•¸
+					prtdtlobj.setLastdayno(l_lastMday); // ä¸Šæœˆæ—¥æ•¸
 
-					// ¤ë¤ä¤ä¦©
+					// æœˆæ”¯æ”¯æ‰£
 					datpayAry = (ArrayList) datpayMap.get(l_Idtno);
 					if (datpayAry != null) {
 						for (Padatpay data : datpayAry) {
@@ -3764,12 +3795,12 @@ public class SalNTDAO {
 							l_Dat_payamt = data.getPayamt();
 							if (data.getPaysort().equals("")) {
 								if (l_paycode.substring(1, 2).equals("P")) {
-									// ªk©w¤ä¦© ¸Éµo¶µ(§t¹ê²ß¶O¸Éµo)
-									// 1A0 FP009¥»Á~(¸É) FP019±M·~¥[µ¹(¸É) FP039¥DºŞ¥[µ¹(¸É) FP079¹ê²ß¶O(¸É) FP089±M·~¥[µ¹®tÃB(¸É)
-									// 2A0 FP009¥»Á~(¸É)+FP029¥»Á~¼WÃB(¸É) FP019±M·~¥[µ¹(¸É) FP039¥DºŞ¥[µ¹(¸É) FP089±M·~¥[µ¹®tÃB(¸É)
-									// FP109°|°Ï¥[µ¹(¸É)
-									// 3A0 FP009¥»Á~(¸É) FP019±M·~¥[µ¹(¸É) FP039¥DºŞ¥[µ¹(¸É) FP089±M·~¥[µ¹®tÃB(¸É) FP099³d¥ô¥[µ¹(¸É)
-									// FP199Â¾°È¥[µ¹(¸É)
+									// æ³•å®šæ”¯æ‰£ è£œç™¼é …(å«å¯¦ç¿’è²»è£œç™¼)
+									// 1A0 FP009æœ¬è–ª(è£œ) FP019å°ˆæ¥­åŠ çµ¦(è£œ) FP039ä¸»ç®¡åŠ çµ¦(è£œ) FP079å¯¦ç¿’è²»(è£œ) FP089å°ˆæ¥­åŠ çµ¦å·®é¡(è£œ)
+									// 2A0 FP009æœ¬è–ª(è£œ)+FP029æœ¬è–ªå¢é¡(è£œ) FP019å°ˆæ¥­åŠ çµ¦(è£œ) FP039ä¸»ç®¡åŠ çµ¦(è£œ) FP089å°ˆæ¥­åŠ çµ¦å·®é¡(è£œ)
+									// FP109é™¢å€åŠ çµ¦(è£œ)
+									// 3A0 FP009æœ¬è–ª(è£œ) FP019å°ˆæ¥­åŠ çµ¦(è£œ) FP039ä¸»ç®¡åŠ çµ¦(è£œ) FP089å°ˆæ¥­åŠ çµ¦å·®é¡(è£œ) FP099è²¬ä»»åŠ çµ¦(è£œ)
+									// FP199è·å‹™åŠ çµ¦(è£œ)
 									if (l_paycode.substring(4, 5).equals("9") && l_paycode.compareTo("FP110") < 0) {
 										l_issue = l_issue + l_Dat_payamt;
 									} else
@@ -3787,7 +3818,7 @@ public class SalNTDAO {
 									prtrptobj.setPayamt(data.getPayamt());
 								}
 							}
-							// ¤W¤ë
+							// ä¸Šæœˆ
 							else if (data.getPaysort().equals("O")) {
 								prtrptobj = (Pareport) prPrtMap.get("O" + l_paycode.substring(0, 4));
 								if (prtrptobj != null) {
@@ -3796,8 +3827,8 @@ public class SalNTDAO {
 							}
 						}
 					}
-					// prPrtMap=pa.pareport³øªíÀÉ¬[ºc
-					// rowMap=pa.parepdetail(num,Äæ¦ì¦WºÙ) rowMap(28,PAYBASE)
+					// prPrtMap=pa.pareportå ±è¡¨æª”æ¶æ§‹
+					// rowMap=pa.parepdetail(num,æ¬„ä½åç¨±) rowMap(28,PAYBASE)
 					valMap = new HashMap();
 					for (Map.Entry<String, Object> prtEntry : prPrtMap.entrySet()) {
 						prtrptobj = (Pareport) prtEntry.getValue();
@@ -3809,18 +3840,18 @@ public class SalNTDAO {
 							valMap.put(rowName, prtrptobj.getPayamt());
 					}
 					prtdtlobj.setValMap(valMap);
-					prtdtlobj.setPaytotal(l_pay); // Á`©Ò±o--·í¤ë
-					prtdtlobj.setPaytotis(l_issue); // Á`©Ò±o--¸Éµo
-					prtdtlobj.setPaytlded(l_duduct);// Á`¦©±oÃB
-					prtdtlobj.setPaynet(l_pay - l_duduct);// ²b©Ò±o=Á`©Ò±o--·í¤ë-Á`¦©±oÃB
+					prtdtlobj.setPaytotal(l_pay); // ç¸½æ‰€å¾—--ç•¶æœˆ
+					prtdtlobj.setPaytotis(l_issue); // ç¸½æ‰€å¾—--è£œç™¼
+					prtdtlobj.setPaytlded(l_duduct);// ç¸½æ‰£å¾—é¡
+					prtdtlobj.setPaynet(l_pay - l_duduct);// æ·¨æ‰€å¾—=ç¸½æ‰€å¾—--ç•¶æœˆ-ç¸½æ‰£å¾—é¡
 
 					prtMap.put(l_Idtno, prtdtlobj);
 
 				}
-				log.info(me + "  3.¼g¤J³øªíÀÉ....");
+				log.info(me + "  3.å¯«å…¥å ±è¡¨æª”....");
 				starttime9 = System.currentTimeMillis();
 				rtn = updPrtTblMap(prtMap, da);
-				log.info(me + "  3.¼g¤J³øªíÀÉ  ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime9) + "²@¬í");
+				log.info(me + "  3.å¯«å…¥å ±è¡¨æª”  å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
 			}
 
@@ -3838,7 +3869,7 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * µoÁ~©ú²Ó³B²z in_data:(1:»è³æ½s¸¹³]©w,salnum) 2²£¥ÍµoÁ~©ú²Ó tabJson:¤Ä¿ïªº²M³æ ¶Ç¥X:rtn¤å¦r°T®§
+	 * ç™¼è–ªæ˜ç´°è™•ç† in_data:(1:é¤‰å–®ç·¨è™Ÿè¨­å®š,salnum) 2ç”¢ç”Ÿç™¼è–ªæ˜ç´° tabJson:å‹¾é¸çš„æ¸…å–® å‚³å‡º:rtnæ–‡å­—è¨Šæ¯
 	 **/
 	public String handelPayroll(String in_data, String tabJson, String userid, String hid, VGHDataAccess da)
 			throws Exception {
@@ -3849,43 +3880,43 @@ public class SalNTDAO {
 		ResultSet rs = null;
 		int salnum = 0;
 		String tracod = "";
-		String patradt = ""; // ²§°Ê¤é´Á
-		int salnum_dat = 0; // µoÁ~©ú²Óªº»è³æ½s¸¹
-		int salnum_n = 0; // ³]©w·s»è³æ½s¸¹
-		int salnum_o = 0; // ­ì»è³æ½s¸¹
+		String patradt = ""; // ç•°å‹•æ—¥æœŸ
+		int salnum_dat = 0; // ç™¼è–ªæ˜ç´°çš„é¤‰å–®ç·¨è™Ÿ
+		int salnum_n = 0; // è¨­å®šæ–°é¤‰å–®ç·¨è™Ÿ
+		int salnum_o = 0; // åŸé¤‰å–®ç·¨è™Ÿ
 		int limitcnt = 100;
-		int write_cnt = 0; // ¼g¤Jtable²ÄNµ§
-		int intBpsnTpay = 0; // °ò¥»ÀÉ­Ó¤H+²§°ÊÀÉ¤ä¦© ºX¼Ğ 1:°ò¥»ÀÉ­Ó¤H+²§°ÊÀÉ¤ä¦© 2:²§°ÊÀÉ¤ä¦©(41¤ä¦© )
-		String selEn = ""; // ³B²z¶µ¥ØTranSetSalnum BatSetSalnum
-		// ³]©w»è³æ½s¸¹_²§°ÊÀÉ
+		int write_cnt = 0; // å¯«å…¥tableç¬¬Nç­†
+		int intBpsnTpay = 0; // åŸºæœ¬æª”å€‹äºº+ç•°å‹•æª”æ”¯æ‰£ æ——æ¨™ 1:åŸºæœ¬æª”å€‹äºº+ç•°å‹•æª”æ”¯æ‰£ 2:ç•°å‹•æª”æ”¯æ‰£(41æ”¯æ‰£ )
+		String selEn = ""; // è™•ç†é …ç›®TranSetSalnum BatSetSalnum
+		// è¨­å®šé¤‰å–®ç·¨è™Ÿ_ç•°å‹•æª”
 		String sqlsalnumTra_upd = "update " + this.tTraPsn + " set SALNUM=? where SALNUM=? and PATRADT=? and HID=? ";
 		String sqlsalnumTraID_upd = "update " + this.tTraPsn
 				+ " set SALNUM=? where SALNUM=? and PAYIDNO=? and PATRADT=? and PATRACOD=? and HID=? ";
-		// ³]©w»è³æ½s¸¹_§å¦¸ÀÉ
+		// è¨­å®šé¤‰å–®ç·¨è™Ÿ_æ‰¹æ¬¡æª”
 		String sqlsalnumBat_upd = "update " + this.tBatPay + " set SALNUM=? where SALNUM=? and PATRADT=? and HID=? ";
 		String sqlsalnumBatID_upd = "update " + this.tBatPay
 				+ " set SALNUM=? where SALNUM=? and PAYIDNO=? and PATRADT=? and PAYCODE=? and HID=? ";
-		// µoÁ~©ú²Ó_¬d¸ßpadatpsn¬O§_¤v²£,­Y¦³,¤~­n°µÁÙ­ì°Ê§@
+		// ç™¼è–ªæ˜ç´°_æŸ¥è©¢padatpsnæ˜¯å¦å·±ç”¢,è‹¥æœ‰,æ‰è¦åšé‚„åŸå‹•ä½œ
 		String sqlDatpsn_inq = "select salnum from " + this.tDatPsn
 				+ " where SALNUM=? and HID=? group by SALNUM with ur";
-		// µoÁ~©ú²Ó_ÁÙ­ì_1_§ó·s²§°ÊÀÉºX¼Ğ
+		// ç™¼è–ªæ˜ç´°_é‚„åŸ_1_æ›´æ–°ç•°å‹•æª”æ——æ¨™
 		String sqlTrafg_upd = "update " + this.tTraPsn
 				+ " set PAYFLAG='' where SALNUM=? and (PAYFLAG IS NOT NULL or PAYFLAG<>'') and HID=? ";
-		// µoÁ~©ú²Ó_ÁÙ­ì_2_§R°£padatpsn
+		// ç™¼è–ªæ˜ç´°_é‚„åŸ_2_åˆªé™¤padatpsn
 		String sqlDatPsn_del = "delete from " + this.tDatPsn + " where SALNUM=? and HID=? ";
-		// µoÁ~©ú²Ó_ÁÙ­ì_3_§R°£padatpay F V
+		// ç™¼è–ªæ˜ç´°_é‚„åŸ_3_åˆªé™¤padatpay F V
 		String sqlDatPay_del = "delete from " + this.tDatPay + " where SALNUM=? and HID=? and SUBSTR(PAYCODE,1,1)=? ";
-		// µoÁ~©ú²Ó_ÁÙ­ì_3_§R°£padatpay VD VP
+		// ç™¼è–ªæ˜ç´°_é‚„åŸ_3_åˆªé™¤padatpay VD VP
 		String sqlDatPayA_del = "delete from " + this.tDatPay + " where SALNUM=? and HID=? and SUBSTR(PAYCODE,1,2)=? ";
-		// µoÁ~©ú²Ó_¼g¤J_1_padatpsn
+		// ç™¼è–ªæ˜ç´°_å¯«å…¥_1_padatpsn
 		String sqlDatPsn_ins = "INSERT INTO " + this.tDatPsn
 				+ " (SALNUM, PAYBANK, PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PAYUPDID, PAYUPDTM, PAYRANK4, HID, INSUAMT) "
 				+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,current timestamp,?,?,?) ";
-		// µoÁ~©ú²Ó_¼g¤J_1_padatpay
+		// ç™¼è–ªæ˜ç´°_å¯«å…¥_1_padatpay
 		String sqlDatPay_ins = "INSERT INTO " + this.tDatPay
 				+ " (SALNUM, PAYIDNO, PAYCODE, PAYAMT, PAYAUTH, PAYIFTAX, PAYUPDTM, PAYFLAG, HID)  "
 				+ " VALUES(?, ?, ?, ?, ?, ?, current timestamp, ?, ?) ";
-		// µoÁ~©ú²Ó_©Ò±oµ|_1 µ¹¥Iª÷ÃB²bÃB>°_¦©ÂI+¦C¤J¦©5%­pºâ,ª÷ÃB>0,¤~¯à¦©µ|
+		// ç™¼è–ªæ˜ç´°_æ‰€å¾—ç¨…_1 çµ¦ä»˜é‡‘é¡æ·¨é¡>èµ·æ‰£é»+åˆ—å…¥æ‰£5%è¨ˆç®—,é‡‘é¡>0,æ‰èƒ½æ‰£ç¨…
 		String sqlDatTax_inq = "SELECT a.payidno,a.paycard,a.paynamec,COALESCE(b.tamt,0) tamt,COALESCE(c.pamt,0) pamt "
 				+ "from " + this.tDatPsn + " a " + "LEFT OUTER JOIN (SELECT salnum,payidno,a.hid,sum(payamt) tamt "
 				+ "FROM " + this.tDatPay + " a " + "LEFT OUTER JOIN " + this.tPayItm
@@ -3898,22 +3929,22 @@ public class SalNTDAO {
 				+ "GROUP by salnum,payidno,a.hid) c ON a.payidno=c.payidno AND a.hid=c.hid AND a.salnum=c.salnum "
 				+ "WHERE a.salnum=? AND a.HID=? AND pamt > ? with ur";
 
-		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql ¸ê®Æ
+		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql è³‡æ–™
 		params = new ArrayList<Object>();
 		ArrayList<Object> param = new ArrayList<Object>();
 		JSONArray array = null;
 		JSONArray tabJsonary = null;
 		long starttime = 0;
 		long starttime9 = 0;
-		HashMap baspsnMap = new HashMap();// °ò¥»­Ó¤HÀÉ map
-		HashMap baspsnAllMap = new HashMap();// °ò¥»­Ó¤HÀÉ(¦bÂ¾¤ÎÂ÷Â¾1¦~¤º) map
-		HashMap baspayMap = new HashMap();// °ò¥»¤ä¦©ÀÉ map
-		HashMap<String, Object> trapsnMap = new HashMap();// ²§°Ê­Ó¤HÀÉ map
-		HashMap trapayMap = new HashMap();// ²§°Ê¤ä¦©ÀÉ map
-		HashMap<String, ArrayList> tra41Map = new HashMap();// ²§°Ê¤ä¦©ÀÉ _¤ä¦©map
-		HashMap<String, Object> batpayMap = new HashMap();// §å¦¸ÀÉ map
-		HashMap<String, Padatpsn> datpsnMap = new HashMap();// ¤ë¤ä­Ó¤HÀÉ map
-		HashMap<String, Padatpay> datpayMap = new HashMap();// ¤ë¤ä¤ä¦©ÀÉ map
+		HashMap baspsnMap = new HashMap();// åŸºæœ¬å€‹äººæª” map
+		HashMap baspsnAllMap = new HashMap();// åŸºæœ¬å€‹äººæª”(åœ¨è·åŠé›¢è·1å¹´å…§) map
+		HashMap baspayMap = new HashMap();// åŸºæœ¬æ”¯æ‰£æª” map
+		HashMap<String, Object> trapsnMap = new HashMap();// ç•°å‹•å€‹äººæª” map
+		HashMap trapayMap = new HashMap();// ç•°å‹•æ”¯æ‰£æª” map
+		HashMap<String, ArrayList> tra41Map = new HashMap();// ç•°å‹•æ”¯æ‰£æª” _æ”¯æ‰£map
+		HashMap<String, Object> batpayMap = new HashMap();// æ‰¹æ¬¡æª” map
+		HashMap<String, Padatpsn> datpsnMap = new HashMap();// æœˆæ”¯å€‹äººæª” map
+		HashMap<String, Padatpay> datpayMap = new HashMap();// æœˆæ”¯æ”¯æ‰£æª” map
 		ArrayList<Pabaspay> baspayAry = null;
 		ArrayList<Patrapay> trapayAry = null;
 		ArrayList<Map<String, Object>> datTaxAry = null;
@@ -3924,14 +3955,14 @@ public class SalNTDAO {
 		String strIdtno = "";
 		String mIdtno = "";
 		String strPaycode = "";
-		int pamt = 0;// ¤ä¦©¥N½X=P,ª÷ÃB¥[Á`
-		int tamt = 0;// ¤ä¦©¥N½X=P+À³­pµ|,ª÷ÃB¥[Á`
-		int mTaxVar = 0;// ¤Jµ|¼úª÷*5%
+		int pamt = 0;// æ”¯æ‰£ä»£ç¢¼=P,é‡‘é¡åŠ ç¸½
+		int tamt = 0;// æ”¯æ‰£ä»£ç¢¼=P+æ‡‰è¨ˆç¨…,é‡‘é¡åŠ ç¸½
+		int mTaxVar = 0;// å…¥ç¨…çé‡‘*5%
 		int updcnt = 0;
 		boolean updOK = false;
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -3943,13 +3974,13 @@ public class SalNTDAO {
 				tabJsonary = JSONArray.fromObject(tabJson);
 			}
 			selEn = StringUtil.nullToString(object_in_data.getString("selEn"));
-			// ³]©w»è³æ½s¸¹
+			// è¨­å®šé¤‰å–®ç·¨è™Ÿ
 			if (selEn.matches("TranSetSalnum|BatSetSalnum")) {
 				starttime = System.currentTimeMillis();
 				salnum_n = object_in_data.getInt("salnum_n");
 				salnum_o = object_in_data.getInt("salnum_o");
 				patradt = StringUtil.nullToString(object_in_data.getString("patradt_o"));
-				// ¨Ì¤Ä¿ï²M³æ
+				// ä¾å‹¾é¸æ¸…å–®
 				if (tabJsonary != null && tabJsonary.size() > 0) {
 					for (int i = 0; i < tabJsonary.size(); ++i) {
 						JSONObject obj = tabJsonary.getJSONObject(i);
@@ -3986,7 +4017,7 @@ public class SalNTDAO {
 											params.add(param);
 											log.info(++write_cnt + " " + param);
 										} else {
-											log.info(me + value.getString("payidno") + "_1:ªÅ¥Õ");
+											log.info(me + value.getString("payidno") + "_1:ç©ºç™½");
 										}
 									}
 								}
@@ -3994,7 +4025,7 @@ public class SalNTDAO {
 						}
 					}
 				}
-				// »è³æ½s¸¹=0,¼g¤J[·s½s¸¹]
+				// é¤‰å–®ç·¨è™Ÿ=0,å¯«å…¥[æ–°ç·¨è™Ÿ]
 				else {
 					param = new ArrayList<Object>();
 					param.add(salnum_n);
@@ -4019,50 +4050,50 @@ public class SalNTDAO {
 					params.clear();
 				}
 
-				log.info(me + "¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+				log.info(me + "å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 			}
-			// ²£¥ÍµoÁ~©ú²Ó Pay_1(°ò¥»+²§°Ê+§å¦¸) Pay_2(²§°Ê+§å¦¸) Pay_3(§å¦¸)
+			// ç”¢ç”Ÿç™¼è–ªæ˜ç´° Pay_1(åŸºæœ¬+ç•°å‹•+æ‰¹æ¬¡) Pay_2(ç•°å‹•+æ‰¹æ¬¡) Pay_3(æ‰¹æ¬¡)
 			else if (selEn.matches("Pay_1|Pay_2|Pay_3")) {
 				starttime = System.currentTimeMillis();
 				salnum = object_in_data.getInt("salnum");
 				patradt = object_in_data.getString("patradt");
-				// ¨Ì»è³æ½s¸¹,¬d¸ß¤ë¤ä­Ó¤HÀÉ.»è³æ½s¸¹
+				// ä¾é¤‰å–®ç·¨è™Ÿ,æŸ¥è©¢æœˆæ”¯å€‹äººæª”.é¤‰å–®ç·¨è™Ÿ
 				param = new ArrayList<Object>();
 				param.add(salnum);
 				param.add(hid);
-				log.info(me + "  1.¥ı¬d¸ß¤ë¤ä­Ó¤HÀÉ,­Y¦³,¶i¦æ[ÁÙ­ì]°Ê§@" + sqlDatpsn_inq + "...params:" + param.toString());
+				log.info(me + "  1.å…ˆæŸ¥è©¢æœˆæ”¯å€‹äººæª”,è‹¥æœ‰,é€²è¡Œ[é‚„åŸ]å‹•ä½œ" + sqlDatpsn_inq + "...params:" + param.toString());
 				rs = da.query(sqlDatpsn_inq, param);
 				while (rs.next()) {
 					salnum_dat = (rs.getInt("SALNUM"));
 				}
-				log.info(me + "  1¬d¸ßpadatpsn,SALNUM=" + salnum_dat);
+				log.info(me + "  1æŸ¥è©¢padatpsn,SALNUM=" + salnum_dat);
 				if (salnum_dat != 0) {
 					starttime9 = System.currentTimeMillis();
-					log.info(me + "  2-1ÁÙ­ìpadatpsn,SALNUM=" + salnum_dat + "  §ó·s²§°ÊÀÉºX¼Ğ");
+					log.info(me + "  2-1é‚„åŸpadatpsn,SALNUM=" + salnum_dat + "  æ›´æ–°ç•°å‹•æª”æ——æ¨™");
 					updcnt = da.update(sqlTrafg_upd, param);
 					if (updcnt > 0)
 						updOK = true;
 					if (!updOK) {
-						log.info(me + "  2-1ÁÙ­ìpadatpsn,SALNUM=" + salnum_dat + "  §ó·s²§°ÊÀÉºX¼Ğ=>¥¢±Ñ");
+						log.info(me + "  2-1é‚„åŸpadatpsn,SALNUM=" + salnum_dat + "  æ›´æ–°ç•°å‹•æª”æ——æ¨™=>å¤±æ•—");
 					} else
-						log.info(me + "  2-1ÁÙ­ìpadatpsn,SALNUM=" + salnum_dat + "  §ó·s²§°ÊÀÉºX¼Ğ,µ§¼Æ:" + updcnt + " ¦@ªá¶O¡G"
-								+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+						log.info(me + "  2-1é‚„åŸpadatpsn,SALNUM=" + salnum_dat + "  æ›´æ–°ç•°å‹•æª”æ——æ¨™,ç­†æ•¸:" + updcnt + " å…±èŠ±è²»ï¼š"
+								+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
 					starttime9 = System.currentTimeMillis();
-					log.info(me + "  2-2ÁÙ­ìpadatpsn,SALNUM=" + salnum_dat + "  §R°£padatpsn");
+					log.info(me + "  2-2é‚„åŸpadatpsn,SALNUM=" + salnum_dat + "  åˆªé™¤padatpsn");
 					updcnt = 0;
 					updcnt = da.update(sqlDatPsn_del, param);
 					if (updcnt > 0)
 						updOK = true;
 					if (!updOK) {
-						log.info(me + "  2-2ÁÙ­ìpadatpsn,SALNUM=" + salnum_dat + "  §R°£padatpsn==>¥¢±Ñ");
-						throw new SQLException("ÁÙ­ìpadatpsn,SALNUM=" + salnum_dat + "  §R°£padatpsn=>¥¢±Ñ");
+						log.info(me + "  2-2é‚„åŸpadatpsn,SALNUM=" + salnum_dat + "  åˆªé™¤padatpsn==>å¤±æ•—");
+						throw new SQLException("é‚„åŸpadatpsn,SALNUM=" + salnum_dat + "  åˆªé™¤padatpsn=>å¤±æ•—");
 					} else
-						log.info(me + "  2-2ÁÙ­ìpadatpsn,SALNUM=" + salnum_dat + "  §R°£padatpsn,µ§¼Æ:" + updcnt + " ¦@ªá¶O¡G"
-								+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+						log.info(me + "  2-2é‚„åŸpadatpsn,SALNUM=" + salnum_dat + "  åˆªé™¤padatpsn,ç­†æ•¸:" + updcnt + " å…±èŠ±è²»ï¼š"
+								+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
 					starttime9 = System.currentTimeMillis();
-					log.info(me + "  2-3ÁÙ­ìpadatpsn,SALNUM=" + salnum_dat + "  §R°£padatpay F");
+					log.info(me + "  2-3é‚„åŸpadatpsn,SALNUM=" + salnum_dat + "  åˆªé™¤padatpay F");
 					updcnt = 0;
 					param = new ArrayList<Object>();
 					param.add(salnum);
@@ -4072,11 +4103,11 @@ public class SalNTDAO {
 					if (updcnt > 0)
 						updOK = true;
 					if (!updOK) {
-						log.info(me + "  2-3ÁÙ­ìpadatpsn,SALNUM=" + salnum_dat + "  §R°£padatpay F==>¥¢±Ñ");
-						throw new SQLException("2-3ÁÙ­ìpadatpsn,SALNUM=" + salnum_dat + "  §R°£padatpay F=>¥¢±Ñ");
+						log.info(me + "  2-3é‚„åŸpadatpsn,SALNUM=" + salnum_dat + "  åˆªé™¤padatpay F==>å¤±æ•—");
+						throw new SQLException("2-3é‚„åŸpadatpsn,SALNUM=" + salnum_dat + "  åˆªé™¤padatpay F=>å¤±æ•—");
 					} else
-						log.info(me + "  2-3ÁÙ­ìpadatpsn,SALNUM=" + salnum_dat + "  §R°£padatpay F,µ§¼Æ:" + updcnt + " ¦@ªá¶O¡G"
-								+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+						log.info(me + "  2-3é‚„åŸpadatpsn,SALNUM=" + salnum_dat + "  åˆªé™¤padatpay F,ç­†æ•¸:" + updcnt + " å…±èŠ±è²»ï¼š"
+								+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 					da.commit();
 
 					starttime9 = System.currentTimeMillis();
@@ -4085,71 +4116,71 @@ public class SalNTDAO {
 					param.add(salnum);
 					param.add(hid);
 					param.add("V");
-					log.info(me + "  2-4ÁÙ­ìpadatpsn,SALNUM=" + salnum_dat + "  §R°£padatpay V,sql:" + sqlDatPay_del
+					log.info(me + "  2-4é‚„åŸpadatpsn,SALNUM=" + salnum_dat + "  åˆªé™¤padatpay V,sql:" + sqlDatPay_del
 							+ " param:" + param);
 					updcnt = da.update(sqlDatPay_del, param);
 					if (updcnt > 0)
 						updOK = true;
 					if (!updOK) {
-						log.info(me + "  2-4ÁÙ­ìpadatpsn,SALNUM=" + salnum_dat + "  §R°£padatpay V==>¥¢±Ñ");
-						throw new SQLException("2-4ÁÙ­ìpadatpsn,SALNUM=" + salnum_dat + "  §R°£padatpay VD=>¥¢±Ñ");
+						log.info(me + "  2-4é‚„åŸpadatpsn,SALNUM=" + salnum_dat + "  åˆªé™¤padatpay V==>å¤±æ•—");
+						throw new SQLException("2-4é‚„åŸpadatpsn,SALNUM=" + salnum_dat + "  åˆªé™¤padatpay VD=>å¤±æ•—");
 					} else
-						log.info(me + "  2-4ÁÙ­ìpadatpsn,SALNUM=" + salnum_dat + "  §R°£padatpay V,µ§¼Æ:" + updcnt + " ¦@ªá¶O¡G"
-								+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+						log.info(me + "  2-4é‚„åŸpadatpsn,SALNUM=" + salnum_dat + "  åˆªé™¤padatpay V,ç­†æ•¸:" + updcnt + " å…±èŠ±è²»ï¼š"
+								+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 				}
 				starttime9 = System.currentTimeMillis();
 				param = new ArrayList<Object>();
 				param.add(hid);
 				baspsnMap = this.getPaItmMap(param, "BASPSN", hid, da);
-				log.info(me + "  2-1.Åª¨ú°ò¥»­Ó¤H(¦bÂ¾),¤@¤H¤@µ§ ,µ§¼Æ:" + baspsnMap.size() + ",¦@ªá¶O¡G"
-						+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+				log.info(me + "  2-1.è®€å–åŸºæœ¬å€‹äºº(åœ¨è·),ä¸€äººä¸€ç­† ,ç­†æ•¸:" + baspsnMap.size() + ",å…±èŠ±è²»ï¼š"
+						+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
 				starttime9 = System.currentTimeMillis();
 				baspsnAllMap = this.getPaItmMap(param, "BASPSNALL", hid, da);
-				log.info(me + "  2-2.Åª¨ú°ò¥»­Ó¤H(¦bÂ¾¤ÎÂ÷Â¾1¦~¤º),µ§¼Æ:" + baspsnAllMap.size() + ",¦@ªá¶O¡G"
-						+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+				log.info(me + "  2-2.è®€å–åŸºæœ¬å€‹äºº(åœ¨è·åŠé›¢è·1å¹´å…§),ç­†æ•¸:" + baspsnAllMap.size() + ",å…±èŠ±è²»ï¼š"
+						+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
 				starttime9 = System.currentTimeMillis();
 				baspayMap = this.getPaItmMap(param, "BASPAY", hid, da);
-				log.info(me + "  2-3.Åª¨ú°ò¥»¤ä¦©,µ§¼Æ:" + baspayMap.size() + " ¦@ªá¶O¡G"
-						+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+				log.info(me + "  2-3.è®€å–åŸºæœ¬æ”¯æ‰£,ç­†æ•¸:" + baspayMap.size() + " å…±èŠ±è²»ï¼š"
+						+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
 				starttime9 = System.currentTimeMillis();
-				log.info(me + "  2-4.Åª¨ú§å¦¸ÀÉ;");
+				log.info(me + "  2-4.è®€å–æ‰¹æ¬¡æª”;");
 				param = new ArrayList<Object>();
 				param.add(salnum);
 				param.add(hid);
 				batpayMap = this.getPaItmMap(param, "BATPAY", hid, da);
-				log.info(me + "  2-4.Åª¨ú§å¦¸ÀÉ,µ§¼Æ:" + batpayMap.size() + "  ¦@ªá¶O¡G"
-						+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+				log.info(me + "  2-4.è®€å–æ‰¹æ¬¡æª”,ç­†æ•¸:" + batpayMap.size() + "  å…±èŠ±è²»ï¼š"
+						+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
 				starttime9 = System.currentTimeMillis();
-				log.info(me + "  2-5.Åª¨ú²§°Ê­Ó¤H,¤@­Ó»è³æ½s¸¹,¤@¤H¤@µ§");
+				log.info(me + "  2-5.è®€å–ç•°å‹•å€‹äºº,ä¸€å€‹é¤‰å–®ç·¨è™Ÿ,ä¸€äººä¸€ç­†");
 				trapsnMap = this.getPaItmMap(param, "TRAPSN", hid, da);
-				log.info(me + "  2-5.Åª¨ú²§°Ê­Ó¤H,¤@­Ó»è³æ½s¸¹,¤@¤H¤@µ§,µ§¼Æ:" + trapsnMap.size() + "¦@ªá¶O¡G"
-						+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+				log.info(me + "  2-5.è®€å–ç•°å‹•å€‹äºº,ä¸€å€‹é¤‰å–®ç·¨è™Ÿ,ä¸€äººä¸€ç­†,ç­†æ•¸:" + trapsnMap.size() + "å…±èŠ±è²»ï¼š"
+						+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
 				starttime9 = System.currentTimeMillis();
-				log.info(me + "  2-6.Åª¨ú²§°Ê¤ä¦©;");
+				log.info(me + "  2-6.è®€å–ç•°å‹•æ”¯æ‰£;");
 				trapayMap = this.getPaItmMap(param, "TRAPAY", hid, da);
-				log.info(me + "  2-6.Åª¨ú²§°Ê¤ä¦© ,µ§¼Æ:" + trapayMap.size() + "¦@ªá¶O¡G"
-						+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+				log.info(me + "  2-6.è®€å–ç•°å‹•æ”¯æ‰£ ,ç­†æ•¸:" + trapayMap.size() + "å…±èŠ±è²»ï¼š"
+						+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
-				log.info(me + "  3.¾ã¦X¤¤....");
+				log.info(me + "  3.æ•´åˆä¸­....");
 
-				// ----¥ı¥H°ò¥»ÀÉ(¦bÂ¾)¬°¥D
-				// ¤ë¤äÀÉ¼g¤J±ø¥ó.
-				// 1.²§°ÊÀÉ­Ó¤H+²§°ÊÀÉ¤ä¦© 11¦ÒÁZ®Ê¯Å 31®Ê¯Å½ÕÁ~ 32§ï¥ô´«±Ô 33¯Ç¹ê 34¦ÒÁZ¤Éµ¥ 35«İ¹J½Õ¾ã 36®Ê¯Å 37Â¾°È½Õ¾ã 38­°¯Å
-				// 2.°ò¥»ÀÉ­Ó¤H+²§°ÊÀÉ¤ä¦©(¦³¤º®e) 21Â÷Â¾ 22°h¥ğ 23°±Á~ 24¹O´Á½Ğ°² 12¦ÒÁZ¼úª÷
-				// 51¦~²×¼úª÷<==²§°ÊÀÉ¤ä¦©(µL¤º®e),¤£¥Î¼g¤J¤ë¤ä­Ó¤H,¤ë¤ä©ú²Ó
-				// 3.²§°ÊÀÉ­Ó¤H+²§°ÊÀÉ¤ä¦© ²§°ÊÀÉ(1·s¶i 2´_Â¾)<==°ò¥»ÀÉloop¨«§¹,¦A¥H¦¹¼g¤J
-				// 4.²§°ÊÀÉ41¤ä¦©,¼g¤Jtrapay41map,¼g¤ë¤ä©ú²Ó¦Aget
-				// 5.§å¦¸ÀÉ ¼g¤J¤ë¤ä¤ä¦©(§å¦¸ÀÉ->¤ë¤ä¤ä¦©)
-				// ----trapay41map+batpaymap loop,§ó·sdatpaymap¤ë¤ä©ú²Ó
+				// ----å…ˆä»¥åŸºæœ¬æª”(åœ¨è·)ç‚ºä¸»
+				// æœˆæ”¯æª”å¯«å…¥æ¢ä»¶.
+				// 1.ç•°å‹•æª”å€‹äºº+ç•°å‹•æª”æ”¯æ‰£ 11è€ƒç¸¾æ™‰ç´š 31æ™‰ç´šèª¿è–ª 32æ”¹ä»»æ›æ•˜ 33ç´å¯¦ 34è€ƒç¸¾å‡ç­‰ 35å¾…é‡èª¿æ•´ 36æ™‰ç´š 37è·å‹™èª¿æ•´ 38é™ç´š
+				// 2.åŸºæœ¬æª”å€‹äºº+ç•°å‹•æª”æ”¯æ‰£(æœ‰å…§å®¹) 21é›¢è· 22é€€ä¼‘ 23åœè–ª 24é€¾æœŸè«‹å‡ 12è€ƒç¸¾çé‡‘
+				// 51å¹´çµ‚çé‡‘<==ç•°å‹•æª”æ”¯æ‰£(ç„¡å…§å®¹),ä¸ç”¨å¯«å…¥æœˆæ”¯å€‹äºº,æœˆæ”¯æ˜ç´°
+				// 3.ç•°å‹•æª”å€‹äºº+ç•°å‹•æª”æ”¯æ‰£ ç•°å‹•æª”(1æ–°é€² 2å¾©è·)<==åŸºæœ¬æª”loopèµ°å®Œ,å†ä»¥æ­¤å¯«å…¥
+				// 4.ç•°å‹•æª”41æ”¯æ‰£,å¯«å…¥trapay41map,å¯«æœˆæ”¯æ˜ç´°å†get
+				// 5.æ‰¹æ¬¡æª” å¯«å…¥æœˆæ”¯æ”¯æ‰£(æ‰¹æ¬¡æª”->æœˆæ”¯æ”¯æ‰£)
+				// ----trapay41map+batpaymap loop,æ›´æ–°datpaymapæœˆæ”¯æ˜ç´°
 				// ----datpsnmap,datpaymap -> insert
-				// ----­pºâtax(µ¹¥Iª÷ÃB²bÃB > °_¦©ÂI,'2017.1.16 ¦C¤J¦©5%­pºâ,ª÷ÃB>0,¤~¯à¦©µ|)
+				// ----è¨ˆç®—tax(çµ¦ä»˜é‡‘é¡æ·¨é¡ > èµ·æ‰£é»,'2017.1.16 åˆ—å…¥æ‰£5%è¨ˆç®—,é‡‘é¡>0,æ‰èƒ½æ‰£ç¨…)
 
-				// °ò¥»ÀÉ+²§°ÊÀÉ+§å¦¸ÀÉ
+				// åŸºæœ¬æª”+ç•°å‹•æª”+æ‰¹æ¬¡æª”
 				if (selEn.matches("Pay_1")) {
 					Iterator<Map.Entry<String, Pabaspsn>> itr = baspsnMap.entrySet().iterator();
 					while (itr.hasNext()) {
@@ -4163,16 +4194,16 @@ public class SalNTDAO {
 						 * if (strIdtno.equals("F230551483")){ System.out.println(strIdtno); }
 						 */
 						baspsnobj = (Pabaspsn) entry.getValue();
-						// §ä²§°ÊÀÉ,¦]KEY=IDNO
+						// æ‰¾ç•°å‹•æª”,å› KEY=IDNO
 						trapsnobj = (Patrapsn) trapsnMap.get(strIdtno);
-						// 1·s¶i2´_Â¾(°ò¥»ÀÉ§ì¦bÂ¾) 11¦ÒÁZ®Ê¯Å 31®Ê¯Å½ÕÁ~ 32§ï¥ô´«±Ô 33¯Ç¹ê 34¦ÒÁZ¤Éµ¥ 35«İ¹J½Õ¾ã 36®Ê¯Å 37Â¾°È½Õ¾ã 38­°¯Å
+						// 1æ–°é€²2å¾©è·(åŸºæœ¬æª”æŠ“åœ¨è·) 11è€ƒç¸¾æ™‰ç´š 31æ™‰ç´šèª¿è–ª 32æ”¹ä»»æ›æ•˜ 33ç´å¯¦ 34è€ƒç¸¾å‡ç­‰ 35å¾…é‡èª¿æ•´ 36æ™‰ç´š 37è·å‹™èª¿æ•´ 38é™ç´š
 						if (trapsnobj != null) {
 							tracod = String.valueOf(trapsnobj.getPatracod());
 							if (tracod.matches("11|31|32|33|34|35|36|37|38")) {
 								datpsnobj = new Padatpsn();
 								datpsnobj = setDatPsnObj(trapsnobj, null, salnum, "N", patradt, userid, hid);
 								datpsnMap.put(strIdtno, datpsnobj);
-								// ¤ë¤ä¤ä¦©
+								// æœˆæ”¯æ”¯æ‰£
 								trapayAry = (ArrayList) trapayMap.get(strIdtno);
 								if (trapayAry != null) {
 									for (Patrapay data : trapayAry) {
@@ -4189,15 +4220,15 @@ public class SalNTDAO {
 									}
 								}
 							}
-							// 21Â÷Â¾ 22°h¥ğ 23°±Á~ 24¹O´Á½Ğ°²
-							// 12¦ÒÁZ¼úª÷ 51¦~²×¼úª÷
+							// 21é›¢è· 22é€€ä¼‘ 23åœè–ª 24é€¾æœŸè«‹å‡
+							// 12è€ƒç¸¾çé‡‘ 51å¹´çµ‚çé‡‘
 							else if (tracod.matches("21|22|23|24|12|51")) {
 								trapayAry = (ArrayList) trapayMap.get(strIdtno);
 								if (trapayAry != null) {
 									datpsnobj = new Padatpsn();
 									datpsnobj = setDatPsnObj(trapsnobj, null, salnum, "O", patradt, userid, hid);
 									datpsnMap.put(strIdtno, datpsnobj);
-									// intBpsnTpay=1; //ºX¼Ğ 1:²§°ÊÀÉ­Ó¤H+²§°ÊÀÉ¤ä¦© 2:²§°ÊÀÉÂ÷Â¾,¨S¤ä¦©,¤£¥Î¦C¤J
+									// intBpsnTpay=1; //æ——æ¨™ 1:ç•°å‹•æª”å€‹äºº+ç•°å‹•æª”æ”¯æ‰£ 2:ç•°å‹•æª”é›¢è·,æ²’æ”¯æ‰£,ä¸ç”¨åˆ—å…¥
 									for (Patrapay data : trapayAry) {
 										datpayobj = new Padatpay();
 										datpayobj.setSalnum(salnum);
@@ -4211,28 +4242,28 @@ public class SalNTDAO {
 										datpayMap.put(data.getPayidno() + data.getPaycode(), datpayobj);
 									}
 								} else {
-									intBpsnTpay = 2; // ºX¼Ğ 1:°ò¥»ÀÉ­Ó¤H+²§°ÊÀÉ¤ä¦© 2:²§°ÊÀÉÂ÷Â¾,¨S¤ä¦©,¤£¥Î¦C¤J
+									intBpsnTpay = 2; // æ——æ¨™ 1:åŸºæœ¬æª”å€‹äºº+ç•°å‹•æª”æ”¯æ‰£ 2:ç•°å‹•æª”é›¢è·,æ²’æ”¯æ‰£,ä¸ç”¨åˆ—å…¥
 								}
 							}
-							// 41¤ä¦©
+							// 41æ”¯æ‰£
 							else if (tracod.matches("41")) {
 								trapayAry = (ArrayList) trapayMap.get(strIdtno);
-								intBpsnTpay = 0; // ºX¼Ğ 1:°ò¥»ÀÉ­Ó¤H+²§°ÊÀÉ¤ä¦© 2:²§°ÊÀÉÂ÷Â¾,¨S¤ä¦©,¤£¥Î¦C¤J
+								intBpsnTpay = 0; // æ——æ¨™ 1:åŸºæœ¬æª”å€‹äºº+ç•°å‹•æª”æ”¯æ‰£ 2:ç•°å‹•æª”é›¢è·,æ²’æ”¯æ‰£,ä¸ç”¨åˆ—å…¥
 								if (trapayAry != null) {
 									tra41Map.put(strIdtno, trapayAry);
 								}
 							}
 						}
 
-						// ¤ë¤ä­Ó¤H§ä¤£¨ì¥B«DÂ÷Â¾,¥Î°ò¥»ÀÉ­Ó¤H 2¤£¥ÎÅª°ò¥»ÀÉ
-						// 2026.2.10orºX¼Ğ=1°ò¥»ÀÉ­Ó¤H+²§°ÊÀÉ¤ä¦© ,®³±¼
+						// æœˆæ”¯å€‹äººæ‰¾ä¸åˆ°ä¸”éé›¢è·,ç”¨åŸºæœ¬æª”å€‹äºº 2ä¸ç”¨è®€åŸºæœ¬æª”
+						// 2026.2.10oræ——æ¨™=1åŸºæœ¬æª”å€‹äºº+ç•°å‹•æª”æ”¯æ‰£ ,æ‹¿æ‰
 						if ((datpsnobj == null && intBpsnTpay != 2)) {
 							datpsnobj = new Padatpsn();
 							datpsnobj = setDatPsnObj(null, baspsnobj, salnum, "", patradt, userid, hid);
 							datpsnMap.put(strIdtno, datpsnobj);
 
 							if (intBpsnTpay == 0) {
-								// ¤ë¤ä©ú²ÓµL¸ê®Æ,¥Î°ò¥»¤ä¦©
+								// æœˆæ”¯æ˜ç´°ç„¡è³‡æ–™,ç”¨åŸºæœ¬æ”¯æ‰£
 								baspayAry = (ArrayList) baspayMap.get(strIdtno);
 
 								if (baspayAry != null) {
@@ -4252,17 +4283,17 @@ public class SalNTDAO {
 							}
 						}
 					}
-					// ²§°ÊÀÉ_·s¶i,¼g¤J ¤ë¤ä­Ó¤H
+					// ç•°å‹•æª”_æ–°é€²,å¯«å…¥ æœˆæ”¯å€‹äºº
 					for (Map.Entry<String, Object> tpEntry : trapsnMap.entrySet()) {
 						mIdtno = tpEntry.getKey();
 						trapsnobj = (Patrapsn) tpEntry.getValue();
 						tracod = String.valueOf(trapsnobj.getPatracod());
 						if (tracod.matches("1|2")) {
-							// ¼g¤J ¤ë¤ä­Ó¤H
+							// å¯«å…¥ æœˆæ”¯å€‹äºº
 							datpsnobj = new Padatpsn();
 							datpsnobj = setDatPsnObj(trapsnobj, null, salnum, "N", patradt, userid, hid);
 							datpsnMap.put(mIdtno, datpsnobj);
-							// ¤ë¤ä¤ä¦©
+							// æœˆæ”¯æ”¯æ‰£
 							trapayAry = (ArrayList) trapayMap.get(mIdtno);
 							if (trapayAry != null) {
 								for (Patrapay data : trapayAry) {
@@ -4280,16 +4311,16 @@ public class SalNTDAO {
 							}
 						}
 					}
-					log.info(me + "  4.¼g¤J¤ë¤ä­Ó¤H....");
-					// ¼g¤J¤ë¤ä­Ó¤H
+					log.info(me + "  4.å¯«å…¥æœˆæ”¯å€‹äºº....");
+					// å¯«å…¥æœˆæ”¯å€‹äºº
 					starttime9 = System.currentTimeMillis();
 					// trapayMap= this.getPaItmMap(param, "TRAPAY", hid,da);
 					rtn = updDatTblMap(datpsnMap, null, da);
-					log.info(me + "  4.¼g¤J¤ë¤ä­Ó¤H  ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime9) + "²@¬í");
+					log.info(me + "  4.å¯«å…¥æœˆæ”¯å€‹äºº  å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
-					log.info(me + "  5.¼g¤J¤ë¤ä¤ä¦©(²§°Ê41¤ä¦©->¤ë¤ä¤ä¦©)....");
+					log.info(me + "  5.å¯«å…¥æœˆæ”¯æ”¯æ‰£(ç•°å‹•41æ”¯æ‰£->æœˆæ”¯æ”¯æ‰£)....");
 					starttime9 = System.currentTimeMillis();
-					// ¼g¤J¤ë¤ä¤ä¦©.²§°Ê41¤ä¦©->¤ë¤ä¤ä¦©
+					// å¯«å…¥æœˆæ”¯æ”¯æ‰£.ç•°å‹•41æ”¯æ‰£->æœˆæ”¯æ”¯æ‰£
 					for (Map.Entry<String, ArrayList> entry : tra41Map.entrySet()) {
 						mIdtno = entry.getKey();
 						trapayAry = (ArrayList) entry.getValue();
@@ -4313,21 +4344,21 @@ public class SalNTDAO {
 							}
 						}
 					}
-					log.info(me + "  5.¼g¤J¤ë¤ä¤ä¦©(²§°Ê41¤ä¦©->¤ë¤ä¤ä¦©)  ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime9) + "²@¬í");
+					log.info(me + "  5.å¯«å…¥æœˆæ”¯æ”¯æ‰£(ç•°å‹•41æ”¯æ‰£->æœˆæ”¯æ”¯æ‰£)  å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
-					log.info(me + "  6.¼g¤J¤ë¤ä¤ä¦©(§å¦¸ÀÉ->¤ë¤ä¤ä¦©)....");
+					log.info(me + "  6.å¯«å…¥æœˆæ”¯æ”¯æ‰£(æ‰¹æ¬¡æª”->æœˆæ”¯æ”¯æ‰£)....");
 					starttime9 = System.currentTimeMillis();
-					// batpay->¼g¤J¤ë¤ä¤ä¦©
-					// datpsnMap§ä¤£¨ì,¤£¥Î¼g¤J
+					// batpay->å¯«å…¥æœˆæ”¯æ”¯æ‰£
+					// datpsnMapæ‰¾ä¸åˆ°,ä¸ç”¨å¯«å…¥
 					for (Map.Entry<String, Object> entry : batpayMap.entrySet()) {
 						if (entry.getKey().length() < 15) {
-							log.info(me + "  6.¼g¤J¤ë¤ä¤ä¦©(§å¦¸ÀÉ->¤ë¤ä¤ä¦©) key error...."+entry.getKey());
-							rtn+="§å¦¸ÀÉ key error...."+entry.getKey();
+							log.info(me + "  6.å¯«å…¥æœˆæ”¯æ”¯æ‰£(æ‰¹æ¬¡æª”->æœˆæ”¯æ”¯æ‰£) key error...."+entry.getKey());
+							rtn+="æ‰¹æ¬¡æª” key error...."+entry.getKey();
 						}else {
 							mIdtno = entry.getKey().substring(0, 10);
 							strPaycode = entry.getKey().substring(10, 15);
 							if (datpsnMap.get(mIdtno) == null) {
-								log.info(me + "  batpay->¼g¤J¤ë¤ä¤ä¦©,[¤ë¤ä­Ó¤H§ä¤£¨ì,¤£¥Î¼g¤J¤ë¤ä¤ä¦©]:" + mIdtno + " paycode:" + strPaycode);
+								log.info(me + "  batpay->å¯«å…¥æœˆæ”¯æ”¯æ‰£,[æœˆæ”¯å€‹äººæ‰¾ä¸åˆ°,ä¸ç”¨å¯«å…¥æœˆæ”¯æ”¯æ‰£]:" + mIdtno + " paycode:" + strPaycode);
 							} else {
 								Pabatpay data = (Pabatpay) entry.getValue();
 	
@@ -4349,26 +4380,26 @@ public class SalNTDAO {
 							}
 						}
 					}
-					log.info(me + "  7.¼g¤J¤ë¤ä¤ä¦©  ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime9) + "²@¬í");
+					log.info(me + "  7.å¯«å…¥æœˆæ”¯æ”¯æ‰£  å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 					rtn += updDatTblMap(null, datpayMap, da);
 
 				}
 
-				// ²§°ÊÀÉ+§å¦¸ÀÉ
+				// ç•°å‹•æª”+æ‰¹æ¬¡æª”
 				else if (selEn.matches("Pay_2")) {
-					log.info(me + "  1.²§°ÊÀÉ,¼g¤J ¤ë¤ä­Ó¤H<==¦³²§°Ê¤ä¦©,¤~¼g¤J....");
-					// ²§°ÊÀÉ,¼g¤J ¤ë¤ä­Ó¤H<==¦³²§°Ê¤ä¦©,¤~¼g¤J
-					// 1·s¶i 2´_Â¾ 11¦ÒÁZ®Ê¯Å 31®Ê¯Å½ÕÁ~ 32§ï¥ô´«±Ô 33¯Ç¹ê 34¦ÒÁZ¤Éµ¥ 35«İ¹J½Õ¾ã 36®Ê¯Å 37Â¾°È½Õ¾ã 38­°¯Å
+					log.info(me + "  1.ç•°å‹•æª”,å¯«å…¥ æœˆæ”¯å€‹äºº<==æœ‰ç•°å‹•æ”¯æ‰£,æ‰å¯«å…¥....");
+					// ç•°å‹•æª”,å¯«å…¥ æœˆæ”¯å€‹äºº<==æœ‰ç•°å‹•æ”¯æ‰£,æ‰å¯«å…¥
+					// 1æ–°é€² 2å¾©è· 11è€ƒç¸¾æ™‰ç´š 31æ™‰ç´šèª¿è–ª 32æ”¹ä»»æ›æ•˜ 33ç´å¯¦ 34è€ƒç¸¾å‡ç­‰ 35å¾…é‡èª¿æ•´ 36æ™‰ç´š 37è·å‹™èª¿æ•´ 38é™ç´š
 					for (Map.Entry<String, Object> tpEntry : trapsnMap.entrySet()) {
 						mIdtno = tpEntry.getKey();
 						trapsnobj = (Patrapsn) tpEntry.getValue();
 						tracod = String.valueOf(trapsnobj.getPatracod());
 						if (trapsnobj != null) {
 							tracod = String.valueOf(trapsnobj.getPatracod());
-							// ¤ë¤ä¤ä¦©,¤£¬°ªÅ¥Õ
+							// æœˆæ”¯æ”¯æ‰£,ä¸ç‚ºç©ºç™½
 							trapayAry = (ArrayList) trapayMap.get(mIdtno);
 							if (trapayAry != null) {
-								// ¤ë¤ä­Ó¤H
+								// æœˆæ”¯å€‹äºº
 								datpsnobj = new Padatpsn();
 								if (tracod.matches("1|2|11|31|32|33|34|35|36|37|38")) {
 									datpsnobj = setDatPsnObj(trapsnobj, null, salnum, "N", patradt, userid, hid);
@@ -4376,7 +4407,7 @@ public class SalNTDAO {
 									datpsnobj = setDatPsnObj(trapsnobj, null, salnum, "O", patradt, userid, hid);
 								}
 								datpsnMap.put(mIdtno, datpsnobj);
-								// ¤ë¤ä¤ä¦©
+								// æœˆæ”¯æ”¯æ‰£
 								for (Patrapay data : trapayAry) {
 									datpayobj = new Padatpay();
 									datpayobj.setSalnum(salnum);
@@ -4392,13 +4423,13 @@ public class SalNTDAO {
 							}
 						}
 					}
-					log.info(me + "  2.§å¦¸ÀÉ,¼g¤J ¤ë¤ä­Ó¤H....");
-					// §å¦¸ÀÉ
+					log.info(me + "  2.æ‰¹æ¬¡æª”,å¯«å…¥ æœˆæ”¯å€‹äºº....");
+					// æ‰¹æ¬¡æª”
 					for (Map.Entry<String, Object> batentry : batpayMap.entrySet()) {
 						mIdtno = batentry.getKey().substring(0, 10);
 						strPaycode = batentry.getKey().substring(10, 15);
 						Pabatpay data = (Pabatpay) batentry.getValue();
-						// §ä¤£¨ì¤ë¤ä­Ó¤H,­n¥ı¥[¤@µ§°ò¥»­Ó¤H
+						// æ‰¾ä¸åˆ°æœˆæ”¯å€‹äºº,è¦å…ˆåŠ ä¸€ç­†åŸºæœ¬å€‹äºº
 						datpsnobj = (Padatpsn) datpsnMap.get(mIdtno);
 						if (datpsnobj == null) {
 							baspsnobj = (Pabaspsn) baspsnAllMap.get(mIdtno);
@@ -4409,7 +4440,7 @@ public class SalNTDAO {
 							}
 						}
 
-						// ¤ë¤ä¤ä¦©
+						// æœˆæ”¯æ”¯æ‰£
 						datpayobj = datpayMap.get(mIdtno + strPaycode);
 						if (datpayobj != null) {
 							datpayobj.setPayamt(data.getPayamt());
@@ -4427,22 +4458,22 @@ public class SalNTDAO {
 						}
 					}
 
-					log.info(me + "  3.¼g¤J¤ë¤ä­Ó¤H....");
-					// ¼g¤J¤ë¤ä­Ó¤H
+					log.info(me + "  3.å¯«å…¥æœˆæ”¯å€‹äºº....");
+					// å¯«å…¥æœˆæ”¯å€‹äºº
 					rtn = updDatTblMap(datpsnMap, null, da);
 
-					log.info(me + "  4.¼g¤J¤ë¤ä¤ä¦©....");
+					log.info(me + "  4.å¯«å…¥æœˆæ”¯æ”¯æ‰£....");
 					rtn += updDatTblMap(null, datpayMap, da);
 
 				}
-				// §å¦¸ÀÉ
+				// æ‰¹æ¬¡æª”
 				else if (selEn.matches("Pay_3")) {
-					log.info(me + "  1.§å¦¸ÀÉ,¼g¤J ¤ë¤ä­Ó¤H....");
+					log.info(me + "  1.æ‰¹æ¬¡æª”,å¯«å…¥ æœˆæ”¯å€‹äºº....");
 					for (Map.Entry<String, Object> entry : batpayMap.entrySet()) {
 						mIdtno = entry.getKey().substring(0, 10);
 						strPaycode = entry.getKey().substring(10, 15);
 						Pabatpay data = (Pabatpay) entry.getValue();
-						// §ä¤£¨ì¤ë¤ä­Ó¤H,­n¥ı¥[¤@µ§°ò¥»­Ó¤H
+						// æ‰¾ä¸åˆ°æœˆæ”¯å€‹äºº,è¦å…ˆåŠ ä¸€ç­†åŸºæœ¬å€‹äºº
 						datpsnobj = (Padatpsn) datpsnMap.get(mIdtno);
 						if (datpsnobj == null) {
 							baspsnobj = (Pabaspsn) baspsnAllMap.get(mIdtno);
@@ -4455,7 +4486,7 @@ public class SalNTDAO {
 							datpsnMap.put(mIdtno, datpsnobj);
 						}
 
-						// ¤ë¤ä¤ä¦©
+						// æœˆæ”¯æ”¯æ‰£
 						datpayobj = datpayMap.get(mIdtno + strPaycode);
 						if (datpayobj != null) {
 							datpayobj.setPayamt(data.getPayamt());
@@ -4473,18 +4504,18 @@ public class SalNTDAO {
 						}
 					}
 
-					log.info(me + "  2.¼g¤J¤ë¤ä­Ó¤H....");
+					log.info(me + "  2.å¯«å…¥æœˆæ”¯å€‹äºº....");
 					starttime9 = System.currentTimeMillis();
 					rtn = updDatTblMap(datpsnMap, null, da);
-					log.info(me + "  2.¼g¤J¤ë¤ä­Ó¤H....¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime9) + "²@¬í");
+					log.info(me + "  2.å¯«å…¥æœˆæ”¯å€‹äºº....å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
-					log.info(me + "  3.¼g¤J¤ë¤ä¤ä¦©....");
+					log.info(me + "  3.å¯«å…¥æœˆæ”¯æ”¯æ‰£....");
 					starttime9 = System.currentTimeMillis();
 					rtn += updDatTblMap(null, datpayMap, da);
-					log.info(me + "  3.¼g¤J¤ë¤ä¤ä¦©....¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime9) + "²@¬í");
+					log.info(me + "  3.å¯«å…¥æœˆæ”¯æ”¯æ‰£....å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 				}
 				//
-				log.info(me + "  9.ÅÜ°Ê©Ò±oµ|³B²z....©Ò±o²bÃB>°_¦©ÂI map,¦C¤J¤Jµ|¼úª÷*5%");
+				log.info(me + "  9.è®Šå‹•æ‰€å¾—ç¨…è™•ç†....æ‰€å¾—æ·¨é¡>èµ·æ‰£é» map,åˆ—å…¥å…¥ç¨…çé‡‘*5%");
 				starttime9 = System.currentTimeMillis();
 				param = new ArrayList<Object>();
 				param.add(salnum);
@@ -4530,9 +4561,9 @@ public class SalNTDAO {
 						}
 					}
 				}
-				log.info(me + "ÅÜ°Ê©Ò±oµ|³B²z.¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime9) + "²@¬í");
+				log.info(me + "è®Šå‹•æ‰€å¾—ç¨…è™•ç†.å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
-				log.info(me + "¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+				log.info(me + "å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 
 			}
 
@@ -4548,13 +4579,13 @@ public class SalNTDAO {
 		return rtn;
 	}
 
-	// jsonFromStr:°Ñ¼Æ
-	// 1.§ä²§°ÊÀÉ·s¶i,Â÷Â¾´Á­­¤ºmap hid tradt
-	// 2.§ä²§°ÊÀÉ hid salnum tracod1,tracod2
+	// jsonFromStr:åƒæ•¸
+	// 1.æ‰¾ç•°å‹•æª”æ–°é€²,é›¢è·æœŸé™å…§map hid tradt
+	// 2.æ‰¾ç•°å‹•æª” hid salnum tracod1,tracod2
 	private HashMap getTraPsnMap(String jsonStr, int opt, VGHDataAccess da) throws Exception {
 		String me = ".getTraPsnMap()";
 		HashMap rtnMap = new HashMap();
-		Patrapsn oneobj = null; // ²§°ÊÀÉobj
+		Patrapsn oneobj = null; // ç•°å‹•æª”obj
 		String strKey = "";
 		long starttime = 0;
 
@@ -4564,7 +4595,7 @@ public class SalNTDAO {
 			JSONObject jsonFromStr = JSONObject.fromObject(jsonStr);
 
 			if (opt == 1) {
-				// or PATRACOD=33 or PATRACOD=37<==°ò¥»ÀÉ¥i¥H§ì,¤£¥Î³o¬q
+				// or PATRACOD=33 or PATRACOD=37<==åŸºæœ¬æª”å¯ä»¥æŠ“,ä¸ç”¨é€™æ®µ
 				sql = "select A.*,B.PAYTITLP paytitlo,c.PAYTITLP,d.TRANAME " + " from " + this.tTraPsn + " A "
 						+ " left outer join " + this.tTitle + " B ON A.PAOTITLE=B.PAYTITLK and A.HID=B.HID "
 						+ " left outer join " + this.tTitle + " C ON A.PAYTITLE=C.PAYTITLK and A.HID=C.HID "
@@ -4575,7 +4606,7 @@ public class SalNTDAO {
 				params.add(jsonFromStr.getString("hid"));
 				params.add(jsonFromStr.getString("tradt"));
 			} else if (opt == 2) {
-				// Åª¨úpa.patrapsn ¬O§_¦³·s¶i,¯Ç¹ê ªì¥ô¤½Â¾¤é,Â¾¸¹,·s¨î«´¬ù­n§ï§ì²§°ÊÀÉ
+				// è®€å–pa.patrapsn æ˜¯å¦æœ‰æ–°é€²,ç´å¯¦ åˆä»»å…¬è·æ—¥,è·è™Ÿ,æ–°åˆ¶å¥‘ç´„è¦æ”¹æŠ“ç•°å‹•æª”
 				sql = "select PAYIDNO,PAYGOVDT,PAYEMPNO,PAYCARD,PAYTITLE,A.HID,PAYRANK,PAYRANK " + " from "
 						+ this.tTraPsn + " A " + " left outer join " + this.tTitle
 						+ " t on A.PAYTITLE = T.PAYTITLK and A.hid=t.hid "
@@ -4585,7 +4616,7 @@ public class SalNTDAO {
 				params.add(jsonFromStr.getInt("tracod1"));
 				params.add(jsonFromStr.getInt("tracod2"));
 			}
-			log.info(me + "  §ä²§°ÊÀÉ_µoÁ~¤é " + sql + "...params:" + params.toString());
+			log.info(me + "  æ‰¾ç•°å‹•æª”_ç™¼è–ªæ—¥ " + sql + "...params:" + params.toString());
 			result = da.arraylistbyQuery(sql, params, META_TYPE);
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
@@ -4595,8 +4626,8 @@ public class SalNTDAO {
 					rtnMap.put(strKey, oneobj);
 				}
 			}
-			log.info(me + "  §ä²§°ÊÀÉ_µoÁ~¤é ,size: " + result.size() + " ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime)
-					+ "²@¬í");
+			log.info(me + "  æ‰¾ç•°å‹•æª”_ç™¼è–ªæ—¥ ,size: " + result.size() + " å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime)
+					+ "æ¯«ç§’");
 
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
@@ -4607,11 +4638,11 @@ public class SalNTDAO {
 		return rtnMap;
 	}
 
-	// §ä²§°Ê¤ä¦©_µoÁ~¤é_¤ä¦©¥N½X(·s)map
+	// æ‰¾ç•°å‹•æ”¯æ‰£_ç™¼è–ªæ—¥_æ”¯æ‰£ä»£ç¢¼(æ–°)map
 	private HashMap getTraPayMap(String hid, String tradt, String paycode, VGHDataAccess da) throws Exception {
 		String me = ".getTraPayMap()";
 		HashMap rtnMap = new HashMap();
-		Patrapay oneobj = null; // ²§°Ê¤ä¦©obj
+		Patrapay oneobj = null; // ç•°å‹•æ”¯æ‰£obj
 		String strKey = "";
 		long starttime = 0;
 
@@ -4627,7 +4658,7 @@ public class SalNTDAO {
 			params.add(tradt);
 			params.add(paycode);
 			params.add("N");
-			log.info(me + "  §ä²§°Ê¤ä¦©_µoÁ~¤é_¤ä¦©¥N½X(·s) " + sql + "...params:" + params.toString());
+			log.info(me + "  æ‰¾ç•°å‹•æ”¯æ‰£_ç™¼è–ªæ—¥_æ”¯æ‰£ä»£ç¢¼(æ–°) " + sql + "...params:" + params.toString());
 			result = da.arraylistbyQuery(sql, params, META_TYPE);
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
@@ -4637,8 +4668,8 @@ public class SalNTDAO {
 					rtnMap.put(strKey, oneobj);
 				}
 			}
-			log.info(me + "  §ä§ä²§°Ê¤ä¦©_µoÁ~¤é_¤ä¦©¥N½X(·s) ,size: " + result.size() + " ¦@ªá¶O¡G"
-					+ (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  æ‰¾æ‰¾ç•°å‹•æ”¯æ‰£_ç™¼è–ªæ—¥_æ”¯æ‰£ä»£ç¢¼(æ–°) ,size: " + result.size() + " å…±èŠ±è²»ï¼š"
+					+ (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
@@ -4649,16 +4680,16 @@ public class SalNTDAO {
 		return rtnMap;
 	}
 
-	// §ä°ò¥»ÀÉ­Ó¤Hmap
+	// æ‰¾åŸºæœ¬æª”å€‹äººmap
 	private HashMap getBasEmpCardMap(String hid, VGHDataAccess da) throws Exception {
 		String me = ".getBasEmpCardMap()";
 		HashMap rtnMap = new HashMap();
-		Pabaspsn oneobj = null; // °ò¥»ÀÉ­Ó¤Hobj
+		Pabaspsn oneobj = null; // åŸºæœ¬æª”å€‹äººobj
 		String strKey = "";
 		long starttime = 0;
-		// 5¦~¤ºÂ÷Â¾+¦bÂ¾¤H­û
-		// 2026.3.25§ï¼gªk
-		// 2026.3.27 payrsgdt=null§PÂ_­×§ï
+		// 5å¹´å…§é›¢è·+åœ¨è·äººå“¡
+		// 2026.3.25æ”¹å¯«æ³•
+		// 2026.3.27 payrsgdt=nullåˆ¤æ–·ä¿®æ”¹
 		sql = "select PAYLVEFG, PAYIDNO, a.PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, PAYEMPDT, PAYSGNDT, COALESCE(a.payrsgdt,'9999-12-31') PAYRSGDT, PAYBKID, PAYACNO, PAYGEDNO, PAYINFLG, PAYDPNO, PAYPSW, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, COALESCE(PAYPFDOC, 0)PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PATRACOD, PATRADT, PAYTAXNO, PAYUPDID, PAYUPDTM, PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3, PAYRANK4, PAYCTCBACNO, PAYCTCBGEDNO, INSUAMT, PARETENTION, a.HID,traname "
 				+ " from " + this.tBasPsn + " A " + " INNER JOIN (SELECT hid,paycard,max(payrsgdt) payrsgdt FROM "
 				+ this.tBasPsn
@@ -4669,7 +4700,7 @@ public class SalNTDAO {
 			starttime = System.currentTimeMillis();
 			params = new ArrayList<Object>();
 			params.add(hid);
-			log.info(me + "  §ä°ò¥»ÀÉ­Ó¤H " + sql + "...params:" + params.toString());
+			log.info(me + "  æ‰¾åŸºæœ¬æª”å€‹äºº " + sql + "...params:" + params.toString());
 			result = da.arraylistbyQuery(sql, params, META_TYPE);
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
@@ -4681,7 +4712,7 @@ public class SalNTDAO {
 				}
 			}
 			log.info(
-					me + "  §ä°ò¥»ÀÉ­Ó¤H,size: " + result.size() + " ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+					me + "  æ‰¾åŸºæœ¬æª”å€‹äºº,size: " + result.size() + " å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new Exception(me + ", fail!!." + e);
@@ -4691,7 +4722,7 @@ public class SalNTDAO {
 		return rtnMap;
 	}
 
-	// §äµoÁ~©ú²Ó®ÉÁ~map
+	// æ‰¾ç™¼è–ªæ˜ç´°æ™‚è–ªmap
 	private HashMap getPayrollHRidMap(String hid, String tradt, VGHDataAccess da) throws Exception {
 		String me = ".getPayrollHRCardMap()";
 		HashMap rtnMap = new HashMap();
@@ -4703,11 +4734,11 @@ public class SalNTDAO {
 			strPAYCODE = "('FP000','FP010','FP030')";
 		else if (hid.equals("2A0")) {
 			// 2022.12.13
-			// ¥»­ÄFP000+±M·~¥[µ¹FP010+FP030¥DºŞ¥[µ¹+ÃÒ·Ó¥[µ¹FP090+°|°Ï¥[µ¹FP100+¨­¤ß»ÙÃª¥[µ¹FP110+Ã¹­P§xÃø¥[µ¹->¯S§O¬z¶KFP120
-			// 2025.7.8 ¥»Á~¼WÃBFP020
+			// æœ¬ä¿¸FP000+å°ˆæ¥­åŠ çµ¦FP010+FP030ä¸»ç®¡åŠ çµ¦+è­‰ç…§åŠ çµ¦FP090+é™¢å€åŠ çµ¦FP100+èº«å¿ƒéšœç¤™åŠ çµ¦FP110+ç¾…è‡´å›°é›£åŠ çµ¦->ç‰¹åˆ¥æ´¥è²¼FP120
+			// 2025.7.8 æœ¬è–ªå¢é¡FP020
 			strPAYCODE = "('FP000','FP010','FP020','FP030','FP090','FP100','FP110','FP120')";
 		} else if (hid.equals("3A0")) {
-			// '2024.5.24 ¥»­ÄFP000+±M·~¥[µ¹FP010+FP030¥DºŞ¥[µ¹+³d¥ô¥[µ¹FP090+Â¾°È¥[µ¹FP100
+			// '2024.5.24 æœ¬ä¿¸FP000+å°ˆæ¥­åŠ çµ¦FP010+FP030ä¸»ç®¡åŠ çµ¦+è²¬ä»»åŠ çµ¦FP090+è·å‹™åŠ çµ¦FP100
 			strPAYCODE = "('FP000','FP010','FP030','FP090','FP100')";
 		}
 		sql = "select a.payidno,sum(PAYAMT) PAYAMT  " + " from " + this.tDatPsn + " A " + " inner join " + this.tDatPay
@@ -4718,7 +4749,7 @@ public class SalNTDAO {
 			params = new ArrayList<Object>();
 			params.add(hid);
 			params.add(tradt);
-			log.info(me + "  §äµoÁ~©ú²Ó®ÉÁ~ " + sql + "...params:" + params.toString());
+			log.info(me + "  æ‰¾ç™¼è–ªæ˜ç´°æ™‚è–ª " + sql + "...params:" + params.toString());
 			result = da.arraylistbyQuery(sql, params, META_TYPE);
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
@@ -4729,8 +4760,8 @@ public class SalNTDAO {
 					rtnMap.put(strKey, oneobj);
 				}
 			}
-			log.info(me + "  §äµoÁ~©ú²Ó®ÉÁ~,size: " + result.size() + " ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime)
-					+ "²@¬í");
+			log.info(me + "  æ‰¾ç™¼è–ªæ˜ç´°æ™‚è–ª,size: " + result.size() + " å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime)
+					+ "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new Exception(me + ", fail!!." + e);
@@ -4741,7 +4772,7 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * [§å¦¸ÀÉ--¨Æ¯f°²] in_data: ¶Ç¥X:HashMap
+	 * [æ‰¹æ¬¡æª”--äº‹ç—…å‡] in_data: å‚³å‡º:HashMap
 	 **/
 	public HashMap<String, Object> getLeave(String in_data, String userid, String hid, VGHDataAccess da)
 			throws Exception {
@@ -4764,34 +4795,34 @@ public class SalNTDAO {
 		HashMap baspsnCardMap = new HashMap();
 		HashMap trapsnCardMap = new HashMap();
 		HashMap datpayIdMap = new HashMap();
-		Pabaspsn baspsnobj = null; // °ò¥»ÀÉ­Ó¤Hobj
-		Patrapsn trapsnobj = null; // ²§°ÊÀÉobj
-		Padatpay datpayobj = null; // ®ÉÁ~obj
-		String tradt = ""; // µoÁ~¤é´Á
-		String datTradt = ""; // §äview¦~¤ëªºµoÁ~©ú²Ó.µoÁ~¤é
-		String strCard = "", preCard = ""; // ¥d¸¹
-		String empname = ""; // ©m¦W
+		Pabaspsn baspsnobj = null; // åŸºæœ¬æª”å€‹äººobj
+		Patrapsn trapsnobj = null; // ç•°å‹•æª”obj
+		Padatpay datpayobj = null; // æ™‚è–ªobj
+		String tradt = ""; // ç™¼è–ªæ—¥æœŸ
+		String datTradt = ""; // æ‰¾viewå¹´æœˆçš„ç™¼è–ªæ˜ç´°.ç™¼è–ªæ—¥
+		String strCard = "", preCard = ""; // å¡è™Ÿ
+		String empname = ""; // å§“å
 		String strYM = ""; // view.YM
 		String strMM = "";
 		String strIdno = "";
 		String strRtn = "";
 		int inttracod = 0;
-		int intEffdt = 0; // ¦³®Ä¤é¼Æ
-		int tEffdt = 30; // 30¤é
-		int tEffMaxdt = 0; // commonDao.getDayLimByPos ¤Ñ¼Æ ¥ş¤é=30
-		double intDaySalay = 0; // ¤éÁ~
-		double intHalfDS = 0; // §é¥b¤éÁ~
-		int intMonSalay = 0; // ¤ëÁ~
-		BigDecimal vOffDay; // °²§O¤p­p
-		BigDecimal vOffDaySum; // °²§O¤p­p(¤£§t·í¤ë)
-		BigDecimal vNoDay; // ¤£µoµ¹¤u¸ê¤Ñ¼Æ
-		BigDecimal vHalfDay;// §é¥b¤Ñ¼Æ
+		int intEffdt = 0; // æœ‰æ•ˆæ—¥æ•¸
+		int tEffdt = 30; // 30æ—¥
+		int tEffMaxdt = 0; // commonDao.getDayLimByPos å¤©æ•¸ å…¨æ—¥=30
+		double intDaySalay = 0; // æ—¥è–ª
+		double intHalfDS = 0; // æŠ˜åŠæ—¥è–ª
+		int intMonSalay = 0; // æœˆè–ª
+		BigDecimal vOffDay; // å‡åˆ¥å°è¨ˆ
+		BigDecimal vOffDaySum; // å‡åˆ¥å°è¨ˆ(ä¸å«ç•¶æœˆ)
+		BigDecimal vNoDay; // ä¸ç™¼çµ¦å·¥è³‡å¤©æ•¸
+		BigDecimal vHalfDay;// æŠ˜åŠå¤©æ•¸
 
-		double dblOffDay = 0; // °²§O¤p­p
-		double dblOffBef = 0, preOffBef = 0; // °²§O¤p­p(¤£§t·í¤ë) ¦©°£1¤ë
-		double dblNoDay = 0; // ¤£µoµ¹¤u¸ê¤Ñ¼Æ
-		double dblHalfDay = 0; // §é¥b¤Ñ¼Æ
-		double dblLeaAmt = 0; // ¨Æ¯f°²ª÷ÃB
+		double dblOffDay = 0; // å‡åˆ¥å°è¨ˆ
+		double dblOffBef = 0, preOffBef = 0; // å‡åˆ¥å°è¨ˆ(ä¸å«ç•¶æœˆ) æ‰£é™¤1æœˆ
+		double dblNoDay = 0; // ä¸ç™¼çµ¦å·¥è³‡å¤©æ•¸
+		double dblHalfDay = 0; // æŠ˜åŠå¤©æ•¸
+		double dblLeaAmt = 0; // äº‹ç—…å‡é‡‘é¡
 		boolean blnFlag = true;
 		boolean blnYM = true;
 		String jsonStr = "";
@@ -4806,15 +4837,15 @@ public class SalNTDAO {
 			tradt = StringUtil.nullToString(object_in_data.getString("patradt"));
 			cDAO = new CommDAO(da, hid);
 
-			// §ä°ò¥»ÀÉ­Ó¤H card
+			// æ‰¾åŸºæœ¬æª”å€‹äºº card
 			baspsnCardMap = getBasEmpCardMap(hid, da);
-			// §ä²§°ÊÀÉ_µoÁ~¤é card
+			// æ‰¾ç•°å‹•æª”_ç™¼è–ªæ—¥ card
 			jsonStr = "{hid:" + hid + ", tradt:" + tradt + "}";
 			trapsnCardMap = getTraPsnMap(jsonStr, 1, da);
 
-			// ¥Ø«e¥u¦³apPA01¨ú±ooff0102v±ÂÅv
+			// ç›®å‰åªæœ‰apPA01å–å¾—off0102væˆæ¬Š
 			// Hospitals hospInfo1A0 = Hospitals.getOneHosp(hid);
-			// ­nÅªProd.PS.off0102v
+			// è¦è®€Prod.PS.off0102v
 			// String dataSourcePSNT=hospInfo1A0.dataSourceNTP;
 			String dataSourcePSNT = hospInfo.dataSourceNT;
 			daPSNT = new VGHDataAccess(dataSourcePSNT);
@@ -4843,7 +4874,7 @@ public class SalNTDAO {
 							datTradt = strYM.substring(0, 4) + "-" + strYM.substring(4, 6) + "-"
 									+ strYM.substring(6, 8);
 						}
-						// §ä®ÉÁ~_KEY=¨­¤ÀÃÒ,¶Ç¤Joff0102v.¦~¤ë
+						// æ‰¾æ™‚è–ª_KEY=èº«åˆ†è­‰,å‚³å…¥off0102v.å¹´æœˆ
 						datpayIdMap = getPayrollHRidMap(hid, datTradt, da);
 						blnYM = false;
 					}
@@ -4873,24 +4904,24 @@ public class SalNTDAO {
 
 					trapsnobj = (Patrapsn) trapsnCardMap.get(strCard);
 					baspsnobj = (Pabaspsn) baspsnCardMap.get(strCard);
-					// °ò¥»ÀÉ,²§°ÊÀÉ¬Ò§ä¤£¨ì
+					// åŸºæœ¬æª”,ç•°å‹•æª”çš†æ‰¾ä¸åˆ°
 					if (trapsnobj == null && baspsnobj == null) {
-						strRtn = "¥d¸¹[§ä¤£¨ì]";
+						strRtn = "å¡è™Ÿ[æ‰¾ä¸åˆ°]";
 					} else {
-						if (trapsnobj != null) { // ¥ı§ä²§°ÊÀÉ
+						if (trapsnobj != null) { // å…ˆæ‰¾ç•°å‹•æª”
 							inttracod = trapsnobj.getPatracod();
 							strIdno = StringUtil.nullToString(trapsnobj.getPayidno());
 							if (inttracod >= 20 && inttracod < 30) {
-								strRtn = "²§°Ê--" + trapsnobj.getTraname() + trapsnobj.getPaeffdt();
+								strRtn = "ç•°å‹•--" + trapsnobj.getTraname() + trapsnobj.getPaeffdt();
 								blnFlag = false;
 							}
 
-						} // §ä°ò¥»ÀÉ
+						} // æ‰¾åŸºæœ¬æª”
 						else if (baspsnobj != null) {
 							inttracod = baspsnobj.getPatracod();
 							strIdno = StringUtil.nullToString(baspsnobj.getPayidno());
 							if (inttracod >= 20 && inttracod < 30) {
-								strRtn = "°ò¥»--" + baspsnobj.getTraname();
+								strRtn = "åŸºæœ¬--" + baspsnobj.getTraname();
 								blnFlag = false;
 							}
 						}
@@ -4898,7 +4929,7 @@ public class SalNTDAO {
 							datpayobj = (Padatpay) datpayIdMap.get(strIdno);
 
 							if (datpayobj == null) {
-								strRtn = "¤éÁ~=0";
+								strRtn = "æ—¥è–ª=0";
 							} else {
 
 								intMonSalay = datpayobj.getPayamt();
@@ -4907,28 +4938,28 @@ public class SalNTDAO {
 									intHalfDS = Math.floor(datpayobj.getPayamt() / (tEffdt * 2));
 								}
 
-								// ¦]view¦b1¤ë®É,µoÁ~¤é3¤ë,OFFDAYSUMªº¤p­p¬O«e¦~«×1-12¤ë
+								// å› viewåœ¨1æœˆæ™‚,ç™¼è–ªæ—¥3æœˆ,OFFDAYSUMçš„å°è¨ˆæ˜¯å‰å¹´åº¦1-12æœˆ
 								if (strMM.equals("01"))
 									dblOffBef = 0;
 								else
 									dblOffBef = vOffDaySum.doubleValue();
-								// ¦³®Ä¤Ñ¼Æ
+								// æœ‰æ•ˆå¤©æ•¸
 								tEffMaxdt = cDAO.getDayLimByPos(strpos);
-								// ¯f°²+¥Í²z°²>30¤Ñ,¤£µoµ¹¤u¸ê,¥b¤é¥Î15¤Ñ
-								// ¯f°²30¤Ñ+¥Í²z°²²Ä4¤Ñ°_,¤£µoµ¹¤u¸ê
+								// ç—…å‡+ç”Ÿç†å‡>30å¤©,ä¸ç™¼çµ¦å·¥è³‡,åŠæ—¥ç”¨15å¤©
+								// ç—…å‡30å¤©+ç”Ÿç†å‡ç¬¬4å¤©èµ·,ä¸ç™¼çµ¦å·¥è³‡
 								if (strOfftype.matches("02|35")) {
 									if (preCard.equals(strCard) && preOfftype.matches("02")
 											&& strOfftype.matches("35")) {
-										// ¥Í²z°²
+										// ç”Ÿç†å‡
 										if ((vOffDaySum.doubleValue() + vOffDay.doubleValue()) > 3)
 											dblOffDay = preOffBef + vOffDay.doubleValue() + dblOffBef - 3;
-										else // 1-3¤Ñ,¥bÁ~
+										else // 1-3å¤©,åŠè–ª
 											dblOffDay = vOffDay.doubleValue();
 									} else {
 										dblOffDay = 0 + vOffDay.doubleValue() + dblOffBef;
 									}
 
-									// ¤£§t·í¤ë,¤w¶W¹L30¤Ñ ¨Ò:¤£§t·í¤ë26¤Ñ,·í¤ë5.5¤Ñ=>§é¥b¤u¸ê:4¤Ñ,¤£µo¤u¸ê:1.5¤Ñ
+									// ä¸å«ç•¶æœˆ,å·²è¶…é30å¤© ä¾‹:ä¸å«ç•¶æœˆ26å¤©,ç•¶æœˆ5.5å¤©=>æŠ˜åŠå·¥è³‡:4å¤©,ä¸ç™¼å·¥è³‡:1.5å¤©
 									if (dblOffDay > tEffMaxdt) {
 										if (dblOffBef > tEffMaxdt) {
 											dblNoDay = vOffDay.doubleValue();
@@ -4938,7 +4969,7 @@ public class SalNTDAO {
 													- (vOffDaySum.doubleValue() + vOffDay.doubleValue());
 										}
 									} else {
-										// view¦b1¤ë,OFFDAYSUMªº¤p­p¬O«e¦~«×1-12¤ë,¥i¯à¦³>30
+										// viewåœ¨1æœˆ,OFFDAYSUMçš„å°è¨ˆæ˜¯å‰å¹´åº¦1-12æœˆ,å¯èƒ½æœ‰>30
 										if (strMM.equals("01")) {
 											dblHalfDay = vOffDay.doubleValue();
 										} else {
@@ -4986,7 +5017,7 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * [§å¦¸ÀÉ--±ĞÂ¾¤Î½×¤å¼úÀy] in_data: ¶Ç¥X:HashMap
+	 * [æ‰¹æ¬¡æª”--æ•™è·åŠè«–æ–‡çå‹µ] in_data: å‚³å‡º:HashMap
 	 **/
 	public HashMap<String, Object> getTeacheraw(String in_data, String userid, String hid, VGHDataAccess da)
 			throws Exception {
@@ -4995,7 +5026,7 @@ public class SalNTDAO {
 		JSONArray jsonRtn = new JSONArray();
 		JSONObject jsonOne = null;
 		JSONObject object_in_data = null;
-		String tradt = ""; // µoÁ~¤é´Á
+		String tradt = ""; // ç™¼è–ªæ—¥æœŸ
 		long starttime = 0, starttime9 = 0;
 		HashMap baspsnCardMap = new HashMap();
 		HashMap trapsnCardMap = new HashMap();
@@ -5004,13 +5035,13 @@ public class SalNTDAO {
 		HashMap<String, Object> rtnMap = new HashMap();
 		HashMap baspayTeaMap = new HashMap();
 		HashMap teachawMap = new HashMap();
-		String l_Idtno = ""; // ¨­¤ÀÃÒ
-		String l_paycode = ""; // ¤ä¦©¥N½X
-		String m_paycode = ""; // ¤ä¦©¥N½X
-		int l_payamt = 0; // ª÷ÃB
-		Pabaspsn baspsnobj = null; // °ò¥»ÀÉ­Ó¤Hobj
-		Pabaspay baspayobj = null; // °ò¥»ÀÉ¤ä¦©obj
-		Patrapsn trapsnobj = null; // ²§°ÊÀÉobj
+		String l_Idtno = ""; // èº«åˆ†è­‰
+		String l_paycode = ""; // æ”¯æ‰£ä»£ç¢¼
+		String m_paycode = ""; // æ”¯æ‰£ä»£ç¢¼
+		int l_payamt = 0; // é‡‘é¡
+		Pabaspsn baspsnobj = null; // åŸºæœ¬æª”å€‹äººobj
+		Pabaspay baspayobj = null; // åŸºæœ¬æª”æ”¯æ‰£obj
+		Patrapsn trapsnobj = null; // ç•°å‹•æª”obj
 		String rtn = "";
 		int intRec = 0;
 		try {
@@ -5023,26 +5054,26 @@ public class SalNTDAO {
 			object_in_data = JSONObject.fromObject(in_data);
 			tradt = StringUtil.nullToString(object_in_data.getString("patradt"));
 			starttime = System.currentTimeMillis();
-			// §ä°ò¥»ÀÉ­Ó¤H card
+			// æ‰¾åŸºæœ¬æª”å€‹äºº card
 			starttime9 = System.currentTimeMillis();
 			baspsnCardMap = getBasEmpCardMap(hid, da);
-			log.info(me + "  1-1.Åª¨ú°ò¥»ÀÉ­Ó¤H,µ§¼Æ:" + baspsnCardMap.size() + "¦@ªá¶O¡G"
-					+ (System.currentTimeMillis() - starttime9) + "²@¬í");
-			// §ä²§°ÊÀÉ_µoÁ~¤é card
+			log.info(me + "  1-1.è®€å–åŸºæœ¬æª”å€‹äºº,ç­†æ•¸:" + baspsnCardMap.size() + "å…±èŠ±è²»ï¼š"
+					+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
+			// æ‰¾ç•°å‹•æª”_ç™¼è–ªæ—¥ card
 			starttime9 = System.currentTimeMillis();
 			jsonStr = "{hid:" + hid + ", tradt:" + tradt + "}";
 			trapsnCardMap = getTraPsnMap(jsonStr, 1, da);
-			log.info(me + "  1-2.Åª¨ú²§°ÊÀÉ_µoÁ~¤é,µ§¼Æ:" + trapsnCardMap.size() + "¦@ªá¶O¡G"
-					+ (System.currentTimeMillis() - starttime9) + "²@¬í");
-			// Åª¨ú°ò¥»¤ä¦©(FP420,FP430) ¦^¶Ç ID+¤ä¦©½X
+			log.info(me + "  1-2.è®€å–ç•°å‹•æª”_ç™¼è–ªæ—¥,ç­†æ•¸:" + trapsnCardMap.size() + "å…±èŠ±è²»ï¼š"
+					+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
+			// è®€å–åŸºæœ¬æ”¯æ‰£(FP420,FP430) å›å‚³ ID+æ”¯æ‰£ç¢¼
 			starttime9 = System.currentTimeMillis();
 			param = new ArrayList<Object>();
 			param.add(hid);
 			baspayTeaMap = this.getPaItmMap(param, "TEACHAWBas", hid, da);
-			log.info(me + "  1-3.Åª¨ú°ò¥»¤ä¦©(FP420,FP430),µ§¼Æ:" + baspayTeaMap.size() + "¦@ªá¶O¡G"
-					+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+			log.info(me + "  1-3.è®€å–åŸºæœ¬æ”¯æ‰£(FP420,FP430),ç­†æ•¸:" + baspayTeaMap.size() + "å…±èŠ±è²»ï¼š"
+					+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
-			// Åª¨ú±ĞÂ¾,½×¤å¼úÀy(pateachaw) ¦^¶Ç ID+¤ä¦©½X
+			// è®€å–æ•™è·,è«–æ–‡çå‹µ(pateachaw) å›å‚³ ID+æ”¯æ‰£ç¢¼
 			starttime9 = System.currentTimeMillis();
 			param = new ArrayList<Object>();
 			param.add(hid);
@@ -5050,10 +5081,10 @@ public class SalNTDAO {
 			param.add(hid);
 			param.add(tradt);
 			teachawMap = this.getPaItmMap(param, "TEACHAW", hid, da);
-			log.info(me + "  1-4.Åª¨ú±ĞÂ¾,½×¤å¼úÀy(pateachaw),µ§¼Æ:" + teachawMap.size() + "¦@ªá¶O¡G"
-					+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+			log.info(me + "  1-4.è®€å–æ•™è·,è«–æ–‡çå‹µ(pateachaw),ç­†æ•¸:" + teachawMap.size() + "å…±èŠ±è²»ï¼š"
+					+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
-			// ¦]½×¤å¦³2½g­n¥ı¥[Á` ²Ä1½g¸Éµo¤Î²Ä2½g¸Éµo­n¥[Á`
+			// å› è«–æ–‡æœ‰2ç¯‡è¦å…ˆåŠ ç¸½ ç¬¬1ç¯‡è£œç™¼åŠç¬¬2ç¯‡è£œç™¼è¦åŠ ç¸½
 			sql = "select PAYIDNO,PAYCARD,PAYNAMEC, 'FP430' AS PAYCODE, SUM(PAYAMT) AS PAYAMT " + " from "
 					+ this.tTeaChaw + " WHERE hid=? and ? BETWEEN PABDATE AND PAVDATE AND PAYITEM IN ('10', '20') "
 					+ " GROUP BY PAYIDNO,PAYCARD,PAYNAMEC " + " union "
@@ -5075,9 +5106,9 @@ public class SalNTDAO {
 			params.add(tradt);
 			params.add(hid);
 			params.add(tradt);
-			log.info(me + "  2-1.Åª¨úpa.pateachaw:" + sql + "...params:" + params.toString());
+			log.info(me + "  2-1.è®€å–pa.pateachaw:" + sql + "...params:" + params.toString());
 			log.info(me + "  " + sql + "...params:" + params.toString());
-			// ¥ı¥H±ĞÂ¾½×¤å§ä°ò¥»¤ä¦©
+			// å…ˆä»¥æ•™è·è«–æ–‡æ‰¾åŸºæœ¬æ”¯æ‰£
 			result = da.arraylistbyQuery(sql, params, META_TYPE);
 			log.info(me + "...size:" + result.size());
 			if (result.size() > 0) {
@@ -5095,31 +5126,31 @@ public class SalNTDAO {
 					jsonOne.put("paynamec", StringUtil.nullToString(data.get("paynamec")));
 					jsonOne.put("paycode", l_paycode);
 					jsonOne.put("payamt", l_payamt);
-					// FP420¼úÀy--±ĞÂ¾¼úÀy FP430¼úÀy--½×¤å¼úÀy
+					// FP420çå‹µ--æ•™è·çå‹µ FP430çå‹µ--è«–æ–‡çå‹µ
 					baspayobj = (Pabaspay) baspayTeaMap.get(l_Idtno + l_paycode);
 					if (baspayobj != null) {
 						if (baspayobj.getPayamt() != l_payamt) {
-							rtn = "ª÷ÃB¤£²Å,°ò¥»¤ä¦©:" + baspayobj.getPayamt();
+							rtn = "é‡‘é¡ä¸ç¬¦,åŸºæœ¬æ”¯æ‰£:" + baspayobj.getPayamt();
 						}
 					} else {
-						rtn = "°ò¥»¤ä¦©ª÷ÃB=0";
+						rtn = "åŸºæœ¬æ”¯æ‰£é‡‘é¡=0";
 					}
 
 					jsonOne.put("rtn", rtn);
 					jsonRtn.add(jsonOne);
 				}
 			}
-			log.info(me + "[¥ı¥H±ĞÂ¾½×¤å§ä°ò¥»¤ä¦©],µ§¼Æ:" + result.size() + "¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime)
-					+ "²@¬í");
+			log.info(me + "[å…ˆä»¥æ•™è·è«–æ–‡æ‰¾åŸºæœ¬æ”¯æ‰£],ç­†æ•¸:" + result.size() + "å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime)
+					+ "æ¯«ç§’");
 
-			// ¥H°ò¥»¤ä¦©¬°¥D,§äPATEACHAW,­Y§ä¤£¨ì,ªí¥Ü¤w³Q§R°£©Î´Á­­¤w¨ì,PABATPAY³]¬°0
+			// ä»¥åŸºæœ¬æ”¯æ‰£ç‚ºä¸»,æ‰¾PATEACHAW,è‹¥æ‰¾ä¸åˆ°,è¡¨ç¤ºå·²è¢«åˆªé™¤æˆ–æœŸé™å·²åˆ°,PABATPAYè¨­ç‚º0
 			sql = "select A.PAYIDNO, A.PAYCARD,PAYNAMEC, PAYCODE, PAYAMT " + " from " + this.tBasPsn + " a "
 					+ " inner JOIN " + this.tBasPay
 					+ " B ON A.PAYIDNO = B.PAYIDNO and a.hid=b.hid AND PAYCODE IN ('FP420','FP430') "
 					+ "WHERE (PAYRSGDT IS NULL or PAYRSGDT='9999-12-31')  and a.HID= ? WITH ur";
 			params = new ArrayList<Object>();
 			params.add(hid);
-			log.info(me + "  2-2.Åª¨úpa.pabaspay(FP420+FP430):" + sql + "...params:" + params.toString());
+			log.info(me + "  2-2.è®€å–pa.pabaspay(FP420+FP430):" + sql + "...params:" + params.toString());
 			log.info(me + "  " + sql + "...params:" + params.toString());
 			result = da.arraylistbyQuery(sql, params, META_TYPE);
 			log.info(me + "...size:" + result.size());
@@ -5130,7 +5161,7 @@ public class SalNTDAO {
 					l_Idtno = StringUtil.nullToString(data.get("payidno"));
 					l_paycode = StringUtil.nullToString(data.get("paycode"));
 					l_payamt = (Integer) data.get("payamt");
-					// FP420¼úÀy--±ĞÂ¾¼úÀy FP430¼úÀy--½×¤å¼úÀy
+					// FP420çå‹µ--æ•™è·çå‹µ FP430çå‹µ--è«–æ–‡çå‹µ
 					baspayobj = (Pabaspay) teachawMap.get(l_Idtno + l_paycode);
 					if (baspayobj == null) {
 						jsonOne.put("patradt", tradt);
@@ -5141,13 +5172,13 @@ public class SalNTDAO {
 						jsonOne.put("paynamec", StringUtil.nullToString(data.get("paynamec")));
 						jsonOne.put("paycode", l_paycode);
 						jsonOne.put("payamt", 0);
-						jsonOne.put("rtn", "´Á­­¤w¨ì,°ò¥»¤ä¦©=" + l_payamt);
+						jsonOne.put("rtn", "æœŸé™å·²åˆ°,åŸºæœ¬æ”¯æ‰£=" + l_payamt);
 						jsonRtn.add(jsonOne);
 						intRec++;
 					}
 				}
 			}
-			log.info(me + "[§ä´Á­­¤w¨ì´Á],µ§¼Æ:" + intRec + "¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "[æ‰¾æœŸé™å·²åˆ°æœŸ],ç­†æ•¸:" + intRec + "å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 
 			rtnMap.put("teacheraw_json", jsonRtn);
 		} catch (Exception e) {
@@ -5161,23 +5192,23 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * [§å¦¸ÀÉ] 1:[¶×¤J]§å¦¸ÀÉ:ImpPayInBat selCode:selNm:selEn
-	 * in_data:(2:[§R°£]§å¦¸ÀÉ:DelPayInBat writeBat:¨Æ°²¯f¶×¤J§å¦¸ÀÉ writeBatByTeach:±ĞÂ¾½×¤å¼úÀy
-	 * tabJson(tblname,value) ¶Ç¥X:rtn¤å¦r°T®§
+	 * [æ‰¹æ¬¡æª”] 1:[åŒ¯å…¥]æ‰¹æ¬¡æª”:ImpPayInBat selCode:selNm:selEn
+	 * in_data:(2:[åˆªé™¤]æ‰¹æ¬¡æª”:DelPayInBat writeBat:äº‹å‡ç—…åŒ¯å…¥æ‰¹æ¬¡æª” writeBatByTeach:æ•™è·è«–æ–‡çå‹µ
+	 * tabJson(tblname,value) å‚³å‡º:rtnæ–‡å­—è¨Šæ¯
 	 **/
 	public String prodBat(String in_data, String tabJson, String userid, String hid, VGHDataAccess da)
 			throws Exception {
 		String me = getClass().getName() + ".prodBat(),userid = " + userid;
 		log.info(me + ",in_data = " + in_data + ",tabJson = " + tabJson + ",userid = " + userid + ",hid = " + hid);
 		String rtn = "";
-		String selEn = ""; // ³B²z¶µ¥Ø
-		String selNm = ""; // ³B²z¶µ¥Ø ¤¤¤å
-		String patradt = ""; // µoÁ~¤é´Á
-		String paycard = ""; // ¥d¸¹
-		String paycode = ""; // ¤ä¦©¥N½X
-		String payupbas = ""; // Y»İ§ó·s¦Ü¥DÀÉ N¨C¤ëÂk¹s
-		int payamt = 0; // ª÷ÃB
-		int salnum = 0; // »è³æ½s¸¹
+		String selEn = ""; // è™•ç†é …ç›®
+		String selNm = ""; // è™•ç†é …ç›® ä¸­æ–‡
+		String patradt = ""; // ç™¼è–ªæ—¥æœŸ
+		String paycard = ""; // å¡è™Ÿ
+		String paycode = ""; // æ”¯æ‰£ä»£ç¢¼
+		String payupbas = ""; // Yéœ€æ›´æ–°è‡³ä¸»æª” Næ¯æœˆæ­¸é›¶
+		int payamt = 0; // é‡‘é¡
+		int salnum = 0; // é¤‰å–®ç·¨è™Ÿ
 		int updCnt = 0;
 		String payidno = "";
 		String formnm = "";
@@ -5185,7 +5216,7 @@ public class SalNTDAO {
 		long starttime = 0, starttimeW = 0;
 		int delCnt = 0;
 		ArrayList<Object> paramA = new ArrayList<Object>();
-		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql ¸ê®Æ
+		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql è³‡æ–™
 		String sqlBatPay_del = "delete from " + this.tBatPay + " where HID=? and PATRADT =? and PAYCODE=? with ur";
 		try {
 			Hospitals hospInfo = Hospitals.getOneHosp(hid);
@@ -5201,7 +5232,7 @@ public class SalNTDAO {
 					.nullToString((!object_in_data.has("patradt")) ? "" : object_in_data.getString("patradt"));
 			paycode = StringUtil
 					.nullToString((!object_in_data.has("paycode")) ? "" : object_in_data.getString("paycode"));
-			// 2:[§R°£]§å¦¸ÀÉ:DelPayInBat
+			// 2:[åˆªé™¤]æ‰¹æ¬¡æª”:DelPayInBat
 			if ("DelPayInBat".equals(selEn)) {
 				starttime = System.currentTimeMillis();
 				paramA.clear();
@@ -5226,11 +5257,11 @@ public class SalNTDAO {
 				} finally {
 
 				}
-				rtn = "§R°£µ§¼Æ:" + delCnt + " ********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í";
-				log.info(me + "  " + selNm + " delCnt:" + delCnt + " ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime)
-						+ "²@¬í");
+				rtn = "åˆªé™¤ç­†æ•¸:" + delCnt + " ********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’";
+				log.info(me + "  " + selNm + " delCnt:" + delCnt + " å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime)
+						+ "æ¯«ç§’");
 			}
-			// ¨Æ¯f°²¼g¤J§å¦¸ÀÉ,«eºİ¥ı¥Î¥d¸¹±Æ§Ç,­Y¦³¬Û¦P¥d¸¹,­n¥[Á`¼g¤J
+			// äº‹ç—…å‡å¯«å…¥æ‰¹æ¬¡æª”,å‰ç«¯å…ˆç”¨å¡è™Ÿæ’åº,è‹¥æœ‰ç›¸åŒå¡è™Ÿ,è¦åŠ ç¸½å¯«å…¥
 			else if ("writeBatByLeav".equals(selEn)) {
 				starttime = System.currentTimeMillis();
 
@@ -5251,7 +5282,7 @@ public class SalNTDAO {
 									Set<Map.Entry> entries = obj_item.entrySet();
 									for (Map.Entry entry : entries) {
 										JSONObject value = (JSONObject) entry.getValue();
-										// ª÷ÃB<>0,¼g¤J
+										// é‡‘é¡<>0,å¯«å…¥
 										if (value.getInt("payamt") != 0) {
 											if (!paycard.equals("") && !paycard.equals(value.getString("paycard"))) {
 												paramA = new ArrayList<Object>();
@@ -5282,7 +5313,7 @@ public class SalNTDAO {
 
 										}
 									}
-									// ³Ì¥½¤@µ§
+									// æœ€æœ«ä¸€ç­†
 									paramA = new ArrayList<Object>();
 									paramA.add(paycard);
 									paramA.add(payupbas);
@@ -5309,10 +5340,10 @@ public class SalNTDAO {
 					try {
 						da.batchupdatenocommit(batch_sql, params);
 						da.commit();
-						rtn = "¨Æ¯f°²¼g¤J§å¦¸ÀÉ:" + updCnt + " ********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime)
-								+ "²@¬í";
-						log.info(me + "  " + selNm + " Cnt:" + updCnt + " ¦@ªá¶O¡G"
-								+ (System.currentTimeMillis() - starttime) + "²@¬í");
+						rtn = "äº‹ç—…å‡å¯«å…¥æ‰¹æ¬¡æª”:" + updCnt + " ********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime)
+								+ "æ¯«ç§’";
+						log.info(me + "  " + selNm + " Cnt:" + updCnt + " å…±èŠ±è²»ï¼š"
+								+ (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 					} catch (Exception e) {
 						da.rollback();
 						rtn = " fail, " + e;
@@ -5337,27 +5368,27 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * [¸É¥R«O¶O]­pºâ/¶×¥X 1:¸É¥R¶O_[­pºâ¼g¤J](»è³æ½s³æ):Cal_1 selCode:selNm:selEn
-	 * in_data:(1:¸É¥R¶O_[­pºâ¼g¤J](»è³æ½s³æ):Cal_1 2:¸É¥R¶O_[§R°£](»è³æ½s³æ):Cal_2
-	 * 3:¸É¥R¶O_[²£¥Í]¦Ü§å¦¸ÀÉ(»è³æ½s¸¹):Cal_3 4:¸É¥R¶O_[§R°£]§å¦¸ÀÉ(»è³æ½s¸¹):Det_1
-	 * 5:¥Ó³ø¦©¶O©ú²Ó_[²£¥Í](µ¹¥I¤é´Á):Det_1 6:¥Ó³ø¦©¶O©ú²Ó_[§R°£](µ¹¥I¤é´Á):Det_2
-	 * 7:¥Ó³ø¦©¶O©ú²Ó_[²£¥Í]´CÅé¥Ó³øÀÉ(µ¹¥I¤é´Á):Det_3 §ï¦¨WEBª©,¥ı¥Îµ¹¥I¤é´Á,«İ«á´Á¦A¥Î»s²¼¸¹ 8:©Ò±oµ|_[¼g¤J]Âà±b¶µ¥Ø:35 57 58
-	 * (µ¹¥I¤é´Á):Tax_1 9:©Ò±oµ|_[¼g¤J]Âà±b¶µ¥Ø:59(µ¹¥I¤é´Á):Tax_2 10:©Ò±oµ|_[§R°£](µ¹¥I¤é´Á):Tax_3 ¶Ç¥X:rtn¤å¦r°T®§
+	 * [è£œå……ä¿è²»]è¨ˆç®—/åŒ¯å‡º 1:è£œå……è²»_[è¨ˆç®—å¯«å…¥](é¤‰å–®ç·¨å–®):Cal_1 selCode:selNm:selEn
+	 * in_data:(1:è£œå……è²»_[è¨ˆç®—å¯«å…¥](é¤‰å–®ç·¨å–®):Cal_1 2:è£œå……è²»_[åˆªé™¤](é¤‰å–®ç·¨å–®):Cal_2
+	 * 3:è£œå……è²»_[ç”¢ç”Ÿ]è‡³æ‰¹æ¬¡æª”(é¤‰å–®ç·¨è™Ÿ):Cal_3 4:è£œå……è²»_[åˆªé™¤]æ‰¹æ¬¡æª”(é¤‰å–®ç·¨è™Ÿ):Det_1
+	 * 5:ç”³å ±æ‰£è²»æ˜ç´°_[ç”¢ç”Ÿ](çµ¦ä»˜æ—¥æœŸ):Det_1 6:ç”³å ±æ‰£è²»æ˜ç´°_[åˆªé™¤](çµ¦ä»˜æ—¥æœŸ):Det_2
+	 * 7:ç”³å ±æ‰£è²»æ˜ç´°_[ç”¢ç”Ÿ]åª’é«”ç”³å ±æª”(çµ¦ä»˜æ—¥æœŸ):Det_3 æ”¹æˆWEBç‰ˆ,å…ˆç”¨çµ¦ä»˜æ—¥æœŸ,å¾…å¾ŒæœŸå†ç”¨è£½ç¥¨è™Ÿ 8:æ‰€å¾—ç¨…_[å¯«å…¥]è½‰å¸³é …ç›®:35 57 58
+	 * (çµ¦ä»˜æ—¥æœŸ):Tax_1 9:æ‰€å¾—ç¨…_[å¯«å…¥]è½‰å¸³é …ç›®:59(çµ¦ä»˜æ—¥æœŸ):Tax_2 10:æ‰€å¾—ç¨…_[åˆªé™¤](çµ¦ä»˜æ—¥æœŸ):Tax_3 å‚³å‡º:rtnæ–‡å­—è¨Šæ¯
 	 **/
 	public String prodNhi(String in_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".prodNhi(),userid = " + userid;
 		log.info(me + ",in_data = " + in_data + ",userid = " + userid + ",hid = " + hid);
 		ArrayList<Object> paramA = new ArrayList<Object>();
-		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql ¸ê®Æ
+		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql è³‡æ–™
 		ResultSet rs = null;
 		String rtn = "";
 		long starttime = 0, starttimeW = 0;
-		String selEn = ""; // ³B²z¶µ¥Ø
-		String selNm = ""; // ³B²z¶µ¥Ø ¤¤¤å
-		int salnum = 0; // »è³æ½s¸¹
-		String paydt = ""; // µ¹¥I¤é´Á
-		String paybank = ""; // µoÁ~¤é´Á
-		String payno = ""; // »s²¼¸¹
+		String selEn = ""; // è™•ç†é …ç›®
+		String selNm = ""; // è™•ç†é …ç›® ä¸­æ–‡
+		int salnum = 0; // é¤‰å–®ç·¨è™Ÿ
+		String paydt = ""; // çµ¦ä»˜æ—¥æœŸ
+		String paybank = ""; // ç™¼è–ªæ—¥æœŸ
+		String payno = ""; // è£½ç¥¨è™Ÿ
 		String lognm; // log filename
 		String filePath = "";
 		StringBuilder sb = new StringBuilder();
@@ -5368,43 +5399,43 @@ public class SalNTDAO {
 		String strIdno, strPaycard = "", strPAYNAMEC = "", strRankAbbr = "", strTracod = "", strPAYRANK = "",
 				strPAYTITLE = "", strPAYITEM = "", strPAYTITLP = "", strPAPAYDT = "";
 		String strUnitId = "";
-		String strPaycode = "VD070";// ¸É¥R«O¶O
-		boolean blnMONINSU = true;// ¬O§_¦³¤ë§ë«Oª÷ÃB,¨S¦³¤ë§ë«Oª÷ÃB,¤£¥Î³B²z,¦ı­İÂ¾¤H­û¥i
+		String strPaycode = "VD070";// è£œå……ä¿è²»
+		boolean blnMONINSU = true;// æ˜¯å¦æœ‰æœˆæŠ•ä¿é‡‘é¡,æ²’æœ‰æœˆæŠ•ä¿é‡‘é¡,ä¸ç”¨è™•ç†,ä½†å…¼è·äººå“¡å¯
 		Boolean blnPart;
 		int intINSUAMT = 0, intINSUIDENT = 0, intPayAmt = 0, intNHIAMT = 0, intJACKPOT = 0, intMTINSU = 0,
 				intSUPLYBASE = 0, intMONINSU = 0, intITEMNUM = 0;
 		int intcnt = 0, docnt = 0, write_cnt = 0, delCnt = 0, limitcnt = 100, paydt_yy = 0, paydt_mm = 0;
-		Patrapsn trapsnobj = null; // ²§°ÊÀÉ­Ó¤Hobj
-		Panhidet nhidetobj = null; // ¤G¥N°·«O¥Ó³ø¦©¶O©ú²Ó obj
+		Patrapsn trapsnobj = null; // ç•°å‹•æª”å€‹äººobj
+		Panhidet nhidetobj = null; // äºŒä»£å¥ä¿ç”³å ±æ‰£è²»æ˜ç´° obj
 		HashMap trapsnMap = new HashMap();
-		HashMap datpay63Map = new HashMap(); // ­İÂ¾
+		HashMap datpay63Map = new HashMap(); // å…¼è·
 		HashMap datpay62CMap = new HashMap();
 		HashMap datpay62LMap = new HashMap();
 		HashMap jackpotMap = new HashMap();
-		// Â^¨úµoÁ~©ú²Ó insuamt,­YµoÁ~©ú²ÓªÅ­È,§ì°ò¥»ÀÉ
+		// æ“·å–ç™¼è–ªæ˜ç´° insuamt,è‹¥ç™¼è–ªæ˜ç´°ç©ºå€¼,æŠ“åŸºæœ¬æª”
 		String sqlDatPsn = "select PAYBANK,SALNUM,A.PAYIDNO,A.PAYCARD,A.PAYNAMEC,A.PAYTITLE,A.PAYRANK,CASE WHEN COALESCE(a.INSUAMT,0) = 0 THEN b.insuamt ELSE COALESCE(a.INSUAMT,0) end INSUAMT,RANKABBR,PAYTITLP "
 				+ " from " + this.tDatPsn + " A " + " left outer join " + this.tBasPsn
 				+ " B ON A.PAYIDNO=B.PAYIDNO AND A.HID=B.HID " + " left outer join " + this.tRankCode
 				+ " C ON A.PAYRANK=C.RANKCODE " + " left outer join " + this.tTitle + " D ON A.PAYTITLE=D.PAYTITLK "
 				+ " where A.HID=? and salnum=? order by A.PAYCARD with ur";
-		// ¨Ì»è³æ½s¸¹,Â^¨ú²§°ÊÀÉ,¦C(1·s¶i 2´_Â¾ 11¦ÒÁZ®Ê¯Å 33¯Ç¹ê 34¦ÒÁZ¤Éµ¥ 31®Ê¯Å½ÕÁ~ 36®Ê¯Å 37Â¾°È½Õ¾ã 38­°¯Å)
+		// ä¾é¤‰å–®ç·¨è™Ÿ,æ“·å–ç•°å‹•æª”,åˆ—(1æ–°é€² 2å¾©è· 11è€ƒç¸¾æ™‰ç´š 33ç´å¯¦ 34è€ƒç¸¾å‡ç­‰ 31æ™‰ç´šèª¿è–ª 36æ™‰ç´š 37è·å‹™èª¿æ•´ 38é™ç´š)
 		String sqlTraPsn = "select PATRACOD, PATRADT, PAEFFDT, SALNUM, PAYLVEFG, PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, PAYEMPDT, PAYSGNDT, PAYRSGDT, PAYBKID, PAYACNO, PAYGEDNO, PAYINFLG, PAYDPNO, PAYPFLAG, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PAYMONNO, PAYDAYNO, PAOTITLE, PAORNK2N, PAORANK3, PAODEGR2, PAODEGRE, PAORANK, PAORANK2, PAORANKC, PAOPFDOC, PAOCSFLA, PAOPFSP1, PAOPFSP2, PAOPFSP3, PAYTAXNO, PAYUPDID, PAYUPDTM, PAYFLAG, TRANUM, UPMASTDT, PAYPSW, PAOEXPFKEY1, PAOEXPFKEY2, PAOEXPFKEY3, PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3, PAORANK4, PAYRANK4, PAYCTCBACNO, PAYCTCBGEDNO, INSUAMT, HID "
 				+ " from " + this.tTraPsn
 				+ " where PATRACOD IN ( 1, 2, 31, 33, 36, 37, 38, 11, 34) and HID=? and salnum=? with ur";
-		// ¨Ì»è³æ½s¸¹,Â^¨úµoÁ~¤ä¦©--­İÂ¾¤Î¶i­×Âå®v,PAYAUTH²Ä3½X=Y
+		// ä¾é¤‰å–®ç·¨è™Ÿ,æ“·å–ç™¼è–ªæ”¯æ‰£--å…¼è·åŠé€²ä¿®é†«å¸«,PAYAUTHç¬¬3ç¢¼=Y
 		String sqlDatPay_63 = "select PAYIDNO,coalesce(SUM(PAYAMT),0) AS PAYAMT " + " from " + this.tDatPay + " A "
 				+ " left outer join " + this.tPayItm + " B on A.PAYCODE=B.PAYCODE AND A.HID=B.HID "
 				+ " where  A.HID=? and SALNUM=? and PACODDEL='N' AND SUBSTR(B.PAYAUTH,3,1)='Y' GROUP BY payidno WITH UR";
-		// ¨Ì»è³æ½s¸¹,Â^¨úµoÁ~¤ä¦©--¤½«O¨­¥÷1 2 3 4 8 9,¾nÄµ 7 PAYAUTH²Ä1½X=Y
+		// ä¾é¤‰å–®ç·¨è™Ÿ,æ“·å–ç™¼è–ªæ”¯æ‰£--å…¬ä¿èº«ä»½1 2 3 4 8 9,é§è­¦ 7 PAYAUTHç¬¬1ç¢¼=Y
 		String sqlDatPay_62_civil = "select PAYIDNO,coalesce(SUM(PAYAMT),0) AS PAYAMT " + " from " + this.tDatPay
 				+ " A " + " left outer join " + this.tPayItm + " B on A.PAYCODE=B.PAYCODE AND A.HID=B.HID "
 				+ " where  A.HID=? and SALNUM=? and PACODDEL='N' AND SUBSTR(B.PAYAUTH,1,1)='Y' GROUP BY payidno WITH UR";
-		// ¨Ì»è³æ½s¸¹,Â^¨úµoÁ~¤ä¦©--³Ò«O¨­¥÷5 6 A B E F,PAYAUTH²Ä2½X=Y
+		// ä¾é¤‰å–®ç·¨è™Ÿ,æ“·å–ç™¼è–ªæ”¯æ‰£--å‹ä¿èº«ä»½5 6 A B E F,PAYAUTHç¬¬2ç¢¼=Y
 		String sqlDatPay_62_labor = "select PAYIDNO,coalesce(SUM(PAYAMT),0) AS PAYAMT " + " from " + this.tDatPay
 				+ " A " + " left outer join " + this.tPayItm + " B on A.PAYCODE=B.PAYCODE AND A.HID=B.HID "
 				+ " where  A.HID=? and SALNUM=? and PACODDEL='N' AND SUBSTR(B.PAYAUTH,2,1)='Y' GROUP BY payidno WITH UR";
-		// §ä²Ö¿n¼úª÷
-		// test ¨Sªk¶×¤J¥ş³¡data,¥ı§ïsql
+		// æ‰¾ç´¯ç©çé‡‘
+		// test æ²’æ³•åŒ¯å…¥å…¨éƒ¨data,å…ˆæ”¹sql
 		String sqlNhiJackpot = "select PAYIDNO,coalesce(SUM(BONUSAMT),0) AS BONUSAMT " + " from " + this.tNhiCal
 				+ " where HID=? and YEAR(PAPAYDT)=? GROUP BY payidno WITH UR";
 		/*
@@ -5414,68 +5445,68 @@ public class SalNTDAO {
 		 * " WHERE HID=? and YEAR(PAPAYDT)=?  GROUP BY payidno) b ON a.payidno=b.payidno AND a.JACKPOT=b.JACKPOT "
 		 * + " where a.HID=? and YEAR(PAPAYDT)=? AND a.JACKPOT>0 WITH UR" ;
 		 */
-		// ¸É¥R¶O_inq
+		// è£œå……è²»_inq
 		String sqlNhiCal_inq = "select count(*) cnt  from " + this.tNhiCal + " where HID=? and ITEMNUM =? with ur";
-		// ¸É¥R¶O_inq(¤H¤u¤Jµ|,µoÁ~¤é)
+		// è£œå……è²»_inq(äººå·¥å…¥ç¨…,ç™¼è–ªæ—¥)
 		String sqlNhiCalTax_inq = "select count(*) cnt  from " + this.tNhiCal
 				+ " where HID=? and PAYSOURCE ='TAX' and year(PAPAYDT)=? and month(PAPAYDT)=? with ur";
-		// ¸É¥R¶O_·s¼W
+		// è£œå……è²»_æ–°å¢
 		String sqlNhiCal_ins = "insert into " + this.tNhiCal
 				+ "(PAYITEM, PAYCARD, PAYNAMEC, MONINSU, MONINSU4, BONUSAMT, JACKPOT, MTINSU, SUPLYBASE, NHIAMT, INSUIDENT, PAYFLAG, PAYUPDID, PAYUPDAT, PAPAYDT, PAYSOURCE, ITEMNUM, PAYIDNO, HID) "
 				+ "values(?,?,?,?,?, ?,?,?,?,?, ?,?,?,current timestamp,?, ?,?,?,? );";
-		// ¸É¥R¶O_§R°£
+		// è£œå……è²»_åˆªé™¤
 		String sqlNhiCal_del = "delete from " + this.tNhiCal
 				+ " where HID=? and ITEMNUM =? and PAYSOURCE='DAT' with ur";
-		// ¸É¥R¶O_§R°£(¤H¤u¤Jµ|,µoÁ~¤é)
+		// è£œå……è²»_åˆªé™¤(äººå·¥å…¥ç¨…,ç™¼è–ªæ—¥)
 		String sqlNhiCalTax_del = "delete from " + this.tNhiCal
 				+ " where HID=? and PAPAYDT =? and PAYSOURCE='TAX' with ur";
-		// §å¦¸ÀÉ_inq
+		// æ‰¹æ¬¡æª”_inq
 		String sqlBatPay_inq = "select count(*) cnt " + " from " + this.tBatPay
 				+ " where HID=? and SALNUM=? and PAYCODE=? with ur";
-		// ¸É¥R¶O¼g¤J§å¦¸ÀÉ_HID,itemnum NHIAMT>0
+		// è£œå……è²»å¯«å…¥æ‰¹æ¬¡æª”_HID,itemnum NHIAMT>0
 		String sqlNhiCal_bat = "select PAPAYDT,ITEMNUM,PAYIDNO,PAYCARD,NHIAMT,PAYNAMEC " + " from " + this.tNhiCal
 				+ " where HID=? and ITEMNUM =? and NHIAMT>0 with ur";
-		// §å¦¸ÀÉ_·s¼W
+		// æ‰¹æ¬¡æª”_æ–°å¢
 		String sqlBatPay_ins = "insert into " + this.tBatPay
 				+ "(PATRADT, PAYIDNO, SALNUM, PAYCARD, PAYCODE, PAUPBAS, PAYAMT, PADUTYID, PAYUPDAT, PAYFLAG, UPMASTDT, HID) "
 				+ "values(?,?,?,?,?, ?,?,?,current timestamp,?, ?,?);";
-		// §å¦¸ÀÉ_§R°£
+		// æ‰¹æ¬¡æª”_åˆªé™¤
 		String sqlBatPay_del = "delete from " + this.tBatPay + " where HID=? and SALNUM =? and PAYCODE=? with ur";
-		// ¥Ó³ø©ú²Ó_inq
+		// ç”³å ±æ˜ç´°_inq
 		String sqlNhiDet_inq = "select count(*) cnt  from " + this.tNhiDet + " where HID=? and PAPAYDT =? with ur";
-		// ¸É¥R¶O¼g¤J¥Ó³øÀÉ_HID,PAPAYDT NHIAMT>0¨­¥÷=µL,¸É¥R¶O>0,¤~¼g¤J
+		// è£œå……è²»å¯«å…¥ç”³å ±æª”_HID,PAPAYDT NHIAMT>0èº«ä»½=ç„¡,è£œå……è²»>0,æ‰å¯«å…¥
 		String sqlNhiCal_Det = "select PAPAYDT,PAYITEM,ITEMNUM,PAYIDNO,PAYCARD,NHIAMT,PAYNAMEC,BONUSAMT,MONINSU,JACKPOT,INSUIDENT "
 				+ " from " + this.tNhiCal
 				+ " where HID=? and PAPAYDT =? and ( (INSUIDENT =0 AND nhiamt>0) OR INSUIDENT <>0 ) order by PAYITEM,PAYCARD,ITEMNUM DESC,PAYSOURCE with ur";
-		// ¥Ó³øÀÉ_·s¼W
+		// ç”³å ±æª”_æ–°å¢
 		String sqlNhiDet_ins = "insert into " + this.tNhiDet
 				+ "(PAPAYDT, PAYIDNO, PAYITEM, PAYCARD, PAYNAMEC, SERIAL, PAYAMT, NHIAMT, MONINSU, JACKPOT, INSUIDENT, PAYFLAG, PAYUPDID, PAYUPDAT, HID) "
 				+ "values(?,?,?,?,?, ?,?,?,?,?, ?,?,?,current timestamp,?);";
-		// ¥Ó³øÀÉ_§R°£
+		// ç”³å ±æª”_åˆªé™¤
 		String sqlNhiDet_del = "delete from " + this.tNhiDet + " where HID=? and PAPAYDT =?  with ur";
-		// ¥Ó³øÀÉ--´CÅé¥Ó³øÀÉ
+		// ç”³å ±æª”--åª’é«”ç”³å ±æª”
 		String sqlNhiDet_Media = "select PAPAYDT,PAYIDNO,PAYITEM,PAYCARD,PAYNAMEC,SERIAL,PAYAMT,NHIAMT,MONINSU,JACKPOT,INSUIDENT "
 				+ " from " + this.tNhiDet + " where HID=? and PAPAYDT =? order by PAYITEM,PAYCARD,SERIAL with ur";
-		// ¥Ó³øÀÉ--¦a§}ÀÉ
+		// ç”³å ±æª”--åœ°å€æª”
 		String sqlNhiDet_Adr = "select A.PAYIDNO,PAYNAMEC,PAYADDRS " + " from " + this.tNhiDet + " A "
 				+ " left outer join " + this.tBasAdr + " B on A.PAYIDNO=B.PAYIDNO "
 				+ " where HID=? and PAPAYDT =? AND A.PAYIDNO NOT IN (SELECT PAYIDNO FROM " + this.tNhiDet
 				+ " WHERE HID=? and PAPAYDT<? ) order by A.PAYIDNO with ur";
-		// ²{ª÷©Ò±oµ|(35 57 58)_inq FETCH FIRST 10 ROWS ONLY
+		// ç¾é‡‘æ‰€å¾—ç¨…(35 57 58)_inq FETCH FIRST 10 ROWS ONLY
 		String sqlTaxCash35_inq = "select PAYEAR,PAYMONTH,PAYTAXPAY,A.PAYIDNO,B.PAYCARD,B.PAYNAMEC,B.PAYTITLE,d.paytitlp,B.PAYRANK,INSUAMT,RANKABBR "
 				+ " from (SELECT PAYEAR,PAYMONTH,sum(PAYTAXPAY) PAYTAXPAY,PAYIDNO,HID " + " from " + this.tTaxCash
 				+ " WHERE HID=? and PAYEAR =? and PAYMONTH=? and PAYCATG IN (?,?,?) GROUP BY payidno,PAYEAR,PAYMONTH,HID ) A "
 				+ "LEFT OUTER JOIN " + this.tBasPsn + " B ON A.PAYIDNO=B.PAYIDNO and a.HID=B.HID " + "LEFT OUTER JOIN "
 				+ this.tRankCode + " C ON B.PAYRANK=C.RANKCODE " + "LEFT OUTER JOIN " + this.tTitle
 				+ " D ON B.PAYTITLE=d.paytitlk and b.hid=d.hid " + " order by A.PAYIDNO WITH UR";
-		// ²{ª÷©Ò±oµ|(59)_inq
+		// ç¾é‡‘æ‰€å¾—ç¨…(59)_inq
 		String sqlTaxCash59_inq = "select PAYEAR,PAYMONTH,PAYTAXPAY,A.PAYIDNO,B.PAYCARD,B.PAYNAMEC,B.PAYTITLE,d.paytitlp,B.PAYRANK,INSUAMT,RANKABBR "
 				+ " from (SELECT PAYEAR,PAYMONTH,sum(PAYTAXPAY) PAYTAXPAY,PAYIDNO,HID " + " from " + this.tTaxCash
 				+ " WHERE HID=? and PAYEAR =? and PAYMONTH=? and PAYCATG IN (?) GROUP BY payidno,PAYEAR,PAYMONTH,HID) A "
 				+ "LEFT OUTER JOIN " + this.tBasPsn + " B ON A.PAYIDNO=B.PAYIDNO and a.HID=B.HID " + "LEFT OUTER JOIN "
 				+ this.tRankCode + " C ON B.PAYRANK=C.RANKCODE " + "LEFT OUTER JOIN " + this.tTitle
 				+ " D ON B.PAYTITLE=d.paytitlk and b.hid=d.hid " + "order by A.PAYIDNO WITH UR";
-		// µoÁ~©ú²Ó.§ë«Oª÷ÃB
+		// ç™¼è–ªæ˜ç´°.æŠ•ä¿é‡‘é¡
 		String sqlDatPsn_insuamt = "SELECT insuamt " + " FROM " + this.tDatPsn
 				+ " WHERE hid=? and payidno=? AND insuamt>0 ORDER BY salnum DESC FETCH FIRST 1 ROWS ONLY wITH ur";
 		try {
@@ -5504,46 +5535,46 @@ public class SalNTDAO {
 				paydt_mm = Integer.parseInt(paydt.substring(5, 7));
 			}
 
-			// 1:¸É¥R¶O_[­pºâ¼g¤J](»è³æ½s³æ):Cal_1
+			// 1:è£œå……è²»_[è¨ˆç®—å¯«å…¥](é¤‰å–®ç·¨å–®):Cal_1
 			if ("Cal_1".equals(selEn)) {
-				// ¥ı¬d¸ßpanhical¬O§_¦³¤º®e
+				// å…ˆæŸ¥è©¢panhicalæ˜¯å¦æœ‰å…§å®¹
 				paramA = new ArrayList<Object>();
 				paramA.add(hid);
 				paramA.add(salnum);
-				log.info(me + "  0.¥ı¬d¸ßpanhical¬O§_¦³¤º®e" + sqlNhiCal_inq + "...params:" + paramA.toString());
+				log.info(me + "  0.å…ˆæŸ¥è©¢panhicalæ˜¯å¦æœ‰å…§å®¹" + sqlNhiCal_inq + "...params:" + paramA.toString());
 				rs = da.query(sqlNhiCal_inq, paramA);
 				while (rs.next()) {
 					if (rs.getString("CNT") != null) {
 						intcnt = Integer.parseInt(rs.getString("cnt"));
 					}
 				}
-				log.info(me + "  0.¥ı¬d¸ßpanhical¬O§_¦³¤º®e:size:" + intcnt);
-				// ¦³°O¿ı,¤£¥Î¦A¼g¤J
+				log.info(me + "  0.å…ˆæŸ¥è©¢panhicalæ˜¯å¦æœ‰å…§å®¹:size:" + intcnt);
+				// æœ‰è¨˜éŒ„,ä¸ç”¨å†å¯«å…¥
 				if (intcnt > 0) {
-					rtn = " ¸É¥R¶O¤w¦³¬ö¿ı,salnum= " + salnum + " µ§¼Æ:" + intcnt;
+					rtn = " è£œå……è²»å·²æœ‰ç´€éŒ„,salnum= " + salnum + " ç­†æ•¸:" + intcnt;
 				} else {
-					// ¼g¤J¸ê®Æ§¨³]©w
+					// å¯«å…¥è³‡æ–™å¤¾è¨­å®š
 					FileUtil fileUtil = new FileUtil();
-					String folderPath = hospInfo.fileSRV + "log\\¸É¥R¶O\\";
+					String folderPath = hospInfo.fileSRV + "log\\è£œå……è²»\\";
 					lognm = salnum + ".csv";
 					filePath = folderPath + lognm;
 					if (!FileUtil.FileToSmbFile(folderPath, hid).exists()) {
 						fileUtil.FileToSmbFile(folderPath, hid).mkdirs();
 					}
-					// «Ø¥ßÀÉ®×
+					// å»ºç«‹æª”æ¡ˆ
 					SmbFile payfile = fileUtil.FileToSmbFile(filePath, hid);
 					bfw = new BufferedWriter(new OutputStreamWriter(new SmbFileOutputStream(payfile, false), "Big5"));
 
 					// sb.setLength(0);
 
 					starttime = System.currentTimeMillis();
-					// ¨Ì»è³æ½s¸¹,Â^¨ú²§°ÊÀÉ,¦C(1·s¶i 2´_Â¾ 11¦ÒÁZ®Ê¯Å 33¯Ç¹ê 34¦ÒÁZ¤Éµ¥ 31®Ê¯Å½ÕÁ~ 36®Ê¯Å 37Â¾°È½Õ¾ã 38­°¯Å)
+					// ä¾é¤‰å–®ç·¨è™Ÿ,æ“·å–ç•°å‹•æª”,åˆ—(1æ–°é€² 2å¾©è· 11è€ƒç¸¾æ™‰ç´š 33ç´å¯¦ 34è€ƒç¸¾å‡ç­‰ 31æ™‰ç´šèª¿è–ª 36æ™‰ç´š 37è·å‹™èª¿æ•´ 38é™ç´š)
 					paramA = new ArrayList<Object>();
 					paramA.add(hid);
 					paramA.add(salnum);
-					log.info(me + "  1.¨Ì»è³æ½s¸¹,Â^¨ú²§°ÊÀÉ " + sqlTraPsn + "...params:" + paramA.toString());
+					log.info(me + "  1.ä¾é¤‰å–®ç·¨è™Ÿ,æ“·å–ç•°å‹•æª” " + sqlTraPsn + "...params:" + paramA.toString());
 					result = da.arraylistbyQuery(sqlTraPsn, paramA, META_TYPE);
-					log.info(me + "  1.¨Ì»è³æ½s¸¹,Â^¨ú²§°ÊÀÉ,size: " + result.size());
+					log.info(me + "  1.ä¾é¤‰å–®ç·¨è™Ÿ,æ“·å–ç•°å‹•æª”,size: " + result.size());
 					if (result.size() > 0) {
 						for (Map<String, Object> data : result) {
 							trapsnobj = new Patrapsn();
@@ -5552,14 +5583,14 @@ public class SalNTDAO {
 							trapsnMap.put(strIdno, trapsnobj);
 						}
 					}
-					// ¨Ì»è³æ½s¸¹,Â^¨úµoÁ~¤ä¦©--­İÂ¾¤Î¶i­×Âå®v,PAYAUTH²Ä3½X=Y
+					// ä¾é¤‰å–®ç·¨è™Ÿ,æ“·å–ç™¼è–ªæ”¯æ‰£--å…¼è·åŠé€²ä¿®é†«å¸«,PAYAUTHç¬¬3ç¢¼=Y
 					paramA = new ArrayList<Object>();
 					paramA.add(hid);
 					paramA.add(salnum);
-					log.info(me + "  2-1.¨Ì»è³æ½s¸¹,Â^¨úµoÁ~¤ä¦©--­İÂ¾¤Î¶i­×Âå®v,PAYAUTH²Ä3½X=Y " + sqlDatPay_63 + "...params:"
+					log.info(me + "  2-1.ä¾é¤‰å–®ç·¨è™Ÿ,æ“·å–ç™¼è–ªæ”¯æ‰£--å…¼è·åŠé€²ä¿®é†«å¸«,PAYAUTHç¬¬3ç¢¼=Y " + sqlDatPay_63 + "...params:"
 							+ paramA.toString());
 					result = da.arraylistbyQuery(sqlDatPay_63, paramA, META_TYPE);
-					log.info(me + "  2-1.¨Ì»è³æ½s¸¹,Â^¨úµoÁ~¤ä¦©--­İÂ¾¤Î¶i­×Âå®v,PAYAUTH²Ä3½X=Y,size: " + result.size());
+					log.info(me + "  2-1.ä¾é¤‰å–®ç·¨è™Ÿ,æ“·å–ç™¼è–ªæ”¯æ‰£--å…¼è·åŠé€²ä¿®é†«å¸«,PAYAUTHç¬¬3ç¢¼=Y,size: " + result.size());
 					if (result.size() > 0) {
 						for (Map<String, Object> data : result) {
 							strIdno = StringUtil.nullToString((String) data.get("payidno"));
@@ -5567,14 +5598,14 @@ public class SalNTDAO {
 						}
 					}
 
-					// ¨Ì»è³æ½s¸¹,--Â^¨úµoÁ~¤ä¦©--¤½«O¨­¥÷1 2 3 4 8 9,PAYAUTH²Ä1½X=Y
+					// ä¾é¤‰å–®ç·¨è™Ÿ,--æ“·å–ç™¼è–ªæ”¯æ‰£--å…¬ä¿èº«ä»½1 2 3 4 8 9,PAYAUTHç¬¬1ç¢¼=Y
 					paramA = new ArrayList<Object>();
 					paramA.add(hid);
 					paramA.add(salnum);
-					log.info(me + "  2-2.¨Ì»è³æ½s¸¹,Â^¨úµoÁ~¤ä¦©--¤½«O¨­¥÷1 2 3 4 8 9,PAYAUTH²Ä1½X=Y " + sqlDatPay_62_civil
+					log.info(me + "  2-2.ä¾é¤‰å–®ç·¨è™Ÿ,æ“·å–ç™¼è–ªæ”¯æ‰£--å…¬ä¿èº«ä»½1 2 3 4 8 9,PAYAUTHç¬¬1ç¢¼=Y " + sqlDatPay_62_civil
 							+ "...params:" + paramA.toString());
 					result = da.arraylistbyQuery(sqlDatPay_62_civil, paramA, META_TYPE);
-					log.info(me + "  2-2.¨Ì»è³æ½s¸¹,Â^¨úµoÁ~¤ä¦©--¤½«O¨­¥÷1 2 3 4 8 9,PAYAUTH²Ä1½X=Y,size: " + result.size());
+					log.info(me + "  2-2.ä¾é¤‰å–®ç·¨è™Ÿ,æ“·å–ç™¼è–ªæ”¯æ‰£--å…¬ä¿èº«ä»½1 2 3 4 8 9,PAYAUTHç¬¬1ç¢¼=Y,size: " + result.size());
 					if (result.size() > 0) {
 						for (Map<String, Object> data : result) {
 							strIdno = StringUtil.nullToString((String) data.get("payidno"));
@@ -5582,14 +5613,14 @@ public class SalNTDAO {
 						}
 					}
 
-					// ¨Ì»è³æ½s¸¹,--Â^¨úµoÁ~¤ä¦©--³Ò«O¨­¥÷5 6 A B E F,PAYAUTH²Ä2½X=Y
+					// ä¾é¤‰å–®ç·¨è™Ÿ,--æ“·å–ç™¼è–ªæ”¯æ‰£--å‹ä¿èº«ä»½5 6 A B E F,PAYAUTHç¬¬2ç¢¼=Y
 					paramA = new ArrayList<Object>();
 					paramA.add(hid);
 					paramA.add(salnum);
-					log.info(me + "  2-3.¨Ì»è³æ½s¸¹,Â^¨úµoÁ~¤ä¦©--³Ò«O¨­¥÷5 6 A B E F,PAYAUTH²Ä2½X=Y " + sqlDatPay_62_labor
+					log.info(me + "  2-3.ä¾é¤‰å–®ç·¨è™Ÿ,æ“·å–ç™¼è–ªæ”¯æ‰£--å‹ä¿èº«ä»½5 6 A B E F,PAYAUTHç¬¬2ç¢¼=Y " + sqlDatPay_62_labor
 							+ "...params:" + paramA.toString());
 					result = da.arraylistbyQuery(sqlDatPay_62_labor, paramA, META_TYPE);
-					log.info(me + "  2-3.¨Ì»è³æ½s¸¹,Â^¨úµoÁ~¤ä¦©--³Ò«O¨­¥÷5 6 A B E F,PAYAUTH²Ä2½X=Y,size: " + result.size());
+					log.info(me + "  2-3.ä¾é¤‰å–®ç·¨è™Ÿ,æ“·å–ç™¼è–ªæ”¯æ‰£--å‹ä¿èº«ä»½5 6 A B E F,PAYAUTHç¬¬2ç¢¼=Y,size: " + result.size());
 					if (result.size() > 0) {
 						for (Map<String, Object> data : result) {
 							strIdno = StringUtil.nullToString((String) data.get("payidno"));
@@ -5597,15 +5628,15 @@ public class SalNTDAO {
 						}
 					}
 
-					// ²Ö¿n¼úª÷ BONUSAMT
+					// ç´¯ç©çé‡‘ BONUSAMT
 					paramA = new ArrayList<Object>();
 					paramA.add(hid);
 					paramA.add(paydt_yy);
 					// paramA.add(hid);
 					// paramA.add(paydt_yy);
-					log.info(me + "  2-4.²Ö¿n¼úª÷ " + sqlNhiJackpot + "...params:" + paramA.toString());
+					log.info(me + "  2-4.ç´¯ç©çé‡‘ " + sqlNhiJackpot + "...params:" + paramA.toString());
 					result = da.arraylistbyQuery(sqlNhiJackpot, paramA, META_TYPE);
-					log.info(me + "  2-3.²Ö¿n¼úª÷,size: " + result.size());
+					log.info(me + "  2-3.ç´¯ç©çé‡‘,size: " + result.size());
 					if (result.size() > 0) {
 						for (Map<String, Object> data : result) {
 							strIdno = StringUtil.nullToString((String) data.get("payidno"));
@@ -5613,15 +5644,15 @@ public class SalNTDAO {
 						}
 					}
 
-					// ¨ÌµoÁ~©ú²Ó
+					// ä¾ç™¼è–ªæ˜ç´°
 					paramA = new ArrayList<Object>();
 					paramA.add(hid);
 					paramA.add(salnum);
-					log.info(me + "  3.¨ÌµoÁ~©ú²Ó" + sqlDatPsn + "...params:" + paramA.toString());
+					log.info(me + "  3.ä¾ç™¼è–ªæ˜ç´°" + sqlDatPsn + "...params:" + paramA.toString());
 					result = da.arraylistbyQuery(sqlDatPsn, paramA, META_TYPE);
-					log.info(me + "  3.¨ÌµoÁ~©ú²Ó,size: " + result.size());
+					log.info(me + "  3.ä¾ç™¼è–ªæ˜ç´°,size: " + result.size());
 					if (result.size() > 0) {
-						strLine = "¨­¤ÀÃÒ,¥d¸¹,©m¦W,¶¥§O,§ë«Oª÷ÃB,©Ò±oÃş§O,µ¹¥Iª÷ÃB,¸É¥R¶O,³Æµù";
+						strLine = "èº«åˆ†è­‰,å¡è™Ÿ,å§“å,éšåˆ¥,æŠ•ä¿é‡‘é¡,æ‰€å¾—é¡åˆ¥,çµ¦ä»˜é‡‘é¡,è£œå……è²»,å‚™è¨»";
 						/*
 						 * sb.append(strLine); sb.append(newline);
 						 */
@@ -5645,15 +5676,15 @@ public class SalNTDAO {
 							strLine = strIdno + "," + strPaycard + "," + strPAYNAMEC + "," + strRankAbbr + ","
 									+ intINSUAMT + ",";
 							blnMONINSU = true;
-							intNHIAMT = 0; // ¸É¥R¶O
-							intPayAmt = 0; // µ¹¥Iª÷ÃB
+							intNHIAMT = 0; // è£œå……è²»
+							intPayAmt = 0; // çµ¦ä»˜é‡‘é¡
 							blnPart = false;
 							strPAYITEM = "62";
-							intINSUIDENT = 0; // «OÀI¨­¥÷ 0µL1¤½«O2³Ò«O
-							intJACKPOT = 0; // ²Ö­p¼úª÷
-							intMTINSU = 0; // ²Ö­p¶W¹L4­¿§ë«Oª÷ÃB¤§¼úª÷
-							intSUPLYBASE = 0; // ¸É¥R«OÀI¶O¶O°ò
-							// ¶i­×Âå®vBK ­İÂ¾¤H­û=G
+							intINSUIDENT = 0; // ä¿éšªèº«ä»½ 0ç„¡1å…¬ä¿2å‹ä¿
+							intJACKPOT = 0; // ç´¯è¨ˆçé‡‘
+							intMTINSU = 0; // ç´¯è¨ˆè¶…é4å€æŠ•ä¿é‡‘é¡ä¹‹çé‡‘
+							intSUPLYBASE = 0; // è£œå……ä¿éšªè²»è²»åŸº
+							// é€²ä¿®é†«å¸«BK å…¼è·äººå“¡=G
 							if (strPAYTITLE.equals("BK") || strPAYRANK.equals("G")) {
 								blnPart = true;
 								strPAYITEM = "63";
@@ -5667,14 +5698,14 @@ public class SalNTDAO {
 									paramA = new ArrayList<Object>();
 									paramA.add(hid);
 									paramA.add(strIdno);
-									// °ò¥»ÀÉ.§ë«Oª÷ÃB=0,§äµoÁ~©ú²Ó¦³«O§ëª÷ÃB³Ì¥½¤@µ§
+									// åŸºæœ¬æª”.æŠ•ä¿é‡‘é¡=0,æ‰¾ç™¼è–ªæ˜ç´°æœ‰ä¿æŠ•é‡‘é¡æœ€æœ«ä¸€ç­†
 									rs = da.query(sqlDatPsn_insuamt, paramA);
 									while (rs.next()) {
 										intINSUAMT = rs.getInt("INSUAMT");
 									}
 									if (intINSUAMT == 0) {
 										blnMONINSU = false;
-										strLine += strPAYITEM + "," + intPayAmt + ",,¤½«O--¤ë§ë«Oª÷ÃB=0";
+										strLine += strPAYITEM + "," + intPayAmt + ",,å…¬ä¿--æœˆæŠ•ä¿é‡‘é¡=0";
 									}
 								}
 							} else if (strPAYRANK.matches("5|6|A|B|E|F")) {
@@ -5685,49 +5716,49 @@ public class SalNTDAO {
 									paramA = new ArrayList<Object>();
 									paramA.add(hid);
 									paramA.add(strIdno);
-									// °ò¥»ÀÉ.§ë«Oª÷ÃB=0,§äµoÁ~©ú²Ó¦³«O§ëª÷ÃB³Ì¥½¤@µ§
+									// åŸºæœ¬æª”.æŠ•ä¿é‡‘é¡=0,æ‰¾ç™¼è–ªæ˜ç´°æœ‰ä¿æŠ•é‡‘é¡æœ€æœ«ä¸€ç­†
 									rs = da.query(sqlDatPsn_insuamt, paramA);
 									while (rs.next()) {
 										intINSUAMT = rs.getInt("INSUAMT");
 									}
 									if (intINSUAMT == 0) {
 										blnMONINSU = false;
-										strLine += strPAYITEM + "," + intPayAmt + ",,³Ò«O--¤ë§ë«Oª÷ÃB=0";
+										strLine += strPAYITEM + "," + intPayAmt + ",,å‹ä¿--æœˆæŠ•ä¿é‡‘é¡=0";
 									}
 								}
 							} else {
 								blnMONINSU = false;
-								strLine += ",,,Â¾ºÙ:" + strPAYTITLP + "§K¦©°£";
+								strLine += ",,,è·ç¨±:" + strPAYTITLP + "å…æ‰£é™¤";
 							}
-							// ¦³¤ë§ë«Oª÷ÃB©Î­İÂ¾¤H­û
+							// æœ‰æœˆæŠ•ä¿é‡‘é¡æˆ–å…¼è·äººå“¡
 							if (blnMONINSU) {
 								strLine += strPAYITEM + ",";
-								// ³Ò«O¨­¥÷¦]¤u§@¼úª÷¦C¤J§ë«OÃB,¼úª÷°l¸É¦³¥i¯à¬O­tªº,­n±Æ°£
+								// å‹ä¿èº«ä»½å› å·¥ä½œçé‡‘åˆ—å…¥æŠ•ä¿é¡,çé‡‘è¿½è£œæœ‰å¯èƒ½æ˜¯è² çš„,è¦æ’é™¤
 								if (intPayAmt > 0) {
 									if (blnPart) {
-										// ¼úª÷>³Ì§C¤u¸ê, ¸É¥R¶O=¼úª÷*¶O²v
+										// çé‡‘>æœ€ä½å·¥è³‡, è£œå……è²»=çé‡‘*è²»ç‡
 										if (intPayAmt >= Globals.gBasSalMin) {
 											intNHIAMT = (int) Math.round(intPayAmt * Globals.gNHIRate);
 										}
 									} else {
-										// ²Ö¿n¼úª÷
+										// ç´¯ç©çé‡‘
 										Integer value = (Integer) jackpotMap.get(strIdno);
 										intJACKPOT = 0;
 										if (value != null)
 											intJACKPOT = value;
 
-										// ²Ö­p¶W¹L4­¿§ë«Oª÷ÃB¤§¼úª÷=²Ö­p¼úª÷-4­¿§ë«Oª÷ÃB,¥¼¶W¹L¸Ó¶µ¬°0
+										// ç´¯è¨ˆè¶…é4å€æŠ•ä¿é‡‘é¡ä¹‹çé‡‘=ç´¯è¨ˆçé‡‘-4å€æŠ•ä¿é‡‘é¡,æœªè¶…éè©²é …ç‚º0
 										intJACKPOT = intPayAmt + intJACKPOT;
 										intMTINSU = intJACKPOT - (intINSUAMT * 4);
 										if (intMTINSU < 0) {
 											intMTINSU = 0;
 										}
-										// ¸É¥R«OÀI¶O¶O°ò=min(²Ö­p¶W¹L4­¿§ë«Oª÷ÃB¤§¼úª÷,³æ¦¸¼úª÷)
+										// è£œå……ä¿éšªè²»è²»åŸº=min(ç´¯è¨ˆè¶…é4å€æŠ•ä¿é‡‘é¡ä¹‹çé‡‘,å–®æ¬¡çé‡‘)
 										if (intMTINSU < intPayAmt)
 											intSUPLYBASE = intMTINSU;
 										else
 											intSUPLYBASE = intPayAmt;
-										// ¸É¥R«OÀI¶O
+										// è£œå……ä¿éšªè²»
 										if (intSUPLYBASE <= 0)
 											intNHIAMT = 0;
 										else
@@ -5761,7 +5792,7 @@ public class SalNTDAO {
 									strLine += intPayAmt + "," + intNHIAMT;
 
 								} else {
-									strLine += ",,³æ¦¸¼úª÷ª÷ÃB(" + intPayAmt + ")<=0";
+									strLine += ",,å–®æ¬¡çé‡‘é‡‘é¡(" + intPayAmt + ")<=0";
 								}
 
 								/*
@@ -5799,22 +5830,22 @@ public class SalNTDAO {
 							}
 						}
 					}
-					log.info(me + "  ...********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+					log.info(me + "  ...********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 
 					/*
 					 * starttimeW = System.currentTimeMillis();
-					 * log.info(me+"  ¶}©l¼g¥X¤å¦rÀÉ¡G"+filePath+"..."); outputstring = sb.toString(); File
+					 * log.info(me+"  é–‹å§‹å¯«å‡ºæ–‡å­—æª”ï¼š"+filePath+"..."); outputstring = sb.toString(); File
 					 * file = new File(filePath); output = new BufferedWriter(new FileWriter(file));
-					 * System.out.println("¶}©l¼g¥X¤å¦rÀÉ "+filePath+"..."); output.write(outputstring);
+					 * System.out.println("é–‹å§‹å¯«å‡ºæ–‡å­—æª” "+filePath+"..."); output.write(outputstring);
 					 * output.close();
-					 * log.info(me+"  ...********* ¼g¤J¤å¦rÀÉ¦¨¥\...¦@ªá¶O¡G"+(System.currentTimeMillis()-
-					 * starttimeW)+"²@¬í");
-					 * log.info(me+"  ...********* ¼g¤J¦¨¥\...¦@ªá¶O¡G"+(System.currentTimeMillis()-
-					 * starttime)+"²@¬í");
-					 */rtn = "¼g¤Jµ§¼Æ:" + write_cnt + " ********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í";
+					 * log.info(me+"  ...********* å¯«å…¥æ–‡å­—æª”æˆåŠŸ...å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-
+					 * starttimeW)+"æ¯«ç§’");
+					 * log.info(me+"  ...********* å¯«å…¥æˆåŠŸ...å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-
+					 * starttime)+"æ¯«ç§’");
+					 */rtn = "å¯«å…¥ç­†æ•¸:" + write_cnt + " ********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’";
 				}
 			}
-			// 2:¸É¥R¶O_[§R°£](»è³æ½s³æ):Cal_2
+			// 2:è£œå……è²»_[åˆªé™¤](é¤‰å–®ç·¨å–®):Cal_2
 			else if ("Cal_2".equals(selEn)) {
 				starttime = System.currentTimeMillis();
 				paramA.clear();
@@ -5838,37 +5869,37 @@ public class SalNTDAO {
 				} finally {
 
 				}
-				rtn = "§R°£µ§¼Æ:" + delCnt + " ********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í";
-				log.info(me + "  " + selNm + " delCnt:" + delCnt + " ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime)
-						+ "²@¬í");
+				rtn = "åˆªé™¤ç­†æ•¸:" + delCnt + " ********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’";
+				log.info(me + "  " + selNm + " delCnt:" + delCnt + " å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime)
+						+ "æ¯«ç§’");
 			}
-			// 3:¸É¥R¶O_[²£¥Í]¦Ü§å¦¸ÀÉ(»è³æ½s¸¹):Cal_3
+			// 3:è£œå……è²»_[ç”¢ç”Ÿ]è‡³æ‰¹æ¬¡æª”(é¤‰å–®ç·¨è™Ÿ):Cal_3
 			else if ("Cal_3".equals(selEn)) {
 				starttime = System.currentTimeMillis();
-				// ¥ı¬d¸ßpabatpay¬O§_¦³¤º®e
+				// å…ˆæŸ¥è©¢pabatpayæ˜¯å¦æœ‰å…§å®¹
 				paramA = new ArrayList<Object>();
 				paramA.add(hid);
 				paramA.add(salnum);
 				paramA.add(strPaycode);
-				log.info(me + "  0.¥ı¬d¸ßpabatpay¬O§_¦³¤º®e" + sqlBatPay_inq + "...params:" + paramA.toString());
+				log.info(me + "  0.å…ˆæŸ¥è©¢pabatpayæ˜¯å¦æœ‰å…§å®¹" + sqlBatPay_inq + "...params:" + paramA.toString());
 				rs = da.query(sqlBatPay_inq, paramA);
 				while (rs.next()) {
 					if (rs.getString("CNT") != null) {
 						intcnt = Integer.parseInt(rs.getString("cnt"));
 					}
 				}
-				log.info(me + "  0.¥ı¬d¸ßpabatpay¬O§_¦³¤º®e:size:" + intcnt);
-				// ¦³°O¿ı,¤£¥Î¦A¼g¤J
+				log.info(me + "  0.å…ˆæŸ¥è©¢pabatpayæ˜¯å¦æœ‰å…§å®¹:size:" + intcnt);
+				// æœ‰è¨˜éŒ„,ä¸ç”¨å†å¯«å…¥
 				if (intcnt > 0) {
-					rtn = " §å¦¸ÀÉ¤w¦³¬ö¿ı,salnum= " + salnum + " µ§¼Æ:" + intcnt;
+					rtn = " æ‰¹æ¬¡æª”å·²æœ‰ç´€éŒ„,salnum= " + salnum + " ç­†æ•¸:" + intcnt;
 				} else {
-					// ¨Ì¸É¥R¶O salnum
+					// ä¾è£œå……è²» salnum
 					paramA = new ArrayList<Object>();
 					paramA.add(hid);
 					paramA.add(salnum);
-					log.info(me + "  1.¨Ì¸É¥R¶O.»è³æ½s¸¹" + sqlNhiCal_bat + "...params:" + paramA.toString());
+					log.info(me + "  1.ä¾è£œå……è²».é¤‰å–®ç·¨è™Ÿ" + sqlNhiCal_bat + "...params:" + paramA.toString());
 					result = da.arraylistbyQuery(sqlNhiCal_bat, paramA, META_TYPE);
-					log.info(me + "  1.¨Ì¸É¥R¶O.»è³æ½s¸¹,size: " + result.size());
+					log.info(me + "  1.ä¾è£œå……è²».é¤‰å–®ç·¨è™Ÿ,size: " + result.size());
 					if (result.size() > 0) {
 						for (Map<String, Object> data : result) {
 							strPAPAYDT = formatter.format(data.get("papaydt"));
@@ -5914,11 +5945,11 @@ public class SalNTDAO {
 
 						}
 					}
-					log.info(me + "  ...********* ¼g¤J¦¨¥\...¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
-					rtn = "¼g¤Jµ§¼Æ:" + write_cnt + " ********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í";
+					log.info(me + "  ...********* å¯«å…¥æˆåŠŸ...å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
+					rtn = "å¯«å…¥ç­†æ•¸:" + write_cnt + " ********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’";
 				}
 			}
-			// 4:¸É¥R¶O_[§R°£]§å¦¸ÀÉ(»è³æ½s¸¹):Cal_4
+			// 4:è£œå……è²»_[åˆªé™¤]æ‰¹æ¬¡æª”(é¤‰å–®ç·¨è™Ÿ):Cal_4
 			else if ("Cal_4".equals(selEn)) {
 				starttime = System.currentTimeMillis();
 				paramA.clear();
@@ -5942,37 +5973,37 @@ public class SalNTDAO {
 				} finally {
 
 				}
-				rtn = "§R°£µ§¼Æ:" + delCnt + " ********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í";
-				log.info(me + "  " + selNm + " delCnt:" + delCnt + " ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime)
-						+ "²@¬í");
+				rtn = "åˆªé™¤ç­†æ•¸:" + delCnt + " ********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’";
+				log.info(me + "  " + selNm + " delCnt:" + delCnt + " å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime)
+						+ "æ¯«ç§’");
 			}
 
-			// 5:¥Ó³ø¦©¶O©ú²Ó_[²£¥Í](µ¹¥I¤é´Á):Det_1
+			// 5:ç”³å ±æ‰£è²»æ˜ç´°_[ç”¢ç”Ÿ](çµ¦ä»˜æ—¥æœŸ):Det_1
 			else if ("Det_1".equals(selEn)) {
 				starttime = System.currentTimeMillis();
-				// ¥ı¬d¸ßpanhidet¬O§_¦³¤º®e
+				// å…ˆæŸ¥è©¢panhidetæ˜¯å¦æœ‰å…§å®¹
 				paramA = new ArrayList<Object>();
 				paramA.add(hid);
 				paramA.add(paydt);
-				log.info(me + "  0.¥ı¬d¸ßpanhidet¬O§_¦³¤º®e" + sqlNhiDet_inq + "...params:" + paramA.toString());
+				log.info(me + "  0.å…ˆæŸ¥è©¢panhidetæ˜¯å¦æœ‰å…§å®¹" + sqlNhiDet_inq + "...params:" + paramA.toString());
 				rs = da.query(sqlNhiDet_inq, paramA);
 				while (rs.next()) {
 					if (rs.getString("CNT") != null) {
 						intcnt = Integer.parseInt(rs.getString("cnt"));
 					}
 				}
-				log.info(me + "  0.¥ı¬d¸ßpanhidet¬O§_¦³¤º®e:size:" + intcnt);
-				// ¦³°O¿ı,¤£¥Î¦A¼g¤J
+				log.info(me + "  0.å…ˆæŸ¥è©¢panhidetæ˜¯å¦æœ‰å…§å®¹:size:" + intcnt);
+				// æœ‰è¨˜éŒ„,ä¸ç”¨å†å¯«å…¥
 				if (intcnt > 0) {
-					rtn = " ¥Ó³ø¦©¶OÀÉ¤w¦³¬ö¿ı,µ¹¥I¤é´Á=" + paydt + " µ§¼Æ:" + intcnt;
+					rtn = " ç”³å ±æ‰£è²»æª”å·²æœ‰ç´€éŒ„,çµ¦ä»˜æ—¥æœŸ=" + paydt + " ç­†æ•¸:" + intcnt;
 				} else {
-					// ¸É¥R¶O¼g¤J¥Ó³øÀÉ_HID,PAPAYDT NHIAMT>0¨­¥÷=µL,¸É¥R¶O>0,¤~¼g¤J
+					// è£œå……è²»å¯«å…¥ç”³å ±æª”_HID,PAPAYDT NHIAMT>0èº«ä»½=ç„¡,è£œå……è²»>0,æ‰å¯«å…¥
 					paramA = new ArrayList<Object>();
 					paramA.add(hid);
 					paramA.add(paydt);
-					log.info(me + "  1.¨Ì¸É¥R¶O.µ¹¥I¤é´Á" + sqlNhiCal_Det + "...params:" + paramA.toString());
+					log.info(me + "  1.ä¾è£œå……è²».çµ¦ä»˜æ—¥æœŸ" + sqlNhiCal_Det + "...params:" + paramA.toString());
 					result = da.arraylistbyQuery(sqlNhiCal_Det, paramA, META_TYPE);
-					log.info(me + "  1.¨Ì¸É¥R¶O.µ¹¥I¤é´Á,size: " + result.size());
+					log.info(me + "  1.ä¾è£œå……è²».çµ¦ä»˜æ—¥æœŸ,size: " + result.size());
 					strPAYITEM = "";
 					strIdno = "";
 					if (result.size() > 0) {
@@ -6038,7 +6069,7 @@ public class SalNTDAO {
 							intINSUIDENT = (Integer) data.get("insuident");
 						}
 					}
-					// ³Ì«á¤@µ§
+					// æœ€å¾Œä¸€ç­†
 					batch_sql.add(sqlNhiDet_ins);
 					paramA = new ArrayList<Object>();
 					paramA.add(strPAPAYDT);
@@ -6077,11 +6108,11 @@ public class SalNTDAO {
 
 						}
 					}
-					log.info(me + "  ...********* ¼g¤J¦¨¥\...¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
-					rtn = "¼g¤Jµ§¼Æ:" + write_cnt + " ********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í";
+					log.info(me + "  ...********* å¯«å…¥æˆåŠŸ...å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
+					rtn = "å¯«å…¥ç­†æ•¸:" + write_cnt + " ********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’";
 				}
 			}
-			// 6:¥Ó³ø¦©¶O©ú²Ó_[§R°£](µ¹¥I¤é´Á):Det_2
+			// 6:ç”³å ±æ‰£è²»æ˜ç´°_[åˆªé™¤](çµ¦ä»˜æ—¥æœŸ):Det_2
 			else if ("Det_2".equals(selEn)) {
 				starttime = System.currentTimeMillis();
 				paramA.clear();
@@ -6105,37 +6136,37 @@ public class SalNTDAO {
 				} finally {
 
 				}
-				rtn = "§R°£µ§¼Æ:" + delCnt + " ********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í";
-				log.info(me + "  " + selNm + " delCnt:" + delCnt + " ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime)
-						+ "²@¬í");
+				rtn = "åˆªé™¤ç­†æ•¸:" + delCnt + " ********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’";
+				log.info(me + "  " + selNm + " delCnt:" + delCnt + " å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime)
+						+ "æ¯«ç§’");
 			}
-			// 7:¥Ó³ø¦©¶O©ú²Ó_[²£¥Í]´CÅé¥Ó³øÀÉ(µ¹¥I¤é´Á):Det_3
+			// 7:ç”³å ±æ‰£è²»æ˜ç´°_[ç”¢ç”Ÿ]åª’é«”ç”³å ±æª”(çµ¦ä»˜æ—¥æœŸ):Det_3
 			else if ("Det_3".equals(selEn)) {
-				// ¼g¤J¸ê®Æ§¨³]©w
+				// å¯«å…¥è³‡æ–™å¤¾è¨­å®š
 				FileUtil fileUtil = new FileUtil();
-				String folderPath = hospInfo.fileSRV + "data\\¸É¥R¶O\\";
+				String folderPath = hospInfo.fileSRV + "data\\è£œå……è²»\\";
 				lognm = "DPR02_" + DateUtil.ConverToStr(paydt) + ".csv";
 				filePath = folderPath + lognm;
 
 				if (!FileUtil.FileToSmbFile(folderPath, hid).exists()) {
 					fileUtil.FileToSmbFile(folderPath, hid).mkdirs();
 				}
-				// «Ø¥ßÀÉ®×
+				// å»ºç«‹æª”æ¡ˆ
 				SmbFile payfile = fileUtil.FileToSmbFile(filePath, hid);
 				bfw = new BufferedWriter(new OutputStreamWriter(new SmbFileOutputStream(payfile, false), "Big5"));
 
 				// sb.setLength(0);
 
 				starttime = System.currentTimeMillis();
-				// 1.¥Ó³øÀÉ--´CÅé¥Ó³øÀÉ
+				// 1.ç”³å ±æª”--åª’é«”ç”³å ±æª”
 				paramA = new ArrayList<Object>();
 				paramA.add(hid);
 				paramA.add(paydt);
-				log.info(me + "  1.¥Ó³øÀÉ--´CÅé¥Ó³øÀÉ " + sqlNhiDet_Media + "...params:" + paramA.toString());
+				log.info(me + "  1.ç”³å ±æª”--åª’é«”ç”³å ±æª” " + sqlNhiDet_Media + "...params:" + paramA.toString());
 				result = da.arraylistbyQuery(sqlNhiDet_Media, paramA, META_TYPE);
-				log.info(me + "  1.¥Ó³øÀÉ--´CÅé¥Ó³øÀÉ,size: " + result.size());
+				log.info(me + "  1.ç”³å ±æª”--åª’é«”ç”³å ±æª”,size: " + result.size());
 				if (result.size() > 0) {
-					strLine = "§ë«O³æ¦ì¥N¸¹,²Î¤@½s¸¹,©Ò±o¤H¨­¤ÀÃÒ¸¹,©m¦W,©Ò±oµ¹¥I¤é´Á,©Ò±oÃş§O,©Ò±o(¦¬¤J)µ¹¥Iª÷ÃB(ªÑ§Q©Ò±o®É¡A½Ğ¶ñ¦CªÑ§Q²bÃB),µ¹¥I·í¤ë§ë«Oª÷ÃB,¥»¦¸ªÑ§Q©ÒÄİ´Á¶¡¡A¥H¶±¥D¨­¤À¥[«O¤§§ë«OÁ`ª÷ÃB,ªÑ§Qµù°O,«H°Uµù°O,¦©¨ú®É¥i¦©©èµ|ÃB,¦~«×½T©w¥i¦©©èµ|ÃB,°£Åv(®§)°ò·Ç¤é,¯S®íµù°O,¦©Ãº¸É¥R«OÀI¶Oª÷ÃB,¸ê®Æµù°O,ªÑ§Q/°õ¦æ·~°È¦¬¤J©Ò±o©ÒÄİ¦~«×,ªÑ§Q©ÒÄİ´Á¶¡°_°W¦~¤ë";
+					strLine = "æŠ•ä¿å–®ä½ä»£è™Ÿ,çµ±ä¸€ç·¨è™Ÿ,æ‰€å¾—äººèº«åˆ†è­‰è™Ÿ,å§“å,æ‰€å¾—çµ¦ä»˜æ—¥æœŸ,æ‰€å¾—é¡åˆ¥,æ‰€å¾—(æ”¶å…¥)çµ¦ä»˜é‡‘é¡(è‚¡åˆ©æ‰€å¾—æ™‚ï¼Œè«‹å¡«åˆ—è‚¡åˆ©æ·¨é¡),çµ¦ä»˜ç•¶æœˆæŠ•ä¿é‡‘é¡,æœ¬æ¬¡è‚¡åˆ©æ‰€å±¬æœŸé–“ï¼Œä»¥é›‡ä¸»èº«åˆ†åŠ ä¿ä¹‹æŠ•ä¿ç¸½é‡‘é¡,è‚¡åˆ©è¨»è¨˜,ä¿¡è¨—è¨»è¨˜,æ‰£å–æ™‚å¯æ‰£æŠµç¨…é¡,å¹´åº¦ç¢ºå®šå¯æ‰£æŠµç¨…é¡,é™¤æ¬Š(æ¯)åŸºæº–æ—¥,ç‰¹æ®Šè¨»è¨˜,æ‰£ç¹³è£œå……ä¿éšªè²»é‡‘é¡,è³‡æ–™è¨»è¨˜,è‚¡åˆ©/åŸ·è¡Œæ¥­å‹™æ”¶å…¥æ‰€å¾—æ‰€å±¬å¹´åº¦,è‚¡åˆ©æ‰€å±¬æœŸé–“èµ·è¨–å¹´æœˆ";
 					/*
 					 * sb.append(strLine); sb.append(newline);
 					 */
@@ -6147,9 +6178,9 @@ public class SalNTDAO {
 						PropertyUtils.copyProperties(nhidetobj, data);
 						strIdno = nhidetobj.getPayidno();
 						strUnitId = "";
-						if (nhidetobj.getInsuident() == 1) // ¤½«O
+						if (nhidetobj.getInsuident() == 1) // å…¬ä¿
 							strUnitId = hospInfo.healthCivID;
-						else if (nhidetobj.getInsuident() == 2) // ³Ò«O
+						else if (nhidetobj.getInsuident() == 2) // å‹ä¿
 							strUnitId = hospInfo.healthLabID;
 
 						strLine = strUnitId + "," + hospInfo.taxNo + ","
@@ -6171,38 +6202,38 @@ public class SalNTDAO {
 
 				/*
 				 * starttimeW = System.currentTimeMillis();
-				 * log.info(me+"  ¶}©l¼g¥X¤å¦rÀÉ¡G"+filePath+"..."); outputstring = sb.toString(); File
+				 * log.info(me+"  é–‹å§‹å¯«å‡ºæ–‡å­—æª”ï¼š"+filePath+"..."); outputstring = sb.toString(); File
 				 * file = new File(filePath); output = new BufferedWriter(new FileWriter(file));
-				 * System.out.println("¶}©l¼g¥X¤å¦rÀÉ "+filePath+"..."); output.write(outputstring);
+				 * System.out.println("é–‹å§‹å¯«å‡ºæ–‡å­—æª” "+filePath+"..."); output.write(outputstring);
 				 * output.close();
-				 * log.info(me+"  ...********* ¼g¤J¤å¦rÀÉ¦¨¥\...¦@ªá¶O¡G"+(System.currentTimeMillis()-
-				 * starttimeW)+"²@¬í");
+				 * log.info(me+"  ...********* å¯«å…¥æ–‡å­—æª”æˆåŠŸ...å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-
+				 * starttimeW)+"æ¯«ç§’");
 				 */
-				rtn = "¼g¤J¥Ó³øÀÉµ§¼Æ:" + result.size() + " ********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í";
-				// 2.¥Ó³øÀÉ--¦a§}
+				rtn = "å¯«å…¥ç”³å ±æª”ç­†æ•¸:" + result.size() + " ********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’";
+				// 2.ç”³å ±æª”--åœ°å€
 				sb.setLength(0);
 				paramA = new ArrayList<Object>();
 				paramA.add(hid);
 				paramA.add(paydt);
 				paramA.add(hid);
 				paramA.add(paydt);
-				log.info(me + "  2.¥Ó³øÀÉ--¦a§} " + sqlNhiDet_Adr + "...params:" + paramA.toString());
+				log.info(me + "  2.ç”³å ±æª”--åœ°å€ " + sqlNhiDet_Adr + "...params:" + paramA.toString());
 				result = da.arraylistbyQuery(sqlNhiDet_Adr, paramA, META_TYPE);
-				log.info(me + "  2.¥Ó³øÀÉ--¦a§},size: " + result.size());
+				log.info(me + "  2.ç”³å ±æª”--åœ°å€,size: " + result.size());
 				if (result.size() > 0) {
-					// ¼g¤J¸ê®Æ§¨³]©w
-					folderPath = hospInfo.fileSRV + "data\\¸É¥R¶O\\";
+					// å¯«å…¥è³‡æ–™å¤¾è¨­å®š
+					folderPath = hospInfo.fileSRV + "data\\è£œå……è²»\\";
 					lognm = "DPR01_" + DateUtil.ConverToStr(paydt) + ".csv";
 					filePath = folderPath + lognm;
 
 					if (!FileUtil.FileToSmbFile(folderPath, hid).exists()) {
 						fileUtil.FileToSmbFile(folderPath, hid).mkdirs();
 					}
-					// «Ø¥ßÀÉ®×
+					// å»ºç«‹æª”æ¡ˆ
 					payfile = fileUtil.FileToSmbFile(filePath, hid);
 					bfw = new BufferedWriter(new OutputStreamWriter(new SmbFileOutputStream(payfile, false), "Big5"));
 
-					strLine = "²Î¤@½s¸¹,©Ò±o¤H¨­¤ÀÃÒ¸¹,©Ò±o¤H©m¦W,©Ò±o¤H¦a§}";
+					strLine = "çµ±ä¸€ç·¨è™Ÿ,æ‰€å¾—äººèº«åˆ†è­‰è™Ÿ,æ‰€å¾—äººå§“å,æ‰€å¾—äººåœ°å€";
 					/*
 					 * sb.append(strLine); sb.append(newline);
 					 */
@@ -6225,60 +6256,60 @@ public class SalNTDAO {
 				if (result.size() > 0) {
 					/*
 					 * starttimeW = System.currentTimeMillis();
-					 * log.info(me+"  ¶}©l¼g¥X[¦a§}]¤å¦rÀÉ¡G"+filePath+"..."); outputstring = sb.toString();
+					 * log.info(me+"  é–‹å§‹å¯«å‡º[åœ°å€]æ–‡å­—æª”ï¼š"+filePath+"..."); outputstring = sb.toString();
 					 * file = new File(filePath); output = new BufferedWriter(new FileWriter(file));
-					 * System.out.println("¶}©l¼g¥X[¦a§}]¤å¦rÀÉ "+filePath+"...");
+					 * System.out.println("é–‹å§‹å¯«å‡º[åœ°å€]æ–‡å­—æª” "+filePath+"...");
 					 * output.write(outputstring); output.close();
 					 */
 					log.info(
-							me + "  ...********* ¼g¤J¦a§}]¤å¦rÀÉ¦¨¥\...¦@ªá¶O¡G" + (System.currentTimeMillis() - starttimeW) + "²@¬í");
+							me + "  ...********* å¯«å…¥åœ°å€]æ–‡å­—æª”æˆåŠŸ...å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttimeW) + "æ¯«ç§’");
 				}
 
-				log.info(me + "  ...********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
-				rtn += "\n ¼g¤J¦a§}µ§¼Æ:" + result.size() + " ********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime)
-						+ "²@¬í";
+				log.info(me + "  ...********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
+				rtn += "\n å¯«å…¥åœ°å€ç­†æ•¸:" + result.size() + " ********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime)
+						+ "æ¯«ç§’";
 			}
-			// 8:©Ò±oµ|_[¼g¤J]Âà±b¶µ¥Ø:35 57 58 (µ¹¥I¤é´Á):Tax_1
-			// 9:©Ò±oµ|_[¼g¤J]Âà±b¶µ¥Ø:59(µ¹¥I¤é´Á):Tax_2
+			// 8:æ‰€å¾—ç¨…_[å¯«å…¥]è½‰å¸³é …ç›®:35 57 58 (çµ¦ä»˜æ—¥æœŸ):Tax_1
+			// 9:æ‰€å¾—ç¨…_[å¯«å…¥]è½‰å¸³é …ç›®:59(çµ¦ä»˜æ—¥æœŸ):Tax_2
 			else if (selEn.matches("Tax_1|Tax_2")) {
-				// ¥ı¬d¸ßpanhical¬O§_¦³¤º®e
+				// å…ˆæŸ¥è©¢panhicalæ˜¯å¦æœ‰å…§å®¹
 				paramA = new ArrayList<Object>();
 				paramA.add(hid);
 				paramA.add(paydt_yy);
 				paramA.add(paydt_mm);
-				log.info(me + "  0.¥ı¬d¸ßpanhical¬O§_¦³¤º®e" + sqlNhiCalTax_inq + "...params:" + paramA.toString());
+				log.info(me + "  0.å…ˆæŸ¥è©¢panhicalæ˜¯å¦æœ‰å…§å®¹" + sqlNhiCalTax_inq + "...params:" + paramA.toString());
 				rs = da.query(sqlNhiCalTax_inq, paramA);
 				while (rs.next()) {
 					if (rs.getString("CNT") != null) {
 						intcnt = Integer.parseInt(rs.getString("cnt"));
 					}
 				}
-				log.info(me + "  0.¥ı¬d¸ßpanhical¬O§_¦³¤º®e:size:" + intcnt);
-				// ¦³°O¿ı,¤£¥Î¦A¼g¤J
+				log.info(me + "  0.å…ˆæŸ¥è©¢panhicalæ˜¯å¦æœ‰å…§å®¹:size:" + intcnt);
+				// æœ‰è¨˜éŒ„,ä¸ç”¨å†å¯«å…¥
 				if (intcnt > 0) {
-					rtn = " ¸É¥R¶O¤w¦³¬ö¿ı,paydt= " + paydt + " µ§¼Æ:" + intcnt;
+					rtn = " è£œå……è²»å·²æœ‰ç´€éŒ„,paydt= " + paydt + " ç­†æ•¸:" + intcnt;
 				} else {
-					// ¼g¤J¸ê®Æ§¨³]©w
+					// å¯«å…¥è³‡æ–™å¤¾è¨­å®š
 					FileUtil fileUtil = new FileUtil();
-					String folderPath = hospInfo.fileSRV + "log\\¸É¥R¶O_¤H¤u¤Jµ|\\";
+					String folderPath = hospInfo.fileSRV + "log\\è£œå……è²»_äººå·¥å…¥ç¨…\\";
 					lognm = paydt + ".csv";
 					filePath = folderPath + lognm;
 					if (!FileUtil.FileToSmbFile(folderPath, hid).exists()) {
 						fileUtil.FileToSmbFile(folderPath, hid).mkdirs();
 					}
-					// «Ø¥ßÀÉ®×
+					// å»ºç«‹æª”æ¡ˆ
 					SmbFile payfile = fileUtil.FileToSmbFile(filePath, hid);
 					bfw = new BufferedWriter(new OutputStreamWriter(new SmbFileOutputStream(payfile, false), "Big5"));
 
 					starttime = System.currentTimeMillis();
 
-					// ²Ö¿n¼úª÷ BONUSAMT
+					// ç´¯ç©çé‡‘ BONUSAMT
 					paramA = new ArrayList<Object>();
 					paramA.add(hid);
 					paramA.add(paydt_yy);
-					log.info(me + "  1.²Ö¿n¼úª÷ " + sqlNhiJackpot + "...params:" + paramA.toString());
+					log.info(me + "  1.ç´¯ç©çé‡‘ " + sqlNhiJackpot + "...params:" + paramA.toString());
 					result = da.arraylistbyQuery(sqlNhiJackpot, paramA, META_TYPE);
-					log.info(me + "  1.²Ö¿n¼úª÷,size: " + result.size());
+					log.info(me + "  1.ç´¯ç©çé‡‘,size: " + result.size());
 					if (result.size() > 0) {
 						for (Map<String, Object> data : result) {
 							strIdno = StringUtil.nullToString((String) data.get("payidno"));
@@ -6286,7 +6317,7 @@ public class SalNTDAO {
 						}
 					}
 
-					// ¨Ì¤H¤u¤Jµ|
+					// ä¾äººå·¥å…¥ç¨…
 					paramA = new ArrayList<Object>();
 					paramA.add(hid);
 					paramA.add(paydt_yy);
@@ -6296,17 +6327,17 @@ public class SalNTDAO {
 						paramA.add(35);
 						paramA.add(57);
 						paramA.add(58);
-						log.info(me + "  2.¨Ì¤H¤u¤Jµ|(35 57 58)" + sqlTaxCash35_inq + "...params:" + paramA.toString());
+						log.info(me + "  2.ä¾äººå·¥å…¥ç¨…(35 57 58)" + sqlTaxCash35_inq + "...params:" + paramA.toString());
 						result = da.arraylistbyQuery(sqlTaxCash35_inq, paramA, META_TYPE);
 					} else if (selEn.equals("Tax_2")) {
 						intITEMNUM = 59;
 						paramA.add(59);
-						log.info(me + "  2.¨Ì¤H¤u¤Jµ|(59)" + sqlTaxCash59_inq + "...params:" + paramA.toString());
+						log.info(me + "  2.ä¾äººå·¥å…¥ç¨…(59)" + sqlTaxCash59_inq + "...params:" + paramA.toString());
 						result = da.arraylistbyQuery(sqlTaxCash59_inq, paramA, META_TYPE);
 					}
-					log.info(me + "  2.¨Ì¤H¤u¤Jµ|,size: " + result.size());
+					log.info(me + "  2.ä¾äººå·¥å…¥ç¨…,size: " + result.size());
 					if (result.size() > 0) {
-						strLine = "¨­¤ÀÃÒ,¥d¸¹,©m¦W,¶¥§O,§ë«Oª÷ÃB,©Ò±oÃş§O,µ¹¥Iª÷ÃB,¸É¥R¶O,³Æµù";
+						strLine = "èº«åˆ†è­‰,å¡è™Ÿ,å§“å,éšåˆ¥,æŠ•ä¿é‡‘é¡,æ‰€å¾—é¡åˆ¥,çµ¦ä»˜é‡‘é¡,è£œå……è²»,å‚™è¨»";
 						bfw.write(strLine);
 						bfw.newLine();
 						bfw.flush();
@@ -6322,21 +6353,21 @@ public class SalNTDAO {
 							strPAYRANK = StringUtil.nullToString((String) data.get("payrank"));
 							strPAYTITLE = StringUtil.nullToString((String) data.get("paytitle"));
 							strPAYTITLP = StringUtil.nullToString((String) data.get("paytitlp"));
-							intPayAmt = (Integer) data.get("paytaxpay"); // µ¹¥Iª÷ÃB
-							intINSUAMT = (Integer) data.get("insuamt"); // «OÀIª÷ÃB
+							intPayAmt = (Integer) data.get("paytaxpay"); // çµ¦ä»˜é‡‘é¡
+							intINSUAMT = (Integer) data.get("insuamt"); // ä¿éšªé‡‘é¡
 							strPAYITEM = "62";
-							intJACKPOT = 0; // ²Ö­p¼úª÷
-							intNHIAMT = 0; // ¸É¥R¶O
-							intMTINSU = 0; // ²Ö­p¶W¹L4­¿§ë«Oª÷ÃB¤§¼úª÷
-							intSUPLYBASE = 0; // ¸É¥R«OÀI¶O¶O°ò
-							intINSUIDENT = 0; // «OÀI¨­¥÷ 0µL1¤½«O2³Ò«O
+							intJACKPOT = 0; // ç´¯è¨ˆçé‡‘
+							intNHIAMT = 0; // è£œå……è²»
+							intMTINSU = 0; // ç´¯è¨ˆè¶…é4å€æŠ•ä¿é‡‘é¡ä¹‹çé‡‘
+							intSUPLYBASE = 0; // è£œå……ä¿éšªè²»è²»åŸº
+							intINSUIDENT = 0; // ä¿éšªèº«ä»½ 0ç„¡1å…¬ä¿2å‹ä¿
 							blnPart = false;
 
 							strPAPAYDT = paydt;
 							blnMONINSU = true;
 							strLine = strIdno + "," + strPaycard + "," + strPAYNAMEC + "," + strRankAbbr + ","
 									+ intINSUAMT + ",";
-							// °ò¥»ÀÉ.§ë«Oª÷ÃB=0,§äµoÁ~©ú²Ó¦³«O§ëª÷ÃB³Ì¥½¤@µ§
+							// åŸºæœ¬æª”.æŠ•ä¿é‡‘é¡=0,æ‰¾ç™¼è–ªæ˜ç´°æœ‰ä¿æŠ•é‡‘é¡æœ€æœ«ä¸€ç­†
 							if (intINSUAMT == 0) {
 								paramA = new ArrayList<Object>();
 								paramA.add(hid);
@@ -6349,67 +6380,67 @@ public class SalNTDAO {
 
 							if (strPAYRANK.matches("1|2|3|4|8|9|7")) {
 								intINSUIDENT = 1;
-								strLine += strPAYITEM + "¤½«O,";
+								strLine += strPAYITEM + "å…¬ä¿,";
 								if (intINSUAMT == 0) {
 									blnMONINSU = false;
 								}
 							}
-							// ³Ò«O¨­¥÷ ²Å¦XPAPAYITM.PAYAUTH²Ä¤G½X=Y
+							// å‹ä¿èº«ä»½ ç¬¦åˆPAPAYITM.PAYAUTHç¬¬äºŒç¢¼=Y
 							else if (strPAYRANK.matches("5|6|A|B|E|F")) {
 								intINSUIDENT = 2;
-								strLine += strPAYITEM + "³Ò«O,";
+								strLine += strPAYITEM + "å‹ä¿,";
 								if (intINSUAMT == 0) {
 									blnMONINSU = false;
 								}
 							}
-							// ¶i­×Âå®vBK ­İÂ¾¤H­û=G
+							// é€²ä¿®é†«å¸«BK å…¼è·äººå“¡=G
 							else if (strPAYTITLE.equals("BK") || strPAYRANK.equals("G")) {
 								blnPart = true;
 								strPAYITEM = "63";
-								strLine += strPAYITEM + "­İÂ¾,";
+								strLine += strPAYITEM + "å…¼è·,";
 							} else if (strPAYNAMEC.equals("")) {
 								blnMONINSU = false;
-								strLine += ",,,§ä¤£¨ì©m¦W";
+								strLine += ",,,æ‰¾ä¸åˆ°å§“å";
 							} else {
 								blnMONINSU = false;
-								strLine += ",,,Â¾ºÙ:" + strPAYTITLP + " §K¦©°£";
+								strLine += ",,,è·ç¨±:" + strPAYTITLP + " å…æ‰£é™¤";
 							}
 
-							// ¦³¤ë§ë«Oª÷ÃB©Î­İÂ¾¤H­û
+							// æœ‰æœˆæŠ•ä¿é‡‘é¡æˆ–å…¼è·äººå“¡
 							if (blnMONINSU) {
-								// ³Ò«O¨­¥÷¦]¤u§@¼úª÷¦C¤J§ë«OÃB,¼úª÷°l¸É¦³¥i¯à¬O­tªº,­n±Æ°£
+								// å‹ä¿èº«ä»½å› å·¥ä½œçé‡‘åˆ—å…¥æŠ•ä¿é¡,çé‡‘è¿½è£œæœ‰å¯èƒ½æ˜¯è² çš„,è¦æ’é™¤
 								if (intPayAmt > 0) {
-									// ­İÂ¾
+									// å…¼è·
 									if (blnPart) {
-										// ¼úª÷>³Ì§C¤u¸ê, ¸É¥R¶O=¼úª÷*¶O²v
+										// çé‡‘>æœ€ä½å·¥è³‡, è£œå……è²»=çé‡‘*è²»ç‡
 										if (intPayAmt >= Globals.gBasSalMin) {
 											intNHIAMT = (int) Math.round(intPayAmt * Globals.gNHIRate);
 										}
 									} else {
-										// ²Ö¿n¼úª÷
+										// ç´¯ç©çé‡‘
 										Integer value = (Integer) jackpotMap.get(strIdno);
 										intJACKPOT = 0;
 										if (value != null)
 											intJACKPOT = value;
 
-										// ²Ö­p¶W¹L4­¿§ë«Oª÷ÃB¤§¼úª÷=²Ö­p¼úª÷-4­¿§ë«Oª÷ÃB,¥¼¶W¹L¸Ó¶µ¬°0
+										// ç´¯è¨ˆè¶…é4å€æŠ•ä¿é‡‘é¡ä¹‹çé‡‘=ç´¯è¨ˆçé‡‘-4å€æŠ•ä¿é‡‘é¡,æœªè¶…éè©²é …ç‚º0
 										intJACKPOT = intPayAmt + intJACKPOT;
 										intMTINSU = intJACKPOT - (intINSUAMT * 4);
 										if (intMTINSU < 0) {
 											intMTINSU = 0;
 										}
-										// ¸É¥R«OÀI¶O¶O°ò=min(²Ö­p¶W¹L4­¿§ë«Oª÷ÃB¤§¼úª÷,³æ¦¸¼úª÷)
+										// è£œå……ä¿éšªè²»è²»åŸº=min(ç´¯è¨ˆè¶…é4å€æŠ•ä¿é‡‘é¡ä¹‹çé‡‘,å–®æ¬¡çé‡‘)
 										if (intMTINSU < intPayAmt)
 											intSUPLYBASE = intMTINSU;
 										else
 											intSUPLYBASE = intPayAmt;
-										// ¸É¥R«OÀI¶O
+										// è£œå……ä¿éšªè²»
 										if (intSUPLYBASE <= 0)
 											intNHIAMT = 0;
 										else
 											intNHIAMT = (int) Math.round(intSUPLYBASE * Globals.gNHIRate);
 									}
-									// ¸É¥R¶O_·s¼W
+									// è£œå……è²»_æ–°å¢
 									batch_sql.add(sqlNhiCal_ins);
 									paramA = new ArrayList<Object>();
 									paramA.add(strPAYITEM);
@@ -6438,7 +6469,7 @@ public class SalNTDAO {
 									strLine += intPayAmt + "," + intNHIAMT + ",";
 
 								} else {
-									strLine += ",,,³æ¦¸¼úª÷ª÷ÃB(" + intPayAmt + ")<=0";
+									strLine += ",,,å–®æ¬¡çé‡‘é‡‘é¡(" + intPayAmt + ")<=0";
 								}
 
 								bfw.write(strLine);
@@ -6453,7 +6484,7 @@ public class SalNTDAO {
 										da.setAutoCommit(false);
 										batch_sql.clear();
 										params.clear();
-										rtn = "¼g¤Jµ§¼Æ:" + write_cnt + "\n½Ğ¦Ü" + filePath + "¬d¬İ";
+										rtn = "å¯«å…¥ç­†æ•¸:" + write_cnt + "\nè«‹è‡³" + filePath + "æŸ¥çœ‹";
 									} catch (Exception e) {
 										da.rollback();
 										rtn = " fail, " + e;
@@ -6465,18 +6496,18 @@ public class SalNTDAO {
 									}
 								}
 							} else {
-								strLine += intPayAmt + "," + intNHIAMT + ",¤ë§ë«Oª÷ÃB=0";
+								strLine += intPayAmt + "," + intNHIAMT + ",æœˆæŠ•ä¿é‡‘é¡=0";
 								bfw.write(strLine);
 								bfw.newLine();
 								bfw.flush();
 							}
 						}
 					}
-					log.info(me + "  ...********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
-					rtn += " ********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í";
+					log.info(me + "  ...********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
+					rtn += " ********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’";
 				}
 			}
-			// 10:©Ò±oµ|_[§R°£](µ¹¥I¤é´Á):Tax_3
+			// 10:æ‰€å¾—ç¨…_[åˆªé™¤](çµ¦ä»˜æ—¥æœŸ):Tax_3
 			else if ("Tax_3".equals(selEn)) {
 				starttime = System.currentTimeMillis();
 				paramA.clear();
@@ -6500,9 +6531,9 @@ public class SalNTDAO {
 				} finally {
 
 				}
-				rtn = "§R°£µ§¼Æ:" + delCnt + " ********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í";
-				log.info(me + "  " + selNm + " delCnt:" + delCnt + " ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime)
-						+ "²@¬í");
+				rtn = "åˆªé™¤ç­†æ•¸:" + delCnt + " ********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’";
+				log.info(me + "  " + selNm + " delCnt:" + delCnt + " å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime)
+						+ "æ¯«ç§’");
 			}
 
 		} catch (FileNotFoundException e) {
@@ -6527,10 +6558,13 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * ²§°ÊÀÉ³B²z selCode:selNm:selEn 1:[¶×¤J]®Ê¯Å½ÕÁ~:ImpPromoInTra
-	 * in_data:(1:1[¶×¤J]®Ê¯Å½ÕÁ~,2[§R°£]®Ê¯Å½ÕÁ~ ¶Ç¥X:rtn¤å¦r°T®§ 1.[¶×¤J]®Ê¯Å½ÕÁ~ ---¤ë§ÀÁ~,§ì°ò¥»ÀÉ,­n©µ«á¤@­Ó¤ë,§ä¥X¤ë¥÷
-	 * ex.2026.9.1µoÁ~,§ä°ò¥»ÀÉ2026¦~8¤ë®Ê¯Å,°ªºaº¡¦~®Ê¯Å¨Ì[¨ìÂ¾¤ë¥÷];«Ìºa¨C¦~1¤ë®Ê,¨Ì[¨ìÂ¾¤é],¼g¤J²§°Ê­Ó¤H.²{Â¾¤é+1year;ÁpÂå¤£©w´Á,¤£³B²z
-	 * ---¤ëÀYÁ~,§ì°ò¥»ÀÉ,§ä¥X¤ë¥÷ ex.2026.9.1µoÁ~,§ä°ò¥»ÀÉ2026¦~9¤ë®Ê¯Å,°ªºaº¡¦~®Ê¯Å¨Ì[¨ìÂ¾¤ë¥÷]
+	 * ç•°å‹•æª”è™•ç† selCode:selNm:selEn 1:[åŒ¯å…¥]æ™‰ç´šèª¿è–ª:ImpPromoInTra  
+	 * 1[åŒ¯å…¥]æ™‰ç´šèª¿è–ªImpPromoInTra,2[åˆªé™¤]æ™‰ç´šèª¿è–ªDelPromoInTra,
+	 * ex.2026.9.1ç™¼è–ª,æ‰¾åŸºæœ¬æª”2026å¹´8æœˆæ™‰ç´š,é«˜æ¦®æ»¿å¹´æ™‰ç´šä¾[åˆ°è·æœˆä»½];å±æ¦®æ¯å¹´1æœˆæ™‰,ä¾[åˆ°è·æ—¥],å¯«å…¥ç•°å‹•å€‹äºº.ç¾è·æ—¥+1year;è¯é†«ä¸å®šæœŸ,ä¸è™•ç†
+	 * ---æœˆå°¾è–ª,æŠ“åŸºæœ¬æª”,è¦å»¶å¾Œä¸€å€‹æœˆ,æ‰¾å‡ºæœˆä»½ 
+	 * ---æœˆé ­è–ª,æŠ“åŸºæœ¬æª”,æ‰¾å‡ºæœˆä»½ ex.2026.9.1ç™¼è–ª,æ‰¾åŸºæœ¬æª”2026å¹´9æœˆæ™‰ç´š,é«˜æ¦®æ»¿å¹´æ™‰ç´šä¾[åˆ°è·æœˆä»½]
+	 * 3[åŒ¯å…¥]å¾…é‡èª¿æ•´ImpRemuInTra 4[åˆªé™¤]å¾…é‡èª¿æ•´DelRemuInTra
+	 * 
 	 **/
 	public String handelTran(String in_data, String userid, String hid, VGHDataAccess da, VGHDataAccess daDSN)
 			throws Exception {
@@ -6541,43 +6575,43 @@ public class SalNTDAO {
 		ResultSet rs = null;
 		CommDAO cDAO = null;
 		PsDSNDAO psDAO = null;
-		String selEn = ""; // ³B²z¶µ¥Ø
-		String selNm = ""; // ³B²z¶µ¥Ø¤¤¤å¦WºÙ
-		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql ¸ê®Æ
+		String selEn = ""; // è™•ç†é …ç›®
+		String selNm = ""; // è™•ç†é …ç›®ä¸­æ–‡åç¨±
+		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql è³‡æ–™
 		int delCnt = 0;
 		long starttime = 0;
 		long starttime9 = 0;
-		String patradt = ""; // µoÁ~¤é
-		HashMap psContLimMap = null; // °ªºa¤H¨Æ«´¬ù­­¨î¯Å¼Æmap «ÌºaÅ@²z³æ¦ì		
-		HashMap jtrngMap = null; // Â¾ºÙ¯Å¼Æmap
-		HashMap nurrngMap = null; // «ÌºaÂ¾ºÙ¯Å¼Æmap
-		String l_Card = ""; // ¥d¸¹
-		int l_DEGR2 = 0; // Á~¸ê°ò¥»ÀÉ¯Å¼Æ
-		int l_SGNDT_DD = 0; // ²{Â¾¤é_¤é 2026-8-13 ¨ú13
-		String l_contract = ""; // «´¬ù¤ëÀY(ÂÂ¨î)N ¤ë§À(·s¨î)Y/ªÅ¥Õ
-		java.sql.Date l_oldWorkend; // ¤ëÀYÁ~ ¤u§@¤ë³Ì«á¤@¤Ñ
-		java.sql.Date l_newWorkend; // ¤ë§ÀÁ~ ¤u§@¤ë³Ì«á¤@¤Ñ
-		int old_thisMDay = 0; // ¤ëÀYÁ~ ¤é¼Æ
-		int new_thisMDay = 0; // ¤ë§ÀÁ~ ¤é¼Æ
-		int l_effDD = 0; // ¦³®Ä¤é¼Æ
-		int l_PAYDAYNO = 0; // ¸Éµo¤é¼Æ
-		int l_LastDay = 0; // ¥Í®Ä¤é´Á¯}¤ë«e¤é¼Æ
+		String patradt = ""; // ç™¼è–ªæ—¥
+		HashMap psContLimMap = null; // é«˜æ¦®äººäº‹å¥‘ç´„é™åˆ¶ç´šæ•¸map å±æ¦®è­·ç†å–®ä½		
+		HashMap jtrngMap = null; // è·ç¨±ç´šæ•¸map
+		HashMap nurrngMap = null; // å±æ¦®è·ç¨±ç´šæ•¸map
+		String l_Card = ""; // å¡è™Ÿ
+		int l_DEGR2 = 0; 	// è–ªè³‡åŸºæœ¬æª”ç´šæ•¸
+		int l_SGNDT_DD = 0; // ç¾è·æ—¥_æ—¥ 2026-8-13 å–13
+		String l_contract = ""; // å¥‘ç´„æœˆé ­(èˆŠåˆ¶)N æœˆå°¾(æ–°åˆ¶)Y/ç©ºç™½
+		java.sql.Date l_oldWorkend; // æœˆé ­è–ª å·¥ä½œæœˆæœ€å¾Œä¸€å¤©
+		java.sql.Date l_newWorkend; // æœˆå°¾è–ª å·¥ä½œæœˆæœ€å¾Œä¸€å¤©
+		int old_thisMDay = 0; 	// æœˆé ­è–ª æ—¥æ•¸
+		int new_thisMDay = 0; 	// æœˆå°¾è–ª æ—¥æ•¸
+		int l_effDD = 0;	 	// æœ‰æ•ˆæ—¥æ•¸
+		int l_PAYDAYNO = 0;	 	// è£œç™¼æ—¥æ•¸
+		int l_LastDay = 0; 		// ç”Ÿæ•ˆæ—¥æœŸç ´æœˆå‰æ—¥æ•¸
 
-		String l_SGNDT_Str = ""; // ²{Â¾¤éStr
-		java.sql.Date l_SGNDT = null; // ²{Â¾¤éDate
-		java.sql.Date l_EFFDT = null; // ¥Í®Ä¤é´Á
-		int intDEGR2Low = 0; // ¯Å¼Æ¤U­­
-		int intDEGR2High = 0; // ¯Å¼Æ¤W­­
-		int intDEGR2HighPS = 0; // ¤H¨Æ¯Å¼Æ¤W­­
-		Pabaspsn baspsnobj = null; // °ò¥»­Ó¤Hobj
-		Pabaspay baspayObj = null; // °ò¥»¤ä¦©obj
-		Patrapsn trapsnobj = null; // ²§°Ê­Ó¤Hobj
-		HashMap<String, Patrapsn> trapsnMap = new HashMap();// ²§°Ê­Ó¤HÀÉ map
-		HashMap<String, ArrayList<Patrapay>> trapayMap = new HashMap();// ²§°Ê¤ä¦©ÀÉ map
-		HashMap<String, ArrayList<Pabaspay>> bpayMap = new HashMap();// °ò¥»¤ä¦©ÀÉ map(idno:paybaspay ¶°¦X)
-		HashMap NSalMap = new HashMap();// Åª¨ú·s¤ä¦©
-		ArrayList<Pabaspay> bpayAry = new ArrayList<Pabaspay>(); // baspay¤ä¦©¶°¦X
-		ArrayList<Patrapay> tpayAry = new ArrayList<Patrapay>(); // trapay¤ä¦©¶°¦X
+		String l_SGNDT_Str = ""; // ç¾è·æ—¥Str
+		java.sql.Date l_SGNDT = null; // ç¾è·æ—¥Date
+		java.sql.Date l_EFFDT = null; // ç”Ÿæ•ˆæ—¥æœŸ
+		int intDEGR2Low = 0; // ç´šæ•¸ä¸‹é™
+		int intDEGR2High = 0; // ç´šæ•¸ä¸Šé™
+		int intDEGR2HighPS = 0; // äººäº‹ç´šæ•¸ä¸Šé™
+		Pabaspsn baspsnobj = null; // åŸºæœ¬å€‹äººobj
+		Pabaspay baspayObj = null; // åŸºæœ¬æ”¯æ‰£obj
+		Patrapsn trapsnobj = null; // ç•°å‹•å€‹äººobj
+		HashMap<String, Patrapsn> trapsnMap = new HashMap();// ç•°å‹•å€‹äººæª” map
+		HashMap<String, ArrayList<Patrapay>> trapayMap = new HashMap();// ç•°å‹•æ”¯æ‰£æª” map
+		HashMap<String, ArrayList<Pabaspay>> bpayMap = new HashMap();// åŸºæœ¬æ”¯æ‰£æª” map(idno:paybaspay é›†åˆ)
+		HashMap NSalMap = new HashMap();// è®€å–æ–°æ”¯æ‰£
+		ArrayList<Pabaspay> bpayAry = new ArrayList<Pabaspay>(); // baspayæ”¯æ‰£é›†åˆ
+		ArrayList<Patrapay> tpayAry = new ArrayList<Patrapay>(); // trapayæ”¯æ‰£é›†åˆ
 		int cnt = 0;
 		HashMap dataMap = null;
 		int intTraNum_max = 0;
@@ -6587,53 +6621,58 @@ public class SalNTDAO {
 		boolean tmpflag = true;
 		int l_PAYEXPFKEY1=0,l_PAYEXPFKEY2=0,l_PAYEXPFKEY3=0;
 		int l_PAYPFSP1=0,l_PAYPFSP2=0,l_PAYPFSP3=0;
-		int l_Paydegr2=0;	//·s¯Å§O
-		int l_Insuamt=0;	//·s§ë«O¯Å¶Z
+		int l_Paydegr2=0;	//æ–°ç´šåˆ¥
+		int l_Insuamt=0;	//æ–°æŠ•ä¿ç´šè·
 		int l_FD020=0,l_FD030=0;
-		// §ä²§°ÊÀÉ.tranum³Ì¤j­È
+		String effdt = ""; // ç”Ÿæ•ˆæ—¥
+		String rangeNm="",rangeEn="";//ç¯„åœ rangeNm:rangeEn å…¬ä¿æ­£å¼äººå“¡:Remu_1
+		String sqlRang="",sqlBasPsn_Remu="";
+		int monno=0;	//è£œç™¼æœˆæ•¸
+		// æ‰¾ç•°å‹•æª”.tranumæœ€å¤§å€¼
 		String sqlTranum_max = "select max(TRANUM) as MAX_TRANUM from " + this.tTraPsn + " where HID= ? with ur";
 
-		// §ä²§°ÊÀÉ.®Ê¯Å½ÕÁ~ 
+		// æ™‰ç´šèª¿è–ª_æ‰¾ç•°å‹•æª” 
 		String sqlTran_31 = "select PAYCARD from " + this.tTraPsn
 						  + " where year(PATRADT)=? and month(PATRADT)=? and PATRACOD=31 and PAYRANK in('E','F') and HID=? with ur";
-		// §ä°ò¥»ÀÉ²Å¦X®Ê¯Å±ø¥ó_°ªºa,¤ë§À+¤ëÀY(§t¸u¥Î) 
+		// æ™‰ç´šèª¿è–ª_æ‰¾åŸºæœ¬æª”ç¬¦åˆæ™‰ç´šæ¢ä»¶_é«˜æ¦®,æœˆå°¾+æœˆé ­(å«è˜ç”¨) 
 		String sqltmp="";
 		//sqltmp=" and paycard in ('HE73') ";
 		String sqlBasAdj_1A0 = "select PAYTITLP,A.* " + " from " + this.tBasPsn + " A " + 
 								" LEFT OUTER JOIN "+ this.tTitle + " B ON A.PAYTITLE = B.PAYTITLK and a.hid=b.hid "+ 
 				               " where (PAYRSGDT IS NULL or PAYRSGDT='9999-12-31') and A.PATRACOD NOT IN (23, 24)  "+
 				                 " and A.PAYRANK in ('F' )  and MONTH(A.PAYSGNDT) = ? and a.HID= ?  "+
-				                 " and (A.PAYEMPDT >= ? AND NOT B.PAYTITLP LIKE '%Âå®v%') " + sqltmp + 
+				                 " and (A.PAYEMPDT >= ? AND NOT B.PAYTITLP LIKE '%é†«å¸«%') " + sqltmp + 
 				               " union " + 
 				               "select PAYTITLP,A.* "+
 				                " from " + this.tBasPsn + " A " + 
 				                " LEFT OUTER JOIN " + this.tTitle+ " B ON A.PAYTITLE = B.PAYTITLK and a.hid=b.hid "+
 				               " where (PAYRSGDT IS NULL or PAYRSGDT='9999-12-31') and A.PATRACOD NOT IN (23, 24) "+
 				                 " and A.PAYRANK in ( 'E','F' )  and MONTH(A.PAYSGNDT) = ? and a.HID= ?  "+
-				                 " AND (A.PAYEMPDT < ? or B.PAYTITLP LIKE '%Âå®v%') AND a.paytitle NOT IN ('CG') "+sqltmp +
+				                 " AND (A.PAYEMPDT < ? or B.PAYTITLP LIKE '%é†«å¸«%') AND a.paytitle NOT IN ('CG') "+sqltmp +
 				               " order by PAYCARD with ur ";
 		String sqlBasAdj_2A0 = "select PAYTITLP,A.* " + " from " + this.tBasPsn + " A " 
 							  + " LEFT OUTER JOIN "+ this.tTitle + " B ON A.PAYTITLE = B.PAYTITLK and a.hid=b.hid "+
 							   " where (PAYRSGDT IS NULL or PAYRSGDT='9999-12-31') and A.PATRACOD NOT IN (23, 24) "+
 							   	 " and A.PAYRANK in ('F') and year(a.PAYSGNDT)=year(CURRENT DATE) and month(a.PAYSGNDT)= ? and a.HID= ? "+
-				                 " and not B.PAYTITLP LIKE '%Âå®v%' AND a.PAYSGNDT > ? " + " order by PAYCARD with ur ";
-		// §ä°ò¥»ÀÉ.¦bÂ¾.payrank in ('E','F')
+				                 " and not B.PAYTITLP LIKE '%é†«å¸«%' AND a.PAYSGNDT > ? " + " order by PAYCARD with ur ";
+		// æ™‰ç´šèª¿è–ª_æ‰¾åŸºæœ¬æª”.åœ¨è·.payrank in ('E','F')
 		String sqlBasPay = "select A.PAYIDNO, PAYCODE, PAYAMT, PAYAUTH, PAYIFTAX, a.HID " + 
 						     "from " + this.tBasPay+ " A " + 
 				           " inner join " + this.tBasPsn + " B on A.PAYIDNO=B.PAYIDNO and A.HID=B.HID and B.PAYRANK in ('E','F') and (PAYRSGDT is null or PAYRSGDT='9999-12-31') "
 				         + " where A.HID=? order by A.PAYIDNO, PAYCODE with ur";
-		// §R°£²§°ÊÀÉ.®Ê¯Å½ÕÁ~payrank in ('E','F')
+		// æ™‰ç´šèª¿è–ª_åˆªé™¤ç•°å‹•æª”.æ”¯æ‰£æ˜ç´°payrank in ('E','F')
 		String sqlTraPay_31_Del = "delete " + this.tTraPay
 				                + " where patradt=? and hid=? and (patradt, payidno, hid) IN (" + 
 				                	"    SELECT patradt, payidno, hid "
 				                    + "    FROM " + this.tTraPsn
 				                   + "    WHERE patradt = ? and patracod = 31 and PAYRANK in ('E','F') and hid = ? ) ";
-		// §R°£²§°ÊÀÉ.®Ê¯Å½ÕÁ~payrank in ('E','F')
+		// æ™‰ç´šèª¿è–ª_åˆªé™¤ç•°å‹•æª”.å€‹äººæ˜ç´°.payrank in ('E','F')
 		String sqlTraPsn_31_Del = "delete " + this.tTraPsn
 								+ " where patradt = ? and patracod = 31 and PAYRANK in ('E','F') and hid = ?  ";
+		
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -6644,7 +6683,7 @@ public class SalNTDAO {
 
 			JSONObject object_in_data = JSONObject.fromObject(in_data);
 			selEn = StringUtil.nullToString(object_in_data.getString("selEn"));
-			// [¶×¤J]®Ê¯Å½ÕÁ~
+			// [åŒ¯å…¥]æ™‰ç´šèª¿è–ª
 			if ("ImpPromoInTra".equals(selEn)) {
 				starttime = System.currentTimeMillis();
 				patradt = StringUtil.nullToString(object_in_data.getString("patradt"));
@@ -6653,51 +6692,51 @@ public class SalNTDAO {
 				int intyear = Integer.parseInt(yearStr);
 				int intMonth = Integer.parseInt(monthStr);
 				Calendar calendar = Calendar.getInstance();
-				// ¤ëÀY,¤ë§À¤Ñ¼Æ³]©w
-				// ¤ëÀYÁ~ ¤u§@¤ë³Ì«á¤@¤Ñ=2025.7.31 µoÁ~¤é 2025.7.1 ÂÂ¨î(¤ëÀY,µo©ñ2025.7)¥»¤ë¤é¼Æ=31
-				// µoÁ~¤é 2026.9.1 ÂÂ¨î(¤ëÀY,µo©ñ2026.9)¥»¤ë¤é¼Æ=30
+				// æœˆé ­,æœˆå°¾å¤©æ•¸è¨­å®š
+				// æœˆé ­è–ª å·¥ä½œæœˆæœ€å¾Œä¸€å¤©=2025.7.31 ç™¼è–ªæ—¥ 2025.7.1 èˆŠåˆ¶(æœˆé ­,ç™¼æ”¾2025.7)æœ¬æœˆæ—¥æ•¸=31
+				// ç™¼è–ªæ—¥ 2026.9.1 èˆŠåˆ¶(æœˆé ­,ç™¼æ”¾2026.9)æœ¬æœˆæ—¥æ•¸=30
 				calendar.setTime(DateUtil.StringToDate(patradt));
 				calendar.add(Calendar.MONTH, 1);
 				calendar.add(Calendar.DATE, -1);
 				l_oldWorkend = java.sql.Date.valueOf(formatter.format(calendar.getTime()));
 				old_thisMDay = calendar.get(Calendar.DATE);
-				// ¤ë§ÀÁ~ ¤u§@¤ë³Ì«á¤@¤Ñ=2026.8.31 µoÁ~¤é 2025.9 ¤é¼Æ=31
+				// æœˆå°¾è–ª å·¥ä½œæœˆæœ€å¾Œä¸€å¤©=2026.8.31 ç™¼è–ªæ—¥ 2025.9 æ—¥æ•¸=31
 				calendar.setTime(DateUtil.StringToDate(patradt));
 				calendar.add(Calendar.DATE, -1);
 				l_newWorkend = java.sql.Date.valueOf(formatter.format(calendar.getTime()));
 				new_thisMDay = calendar.get(Calendar.DATE);
-				// ¬d¸ß_¨Ì¶¥§O+µoÁ~¤é´Á+²§°Ê½X=37
+				// æŸ¥è©¢_ä¾éšåˆ¥+ç™¼è–ªæ—¥æœŸ+ç•°å‹•ç¢¼=37
 				paramA.add(intyear);
 				paramA.add(intMonth);
 				paramA.add(hid);
-				log.info(me + "  1.¬d¸ß_¨Ì¶¥§O(E,F)+µoÁ~¤é´Á+²§°Ê½X=31" + sqlTran_31 + "...params:" + paramA.toString());
+				log.info(me + "  1.æŸ¥è©¢_ä¾éšåˆ¥(E,F)+ç™¼è–ªæ—¥æœŸ+ç•°å‹•ç¢¼=31" + sqlTran_31 + "...params:" + paramA.toString());
 				rs = da.query(sqlTran_31, paramA);
 
 				while (rs.next()) {
 					if (rs.getString("PAYCARD") != null) {
-						rtn = "¤w¦³" + patradt + "½ÕÁ~¸ê®Æ,½Ğ½T»{";
+						rtn = "å·²æœ‰" + patradt + "èª¿è–ªè³‡æ–™,è«‹ç¢ºèª";
 						tmpflag = false;
 					}
 				}
 				if (tmpflag) {
-					// ¤ë§ÀÁ~,§ì°ò¥»ÀÉ,­n©µ«á¤@­Ó¤ë,§ä¥X¤ë¥÷
-					// ex.2026.9.1µoÁ~,§ä°ò¥»ÀÉ2026¦~8¤ë®Ê¯Å,°ªºaº¡¦~®Ê¯Å¨Ì[¨ìÂ¾¤ë¥÷],«Ìºa¨C¦~1¤ë®Ê,¨Ì[¨ìÂ¾¤é],¼g¤J²§°Ê­Ó¤H.²{Â¾¤é+1year
+					// æœˆå°¾è–ª,æŠ“åŸºæœ¬æª”,è¦å»¶å¾Œä¸€å€‹æœˆ,æ‰¾å‡ºæœˆä»½
+					// ex.2026.9.1ç™¼è–ª,æ‰¾åŸºæœ¬æª”2026å¹´8æœˆæ™‰ç´š,é«˜æ¦®æ»¿å¹´æ™‰ç´šä¾[åˆ°è·æœˆä»½],å±æ¦®æ¯å¹´1æœˆæ™‰,ä¾[åˆ°è·æ—¥],å¯«å…¥ç•°å‹•å€‹äºº.ç¾è·æ—¥+1year
 					String strNewEff = formatter.format(calendar.getTime());
 					int intNewM = 1 + calendar.get(Calendar.MONTH);
-					System.out.println("µoÁ~¤é:" + patradt + " ¤ë§ÀÁ~: " + strNewEff + " ¤ë¥÷:" + intNewM);
+					System.out.println("ç™¼è–ªæ—¥:" + patradt + " æœˆå°¾è–ª: " + strNewEff + " æœˆä»½:" + intNewM);
 
-					// §ä«´¬ù­­¨î¯Å¼Æ¦W³æ
+					// æ‰¾å¥‘ç´„é™åˆ¶ç´šæ•¸åå–®
 					if (hid.equals("1A0")) {
-						log.info(me + "  2.§ä1A0«´¬ù­­¨î¯Å¼Æ¦W³æ");
+						log.info(me + "  2.æ‰¾1A0å¥‘ç´„é™åˆ¶ç´šæ•¸åå–®");
 						psDAO = new PsDSNDAO(daDSN, hid);
 						psContLimMap = psDAO.getContLimMap(daDSN);
 					}else if (hid.equals("2A0")) {
-						log.info(me + "  2.§ä2A0«´¬ùÅ@²z³æ¦ì­­¨î¯Å¼Æ¦W³æ");
+						log.info(me + "  2.æ‰¾2A0å¥‘ç´„è­·ç†å–®ä½é™åˆ¶ç´šæ•¸åå–®");
 						psDAO = new PsDSNDAO(daDSN, hid);
 						psContLimMap = psDAO.getNurContLimMap(hid,daDSN);
 					}
 
-					// §ä²§°ÊÀÉ.tranum³Ì¤j­È,­n¥[1
+					// æ‰¾ç•°å‹•æª”.tranumæœ€å¤§å€¼,è¦åŠ 1
 					paramA = new ArrayList<Object>();
 					paramA.add(hid);
 					log.info(me + "  " + sqlTranum_max + "...params:" + paramA.toString());
@@ -6707,17 +6746,17 @@ public class SalNTDAO {
 					}
 					log.info(me + "  TraNum_max:" + intTraNum_max);
 
-					// §ä°ò¥»¤ä¦©©ú²ÓÀÉ²Å¦Xpayrank(E,F)±ø¥ó
+					// æ‰¾åŸºæœ¬æ”¯æ‰£æ˜ç´°æª”ç¬¦åˆpayrank(E,F)æ¢ä»¶
 					starttime9 = System.currentTimeMillis();
 					params = new ArrayList<Object>();
 					params.add(hid);
-					log.info(me + " 2-1.§ä°ò¥»¤ä¦©©ú²ÓÀÉ²Å¦Xpayrank(E,F)±ø¥ó:" + sqlBasPay + "...params:" + params.toString());
+					log.info(me + " 2-1.æ‰¾åŸºæœ¬æ”¯æ‰£æ˜ç´°æª”ç¬¦åˆpayrank(E,F)æ¢ä»¶:" + sqlBasPay + "...params:" + params.toString());
 					result = da.arraylistbyQuery(sqlBasPay, params, META_TYPE);
 					log.info(me + "...size:" + result.size());
 					if (result.size() > 0) {
 						bpayAry = new ArrayList<Pabaspay>();
 						for (Map<String, Object> data : result) {
-							// ©ñ¸m¦bArraylist
+							// æ”¾ç½®åœ¨Arraylist
 							baspayObj = new Pabaspay();
 							PropertyUtils.copyProperties(baspayObj, data);
 							strKey = StringUtil.nullToString(baspayObj.getPayidno());
@@ -6730,9 +6769,9 @@ public class SalNTDAO {
 						}
 						bpayMap.put(preKey, bpayAry);
 					}
-					log.info(me + "  2-1.§ä°ò¥»¤ä¦©  ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime9) + "²@¬í");
+					log.info(me + "  2-1.æ‰¾åŸºæœ¬æ”¯æ‰£  å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
-					// §ä°ò¥»ÀÉ²Å¦X®Ê¯Å±ø¥ó
+					// æ‰¾åŸºæœ¬æª”ç¬¦åˆæ™‰ç´šæ¢ä»¶
 					paramA = new ArrayList<Object>();
 					if (hid.equals("1A0")) {
 						sql = sqlBasAdj_1A0;
@@ -6748,9 +6787,9 @@ public class SalNTDAO {
 						paramA.add(hid);
 						paramA.add(Globals.gNcontract_2A0);
 					}
-					log.info(me + "  2-2.§ä°ò¥»ÀÉ²Å¦X®Ê¯Å±ø¥ó " + sql + "...params:" + paramA.toString());
+					log.info(me + "  2-2.æ‰¾åŸºæœ¬æª”ç¬¦åˆæ™‰ç´šæ¢ä»¶ " + sql + "...params:" + paramA.toString());
 					result = da.arraylistbyQuery(sql, paramA, META_TYPE);
-					log.info(me + "  2-2.§ä°ò¥»ÀÉ²Å¦X®Ê¯Å±ø¥ó,size: " + result.size());
+					log.info(me + "  2-2.æ‰¾åŸºæœ¬æª”ç¬¦åˆæ™‰ç´šæ¢ä»¶,size: " + result.size());
 					if (result.size() > 0) {
 						for (Map<String, Object> data : result) {
 							baspsnobj = new Pabaspsn();
@@ -6760,20 +6799,20 @@ public class SalNTDAO {
 							l_DEGR2 = baspsnobj.getPaydegr2();
 							l_Card = StringUtil.nullToString(baspsnobj.getPaycard());
 							l_contract = baspsnobj.getContract();
-							// §ä¥X¯Å¼Æ½d³ò
+							// æ‰¾å‡ºç´šæ•¸ç¯„åœ
 							jtrngMap = PaCommUtil.getDegre2Rng(baspsnobj.getPaytitle(), hid);
 							intDEGR2Low = (int) jtrngMap.get("min");
 							intDEGR2High = (int) jtrngMap.get("max");
 							intDEGR2HighPS = 0;
 							if (psContLimMap != null) {
-								if (hid.equals("1A0")) {//§ì¯Å¼Æ¤W­­
+								if (hid.equals("1A0")) {//æŠ“ç´šæ•¸ä¸Šé™
 									if (psContLimMap.containsKey(l_Card)) {
 										intDEGR2HighPS = (int) psContLimMap.get(l_Card);
 									}
 									if (intDEGR2HighPS != 0) {
 										intDEGR2High = intDEGR2HighPS;
 									}
-								}else if (hid.equals("2A0")) {//§äÅ@²z³æ¦ì,¯Å¼Æ½d³ò
+								}else if (hid.equals("2A0")) {//æ‰¾è­·ç†å–®ä½,ç´šæ•¸ç¯„åœ
 									if (psContLimMap.containsKey(l_Card)) {
 										nurrngMap = (HashMap) psContLimMap.get(l_Card);
 									}
@@ -6783,28 +6822,28 @@ public class SalNTDAO {
 									}
 								}
 							}
-							// ¥Ø«e¯Å¼Æ<³Ì°ª¯Å¼Æ,¤~­n¼g¤J²§°ÊÀÉ
+							// ç›®å‰ç´šæ•¸<æœ€é«˜ç´šæ•¸,æ‰è¦å¯«å…¥ç•°å‹•æª”
 							if (l_DEGR2 < intDEGR2High) {
 								l_SGNDT_Str = formatter.format(baspsnobj.getPaysgndt());
-								if (l_contract.equals("Y")) { // ·s¨î/¤ë§À
-									// ¸Éµo¤é¼Æ
+								if (l_contract.equals("Y")) { // æ–°åˆ¶/æœˆå°¾
+									// è£œç™¼æ—¥æ•¸
 									l_effDD = new_thisMDay;
-									// ¥Í®Ä¤é
+									// ç”Ÿæ•ˆæ—¥
 									calendar.set(Integer.parseInt(strNewEff.substring(0, 4)),
 											Integer.parseInt(strNewEff.substring(5, 7)) - 1,
 											Integer.parseInt(l_SGNDT_Str.substring(8, 10)));
 									l_EFFDT = new java.sql.Date(calendar.getTimeInMillis());
 								} else {
-									l_effDD = old_thisMDay; // ÂÂ¨î/¤ëÀY ¸Éµo¤é¼Æ
+									l_effDD = old_thisMDay; // èˆŠåˆ¶/æœˆé ­ è£œç™¼æ—¥æ•¸
 
 									calendar.set(Integer.parseInt(patradt.substring(0, 4)),
 											Integer.parseInt(patradt.substring(5, 7)) - 1,
 											Integer.parseInt(l_SGNDT_Str.substring(8, 10)));
 									l_EFFDT = new java.sql.Date(calendar.getTimeInMillis());
 								}
-								// «Ìºa²{Â¾¤é=²{Â¾¤é+1year
+								// å±æ¦®ç¾è·æ—¥=ç¾è·æ—¥+1year
 								if (hid.equals("2A0")) {
-									// ¥Í®Ä¤é
+									// ç”Ÿæ•ˆæ—¥
 									calendar.set(Integer.parseInt(l_SGNDT_Str.substring(0, 4)) + 1,
 											Integer.parseInt(l_SGNDT_Str.substring(5, 7)) - 1,
 											Integer.parseInt(l_SGNDT_Str.substring(8, 10)));
@@ -6813,23 +6852,23 @@ public class SalNTDAO {
 									l_SGNDT = baspsnobj.getPaysgndt();
 								}
 
-								// ¤W¤@¬q¤é¼Æ
+								// ä¸Šä¸€æ®µæ—¥æ•¸
 								calendar.setTime(baspsnobj.getPaysgndt());
 								l_SGNDT_DD = calendar.get(Calendar.DATE);
 								l_PAYDAYNO = l_effDD - l_SGNDT_DD + 1;
 								l_LastDay = l_effDD - l_PAYDAYNO;
-								// ·s ¥Îhashmap¦s­È
-								// hidÂå°|§O tradtµoÁ~¤é tracd²§°Ê½X effdt¥Í®Ä monno¸Éµo¤ë¼Æ dayno:¸Éµo¤é¼Æ
-								// titleÂ¾ºÙ¥N½X rnk2nÂ¾µ¥ rank3¥»¥\§O degr2¯Å§O degre­ÄÂI rank¶¥§O¥N½Xrank2Â¾µ¥(Åv²z) rankc¥DºŞ(Åv²z) rank4¾A¥Î±M·~¥[µ¹ªí
-								// ¸u¦í,¦³ÃB¥~¥[ÂI 1.¤H¤~Ã¹­P§xÃø¬ì(7),²Ä5¦~,¥ôÂ¾º¡¦~(5),¥[10ÂI 2.«D¤H¤~Ã¹­P§xÃø¬ì,¥ôÂ¾º¡¦~¥[10ÂI,³Ì¦h40ÂI
-								// CK¤£¤À¬ì¦í°|Âå®v_¦³ÃÒ®Ñ²Ä2¦~¥[97ÂI
+								// æ–° ç”¨hashmapå­˜å€¼
+								// hidé†«é™¢åˆ¥ tradtç™¼è–ªæ—¥ tracdç•°å‹•ç¢¼ effdtç”Ÿæ•ˆ monnoè£œç™¼æœˆæ•¸ dayno:è£œç™¼æ—¥æ•¸
+								// titleè·ç¨±ä»£ç¢¼ rnk2nè·ç­‰ rank3æœ¬åŠŸåˆ¥ degr2ç´šåˆ¥ degreä¿¸é» rankéšåˆ¥ä»£ç¢¼rank2è·ç­‰(æ¬Šç†) rankcä¸»ç®¡(æ¬Šç†) rank4é©ç”¨å°ˆæ¥­åŠ çµ¦è¡¨
+								// è˜ä½,æœ‰é¡å¤–åŠ é» 1.äººæ‰ç¾…è‡´å›°é›£ç§‘(7),ç¬¬5å¹´,ä»»è·æ»¿å¹´(5),åŠ 10é» 2.éäººæ‰ç¾…è‡´å›°é›£ç§‘,ä»»è·æ»¿å¹´åŠ 10é»,æœ€å¤š40é»
+								// CKä¸åˆ†ç§‘ä½é™¢é†«å¸«_æœ‰è­‰æ›¸ç¬¬2å¹´åŠ 97é»
 								l_PAYEXPFKEY1=baspsnobj.getPayexpfkey1();
 								l_PAYEXPFKEY2=baspsnobj.getPayexpfkey2();
 								l_PAYEXPFKEY3=baspsnobj.getPayexpfkey3();
 								l_PAYPFSP1   =baspsnobj.getPaypfsp1();
 								l_PAYPFSP2   =baspsnobj.getPaypfsp2();
 								l_PAYPFSP3   =baspsnobj.getPaypfsp3();
-								//·s¯Å¼Æ
+								//æ–°ç´šæ•¸
 								l_Paydegr2   =baspsnobj.getPaydegr2()+1;
 								if (baspsnobj.getPacsflag().equals("Y") && hid.equals("1A0") ) {
 									if ( baspsnobj.getPayrank().equals("E") || (baspsnobj.getPayrank().equals("F") && baspsnobj.getPaytitle().equals("CH")) ) {
@@ -6882,8 +6921,8 @@ public class SalNTDAO {
 										}
 									}
 								}
-								// ²§°Ê¤ä¦©--·s
-								// ±q·s¤ä¦©¨ú±o,¼g¤JtpayAry->trapayMap(id,tpayAry)
+								// ç•°å‹•æ”¯æ‰£--æ–°
+								// å¾æ–°æ”¯æ‰£å–å¾—,å¯«å…¥tpayAry->trapayMap(id,tpayAry)
 								dataMap = new HashMap();
 								dataMap.put("hid", hid);
 								dataMap.put("tradt", patradt);
@@ -6908,25 +6947,25 @@ public class SalNTDAO {
 								dataMap.put("pfsp2", l_PAYPFSP2);
 								dataMap.put("pfsp3", l_PAYPFSP3);
 																
-								intTraNum_max++;		// ²§°ÊÀÉ.tranum³Ì¤j­È,­n¥[1
+								intTraNum_max++;		// ç•°å‹•æª”.tranumæœ€å¤§å€¼,è¦åŠ 1
 
-								// ¼g¤J²§°Ê­Ó¤H
+								// å¯«å…¥ç•°å‹•å€‹äºº
 								trapsnobj = new Patrapsn();
 								trapsnobj = putTraPsnObj(baspsnobj, dataMap, intTraNum_max, userid);
 								
-								// ²§°Ê¤ä¦©--­ì
+								// ç•°å‹•æ”¯æ‰£--åŸ
 								dataMap = new HashMap();
 								dataMap.put("hid", hid);
 								dataMap.put("tradt", patradt);
 								dataMap.put("sort", "O");
-								// ¨Cµ§¨ú±o°ò¥»¤ä¦©ary,©ñ¤JtpayAry,¦A©ñ¤Jmap(id,tpayAry)
+								// æ¯ç­†å–å¾—åŸºæœ¬æ”¯æ‰£ary,æ”¾å…¥tpayAry,å†æ”¾å…¥map(id,tpayAry)
 								bpayAry = bpayMap.get(baspsnobj.getPayidno());
 								
 								if (bpayAry != null) {
 									l_FD020=0;
 									l_FD030=0;
 									for (Pabaspay basobj : bpayAry) {
-										//­ì¤ä(FD020°·«O,FD030³Ò«O)
+										//åŸæ”¯(FD020å¥ä¿,FD030å‹ä¿)
 										if (basobj.getPaycode().equals("FD020")) {
 											l_FD020 =basobj.getPayamt();
 										}
@@ -6937,8 +6976,8 @@ public class SalNTDAO {
 									
 									tpayAry = putTraPayAry(bpayAry, dataMap, intTraNum_max, userid);
 								}
-								// ²§°Ê¤ä¦©--·s
-								// ±q·s¤ä¦©¨ú±o,¼g¤JtpayAry->trapayMap(id,tpayAry)
+								// ç•°å‹•æ”¯æ‰£--æ–°
+								// å¾æ–°æ”¯æ‰£å–å¾—,å¯«å…¥tpayAry->trapayMap(id,tpayAry)
 								NSalMap = cDAO.getDegreByRank("", "B", trapsnobj, tpayAry, l_LastDay, hid, da, null);
 															
 								JSONArray NSalAry = (JSONArray) NSalMap.get("payitm_json");
@@ -6948,7 +6987,7 @@ public class SalNTDAO {
 								dataMap.put("sort", "N");
 								dataMap.put("payidno", baspsnobj.getPayidno());
 								tpayAry = putTraPayJson(NSalAry, dataMap, intTraNum_max, tpayAry);
-								/*//§â­ì¤ä(FD020°·«O,FD030³Ò«O) ¼g¦^·s¤ä,¦]user­n¤@­P,¤£­«ºâ
+								/*//æŠŠåŸæ”¯(FD020å¥ä¿,FD030å‹ä¿) å¯«å›æ–°æ”¯,å› userè¦ä¸€è‡´,ä¸é‡ç®—
 								if (tpayAry != null) {
 									for (Patrapay traobj : tpayAry) {
 										
@@ -6962,30 +7001,30 @@ public class SalNTDAO {
 									
 								}*/
 								trapayMap.put(baspsnobj.getPayidno(), tpayAry);
-								//§ó·s§ë«OÃB
-								l_Insuamt=(int) NSalMap.get("insu_dpin"); 	//·s§ë«O¯Å¶Z
+								//æ›´æ–°æŠ•ä¿é¡
+								l_Insuamt=(int) NSalMap.get("insu_dpin"); 	//æ–°æŠ•ä¿ç´šè·
 								if ( l_Insuamt >0) {
 									trapsnobj.setInsuamt(l_Insuamt);
 								}
-								//¼g¤J²§°Ê­Ó¤H
+								//å¯«å…¥ç•°å‹•å€‹äºº
 								trapsnMap.put(baspsnobj.getPayidno(), trapsnobj);
 								
-								log.info(me + "  3.®Ê¯Å¦W³æ: " + cnt++ + " " + baspsnobj.getPaycard() + " ¤ëÀYN/¤ë§ÀY:"
-										+ l_contract + " ¯Å¼Æ:" + l_DEGR2 + " ½d³ò:" + intDEGR2Low + "-" + intDEGR2High
-										+ " ¤H¨Æ­­¨î:" + intDEGR2HighPS + " ¦³®Ä¤é¼Æ:" + l_effDD + " ¸Éµo¤é¼Æ:" + l_PAYDAYNO
-										+ " «e¤@¬q¤é¼Æ:" + l_LastDay + " ¥Í®Ä¤é:" + formatter.format(l_EFFDT));
+								log.info(me + "  3.æ™‰ç´šåå–®: " + cnt++ + " " + baspsnobj.getPaycard() + " æœˆé ­N/æœˆå°¾Y:"
+										+ l_contract + " ç´šæ•¸:" + l_DEGR2 + " ç¯„åœ:" + intDEGR2Low + "-" + intDEGR2High
+										+ " äººäº‹é™åˆ¶:" + intDEGR2HighPS + " æœ‰æ•ˆæ—¥æ•¸:" + l_effDD + " è£œç™¼æ—¥æ•¸:" + l_PAYDAYNO
+										+ " å‰ä¸€æ®µæ—¥æ•¸:" + l_LastDay + " ç”Ÿæ•ˆæ—¥:" + formatter.format(l_EFFDT));
 							}
 						}
-						// ¼g¤J²§°Ê­Ó¤H
+						// å¯«å…¥ç•°å‹•å€‹äºº
 						starttime9 = System.currentTimeMillis();
 						rtn = updTraTblMap(trapsnMap, trapayMap, hid, da);
-						log.info(me + "  4-1.¼g¤J²§°Ê­Ó¤H  ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime9) + "²@¬í");
+						log.info(me + "  4-1.å¯«å…¥ç•°å‹•å€‹äºº  å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
 					}
 				}
-				log.info(me + "  ...********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+				log.info(me + "  ...********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 			}
-			// [§R°£]®Ê¯Å½ÕÁ~
+			// [åˆªé™¤]æ™‰ç´šèª¿è–ª
 			else if ("DelPromoInTra".equals(selEn)) {
 				starttime = System.currentTimeMillis();
 				patradt = StringUtil.nullToString(object_in_data.getString("patradt"));
@@ -7020,7 +7059,79 @@ public class SalNTDAO {
 				} finally {
 
 				}
-				log.info(me + "  ...********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+				log.info(me + "  ...********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
+			}
+			// 4:[åŒ¯å…¥]å¾…é‡èª¿æ•´
+			else if ("ImpRemuInTra".equals(selEn)) {
+				starttime = System.currentTimeMillis();
+				effdt = StringUtil.nullToString(object_in_data.getString("effdt"));
+				patradt = StringUtil.nullToString(object_in_data.getString("patradt"));
+				rangeEn = StringUtil.nullToString(object_in_data.getString("rangeEn"));
+				rangeNm = StringUtil.nullToString(object_in_data.getString("rangeNm"));
+				if (rangeEn.equals("1"))//1:å…¬ä¿æ­£å¼äººå“¡:Remu_1
+					sqlRang =" PAYRANK IN ('1','2','3','4','8','9','G','H') ";
+				else if (rangeEn.equals("2"))//2:å‹ä¿æ­£å¼äººå“¡:Remu_2
+					sqlRang =" PAYRANK IN ('5','6') ";
+				else if (rangeEn.equals("3"))//3:è˜ç”¨ä½é™¢é†«å¸«ã€è˜å¯¦ç¿’é†«å¸«:Remu_3
+					sqlRang =" PAYRANK IN ('A','B','E') ";
+				else if (rangeEn.equals("4"))//4:å¥‘ç´„äººå“¡_æœˆé ­:Remu_4
+					sqlRang =" PAYRANK IN ('F') AND PAYTITLE NOT IN ('CG','CH','CI','CJ','CK') AND PAYEMPDT < '" + Globals.gNcontract + "' ";
+				else if (rangeEn.equals("5"))//5:å¥‘ç´„äººå“¡_æœˆå°¾:Remu_5
+					sqlRang =" PAYRANK IN ('F') AND PAYTITLE NOT IN ('CG','CH','CI','CJ','CK') AND PAYEMPDT >= '" + Globals.gNcontract + "' ";
+				else if (rangeEn.equals("6"))//6:å¥‘ç´„äººå“¡_ä½é™¢é†«å¸«:Remu_6
+					sqlRang =" PAYTITLE IN ('CH','CI','CJ','CK') ";
+				else if (rangeEn.equals("7"))//7:å¥‘ç´„äººå“¡_ä¸»æ²»é†«å¸«:Remu_7
+					sqlRang =" PAYTITLE IN ('CG')  ";
+				else if (rangeEn.equals("8"))//8:å±æ¦®å¥‘ç´„_ä¸å«é†«å¸«,åŠæ—¥:Remu_8
+					sqlRang =" PAYRANK IN ('F') AND PAYTITLE NOT IN ('CG','CH','CI','CJ','CK','DW') ";
+				else if (rangeEn.equals("9"))//9:è¯é†«å¥‘ç´„_ä¸å«åŠæ—¥:Remu_9
+					sqlRang =" PAYRANK IN ('5','6') ";
+				// å¾…é‡èª¿æ•´_æ‰¾åŸºæœ¬æª”.ç¬¦åˆåŸºæœ¬æ”¯æ‰£æœ‰FP0æ‰å…¥åˆ—
+				sqlBasPsn_Remu = "select PAYLVEFG, A.PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, PAYEMPDT, PAYSGNDT, PAYRSGDT, PAYBKID, PAYACNO, PAYGEDNO, PAYINFLG, PAYDPNO, PAYPSW, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PATRACOD, PATRADT, PAYTAXNO, PAYUPDID, PAYUPDTM, PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3, PAYRANK4, PAYCTCBACNO, PAYCTCBGEDNO, INSUAMT, PARETENTION, A.HID " + 
+							       "from " + this.tBasPsn+ " A " + 
+						          " inner join (SELECT payidno,hid FROM " + this.tBasPay+ " WHERE substr(paycode,1,3)='FP0' GROUP BY substr(paycode,1,3),payidno,hid ) b ON a.hid=b.hid AND a.payidno=b.payidno " +
+						          " where (PAYRSGDT IS NULL or PAYRSGDT='9999-12-31') AND PATRACOD not in (23,24) AND a.HID=? AND "+sqlRang+
+						          " ORDER BY PAYCARD  with ur";
+				log.info(me + "  ...********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
+			}				
+			// 4:[åˆªé™¤]å¾…é‡èª¿æ•´
+			else if ("DelRemuInTra".equals(selEn)) {
+				starttime = System.currentTimeMillis();
+//				effdt = StringUtil.nullToString(object_in_data.getString("effdt"));
+//				patradt = StringUtil.nullToString(object_in_data.getString("patradt"));
+//				rangeEn = StringUtil.nullToString(object_in_data.getString("rangeEn"));
+//				// pa.patrapay
+//				paramA = new ArrayList<Object>();
+//				paramA.add(patradt);
+//				paramA.add(hid);
+//				paramA.add(patradt);
+//				paramA.add(hid);
+//				params.add(paramA);
+//				batch_sql.add(sqlTraPay_31_Del);
+//				// pa.patrapsn
+//				paramA = new ArrayList<Object>();
+//				paramA.add(patradt);
+//				paramA.add(hid);
+//				params.add(paramA);
+//				batch_sql.add(sqlTraPsn_31_Del);
+//				da.startTransaction();
+//				try {
+//					log.info(batch_sql + " " + batch_sql + " params:" + params);
+//					da.batchupdatenocommit(batch_sql, params);
+//					da.commit();
+//					da.setAutoCommit(false);
+//					batch_sql.clear();
+//					params.clear();
+//				} catch (Exception e) {
+//					da.rollback();
+//					rtn = " fail, " + e;
+//					da.setAutoCommit(true);
+//					e.printStackTrace();
+//					log.info(me + " " + selNm + " " + e.toString());
+//				} finally {
+//
+//				}
+				log.info(me + "  ...********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 			}
 		} catch (Exception e) {
 			rtn = " fail, " + e;
@@ -7032,7 +7143,7 @@ public class SalNTDAO {
 		return rtn;
 	}
 
-	// NSalAry:·s¤ä¦©jsonary->array,tranum»P²§°Ê­Ó¤HÃö³s
+	// NSalAry:æ–°æ”¯æ‰£jsonary->array,tranumèˆ‡ç•°å‹•å€‹äººé—œé€£
 	private ArrayList<Patrapay> putTraPayJson(JSONArray NSalAry, HashMap nMap, int tranum, ArrayList<Patrapay> rtnAry) {
 		String me = ".putTraPayJson()";
 		Patrapay oneobj = null;
@@ -7041,18 +7152,18 @@ public class SalNTDAO {
 			JSONObject jsonObject = (JSONObject) obj;
 			oneobj = new Patrapay();
 
-			oneobj.setTranum(tranum); // 0©M²§°Ê¤ä¦©¦W²ÓÃöÁp
-			oneobj.setPayidno((String) nMap.get("payidno")); // 1¨­¤ÀÃÒ¦r¸¹
-			oneobj.setPatradt(java.sql.Date.valueOf((String) nMap.get("tradt"))); // 1µoÁ~¤é´Á
-			oneobj.setPaysort((String) nMap.get("sort")); // 3¤ÀÃş(N:·s O:­ì)
-			oneobj.setPaycode(jsonObject.getString("paycode")); // 4¤ä¦©¥N½X
-			oneobj.setPayamt(jsonObject.getInt("payamt")); // 5ª÷ÃB
-			oneobj.setPayauth(jsonObject.getString("payauth")); // 6±ÂÅv½X
-			oneobj.setPayiftax(jsonObject.getString("payiftax")); // 7¬O§_¦C¤J©Ò±o
+			oneobj.setTranum(tranum); // 0å’Œç•°å‹•æ”¯æ‰£åç´°é—œè¯
+			oneobj.setPayidno((String) nMap.get("payidno")); // 1èº«åˆ†è­‰å­—è™Ÿ
+			oneobj.setPatradt(java.sql.Date.valueOf((String) nMap.get("tradt"))); // 1ç™¼è–ªæ—¥æœŸ
+			oneobj.setPaysort((String) nMap.get("sort")); // 3åˆ†é¡(N:æ–° O:åŸ)
+			oneobj.setPaycode(jsonObject.getString("paycode")); // 4æ”¯æ‰£ä»£ç¢¼
+			oneobj.setPayamt(jsonObject.getInt("payamt")); // 5é‡‘é¡
+			oneobj.setPayauth(jsonObject.getString("payauth")); // 6æˆæ¬Šç¢¼
+			oneobj.setPayiftax(jsonObject.getString("payiftax")); // 7æ˜¯å¦åˆ—å…¥æ‰€å¾—
 			// oneobj.setPayupdtm( new java.sql.Timestamp(System.currentTimeMillis()));
-			// //8§ó§ï¤é´Á®É¶¡
-			oneobj.setPayflag(""); // 9³B²zºX¼Ğ
-			oneobj.setHid((String) nMap.get("hid")); // 10Âå°|§O
+			// //8æ›´æ”¹æ—¥æœŸæ™‚é–“
+			oneobj.setPayflag(""); // 9è™•ç†æ——æ¨™
+			oneobj.setHid((String) nMap.get("hid")); // 10é†«é™¢åˆ¥
 
 			rtnAry.add(oneobj);
 		}
@@ -7060,7 +7171,7 @@ public class SalNTDAO {
 		return rtnAry;
 	}
 
-	// bary:°ò¥»©ú²Ó¶°¦X,tranum»P²§°Ê­Ó¤HÃö³s,userid¿é¤J¤H­û
+	// bary:åŸºæœ¬æ˜ç´°é›†åˆ,tranumèˆ‡ç•°å‹•å€‹äººé—œé€£,useridè¼¸å…¥äººå“¡
 	private ArrayList<Patrapay> putTraPayAry(ArrayList<Pabaspay> bary, HashMap nMap, int tranum, String userid) {
 		String me = ".putTraPayAry()";
 		Patrapay oneobj = null;
@@ -7068,18 +7179,18 @@ public class SalNTDAO {
 		if (bary != null) {
 			for (Pabaspay data : bary) {
 				oneobj = new Patrapay();
-				oneobj.setTranum(tranum); // 0©M²§°Ê¤ä¦©¦W²ÓÃöÁp
-				oneobj.setPayidno(data.getPayidno()); // 1¨­¤ÀÃÒ¦r¸¹
-				oneobj.setPatradt(java.sql.Date.valueOf((String) nMap.get("tradt"))); // 1µoÁ~¤é´Á
-				oneobj.setPaysort((String) nMap.get("sort")); // 3¤ÀÃş(N:·s O:­ì)
-				oneobj.setPaycode(data.getPaycode()); // 4¤ä¦©¥N½X
-				oneobj.setPayamt(data.getPayamt()); // 5ª÷ÃB
-				oneobj.setPayauth(data.getPayauth()); // 6±ÂÅv½X
-				oneobj.setPayiftax(data.getPayiftax()); // 7¬O§_¦C¤J©Ò±o
+				oneobj.setTranum(tranum); // 0å’Œç•°å‹•æ”¯æ‰£åç´°é—œè¯
+				oneobj.setPayidno(data.getPayidno()); // 1èº«åˆ†è­‰å­—è™Ÿ
+				oneobj.setPatradt(java.sql.Date.valueOf((String) nMap.get("tradt"))); // 1ç™¼è–ªæ—¥æœŸ
+				oneobj.setPaysort((String) nMap.get("sort")); // 3åˆ†é¡(N:æ–° O:åŸ)
+				oneobj.setPaycode(data.getPaycode()); // 4æ”¯æ‰£ä»£ç¢¼
+				oneobj.setPayamt(data.getPayamt()); // 5é‡‘é¡
+				oneobj.setPayauth(data.getPayauth()); // 6æˆæ¬Šç¢¼
+				oneobj.setPayiftax(data.getPayiftax()); // 7æ˜¯å¦åˆ—å…¥æ‰€å¾—
 				// oneobj.setPayupdtm( new java.sql.Timestamp(System.currentTimeMillis()));
-				// //8§ó§ï¤é´Á®É¶¡
-				oneobj.setPayflag(""); // 9³B²zºX¼Ğ
-				oneobj.setHid(data.getHid()); // 10Âå°|§O
+				// //8æ›´æ”¹æ—¥æœŸæ™‚é–“
+				oneobj.setPayflag(""); // 9è™•ç†æ——æ¨™
+				oneobj.setHid(data.getHid()); // 10é†«é™¢åˆ¥
 
 				rtnAry.add(oneobj);
 			}
@@ -7087,91 +7198,91 @@ public class SalNTDAO {
 		return rtnAry;
 	}
 
-	// bpsnobj:°ò¥»ÀÉ,nMap:·s±ÔÁ~
+	// bpsnobj:åŸºæœ¬æª”,nMap:æ–°æ•˜è–ª
 	private Patrapsn putTraPsnObj(Pabaspsn bobj, HashMap nMap, int tranum, String userid) {
 		String me = ".putTraPsnObj()";
 		Patrapsn rtnobj = new Patrapsn();
 		if (bobj != null) {
 
-			rtnobj.setHid(bobj.getHid()); // 66Âå°|§O
-			rtnobj.setPatracod((int) nMap.get("tracd")); // 0²§°Ê¥N½X
-			rtnobj.setPatradt(java.sql.Date.valueOf((String) nMap.get("tradt"))); // 1µoÁ~¤é´Á
-			rtnobj.setPaeffdt(java.sql.Date.valueOf((String) nMap.get("effdt"))); // 2¥Í®Ä¤é´Á
-			rtnobj.setSalnum(0); // 3»è³æ½s¸¹
-			rtnobj.setPaylvefg(bobj.getPaylvefg()); // 4Â÷Â¾§_(Y/N)
-			rtnobj.setPayidno(bobj.getPayidno()); // 5¨­¤ÀÃÒ¦r¸¹
-			rtnobj.setPaycard(bobj.getPaycard()); // 6¥d¸¹
-			rtnobj.setPayempno(bobj.getPayempno()); // 7Â¾¸¹
-			rtnobj.setPaynamec(bobj.getPaynamec()); // 8©m¦W
-			rtnobj.setPaydept(bobj.getPaydept()); // 9³¡ªù¥N½X
-			rtnobj.setPaygovdt(bobj.getPaygovdt()); // 10ªì¤J¤½Â¾¤é´Á
-			rtnobj.setPayempdt(bobj.getPayempdt()); // 11¨ì°|¤é´Á
-			rtnobj.setPaysgndt(java.sql.Date.valueOf((String) nMap.get("sgndt"))); // 12²{Â¾¤é´Á
-			rtnobj.setPayrsgdt(bobj.getPayrsgdt()); // 13Â÷Â¾¤é´Á
-			rtnobj.setPayinflg(bobj.getPayinflg()); // 17«OÀI¸É§U¤ñ²v
-			rtnobj.setPaydpno(bobj.getPaydpno()); // 18°·«O¼Æ
-			rtnobj.setPaypflag("0"); // 19¦ÒÁZ
-			rtnobj.setPaytaxno(bobj.getPaytaxno()); // 48§ß¾i¤H¼Æ
+			rtnobj.setHid(bobj.getHid()); // 66é†«é™¢åˆ¥
+			rtnobj.setPatracod((int) nMap.get("tracd")); // 0ç•°å‹•ä»£ç¢¼
+			rtnobj.setPatradt(java.sql.Date.valueOf((String) nMap.get("tradt"))); // 1ç™¼è–ªæ—¥æœŸ
+			rtnobj.setPaeffdt(java.sql.Date.valueOf((String) nMap.get("effdt"))); // 2ç”Ÿæ•ˆæ—¥æœŸ
+			rtnobj.setSalnum(0); // 3é¤‰å–®ç·¨è™Ÿ
+			rtnobj.setPaylvefg(bobj.getPaylvefg()); // 4é›¢è·å¦(Y/N)
+			rtnobj.setPayidno(bobj.getPayidno()); // 5èº«åˆ†è­‰å­—è™Ÿ
+			rtnobj.setPaycard(bobj.getPaycard()); // 6å¡è™Ÿ
+			rtnobj.setPayempno(bobj.getPayempno()); // 7è·è™Ÿ
+			rtnobj.setPaynamec(bobj.getPaynamec()); // 8å§“å
+			rtnobj.setPaydept(bobj.getPaydept()); // 9éƒ¨é–€ä»£ç¢¼
+			rtnobj.setPaygovdt(bobj.getPaygovdt()); // 10åˆå…¥å…¬è·æ—¥æœŸ
+			rtnobj.setPayempdt(bobj.getPayempdt()); // 11åˆ°é™¢æ—¥æœŸ
+			rtnobj.setPaysgndt(java.sql.Date.valueOf((String) nMap.get("sgndt"))); // 12ç¾è·æ—¥æœŸ
+			rtnobj.setPayrsgdt(bobj.getPayrsgdt()); // 13é›¢è·æ—¥æœŸ
+			rtnobj.setPayinflg(bobj.getPayinflg()); // 17ä¿éšªè£œåŠ©æ¯”ç‡
+			rtnobj.setPaydpno(bobj.getPaydpno()); // 18å¥ä¿æ•¸
+			rtnobj.setPaypflag("0"); // 19è€ƒç¸¾
+			rtnobj.setPaytaxno(bobj.getPaytaxno()); // 48æ‰¶é¤Šäººæ•¸
 			rtnobj.setPaypsw(bobj.getPaypsw()); // 54PASSWORD
-			rtnobj.setPayctcbacno(bobj.getPayctcbacno()); // 63Á~¬z±b¸¹
-			rtnobj.setPayctcbgedno(bobj.getPayctcbgedno()); // 64¤½Àx±b¸¹
-			rtnobj.setInsuamt(bobj.getInsuamt()); // 65§ë«Oª÷ÃB
-			rtnobj.setPayupdid(userid); // 49 §ó§ïªÌ
-			rtnobj.setTranum(tranum); // 52©M²§°Ê¤ä¦©¦W²ÓÃöÁp
+			rtnobj.setPayctcbacno(bobj.getPayctcbacno()); // 63è–ªæ´¥å¸³è™Ÿ
+			rtnobj.setPayctcbgedno(bobj.getPayctcbgedno()); // 64å…¬å„²å¸³è™Ÿ
+			rtnobj.setInsuamt(bobj.getInsuamt()); // 65æŠ•ä¿é‡‘é¡
+			rtnobj.setPayupdid(userid); // 49 æ›´æ”¹è€…
+			rtnobj.setTranum(tranum); // 52å’Œç•°å‹•æ”¯æ‰£åç´°é—œè¯
 			// rtnobj.setPayupdtm( new java.sql.Timestamp(System.currentTimeMillis())); //50
-			// §ó§ï¤é´Á®É¶¡
+			// æ›´æ”¹æ—¥æœŸæ™‚é–“
 
-			rtnobj.setPaytitle((String) nMap.get("title")); // 20·s--Â¾ºÙ¥N½X
-			rtnobj.setPayrnk2n((String) nMap.get("rnk2n")); // 21 Â¾µ¥
-			rtnobj.setPayrank3((int) nMap.get("rank3")); // 22 ¥»¥\§O
-			rtnobj.setPaydegr2((int) nMap.get("degr2")); // 23 ¯Å§O
-			rtnobj.setPaydegre((int) nMap.get("degre")); // 24 ­ÄÂI
-			rtnobj.setPayrank((String) nMap.get("rank")); // 25 ¶¥§O¥N½X
-			rtnobj.setPayrank2((String) nMap.get("rank2")); // 26 Â¾µ¥(Åv²z)
-			rtnobj.setPayrankc((String) nMap.get("rankc")); // 27 ¥DºŞ(Åv²z)
-			rtnobj.setPayrank4((int) nMap.get("rank4")); // 62 ¾A¥Î±M·~¥[µ¹ªí
-			rtnobj.setPaymonno((int) nMap.get("monno")); // 33 ¸ÉµoÃº¦^¤ë¼Æ
-			rtnobj.setPaydayno((int) nMap.get("dayno")); // 34 ¸ÉµoÃº¦^¤é¼Æ
-			rtnobj.setPaypfsp1((int) nMap.get("pfsp1")); // 30 ÃB¥~ÂI¼Æ1
-			rtnobj.setPaypfsp2((int) nMap.get("pfsp2")); // 31 ÃB¥~ÂI¼Æ2
-			rtnobj.setPaypfsp3((int) nMap.get("pfsp3")); // 32 ÃB¥~ÂI¼Æ3
-			rtnobj.setPayexpfkey1((int) nMap.get("expfkey1")); // 58 ÃB¥~ÂI¼Æ1¥N½X
-			rtnobj.setPayexpfkey2((int) nMap.get("expfkey2")); // 59 ÃB¥~ÂI¼Æ2¥N½X
-			rtnobj.setPayexpfkey3((int) nMap.get("expfkey3")); // 60 ÃB¥~ÂI¼Æ3¥N½X
+			rtnobj.setPaytitle((String) nMap.get("title")); // 20æ–°--è·ç¨±ä»£ç¢¼
+			rtnobj.setPayrnk2n((String) nMap.get("rnk2n")); // 21 è·ç­‰
+			rtnobj.setPayrank3((int) nMap.get("rank3")); // 22 æœ¬åŠŸåˆ¥
+			rtnobj.setPaydegr2((int) nMap.get("degr2")); // 23 ç´šåˆ¥
+			rtnobj.setPaydegre((int) nMap.get("degre")); // 24 ä¿¸é»
+			rtnobj.setPayrank((String) nMap.get("rank")); // 25 éšåˆ¥ä»£ç¢¼
+			rtnobj.setPayrank2((String) nMap.get("rank2")); // 26 è·ç­‰(æ¬Šç†)
+			rtnobj.setPayrankc((String) nMap.get("rankc")); // 27 ä¸»ç®¡(æ¬Šç†)
+			rtnobj.setPayrank4((int) nMap.get("rank4")); // 62 é©ç”¨å°ˆæ¥­åŠ çµ¦è¡¨
+			rtnobj.setPaymonno((int) nMap.get("monno")); // 33 è£œç™¼ç¹³å›æœˆæ•¸
+			rtnobj.setPaydayno((int) nMap.get("dayno")); // 34 è£œç™¼ç¹³å›æ—¥æ•¸
+			rtnobj.setPaypfsp1((int) nMap.get("pfsp1")); // 30 é¡å¤–é»æ•¸1
+			rtnobj.setPaypfsp2((int) nMap.get("pfsp2")); // 31 é¡å¤–é»æ•¸2
+			rtnobj.setPaypfsp3((int) nMap.get("pfsp3")); // 32 é¡å¤–é»æ•¸3
+			rtnobj.setPayexpfkey1((int) nMap.get("expfkey1")); // 58 é¡å¤–é»æ•¸1ä»£ç¢¼
+			rtnobj.setPayexpfkey2((int) nMap.get("expfkey2")); // 59 é¡å¤–é»æ•¸2ä»£ç¢¼
+			rtnobj.setPayexpfkey3((int) nMap.get("expfkey3")); // 60 é¡å¤–é»æ•¸3ä»£ç¢¼
 			
-			rtnobj.setPaypfdoc(bobj.getPaypfdoc()); // 28 °ªºa/«Ìºa--±M¶Ô°ò¥»ÃB«×
-			rtnobj.setPacsflag(bobj.getPacsflag()); // 29 ¤u§@¼úª÷(Y/N)			
-			rtnobj.setPaotitle(bobj.getPaytitle()); // 35­ì--Â¾ºÙ¥N½X
-			rtnobj.setPaornk2n(bobj.getPayrnk2n()); // 36 Â¾µ¥
-			rtnobj.setPaorank3(bobj.getPayrank3()); // 37 ¥»¥\§O
-			rtnobj.setPaodegr2(bobj.getPaydegr2()); // 38 ¯Å§O
-			rtnobj.setPaodegre(bobj.getPaydegre()); // 39 ­ÄÂI
-			rtnobj.setPaorank(bobj.getPayrank()); // 40 ¶¥§O¥N½X
-			rtnobj.setPaorank2(bobj.getPayrank2()); // 41 Â¾µ¥(Åv²z)
-			rtnobj.setPaorankc(bobj.getPayrank2()); // 42 ¥DºŞ(Åv²z)
-			rtnobj.setPaorank4(bobj.getPayrank4()); // 61 ¾A¥Î±M·~¥[µ¹ªí
-			rtnobj.setPaopfdoc(bobj.getPaypfdoc()); // 43 °ªºa/«Ìºa--±M¶Ô°ò¥»ÃB«×
-			rtnobj.setPaocsfla(bobj.getPacsflag()); // 44 ¤u§@¼úª÷(Y/N)
-			rtnobj.setPaopfsp1(bobj.getPaypfsp1()); // 45 ÃB¥~ÂI¼Æ1
-			rtnobj.setPaopfsp2(bobj.getPaypfsp2()); // 46 ÃB¥~ÂI¼Æ2
-			rtnobj.setPaopfsp3(bobj.getPaypfsp3()); // 47 ÃB¥~ÂI¼Æ3
-			rtnobj.setPaoexpfkey1(bobj.getPayexpfkey1()); // 55 ÃB¥~ÂI¼Æ1¥N½X
-			rtnobj.setPaoexpfkey2(bobj.getPayexpfkey2()); // 56 ÃB¥~ÂI¼Æ2¥N½X
-			rtnobj.setPaoexpfkey3(bobj.getPayexpfkey3()); // 57 ÃB¥~ÂI¼Æ3¥N½X
+			rtnobj.setPaypfdoc(bobj.getPaypfdoc()); // 28 é«˜æ¦®/å±æ¦®--å°ˆå‹¤åŸºæœ¬é¡åº¦
+			rtnobj.setPacsflag(bobj.getPacsflag()); // 29 å·¥ä½œçé‡‘(Y/N)			
+			rtnobj.setPaotitle(bobj.getPaytitle()); // 35åŸ--è·ç¨±ä»£ç¢¼
+			rtnobj.setPaornk2n(bobj.getPayrnk2n()); // 36 è·ç­‰
+			rtnobj.setPaorank3(bobj.getPayrank3()); // 37 æœ¬åŠŸåˆ¥
+			rtnobj.setPaodegr2(bobj.getPaydegr2()); // 38 ç´šåˆ¥
+			rtnobj.setPaodegre(bobj.getPaydegre()); // 39 ä¿¸é»
+			rtnobj.setPaorank(bobj.getPayrank()); // 40 éšåˆ¥ä»£ç¢¼
+			rtnobj.setPaorank2(bobj.getPayrank2()); // 41 è·ç­‰(æ¬Šç†)
+			rtnobj.setPaorankc(bobj.getPayrank2()); // 42 ä¸»ç®¡(æ¬Šç†)
+			rtnobj.setPaorank4(bobj.getPayrank4()); // 61 é©ç”¨å°ˆæ¥­åŠ çµ¦è¡¨
+			rtnobj.setPaopfdoc(bobj.getPaypfdoc()); // 43 é«˜æ¦®/å±æ¦®--å°ˆå‹¤åŸºæœ¬é¡åº¦
+			rtnobj.setPaocsfla(bobj.getPacsflag()); // 44 å·¥ä½œçé‡‘(Y/N)
+			rtnobj.setPaopfsp1(bobj.getPaypfsp1()); // 45 é¡å¤–é»æ•¸1
+			rtnobj.setPaopfsp2(bobj.getPaypfsp2()); // 46 é¡å¤–é»æ•¸2
+			rtnobj.setPaopfsp3(bobj.getPaypfsp3()); // 47 é¡å¤–é»æ•¸3
+			rtnobj.setPaoexpfkey1(bobj.getPayexpfkey1()); // 55 é¡å¤–é»æ•¸1ä»£ç¢¼
+			rtnobj.setPaoexpfkey2(bobj.getPayexpfkey2()); // 56 é¡å¤–é»æ•¸2ä»£ç¢¼
+			rtnobj.setPaoexpfkey3(bobj.getPayexpfkey3()); // 57 é¡å¤–é»æ•¸3ä»£ç¢¼
 
-			rtnobj.setPaybkid(bobj.getPaybkid()); // 14»È¦æ±b¸¹¬ì¥Øx
-			rtnobj.setPayacno(bobj.getPayacno()); // 15»È¦æ±b¸¹x
-			rtnobj.setPaygedno(bobj.getPaygedno()); // 16¤½Àx±b¸¹x
-			rtnobj.setPayflag(""); // 51³B²zºX¼Ğx
-			rtnobj.setUpmastdt(""); // 53¸ê®Æ¹L±b¦Ü¥DÀÉx
+			rtnobj.setPaybkid(bobj.getPaybkid()); // 14éŠ€è¡Œå¸³è™Ÿç§‘ç›®x
+			rtnobj.setPayacno(bobj.getPayacno()); // 15éŠ€è¡Œå¸³è™Ÿx
+			rtnobj.setPaygedno(bobj.getPaygedno()); // 16å…¬å„²å¸³è™Ÿx
+			rtnobj.setPayflag(""); // 51è™•ç†æ——æ¨™x
+			rtnobj.setUpmastdt(""); // 53è³‡æ–™éå¸³è‡³ä¸»æª”x
 		}
 		return rtnobj;
 
 	}
 
 	/**
-	 * À³µ|³B²z in_data:(1:[¤Jµ|]Âà±bµoÁ~©ú²Ó,salnum) 2[§R°£]Âà±bµoÁ~©ú²Óyy¦~/mm¤ë/catgÂà±b¶µ¥Ø
-	 * 5¨­¤ÀÃÒÀË¬d¤Î¬y¤ô¸¹½s¸¹:yy¦~ 4[§R°£]§å¦¸¤H¤u¤Jµ| 6²£¥Í´CÅé¥Ó³øÀÉ ¶Ç¥X:rtn¤å¦r°T®§
+	 * æ‡‰ç¨…è™•ç† in_data:(1:[å…¥ç¨…]è½‰å¸³ç™¼è–ªæ˜ç´°,salnum) 2[åˆªé™¤]è½‰å¸³ç™¼è–ªæ˜ç´°yyå¹´/mmæœˆ/catgè½‰å¸³é …ç›®
+	 * 5èº«åˆ†è­‰æª¢æŸ¥åŠæµæ°´è™Ÿç·¨è™Ÿ:yyå¹´ 4[åˆªé™¤]æ‰¹æ¬¡äººå·¥å…¥ç¨… 6ç”¢ç”Ÿåª’é«”ç”³å ±æª” å‚³å‡º:rtnæ–‡å­—è¨Šæ¯
 	 **/
 	public String handelTax(String in_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".handelTax(),userid = " + userid;
@@ -7209,11 +7320,11 @@ public class SalNTDAO {
 				+ "values(?, ?, ?, ?, ?, ?,?, ?,current timestamp);";
 		String sqlTaxTran_del = "delete from " + this.tTaxTran
 				+ " where PAYEAR = ? and PAYMONTH=? and PAYCATG =? and HID= ? ";
-		// §Ç¸¹²MªÅ
+		// åºè™Ÿæ¸…ç©º
 		String sqlSerno_upd = " update " + this.tTaxPsn
 				+ " set (PAYSERNO,PAYSERNO9A,PAYSERNO9B,PAYSERNO92,PAYSERNO91,PAYSERNO51,PAYSEREAMT) = (0,0,0,0,0,0,0) "
 				+ " where PAYEAR =? and HID=? ";
-		// ¦ÛÃº°h¥ğª÷
+		// è‡ªç¹³é€€ä¼‘é‡‘
 		String sqlSelfRetir_2A0 = " select A.PAYIDNO,SUM(payamt) AS AMT " + " from " + this.tDatPsn + " A "
 				+ " LEFT OUTER JOIN " + this.tDatPay
 				+ " B ON a.salnum=b.salnum AND a.payidno=b.payidno AND a.hid=b.HID "
@@ -7222,14 +7333,14 @@ public class SalNTDAO {
 				+ " LEFT OUTER JOIN " + this.tDatPay
 				+ " B ON a.salnum=b.salnum AND a.payidno=b.payidno AND a.hid=b.HID "
 				+ " where YEAR(a.paybank)= ? AND a.HID=? and paycode IN ('VD060','VD069') GROUP BY a.payidno with ur";
-		// °h¼¾FD04 FD07
+		// é€€æ’«FD04 FD07
 		String sqlRetir = " select A.PAYIDNO,SUM(payamt) AS AMT " + " from " + this.tDatPsn + " A "
 				+ " LEFT OUTER JOIN " + this.tDatPay
 				+ " B ON a.salnum=b.salnum AND a.payidno=b.payidno AND a.hid=b.HID "
 				+ " where YEAR(a.paybank)= ? AND a.HID=? and paycode IN ('FD040','FD049','FD070','FD079') "
 				+ " AND a.payrank IN ('1','2','3','8','9') and a.paybank >='" + Globals.gPensionFund
 				+ "' GROUP BY a.payidno with ur";
-		// §ä¸Ó¦~­û¤u®æ¦¡50Á`©Ò±o,­Y¬°0¤£¦C¤Jserno
+		// æ‰¾è©²å¹´å“¡å·¥æ ¼å¼50ç¸½æ‰€å¾—,è‹¥ç‚º0ä¸åˆ—å…¥serno
 		String sqlTax_50 = "select a.payidno,b.amt cash,c.amt tran,COALESCE(b.amt,0)+COALESCE(c.amt,0) both " + "from "
 				+ tTaxPsn + " A "
 				+ " left outer join (select PAYEAR,PAYIDNO,hid, COALESCE(sum(PAYTAXPAY),0) - COALESCE(sum(PAYTAXDEDUCT),0) AS AMT "
@@ -7239,20 +7350,20 @@ public class SalNTDAO {
 				+ "from " + tTaxTran
 				+ " GROUP BY PAYEAR,PAYIDNO,hid) c ON a.payidno=c.payidno AND a.hid=c.hid AND a.payear=c.payear "
 				+ " where a.PAYEAR=? AND a.HID=? with ur";
-		// §ä¸Ó¦~­û¤u®æ¦¡50Á`©Ò±o,­Y¬°0¤£¦C¤Jserno,§ó·s¬y¤ô¸¹
+		// æ‰¾è©²å¹´å“¡å·¥æ ¼å¼50ç¸½æ‰€å¾—,è‹¥ç‚º0ä¸åˆ—å…¥serno,æ›´æ–°æµæ°´è™Ÿ
 		String sqlTax_N50 = "select a.payidno,b.amt cash " + "from " + tTaxPsn + " A "
 				+ " inner join (select PAYEAR,PAYIDNO,hid, COALESCE(sum(PAYTAXPAY),0) - COALESCE(sum(PAYTAXDEDUCT),0) AS AMT "
 				+ "from " + tTaxCash
 				+ " where PAYFORMAT = ? GROUP BY PAYEAR,PAYIDNO,hid) b ON a.payidno=b.payidno AND a.hid=b.hid AND a.payear=b.payear "
 				+ " where a.PAYEAR=? AND a.HID=?  with ur";
-		// §ó·s¨­¤ÀÀË¬d½X,¬y¤ô¸¹PAYSERNO
+		// æ›´æ–°èº«åˆ†æª¢æŸ¥ç¢¼,æµæ°´è™ŸPAYSERNO
 		String sqlTaxPsnSer_upd = "update " + this.tTaxPsn
 				+ " set (PAYIDFLG,PAYSERNO,PAYSEREAMT)=(?,?,?) where PAYIDNO=? and PAYEAR=? and HID=? ";
-		// ´CÅé¥Ó³ø
+		// åª’é«”ç”³å ±
 		String sqlTax_Medium = "select a.PAYIDNO,PAYNAMEC,PAYBEGIN,PAYEND,PAYSERNO,PAYIDFLG,PAYADDRS,PAYSEREAMT "
 				+ "from " + tTaxPsn + " A " + "left outer join " + tBasAdr + " B ON a.payidno=b.payidno "
 				+ " where a.PAYEAR=? AND a.HID=? AND PAYSERNO<>0 ORDER BY PAYSERNO with ur";
-		// §ä¸Ó¦~­û¤u®æ¦¡50Á`©Ò±o
+		// æ‰¾è©²å¹´å“¡å·¥æ ¼å¼50ç¸½æ‰€å¾—
 		String sqlTaxPay_50 = "select a.payidno,'50' payformat,COALESCE(b.PAY,0)+COALESCE(c.PAY,0) paytaxpay,COALESCE(b.DEDUCT,0)+COALESCE(c.DEDUCT,0) paytaxdeduct "
 				+ "from " + tTaxPsn + " A "
 				+ " left outer join (select PAYEAR,PAYIDNO,hid, COALESCE(sum(PAYTAXPAY),0) PAY, COALESCE(sum(PAYTAXDEDUCT),0) DEDUCT "
@@ -7262,17 +7373,17 @@ public class SalNTDAO {
 				+ "from " + tTaxTran
 				+ " GROUP BY PAYEAR,PAYIDNO,hid) c ON a.payidno=c.payidno AND a.hid=c.hid AND a.payear=c.payear "
 				+ " where a.PAYEAR=? AND a.HID=? with ur";
-		// §ä¸Ó¦~­û¤u®æ¦¡«D50Á`©Ò±o ¨Ìpayformat group
+		// æ‰¾è©²å¹´å“¡å·¥æ ¼å¼é50ç¸½æ‰€å¾— ä¾payformat group
 		String sqlTaxPay_N50 = "select a.payidno,b.PAYFORMAT,b.PAYCATG,COALESCE(b.PAY,0) paytaxpay,COALESCE(b.DEDUCT,0) paytaxdeduct "
 				+ "from " + tTaxPsn + " A "
 				+ " inner join (select PAYEAR,PAYIDNO,hid,PAYFORMAT,PAYCATG, COALESCE(sum(PAYTAXPAY),0) PAY, COALESCE(sum(PAYTAXDEDUCT),0) DEDUCT "
 				+ "from " + tTaxCash
 				+ " where PAYFORMAT <>'50' GROUP BY PAYEAR,PAYIDNO,hid,PAYFORMAT,PAYCATG) b ON a.payidno=b.payidno AND a.hid=b.hid AND a.payear=b.payear "
 				+ " where a.PAYEAR=? AND a.HID=? ORDER BY a.payidno,b.payformat with ur";
-		// ¨Ì¶Ç²¼»s²¼¸¹§R°£
+		// ä¾å‚³ç¥¨è£½ç¥¨è™Ÿåˆªé™¤
 		String sqlTaxCashTask_del = "delete from " + this.tTaxCash + " where PAYCITATION = ? and HID= ? ";
 
-		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql ¸ê®Æ
+		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql è³‡æ–™
 		params = new ArrayList<Object>();
 		ArrayList<Object> paramA = new ArrayList<Object>();
 
@@ -7280,37 +7391,37 @@ public class SalNTDAO {
 		String strFormat = "";
 
 		String strCitation = "";
-		String selEn = ""; // À³µ|³B²z¶µ¥Ø
-		int salnum = 0; // »è³æ½s¸¹
-		String strBankDT = "";// µoÁ~¤é´Á
-		int intyear = 0; // µoÁ~¦~
-		int intMonth = 0; // µoÁ~¤ë
-		String strPayend = "";// ©Ò±oµ²§ô¤é´Á
+		String selEn = ""; // æ‡‰ç¨…è™•ç†é …ç›®
+		int salnum = 0; // é¤‰å–®ç·¨è™Ÿ
+		String strBankDT = "";// ç™¼è–ªæ—¥æœŸ
+		int intyear = 0; // ç™¼è–ªå¹´
+		int intMonth = 0; // ç™¼è–ªæœˆ
+		String strPayend = "";// æ‰€å¾—çµæŸæ—¥æœŸ
 		Date nowdate3 = null;
-		int intCatg = 0; // Âà±b½s¸¹
-		int intserno = 0; // ¬y¤ô¸¹
-		String strIdflg = ""; // ¨­¤ÀÃÒÀË¬d½Xµù°O--F¥~Äy E¦³»~
-		String tmpA = ""; // ÃÒ¸¹§O
-		String tmpB = ""; // ¦@¥ÎÄæ¦ì1
-		String tmpC = ""; // ¬y¤ô¸¹°Ï¤À
-		String tmpD = ""; // ³Ò¤u¦ÛÃº°h¥ğª÷ ¦@¥ÎÄæ¦ì2
-		String tmpE = ""; // ©Ò±o©ÒÄİ´Á¶¡
+		int intCatg = 0; // è½‰å¸³ç·¨è™Ÿ
+		int intserno = 0; // æµæ°´è™Ÿ
+		String strIdflg = ""; // èº«åˆ†è­‰æª¢æŸ¥ç¢¼è¨»è¨˜--Få¤–ç± Eæœ‰èª¤
+		String tmpA = ""; // è­‰è™Ÿåˆ¥
+		String tmpB = ""; // å…±ç”¨æ¬„ä½1
+		String tmpC = ""; // æµæ°´è™Ÿå€åˆ†
+		String tmpD = ""; // å‹å·¥è‡ªç¹³é€€ä¼‘é‡‘ å…±ç”¨æ¬„ä½2
+		String tmpE = ""; // æ‰€å¾—æ‰€å±¬æœŸé–“
 		String tmp = ""; //
-		String tmpF = ""; // ¾Ì³æ¶ñµo¤è¦¡
+		String tmpF = ""; // æ†‘å–®å¡«ç™¼æ–¹å¼
 		String tmpG = ""; //
-		String tmpH = ""; // µ|°ÈÃÑ§O½X
-		String tmpI = ""; // ¿ù»~µù°O
-		String tmpAddr = ""; // ¦a§}
+		String tmpH = ""; // ç¨…å‹™è­˜åˆ¥ç¢¼
+		String tmpI = ""; // éŒ¯èª¤è¨»è¨˜
+		String tmpAddr = ""; // åœ°å€
 		String tmpFormat = "";
-		String tmpEmpNO = ""; // Â¾¸¹
+		String tmpEmpNO = ""; // è·è™Ÿ
 		int tmpPAYCATG = 0;
 		int tmpsub = 0;
 		int tmptax = 0;
-		int intRetir = 0; // ¦ÛÃº°h¥ğª÷+°h¼¾Â÷Â¾ª÷
-		Pataxpsn taxpsnobj = null; // ©Ò±oµ|­Ó¤Hobj
-		Padatpay datpayobj = null; // ¤ë¤ä©ú²Óobj
-		Padatpsn datpsnobj = null; // ¤ë¤ä­Ó¤Hobj
-		ArrayList<Padatpay> datpayAry = new ArrayList<Padatpay>(); // ¤ä¦©¶°¦X
+		int intRetir = 0; // è‡ªç¹³é€€ä¼‘é‡‘+é€€æ’«é›¢è·é‡‘
+		Pataxpsn taxpsnobj = null; // æ‰€å¾—ç¨…å€‹äººobj
+		Padatpay datpayobj = null; // æœˆæ”¯æ˜ç´°obj
+		Padatpsn datpsnobj = null; // æœˆæ”¯å€‹äººobj
+		ArrayList<Padatpay> datpayAry = new ArrayList<Padatpay>(); // æ”¯æ‰£é›†åˆ
 		HashMap sumListMap = new HashMap();
 		HashMap datpayMap = new HashMap();
 		HashMap taxpsnMap = new HashMap();
@@ -7329,7 +7440,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -7340,22 +7451,22 @@ public class SalNTDAO {
 			JSONObject object_in_data = JSONObject.fromObject(in_data);
 
 			selEn = StringUtil.nullToString(object_in_data.getString("selEn"));
-			// 1[¤Jµ|]Âà±bµoÁ~©ú²Ó
+			// 1[å…¥ç¨…]è½‰å¸³ç™¼è–ªæ˜ç´°
 			if ("InTran".equals(selEn)) {
 				starttime = System.currentTimeMillis();
 				salnum = object_in_data.getInt("salnum");
-				// ¨Ì»è³æ½s¸¹,¬d¸ßµoÁ~¤é´Á
+				// ä¾é¤‰å–®ç·¨è™Ÿ,æŸ¥è©¢ç™¼è–ªæ—¥æœŸ
 				paramA.add(salnum);
-				log.info(me + "  1.¨Ì»è³æ½s¸¹,¬d¸ßµoÁ~¤é´Á" + sqlbankdt_inq + "...params:" + paramA.toString());
+				log.info(me + "  1.ä¾é¤‰å–®ç·¨è™Ÿ,æŸ¥è©¢ç™¼è–ªæ—¥æœŸ" + sqlbankdt_inq + "...params:" + paramA.toString());
 				rs = da.query(sqlbankdt_inq, paramA);
 				while (rs.next()) {
 					strBankDT = StringUtil.nullToString(rs.getString("PAYBANK"));
 				}
-				log.info(me + "  1.¨Ì»è³æ½s¸¹,¬d¸ßµoÁ~¤é´Á=" + strBankDT);
+				log.info(me + "  1.ä¾é¤‰å–®ç·¨è™Ÿ,æŸ¥è©¢ç™¼è–ªæ—¥æœŸ=" + strBankDT);
 				if (!"".equals(strBankDT)) {
 					intyear = Integer.parseInt(strBankDT.substring(0, 4));
 					intMonth = Integer.parseInt(strBankDT.substring(5, 7));
-					// ©Ò±oµ²§ô¤é´Á
+					// æ‰€å¾—çµæŸæ—¥æœŸ
 					String nowdate2 = strBankDT.substring(0, 4) + "-" + strBankDT.substring(5, 7) + "-" + "01";
 					nowdate3 = DateUtil.StringToDate(nowdate2);
 					Calendar calendar = Calendar.getInstance();
@@ -7364,12 +7475,12 @@ public class SalNTDAO {
 					calendar.add(Calendar.DATE, -1);
 					strPayend = formatter.format(calendar.getTime());
 				}
-				// §äÂà±b©Ò±oµ|,¸Ó¦~¤ëªº³Ì¤j½s¸¹
+				// æ‰¾è½‰å¸³æ‰€å¾—ç¨…,è©²å¹´æœˆçš„æœ€å¤§ç·¨è™Ÿ
 				paramA = new ArrayList<Object>();
 				paramA.add(intyear);
 				paramA.add(intMonth);
 				paramA.add(hid);
-				log.info(me + "  2.§äÂà±b©Ò±oµ|,¸Ó¦~¤ëªº³Ì¤j½s¸¹" + sqlgetCatgBytra + "...params:" + paramA.toString());
+				log.info(me + "  2.æ‰¾è½‰å¸³æ‰€å¾—ç¨…,è©²å¹´æœˆçš„æœ€å¤§ç·¨è™Ÿ" + sqlgetCatgBytra + "...params:" + paramA.toString());
 				rs = da.query(sqlgetCatgBytra, paramA);
 				intCatg = 0;
 				while (rs.next()) {
@@ -7377,15 +7488,15 @@ public class SalNTDAO {
 						intCatg = Integer.parseInt(rs.getString("CATG")) + 1;
 					}
 				}
-				log.info(me + "  2.§äÂà±b©Ò±oµ|,¸Ó¦~¤ëªº³Ì¤j½s¸¹:" + intCatg);
+				log.info(me + "  2.æ‰¾è½‰å¸³æ‰€å¾—ç¨…,è©²å¹´æœˆçš„æœ€å¤§ç·¨è™Ÿ:" + intCatg);
 
-				// ¨Ì¦~,§ä©Ò±oµ|­Ó¤H
+				// ä¾å¹´,æ‰¾æ‰€å¾—ç¨…å€‹äºº
 				paramA = new ArrayList<Object>();
 				paramA.add(intyear);
 				paramA.add(hid);
-				log.info(me + "  3.¨Ì¦~,§ä©Ò±oµ|­Ó¤H " + sqlTaxPsn + "...params:" + paramA.toString());
+				log.info(me + "  3.ä¾å¹´,æ‰¾æ‰€å¾—ç¨…å€‹äºº " + sqlTaxPsn + "...params:" + paramA.toString());
 				result = da.arraylistbyQuery(sqlTaxPsn, paramA, META_TYPE);
-				log.info(me + "  3.¨Ì¦~,§ä©Ò±oµ|­Ó¤H,size: " + result.size());
+				log.info(me + "  3.ä¾å¹´,æ‰¾æ‰€å¾—ç¨…å€‹äºº,size: " + result.size());
 				if (result.size() > 0) {
 					for (Map<String, Object> data : result) {
 						taxpsnobj = new Pataxpsn();
@@ -7395,13 +7506,13 @@ public class SalNTDAO {
 					}
 				}
 
-				// ¨Ì»è³æ½s¸¹,§ä¤ë¤ä©ú²Ó
+				// ä¾é¤‰å–®ç·¨è™Ÿ,æ‰¾æœˆæ”¯æ˜ç´°
 				paramA = new ArrayList<Object>();
 				paramA.add(salnum);
 				paramA.add(hid);
-				log.info(me + "  3-1.¨Ì»è³æ½s¸¹,§ä¤ë¤ä©ú²Ó " + sqlDatPay + "...params:" + paramA.toString());
+				log.info(me + "  3-1.ä¾é¤‰å–®ç·¨è™Ÿ,æ‰¾æœˆæ”¯æ˜ç´° " + sqlDatPay + "...params:" + paramA.toString());
 				result = da.arraylistbyQuery(sqlDatPay, paramA, META_TYPE);
-				log.info(me + "  3-1.¨Ì»è³æ½s¸¹,§ä¤ë¤ä©ú²Ó,size: " + result.size());
+				log.info(me + "  3-1.ä¾é¤‰å–®ç·¨è™Ÿ,æ‰¾æœˆæ”¯æ˜ç´°,size: " + result.size());
 				if (result.size() > 0) {
 					strIdno = "";
 					datpayAry = new ArrayList<Padatpay>();
@@ -7418,27 +7529,27 @@ public class SalNTDAO {
 					datpayMap.put(strIdno, datpayAry);
 				}
 
-				// ¨Ì»è³æ½s¸¹,§äµoÁ~©ú²Ó_­Ó¤H
+				// ä¾é¤‰å–®ç·¨è™Ÿ,æ‰¾ç™¼è–ªæ˜ç´°_å€‹äºº
 				paramA.clear();
 				paramA.add(salnum);
 				paramA.add(salnum);
 				paramA.add(hid);
-				log.info(me + "  4.¨Ì»è³æ½s¸¹,§äµoÁ~©ú²Ó_­Ó¤H " + sqlDatPsn + "...params:" + paramA.toString());
+				log.info(me + "  4.ä¾é¤‰å–®ç·¨è™Ÿ,æ‰¾ç™¼è–ªæ˜ç´°_å€‹äºº " + sqlDatPsn + "...params:" + paramA.toString());
 				result = da.arraylistbyQuery(sqlDatPsn, paramA, META_TYPE);
-				log.info(me + "  4.¨Ì»è³æ½s¸¹,§äµoÁ~©ú²Ó_­Ó¤H,size: " + result.size());
+				log.info(me + "  4.ä¾é¤‰å–®ç·¨è™Ÿ,æ‰¾ç™¼è–ªæ˜ç´°_å€‹äºº,size: " + result.size());
 				if (result.size() > 0) {
 					for (Map<String, Object> data : result) {
 						datpsnobj = new Padatpsn();
 						PropertyUtils.copyProperties(datpsnobj, data);
 						strIdno = (String) data.get("payidno");
 						// log.info(me+" 4-1.data.IDNO: " + strIdno);
-						// §ä¤ë¤ä©ú²Óarray
+						// æ‰¾æœˆæ”¯æ˜ç´°array
 						datpayAry = (ArrayList<Padatpay>) datpayMap.get(strIdno);
-						// ­pºâÀ³µ|©Ò±o
+						// è¨ˆç®—æ‡‰ç¨…æ‰€å¾—
 						sumListMap = null;
 						if (datpayobj != null) {
 							/*
-							 * log.info(me+"  4.­pºâÀ³µ|©Ò±o,strIdno: " + strIdno); if
+							 * log.info(me+"  4.è¨ˆç®—æ‡‰ç¨…æ‰€å¾—,strIdno: " + strIdno); if
 							 * ("E124688494".equals(strIdno)) log.info(me+"  strIdno: " + strIdno);
 							 */
 							sumListMap = cDAO.Sum_Pay_Deduct(datpayAry, datpsnobj.getPayrank(), datpsnobj.getPayrank2(),
@@ -7457,7 +7568,7 @@ public class SalNTDAO {
 							paramA.add(userid);
 							paramA.add(hid);
 							params.add(paramA);
-							// §äpataxpsn,¦³-update©Ò±oµ²§ô¤é´Á,µL-insert
+							// æ‰¾pataxpsn,æœ‰-updateæ‰€å¾—çµæŸæ—¥æœŸ,ç„¡-insert
 							taxpsnobj = (Pataxpsn) taxpsnMap.get(strIdno);
 							if (taxpsnobj == null) {
 								batch_sql.add(sqlTaxPsn_ins);
@@ -7510,9 +7621,9 @@ public class SalNTDAO {
 						}
 					}
 				}
-				log.info(me + "  ...********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+				log.info(me + "  ...********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 			}
-			// 2.[§R°£]Âà±bµoÁ~©ú²Ó
+			// 2.[åˆªé™¤]è½‰å¸³ç™¼è–ªæ˜ç´°
 			else if ("DelTran".equals(selEn)) {
 				starttime = System.currentTimeMillis();
 				intyear = object_in_data.getInt("yy");
@@ -7528,7 +7639,7 @@ public class SalNTDAO {
 
 				// da.startTransaction();
 				try {
-					log.info(me + "  [§R°£]Âà±bµoÁ~©ú²Ó>>" + sqlTaxTran_del + "...params:" + paramA.toString());
+					log.info(me + "  [åˆªé™¤]è½‰å¸³ç™¼è–ªæ˜ç´°>>" + sqlTaxTran_del + "...params:" + paramA.toString());
 					delCnt = da.update(sqlTaxTran_del, paramA);
 					da.commit();
 				} catch (Exception e) {
@@ -7540,9 +7651,9 @@ public class SalNTDAO {
 				} finally {
 
 				}
-				log.info(me + "  delCnt:" + delCnt + " ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+				log.info(me + "  delCnt:" + delCnt + " å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 			}
-			// 4[§R°£]§å¦¸¤H¤u¤Jµ|
+			// 4[åˆªé™¤]æ‰¹æ¬¡äººå·¥å…¥ç¨…
 			else if ("DelBatCash".equals(selEn)) {
 				starttime = System.currentTimeMillis();
 				strCitation = object_in_data.getString("citation");
@@ -7551,7 +7662,7 @@ public class SalNTDAO {
 				paramA.add(hid);
 
 				try {
-					log.info(me + "  [§R°£]§å¦¸¤H¤u¤Jµ|>>" + sqlTaxCashTask_del + "...params:" + paramA.toString());
+					log.info(me + "  [åˆªé™¤]æ‰¹æ¬¡äººå·¥å…¥ç¨…>>" + sqlTaxCashTask_del + "...params:" + paramA.toString());
 					delCnt = da.update(sqlTaxCashTask_del, paramA);
 					da.commit();
 				} catch (Exception e) {
@@ -7563,9 +7674,9 @@ public class SalNTDAO {
 				} finally {
 
 				}
-				log.info(me + "  delCnt:" + delCnt + " ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+				log.info(me + "  delCnt:" + delCnt + " å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 			}
-			// 5¨­¤ÀÃÒÀË¬d¤Î¬y¤ô¸¹½s¸¹
+			// 5èº«åˆ†è­‰æª¢æŸ¥åŠæµæ°´è™Ÿç·¨è™Ÿ
 			else if ("ChkID".equals(selEn)) {
 				starttime = System.currentTimeMillis();
 				intyear = object_in_data.getInt("yy");
@@ -7574,12 +7685,12 @@ public class SalNTDAO {
 				paramA.add(intyear);
 				paramA.add(hid);
 
-				log.info(me + " 1.[§Ç¸¹,¦ÛÃº°h¥ğª÷] ²MªÅ>>" + sqlSerno_upd + "...params:" + paramA.toString());
+				log.info(me + " 1.[åºè™Ÿ,è‡ªç¹³é€€ä¼‘é‡‘] æ¸…ç©º>>" + sqlSerno_upd + "...params:" + paramA.toString());
 				updCnt = da.update(sqlSerno_upd, paramA);
 				da.commit();
-				log.info(me + "  updCnt:" + updCnt + " ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+				log.info(me + "  updCnt:" + updCnt + " å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 
-				// ¨Ì¦~,§ä¦ÛÃº°h¥ğª÷
+				// ä¾å¹´,æ‰¾è‡ªç¹³é€€ä¼‘é‡‘
 				starttime = System.currentTimeMillis();
 				paramA = new ArrayList<Object>();
 				paramA.add(intyear);
@@ -7588,10 +7699,10 @@ public class SalNTDAO {
 					sql = sqlSelfRetir_2A0;
 				else if (hid.matches("1A0"))
 					sql = sqlSelfRetir_1A0;
-				log.info(me + "  2.¨Ì¦~,§ä¦ÛÃº°h¥ğª÷ " + sql + "...params:" + paramA.toString());
+				log.info(me + "  2.ä¾å¹´,æ‰¾è‡ªç¹³é€€ä¼‘é‡‘ " + sql + "...params:" + paramA.toString());
 				result = da.arraylistbyQuery(sql, paramA, META_TYPE);
-				log.info(me + "  2.¨Ì¦~,§ä¦ÛÃº°h¥ğª÷,size: " + result.size() + " ¦@ªá¶O¡G"
-						+ (System.currentTimeMillis() - starttime) + "²@¬í");
+				log.info(me + "  2.ä¾å¹´,æ‰¾è‡ªç¹³é€€ä¼‘é‡‘,size: " + result.size() + " å…±èŠ±è²»ï¼š"
+						+ (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 				if (result.size() > 0) {
 					for (Map<String, Object> data : result) {
 						strIdno = (String) data.get("payidno");
@@ -7599,16 +7710,16 @@ public class SalNTDAO {
 					}
 				}
 
-				// ¨Ì¦~,§ä°h¼¾
+				// ä¾å¹´,æ‰¾é€€æ’«
 				starttime = System.currentTimeMillis();
 				paramA = new ArrayList<Object>();
 				paramA.add(intyear);
 				paramA.add(hid);
 
-				log.info(me + "  2-1.¨Ì¦~,§ä°h¼¾ " + sqlRetir + "...params:" + paramA.toString());
+				log.info(me + "  2-1.ä¾å¹´,æ‰¾é€€æ’« " + sqlRetir + "...params:" + paramA.toString());
 				result = da.arraylistbyQuery(sqlRetir, paramA, META_TYPE);
-				log.info(me + "  2-1.¨Ì¦~,§ä°h¼¾,size: " + result.size() + " ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime)
-						+ "²@¬í");
+				log.info(me + "  2-1.ä¾å¹´,æ‰¾é€€æ’«,size: " + result.size() + " å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime)
+						+ "æ¯«ç§’");
 				if (result.size() > 0) {
 					for (Map<String, Object> data : result) {
 						strIdno = (String) data.get("payidno");
@@ -7616,15 +7727,15 @@ public class SalNTDAO {
 					}
 				}
 
-				// ¨Ì¦~,§ä©Ò±oÁ`ª÷ÃB,­Y¬°0,¤£³B²z§Ç¸¹
+				// ä¾å¹´,æ‰¾æ‰€å¾—ç¸½é‡‘é¡,è‹¥ç‚º0,ä¸è™•ç†åºè™Ÿ
 				starttime = System.currentTimeMillis();
 				paramA = new ArrayList<Object>();
 				paramA.add(intyear);
 				paramA.add(hid);
-				log.info(me + "  3.¨Ì¦~,§ä©Ò±oÁ`ª÷ÃB,­Y¬°0,¤£³B²z§Ç¸¹ " + sqlTax_50 + "...params:" + paramA.toString());
+				log.info(me + "  3.ä¾å¹´,æ‰¾æ‰€å¾—ç¸½é‡‘é¡,è‹¥ç‚º0,ä¸è™•ç†åºè™Ÿ " + sqlTax_50 + "...params:" + paramA.toString());
 				result = da.arraylistbyQuery(sqlTax_50, paramA, META_TYPE);
-				log.info(me + "  3.¨Ì¦~,§ä©Ò±oÁ`ª÷ÃB,­Y¬°0,¤£³B²z§Ç¸¹,size: " + result.size() + " ¦@ªá¶O¡G"
-						+ (System.currentTimeMillis() - starttime) + "²@¬í");
+				log.info(me + "  3.ä¾å¹´,æ‰¾æ‰€å¾—ç¸½é‡‘é¡,è‹¥ç‚º0,ä¸è™•ç†åºè™Ÿ,size: " + result.size() + " å…±èŠ±è²»ï¼š"
+						+ (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 				if (result.size() > 0) {
 					for (Map<String, Object> data : result) {
 						strIdno = (String) data.get("payidno");
@@ -7632,10 +7743,10 @@ public class SalNTDAO {
 					}
 				}
 
-				// ©Ò±oµ|­Ó¤H°ò¥»¸ê®Æ ®æ¦¡ 50
+				// æ‰€å¾—ç¨…å€‹äººåŸºæœ¬è³‡æ–™ æ ¼å¼ 50
 				starttime = System.currentTimeMillis();
-				// ®æ¦¡=50¤ÎÀË¬d½X
-				// #11408980 2025¦~14­û¥~Äy¤£¦C
+				// æ ¼å¼=50åŠæª¢æŸ¥ç¢¼
+				// #11408980 2025å¹´14å“¡å¤–ç±ä¸åˆ—
 				if (hid.equals("1A0") && intyear == 2025) {
 					tmpEmpNO = " AND (substr(payempno,1,2) NOT IN ('TF')) ";
 				}
@@ -7653,7 +7764,7 @@ public class SalNTDAO {
 				paramA.add("50");
 				paramA.add(intyear);
 				paramA.add(hid);
-				log.info(me + "  4.©Ò±oµ|­Ó¤H°ò¥»¸ê®Æ ®æ¦¡_50,§ó·s¬y¤ô¸¹ " + sqlTaxPsn_50Chk + "...params:" + paramA.toString());
+				log.info(me + "  4.æ‰€å¾—ç¨…å€‹äººåŸºæœ¬è³‡æ–™ æ ¼å¼_50,æ›´æ–°æµæ°´è™Ÿ " + sqlTaxPsn_50Chk + "...params:" + paramA.toString());
 				result = da.arraylistbyQuery(sqlTaxPsn_50Chk, paramA, META_TYPE);
 				if (result.size() > 0) {
 					tmpsub = 0;
@@ -7665,12 +7776,12 @@ public class SalNTDAO {
 						strIdno = (String) data.get("payidno");
 						tmpsub = (Integer) taxSum50Map.get(strIdno);
 
-						char[] strArr = strIdno.toCharArray();// ¦r¦êÂà¦¨char°}¦C
-						if (tmpsub > 0) { // ­Yª÷ÃB¦X­p¬°0,¤£»İ¦C¤J
+						char[] strArr = strIdno.toCharArray();// å­—ä¸²è½‰æˆcharé™£åˆ—
+						if (tmpsub > 0) { // è‹¥é‡‘é¡åˆè¨ˆç‚º0,ä¸éœ€åˆ—å…¥
 							if (CommDAO.isValidIDorRCNumber(strIdno)) {
 								strIdflg = "";
 							} else {
-								// ­Y­º½X¬°¼Æ¦r©Î²Ä¤G¦ì¬°­^¤å¦r--¥~ÄyF,§_«h¦³»~E
+								// è‹¥é¦–ç¢¼ç‚ºæ•¸å­—æˆ–ç¬¬äºŒä½ç‚ºè‹±æ–‡å­—--å¤–ç±F,å¦å‰‡æœ‰èª¤E
 								if ((Character.isDigit(strArr[0])) || (!Character.isDigit(strArr[1])))
 									strIdflg = "F";
 								else if (!strIdno.substring(1, 2).matches("1|2"))
@@ -7716,11 +7827,11 @@ public class SalNTDAO {
 						}
 					}
 				}
-				log.info(me + "  4.©Ò±oµ|­Ó¤H°ò¥»¸ê®Æ ®æ¦¡_50,§ó·s¬y¤ô¸¹,size: " + result.size() + " ¦@ªá¶O¡G"
-						+ (System.currentTimeMillis() - starttime) + "²@¬í");
+				log.info(me + "  4.æ‰€å¾—ç¨…å€‹äººåŸºæœ¬è³‡æ–™ æ ¼å¼_50,æ›´æ–°æµæ°´è™Ÿ,size: " + result.size() + " å…±èŠ±è²»ï¼š"
+						+ (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 
 				//
-				// ©Ò±oµ|­Ó¤H°ò¥»¸ê®Æ ®æ¦¡ «D50==>9A 9B 92(¨ä¥L©Ò±o) 91(Äv§Ş¡BÄvÁÉ¤Î¾÷·|¤¤¼ú¤§¼úª÷©Îµ¹»P) 51(¯²¸î¡BÅv§Qª÷)
+				// æ‰€å¾—ç¨…å€‹äººåŸºæœ¬è³‡æ–™ æ ¼å¼ é50==>9A 9B 92(å…¶ä»–æ‰€å¾—) 91(ç«¶æŠ€ã€ç«¶è³½åŠæ©Ÿæœƒä¸­çä¹‹çé‡‘æˆ–çµ¦èˆ‡) 51(ç§Ÿè³ƒã€æ¬Šåˆ©é‡‘)
 				starttime = System.currentTimeMillis();
 				for (int i = 0; i < 5; ++i) {
 					if (i == 0) {
@@ -7743,22 +7854,22 @@ public class SalNTDAO {
 					paramA.add(intyear);
 					paramA.add(hid);
 
-					log.info(me + "  5.©Ò±oµ|­Ó¤H°ò¥»¸ê®Æ ®æ¦¡_«D50,§ó·s¬y¤ô¸¹,format= " + strFormat + " sql:" + sqlTax_N50
+					log.info(me + "  5.æ‰€å¾—ç¨…å€‹äººåŸºæœ¬è³‡æ–™ æ ¼å¼_é50,æ›´æ–°æµæ°´è™Ÿ,format= " + strFormat + " sql:" + sqlTax_N50
 							+ "...params:" + paramA.toString());
 					result = da.arraylistbyQuery(sqlTax_N50, paramA, META_TYPE);
-					log.info(me + "  5.©Ò±oµ|­Ó¤H°ò¥»¸ê®Æ ®æ¦¡_«D50,§ó·s¬y¤ô¸¹,format= " + strFormat + " size:" + result.size());
+					log.info(me + "  5.æ‰€å¾—ç¨…å€‹äººåŸºæœ¬è³‡æ–™ æ ¼å¼_é50,æ›´æ–°æµæ°´è™Ÿ,format= " + strFormat + " size:" + result.size());
 					if (result.size() > 0) {
 						intserno = 0;
 						for (Map<String, Object> data : result) {
 							strIdno = StringUtil.nullToString((String) data.get("payidno"));
 
-							char[] strArr = strIdno.toCharArray();// ¦r¦êÂà¦¨char°}¦C
+							char[] strArr = strIdno.toCharArray();// å­—ä¸²è½‰æˆcharé™£åˆ—
 							if (CommDAO.isValidIDorRCNumber(strIdno)) {
 								strIdflg = "";
 							} else {
-								// IDªø«×=10,ÀË´ú
+								// IDé•·åº¦=10,æª¢æ¸¬
 								if (strIdno.length() == 10) {
-									// ­Y­º½X¬°¼Æ¦r©Î²Ä¤G¦ì¬°­^¤å¦r--¥~ÄyF,§_«h¦³»~E
+									// è‹¥é¦–ç¢¼ç‚ºæ•¸å­—æˆ–ç¬¬äºŒä½ç‚ºè‹±æ–‡å­—--å¤–ç±F,å¦å‰‡æœ‰èª¤E
 									if ((Character.isDigit(strArr[0])) || (!Character.isDigit(strArr[1])))
 										strIdflg = "F";
 									else if (!strIdno.substring(1, 2).matches("1|2"))
@@ -7799,19 +7910,19 @@ public class SalNTDAO {
 						}
 					}
 				}
-				log.info(me + "  5.©Ò±oµ|­Ó¤H°ò¥»¸ê®Æ ®æ¦¡_«D50,§ó·s¬y¤ô¸¹, ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+				log.info(me + "  5.æ‰€å¾—ç¨…å€‹äººåŸºæœ¬è³‡æ–™ æ ¼å¼_é50,æ›´æ–°æµæ°´è™Ÿ, å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 			}
-			// 6²£¥Í´CÅé¥Ó³øÀÉ
+			// 6ç”¢ç”Ÿåª’é«”ç”³å ±æª”
 			else if ("MediaTax".equals(selEn)) {
 				intyear = object_in_data.getInt("yy");
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 
-				// ¨Ì¦~,§ä50Á`©Ò±oª÷ÃB
+				// ä¾å¹´,æ‰¾50ç¸½æ‰€å¾—é‡‘é¡
 				starttime = System.currentTimeMillis();
 				paramA = new ArrayList<Object>();
 				paramA.add(intyear);
 				paramA.add(hid);
-				log.info(me + "  1.¨Ì¦~,§ä50Á`©Ò±oª÷ÃB " + sqlTaxPay_50 + "...params:" + paramA.toString());
+				log.info(me + "  1.ä¾å¹´,æ‰¾50ç¸½æ‰€å¾—é‡‘é¡ " + sqlTaxPay_50 + "...params:" + paramA.toString());
 				result = da.arraylistbyQuery(sqlTaxPay_50, paramA, META_TYPE);
 
 				if (result.size() > 0) {
@@ -7822,14 +7933,14 @@ public class SalNTDAO {
 						taxSum50Map.put(strIdno, taxSum50Obj);
 					}
 				}
-				log.info(me + "  1.¨Ì¦~,§ä50Á`©Ò±oª÷ÃB,size: " + result.size() + " ¦@ªá¶O¡G"
-						+ (System.currentTimeMillis() - starttime) + "²@¬í");
-				// ¨Ì¦~,§äN50Á`©Ò±oª÷ÃB
+				log.info(me + "  1.ä¾å¹´,æ‰¾50ç¸½æ‰€å¾—é‡‘é¡,size: " + result.size() + " å…±èŠ±è²»ï¼š"
+						+ (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
+				// ä¾å¹´,æ‰¾N50ç¸½æ‰€å¾—é‡‘é¡
 				starttime = System.currentTimeMillis();
 				paramA = new ArrayList<Object>();
 				paramA.add(intyear);
 				paramA.add(hid);
-				log.info(me + "  1-1.¨Ì¦~,§äN50Á`©Ò±oª÷ÃB " + sqlTaxPay_N50 + "...params:" + paramA.toString());
+				log.info(me + "  1-1.ä¾å¹´,æ‰¾N50ç¸½æ‰€å¾—é‡‘é¡ " + sqlTaxPay_N50 + "...params:" + paramA.toString());
 				result = da.arraylistbyQuery(sqlTaxPay_N50, paramA, META_TYPE);
 
 				if (result.size() > 0) {
@@ -7866,9 +7977,9 @@ public class SalNTDAO {
 					taxSumN50Obj.setPaycatg(intCatg);
 					taxSumN50Map.put(strIdno + strFormat, taxSumN50Obj);
 				}
-				log.info(me + "  1-1.¨Ì¦~,§äN50Á`©Ò±oª÷ÃB,size: " + result.size() + " ¦@ªá¶O¡G"
-						+ (System.currentTimeMillis() - starttime) + "²@¬í");
-				// ¼g¤J¸ê®Æ§¨³]©w
+				log.info(me + "  1-1.ä¾å¹´,æ‰¾N50ç¸½æ‰€å¾—é‡‘é¡,size: " + result.size() + " å…±èŠ±è²»ï¼š"
+						+ (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
+				// å¯«å…¥è³‡æ–™å¤¾è¨­å®š
 				String folderPath = hospInfo.fileSRV + "data\\";
 				String filePath = folderPath + hospInfo.taxNo + "." + (intyear - 1911) + ".U8";
 				FileUtil fileUtil = new FileUtil();
@@ -7879,8 +7990,8 @@ public class SalNTDAO {
 
 				BufferedWriter bfw = new BufferedWriter(new OutputStreamWriter(
 						new SmbFileOutputStream(FileUtil.FileToSmbFile(filePath, hid), false), "utf-8"));
-				// ²Ä¤@¦æ
-				// ½]¼x¾÷Ãö¥N¸¹|¬y¤ô¸¹(ªÅ­È)|¥Ó³ø³æ¦ì²Î¤@½s¸¹|¸ê®Æ°Ï¤À(©T©w1)|¥Ó³ø³æ¦ì¦WºÙ|¥Ó³ø³æ¦ì¦a§}|¦©Ãº¸q°È¤H¦WºÙ|Ápµ¸¤H©m¦W|Ápµ¸¤H¹q¸Ü|¹q¤l¶l¥ó|¥Ó³ø³æ¦ìµ|Äy½s¸¹|¥Ó³ø¦¸¼Æ(ªÅ­È)|­«½Æ¥Ó³ø­ì¦](ªÅ­È)|¤W¥«¤½¥qµù°O(N)|ª÷¿Ä¾÷ºcµù°O(ªÅ­È)|¨Æ°È©Ò¡B¨ü¥ô¥Ó³ø³æ¦ì©ÎÀÉ®×ÃÑ§O½Xµù°O(N)|­t³d¤H©m¦W|
+				// ç¬¬ä¸€è¡Œ
+				// ç¨½å¾µæ©Ÿé—œä»£è™Ÿ|æµæ°´è™Ÿ(ç©ºå€¼)|ç”³å ±å–®ä½çµ±ä¸€ç·¨è™Ÿ|è³‡æ–™å€åˆ†(å›ºå®š1)|ç”³å ±å–®ä½åç¨±|ç”³å ±å–®ä½åœ°å€|æ‰£ç¹³ç¾©å‹™äººåç¨±|è¯çµ¡äººå§“å|è¯çµ¡äººé›»è©±|é›»å­éƒµä»¶|ç”³å ±å–®ä½ç¨…ç±ç·¨è™Ÿ|ç”³å ±æ¬¡æ•¸(ç©ºå€¼)|é‡è¤‡ç”³å ±åŸå› (ç©ºå€¼)|ä¸Šå¸‚å…¬å¸è¨»è¨˜(N)|é‡‘èæ©Ÿæ§‹è¨»è¨˜(ç©ºå€¼)|äº‹å‹™æ‰€ã€å—ä»»ç”³å ±å–®ä½æˆ–æª”æ¡ˆè­˜åˆ¥ç¢¼è¨»è¨˜(N)|è² è²¬äººå§“å|
 				String firstline = hospInfo.agencyNo + "||" + hospInfo.taxNo + "|1|" + hospInfo.nmFull + "|"
 						+ hospInfo.adr + "|" + hospInfo.nmFull + "|" + hospInfo.contactNm + "|" + hospInfo.contactTel
 						+ "||" + hospInfo.taxID + "|Y|||N||N" + "|" + hospInfo.agent + "|";
@@ -7892,7 +8003,7 @@ public class SalNTDAO {
 				for (int i = 0; i < 6; ++i) {
 					if (i == 0) {
 						strFormat = "";
-						tmpC = "00"; // ¨Ì®æ¦¡¤£¦P,¬y¤ô¸¹ÀY½X­n¤ÀÃş
+						tmpC = "00"; // ä¾æ ¼å¼ä¸åŒ,æµæ°´è™Ÿé ­ç¢¼è¦åˆ†é¡
 					} else if (i == 1) {
 						strFormat = "9A";
 						tmpC = "01";
@@ -7909,36 +8020,36 @@ public class SalNTDAO {
 						strFormat = "51";
 						tmpC = "05";
 					}
-					// ¨Ì©Ò±o®æ¦¡,§ì©Ò±oµ|­Ó¤H©ú²Ó
+					// ä¾æ‰€å¾—æ ¼å¼,æŠ“æ‰€å¾—ç¨…å€‹äººæ˜ç´°
 					sqlTax_Medium = "select a.PAYIDNO,PAYNAMEC,PAYBEGIN,PAYEND,PAYSERNO" + strFormat
 							+ ",PAYIDFLG,PAYADDRS,PAYSEREAMT " + "from " + tTaxPsn + " A " + "left outer join "
 							+ tBasAdr + " B ON a.payidno=b.payidno " + " where a.PAYEAR=? AND a.HID=? AND PAYSERNO"
 							+ strFormat + "<>0 ORDER BY PAYSERNO" + strFormat + " with ur";
-					log.info(me + "  2.©Ò±oµ|­Ó¤H°ò¥»¸ê®Æ ,format= " + strFormat + " sql:" + sqlTax_Medium + "...params:"
+					log.info(me + "  2.æ‰€å¾—ç¨…å€‹äººåŸºæœ¬è³‡æ–™ ,format= " + strFormat + " sql:" + sqlTax_Medium + "...params:"
 							+ paramA.toString());
 					result = da.arraylistbyQuery(sqlTax_Medium, paramA, META_TYPE);
-					log.info(me + "  2.©Ò±oµ|­Ó¤H°ò¥»¸ê®Æ ,format= " + strFormat + " size:" + result.size());
+					log.info(me + "  2.æ‰€å¾—ç¨…å€‹äººåŸºæœ¬è³‡æ–™ ,format= " + strFormat + " size:" + result.size());
 					if (result.size() > 0) {
 						String split_char = "\n";
 						String split_char2 = "\r";
 						for (Map<String, Object> data : result) {
-							tmpF = "1"; // §K¶ñµo
+							tmpF = "1"; // å…å¡«ç™¼
 							tmpG = "|||";
-							tmpH = ""; // µ|°ÈÃÒ§O½X
-							tmpD = ""; // ³Ò¤u¦ÛÃº°h¥ğª÷ ¦@¥ÎÄæ¦ì2
-							tmpA = "0"; // ÃÒ¸¹§O
+							tmpH = ""; // ç¨…å‹™è­‰åˆ¥ç¢¼
+							tmpD = ""; // å‹å·¥è‡ªç¹³é€€ä¼‘é‡‘ å…±ç”¨æ¬„ä½2
+							tmpA = "0"; // è­‰è™Ÿåˆ¥
 							tmpsub = 0;
 							tmptax = 0;
-							tmpI = " "; // ¿ù»~µù°O
+							tmpI = " "; // éŒ¯èª¤è¨»è¨˜
 							strIdno = StringUtil.nullToString((String) data.get("payidno"));
 							taxSum50Obj = (Pataxobj) taxSum50Map.get(strIdno);
 							taxSumN50Obj = (Pataxobj) taxSumN50Map.get(strIdno + strFormat);
 							tmpAddr = StringUtil.trimWideEmpty((String) data.get("payaddrs"));
-							// ¦a§}´«¦æ³B²z
+							// åœ°å€æ›è¡Œè™•ç†
 							tmpAddr = (tmpAddr != null) ? tmpAddr.replaceAll(split_char2, "") : "";
 							tmpAddr = tmpAddr.replaceAll(split_char, "");
 
-							// §Ç¸¹
+							// åºè™Ÿ
 							if (i == 0) {
 								intserno = ((data.get("payserno") == null) ? 0 : (Integer) data.get("payserno"));
 							} else if (i == 1) {
@@ -7955,7 +8066,7 @@ public class SalNTDAO {
 
 							strline = hospInfo.agencyNo + "|" + tmpC + StringUtil.intFillZero(intserno, 7) + "|"
 									+ hospInfo.taxNo + "||";
-							// ©Ò±o©ÒÄİ´Á¶¡
+							// æ‰€å¾—æ‰€å±¬æœŸé–“
 							if ((data.get("paybegin") == null) || (data.get("paybegin").equals("9999-12-31")))
 								tmpE = "     ";
 							else {
@@ -7972,7 +8083,7 @@ public class SalNTDAO {
 										.ConverToStr(DateUtil.getDbDate((java.util.Date) data.get("payend"), "-")));
 								tmpE += tmp.substring(0, 3) + tmp.substring(4, 6);
 							}
-							// ©Ò±o,¤v¦©
+							// æ‰€å¾—,å·±æ‰£
 							if (i == 0) {
 								tmpFormat = StringUtil.nullToString((String) taxSum50Obj.getPayformat());
 								tmpsub = (Integer) taxSum50Obj.getPaytaxpay();
@@ -7986,31 +8097,31 @@ public class SalNTDAO {
 									tmpPAYCATG = taxSumN50Obj.getPaycatg();
 								}
 							}
-							// ÃÒ¸¹§O ¨Æ·~¹ÎÅé
+							// è­‰è™Ÿåˆ¥ äº‹æ¥­åœ˜é«”
 							if (strIdno.length() != 10)
 								tmpA = "1";
-							// ©~¦í¶W¹L183¤Ñ
+							// å±…ä½è¶…é183å¤©
 							else if (data.get("payidflg").equals("F")) {
 								tmpA = "3";
 								tmpG = "|ZZ||";
 								tmpH = "NOTIN";
 							}
-							// ¿ù»~µù°O
-							// ¡i¢Ï¡j©Ò±o¤H²Î¤@½s¡]ÃÒ¡^¸¹ÅŞ¿èÀË¬d¤£²Å¡A¸g»P©Ò±o¤H¨­¤ÀÃÒ¡B¤á¤f¦W Ã¯¡B©~¯dÃÒ©Î®È¦æÃÒ®Ö¹ï«á½T¹ê¬Û¦PµL»~ªÌ¡C
-							// ¡i¢Ğ¡j©Ò±o¤H²Î¤@½s¡]ÃÒ¡^¸¹ÅŞ¿èÀË¬d¤£²Å¡A©Ò±o¤HÂ÷Â¾¥L¥hµL±q¬d¹ïªÌ¡C
-							// ªÅ­È¡G©Ò±o¤H²Î¤@½s¡]ÃÒ¡^¸¹ÅŞ¿èÀË¬dµL»~¡C
+							// éŒ¯èª¤è¨»è¨˜
+							// ã€ï¼¡ã€‘æ‰€å¾—äººçµ±ä¸€ç·¨ï¼ˆè­‰ï¼‰è™Ÿé‚è¼¯æª¢æŸ¥ä¸ç¬¦ï¼Œç¶“èˆ‡æ‰€å¾—äººèº«åˆ†è­‰ã€æˆ¶å£å ç°¿ã€å±…ç•™è­‰æˆ–æ—…è¡Œè­‰æ ¸å°å¾Œç¢ºå¯¦ç›¸åŒç„¡èª¤è€…ã€‚
+							// ã€ï¼¢ã€‘æ‰€å¾—äººçµ±ä¸€ç·¨ï¼ˆè­‰ï¼‰è™Ÿé‚è¼¯æª¢æŸ¥ä¸ç¬¦ï¼Œæ‰€å¾—äººé›¢è·ä»–å»ç„¡å¾æŸ¥å°è€…ã€‚
+							// ç©ºå€¼ï¼šæ‰€å¾—äººçµ±ä¸€ç·¨ï¼ˆè­‰ï¼‰è™Ÿé‚è¼¯æª¢æŸ¥ç„¡èª¤ã€‚
 							else if (data.get("payidflg").equals("E"))
 								tmpI = "A";
 
-							// ¦@¥ÎÄæ¦ì1 tempB ¦Û´£°h¥ğª÷tempD
+							// å…±ç”¨æ¬„ä½1 tempB è‡ªæé€€ä¼‘é‡‘tempD
 							if (tmpFormat.equals("50")) {
 								tmpB = hid + tmpC + StringUtil.intFillZero(intserno, 7);
 								tmpD = StringUtil.intFillZero((Integer) data.get("paysereamt"), 10);
 							}
-							// 92¨ä¥L©Ò±o 2013.3.18
+							// 92å…¶ä»–æ‰€å¾— 2013.3.18
 							else if (tmpFormat.equals("92"))
 								tmpB = "8Z";
-							// 91Äv§Ş¡BÄvÁÉ¤Î¾÷·|¤¤¼ú¤§¼úª÷©Îµ¹»P 2013.6.3
+							// 91ç«¶æŠ€ã€ç«¶è³½åŠæ©Ÿæœƒä¸­çä¹‹çé‡‘æˆ–çµ¦èˆ‡ 2013.6.3
 							else if (tmpFormat.equals("91"))
 								tmpB = hid + tmpC + StringUtil.intFillZero(intserno, 7);
 							else if (tmpFormat.matches("9A|9B")) {
@@ -8030,7 +8141,7 @@ public class SalNTDAO {
 						}
 					}
 				}
-				log.info(me + "  6²£¥Í´CÅé¥Ó³øÀÉ, ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+				log.info(me + "  6ç”¢ç”Ÿåª’é«”ç”³å ±æª”, å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 				bfw.flush();
 				if (bfw != null)
 					bfw.close();
@@ -8047,8 +8158,8 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * update pa.pataxpsn(©Ò±oµ|­Ó¤HÀÉ) pa.pabasaddr(¦a§}) pa.pataxcash(©Ò±oµ|²{ª÷©ú²Ó)
-	 * item:update/insert pk_data:key ¶Ç¥X:true/false
+	 * update pa.pataxpsn(æ‰€å¾—ç¨…å€‹äººæª”) pa.pabasaddr(åœ°å€) pa.pataxcash(æ‰€å¾—ç¨…ç¾é‡‘æ˜ç´°)
+	 * item:update/insert pk_data:key å‚³å‡º:true/false
 	 **/
 	public boolean updTaxByKey(String item, String pk_data, String tabJson, String userid, String hid, VGHDataAccess da)
 			throws SQLException {
@@ -8084,7 +8195,7 @@ public class SalNTDAO {
 				+ "where PAYIDNO =? and PAYEAR =? and PAYMONTH =? and PAYCATG =? and PAYFORMAT =? and PAYCITATION =? and HID=?";
 		String sqltaxcash_del = "delete from " + this.tTaxCash
 				+ " where payidno =? and PAYEAR =? and PAYMONTH =? and PAYCATG =? and PAYFORMAT =? and PAYCITATION =? and HID=?";
-		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql ¸ê®Æ
+		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql è³‡æ–™
 		params = new ArrayList<Object>();
 		ArrayList<Object> paramA = new ArrayList<Object>();
 		ArrayList<Object> param = new ArrayList<Object>();
@@ -8098,7 +8209,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -8110,7 +8221,7 @@ public class SalNTDAO {
 				JSONObject obj = tabJsonary.getJSONObject(i);
 				if (obj != null && obj.has("formnm")) {
 					formnm = StringUtil.nullToString(obj.getString("formnm"));
-					// ©Ò±oµ|­Ó¤H°ò¥»ÀÉ
+					// æ‰€å¾—ç¨…å€‹äººåŸºæœ¬æª”
 					if ("TAXPSN".equals(formnm)) {
 						strIdno = StringUtil.nullToString(object_pk_data.getString("payidno"));
 						hid = StringUtil.nullToString(object_pk_data.getString("hid"));
@@ -8122,7 +8233,7 @@ public class SalNTDAO {
 							sqltax = sqltaxpsn_ins;
 						}
 
-						// ¬d¸ß¦a§},§äµL,¥Îinsert,¦³¥Îupdate
+						// æŸ¥è©¢åœ°å€,æ‰¾ç„¡,ç”¨insert,æœ‰ç”¨update
 						paramA.add(strIdno);
 						// rs = da.query(sqlbasadr_inq,paramA);
 						resultA = da.arraylistbyQuery(sqlbasadr_inq, paramA, META_TYPE);
@@ -8138,7 +8249,7 @@ public class SalNTDAO {
 							for (int j = 0; j < array.size(); j++) {
 								JSONObject obj_item = array.getJSONObject(j);
 
-								// ©Ò±oµ|­Ó¤H©ú²Ó
+								// æ‰€å¾—ç¨…å€‹äººæ˜ç´°
 								param = new ArrayList<Object>();
 								param.add((!obj_item.has("paycard")) ? "" : obj_item.getString("paycard"));
 								param.add((!obj_item.has("paynamec")) ? "" : obj_item.getString("paynamec"));
@@ -8181,7 +8292,7 @@ public class SalNTDAO {
 								batch_sql.add(sqltax);
 								params.add(param);
 								log.info("1.batch_sql " + batch_sql + " params:" + params);
-								// ¦a§}
+								// åœ°å€
 								param = new ArrayList<Object>();
 								param.add((!obj_item.has("payaddrs")) ? ""
 										: StringUtil
@@ -8193,7 +8304,7 @@ public class SalNTDAO {
 							}
 						}
 					}
-					// ²{ª÷©Ò±oµ|
+					// ç¾é‡‘æ‰€å¾—ç¨…
 					else if ("TAXCASH".equals(formnm)) {
 						strIdno = StringUtil.nullToString(object_pk_data.getString("payidno"));
 						hid = StringUtil.nullToString(object_pk_data.getString("hid"));
@@ -8211,7 +8322,7 @@ public class SalNTDAO {
 						paramA.add(strCitation);
 						paramA.add(hid);
 						resultA = da.arraylistbyQuery(sqltaxcash_inq, paramA, META_TYPE);
-						if (item.equals("D")) {// ¥ı¬d¸ß,¦³,¥Îdelete
+						if (item.equals("D")) {// å…ˆæŸ¥è©¢,æœ‰,ç”¨delete
 							sqltax = "";
 							if (resultA != null && resultA.size() > 0) {
 								// while (rs.next()) {
@@ -8221,7 +8332,7 @@ public class SalNTDAO {
 
 							params.add(paramA);
 
-						} else if (item.equals("U")) {// ¥ı¬d¸ß,[µL]insert,[¦³]update
+						} else if (item.equals("U")) {// å…ˆæŸ¥è©¢,[ç„¡]insert,[æœ‰]update
 							sqltax = sqltaxcash_ins;
 							if (resultA != null && resultA.size() > 0) {
 								// while (rs.next() ) {
@@ -8292,7 +8403,7 @@ public class SalNTDAO {
 		return success;
 	}
 
-	// ¨Ì¿z¿ï±ø¥ó,¨ú±opa.patrapsn¶°¦X item:1­Ó¤H©ú²Ó,2¿z¿ï
+	// ä¾ç¯©é¸æ¢ä»¶,å–å¾—pa.patrapsné›†åˆ item:1å€‹äººæ˜ç´°,2ç¯©é¸
 	public JSONArray getTranPsnList(String code_data, String item, String userid, String hid, VGHDataAccess da)
 			throws Exception {
 		String me = getClass().getName() + ".getTranPsnList(),userid = " + userid;
@@ -8378,7 +8489,7 @@ public class SalNTDAO {
 //					: ("".equals(object_code_data.getString("expfkey3")) ? null
 //							: object_code_data.getString("expfkey3").split(","));
 		}
-		// Åª¨úpa.patrapsn
+		// è®€å–pa.patrapsn
 		strSelect = "PATRACOD, PATRADT, PAEFFDT, SALNUM, PAYLVEFG, PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, "
 				+ "PAYEMPDT, PAYSGNDT, PAYRSGDT, PAYBKID, PAYACNO, PAYGEDNO, COALESCE(A.PAYINFLG,0) as PAYINFLG,COALESCE(PAYDPNO,'0') as PAYDPNO, PAYPFLAG, PAYTITLE, "
 				+ "PAYRNK2N, COALESCE(A.PAYRANK3,0) as PAYRANK3, COALESCE(A.PAYDEGR2,0) as PAYDEGR2, COALESCE(A.PAYDEGRE,0) as PAYDEGRE, PAYRANK, PAYRANK2, "
@@ -8400,31 +8511,31 @@ public class SalNTDAO {
 				+ " where A.HID=? ";
 		params.add(hid);
 
-		if (!"".equals(cardno)) {// ¥d¸¹
+		if (!"".equals(cardno)) {// å¡è™Ÿ
 			subsql += " and PAYCARD=? ";
 			params.add(cardno);
 			paramsub.add(cardno);
-		} else if (!"".equals(idtno)) {// ¨­¤ÀÃÒ
+		} else if (!"".equals(idtno)) {// èº«åˆ†è­‰
 			subsql += " and PAYIDNO=? ";
 			params.add(idtno);
 			paramsub.add(idtno);
-		} else if (!"".equals(namec)) {// ©m¦W
+		} else if (!"".equals(namec)) {// å§“å
 			subsql += " and PAYNAMEC like ? ";
 			params.add(namec + "%");
 			paramsub.add(namec + "%");
-		} else if (!"".equals(empno)) {// Â¾¸¹
+		} else if (!"".equals(empno)) {// è·è™Ÿ
 			subsql += " and PAYEMPNO like ? ";
 			params.add(empno + "%");
 			paramsub.add(empno + "%");
 		}
-		if (!"".equals(effdt_bng) && !"".equals(effdt_end)) {// ¥Í®Ä¤é
+		if (!"".equals(effdt_bng) && !"".equals(effdt_end)) {// ç”Ÿæ•ˆæ—¥
 			subsql += " and PAEFFDT between ? and ? ";
 			params.add(effdt_bng);
 			params.add(effdt_end);
 			paramsub.add(effdt_bng);
 			paramsub.add(effdt_end);
 		}
-		if (!(tracod == null || (tracod != null && tracod.length == 0))) { // ²§°Ê­ì¦]
+		if (!(tracod == null || (tracod != null && tracod.length == 0))) { // ç•°å‹•åŸå› 
 			subsql += " and PATRACOD in ( ";
 			for (i = 0; i < tracod.length; i++) {
 				if (i != 0)
@@ -8435,13 +8546,13 @@ public class SalNTDAO {
 			}
 			subsql += ")";
 		}
-		if (!"".equals(csflag)) {// ¤ä»â¤u§@¼úª÷(Y/N)
+		if (!"".equals(csflag)) {// æ”¯é ˜å·¥ä½œçé‡‘(Y/N)
 			subsql += " and PACSFLAG=? ";
 			params.add(csflag);
 			paramsub.add(csflag);
 		}
 
-		if (!(patradt == null || (patradt != null && patradt.length == 0))) { // ²§°Ê¤é´Á
+		if (!(patradt == null || (patradt != null && patradt.length == 0))) { // ç•°å‹•æ—¥æœŸ
 			subsql += " and PATRADT in ( ";
 			for (i = 0; i < patradt.length; i++) {
 				if (i != 0)
@@ -8451,7 +8562,7 @@ public class SalNTDAO {
 				paramsub.add(patradt[i]);
 			}
 			subsql += ")";
-		} else if (!(salnum == null || (salnum != null && salnum.length == 0))) { // »è³æ½s¸¹
+		} else if (!(salnum == null || (salnum != null && salnum.length == 0))) { // é¤‰å–®ç·¨è™Ÿ
 			subsql += " and SALNUM in ( ";
 			for (i = 0; i < salnum.length; i++) {
 				if (i != 0)
@@ -8462,18 +8573,18 @@ public class SalNTDAO {
 			}
 			subsql += ")";
 		}
-		if (!"".equals(inflg)) {// «OÀI¸É§U¤ñ¨Ò
+		if (!"".equals(inflg)) {// ä¿éšªè£œåŠ©æ¯”ä¾‹
 			subsql += " and PAYINFLG<>0 ";
 		}
-		if (!"".equals(expfsp)) {// ÃB¥~ÂI¼Æ1 2 3¦³­È¬Ò­n¦C¤J
+		if (!"".equals(expfsp)) {// é¡å¤–é»æ•¸1 2 3æœ‰å€¼çš†è¦åˆ—å…¥
 			subsql += " and (PAYPFSP1<>0 or PAYPFSP2<>0 or PAYPFSP3<>0) ";
 		}
-		if (!"".equals(paret)) {// ¯dÂ¾¯dÁ~,¤ä»â±M2(Y/N)
+		if (!"".equals(paret)) {// ç•™è·ç•™è–ª,æ”¯é ˜å°ˆ2(Y/N)
 			subsql += " and PARETENTION=? ";
 			params.add(paret);
 			paramsub.add(paret);
 		}
-		// ¶¥¯Å payrank paorank
+		// éšç´š payrank paorank
 		if (!(payrank == null || (payrank != null && payrank.length == 0))) {
 			for (int j = 0; j < 2; j++) {
 				if (j == 0)
@@ -8490,7 +8601,7 @@ public class SalNTDAO {
 			}
 			subsql += " ) )";
 		}
-		// Â¾ºÙ paytitle paotitle
+		// è·ç¨± paytitle paotitle
 		if (!(paytitle == null || (paytitle != null && paytitle.length == 0))) {
 			for (int j = 0; j < 2; j++) {
 				if (j == 0)
@@ -8507,7 +8618,7 @@ public class SalNTDAO {
 			}
 			subsql += " ) )";
 		}
-		// ³æ¦ì
+		// å–®ä½
 		if (!(paydept == null || (paydept != null && paydept.length == 0))) {
 			subsql += " and paydept in ( ";
 			for (i = 0; i < paydept.length; i++) {
@@ -8519,7 +8630,7 @@ public class SalNTDAO {
 			}
 			subsql += ")";
 		}
-		if (!(expfkey1 == null || (expfkey1 != null && expfkey1.length == 0)  || (expfkey1.length == 1 && expfkey1[0].equals("0")) )) { // ÃB¥~ÂI¼Æ1
+		if (!(expfkey1 == null || (expfkey1 != null && expfkey1.length == 0)  || (expfkey1.length == 1 && expfkey1[0].equals("0")) )) { // é¡å¤–é»æ•¸1
 			subsql += " and ( payexpfkey1 in ( ";
 			for (i = 0; i < expfkey1.length; i++) {
 				if (i != 0)
@@ -8546,7 +8657,7 @@ public class SalNTDAO {
 			}
 			subsql += ") )";
 		}
-		/*if (!(expfkey2 == null || (expfkey2 != null && expfkey2.length == 0))) { // ÃB¥~ÂI¼Æ2
+		/*if (!(expfkey2 == null || (expfkey2 != null && expfkey2.length == 0))) { // é¡å¤–é»æ•¸2
 			subsql += " and payexpfkey2 in ( ";
 			for (i = 0; i < expfkey2.length; i++) {
 				if (i != 0)
@@ -8557,7 +8668,7 @@ public class SalNTDAO {
 			}
 			subsql += ")";
 		}
-		if (!(expfkey3 == null || (expfkey3 != null && expfkey3.length == 0))) { // ÃB¥~ÂI¼Æ3
+		if (!(expfkey3 == null || (expfkey3 != null && expfkey3.length == 0))) { // é¡å¤–é»æ•¸3
 			subsql += " and payexpfkey3 in ( ";
 			for (i = 0; i < expfkey3.length; i++) {
 				if (i != 0)
@@ -8580,7 +8691,7 @@ public class SalNTDAO {
 		starttime = System.currentTimeMillis();
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -8629,7 +8740,7 @@ public class SalNTDAO {
 						jsonOne.put("insuamt", StringUtil.nullToString(data.get("insuamt")));
 						jsonOne.put("contract", baspsnObj.getContract());
 						jsonOne.put("paretention", baspsnObj.getParetention());
-						// ·s
+						// æ–°
 						jsonOne.put("paytitle", StringUtil.nullToString(data.get("paytitle")));
 						jsonOne.put("paytitlp", StringUtil.nullToString(data.get("paytitlp")));
 						jsonOne.put("payrnk2n", StringUtil.nullToString(data.get("payrnk2n")));
@@ -8650,7 +8761,7 @@ public class SalNTDAO {
 						jsonOne.put("paypfsp2", StringUtil.nullToString(data.get("paypfsp2")));
 						jsonOne.put("paypfsp3", StringUtil.nullToString(data.get("paypfsp3")));
 						jsonOne.put("paypfdoc", StringUtil.nullToString(data.get("paypfdoc")));
-						// ¤u§@¼úª÷=Y,§ä°ò¥»ÁZ¤À ­Ä¯ÅÁZ¤À
+						// å·¥ä½œçé‡‘=Y,æ‰¾åŸºæœ¬ç¸¾åˆ† ä¿¸ç´šç¸¾åˆ†
 						pfbas = 0;
 						pfdat = 0;
 						if ("Y".equals(csflag)) {
@@ -8665,7 +8776,7 @@ public class SalNTDAO {
 						}
 						jsonOne.put("pfbas", pfbas);
 						jsonOne.put("pfdat", pfdat);
-						// ­ì
+						// åŸ
 						jsonOne.put("paotitle", StringUtil.nullToString(data.get("paotitle")));
 						jsonOne.put("paotitlp", StringUtil.nullToString(data.get("paotitlp")));
 						jsonOne.put("paornk2n", StringUtil.nullToString(data.get("paornk2n")));
@@ -8686,7 +8797,7 @@ public class SalNTDAO {
 						jsonOne.put("paopfsp2", StringUtil.nullToString(data.get("paopfsp2")));
 						jsonOne.put("paopfsp3", StringUtil.nullToString(data.get("paopfsp3")));
 						jsonOne.put("paopfdoc", StringUtil.nullToString(data.get("paopfdoc")));
-						// ¤u§@¼úª÷=Y,§ä°ò¥»ÁZ¤À ­Ä¯ÅÁZ¤À
+						// å·¥ä½œçé‡‘=Y,æ‰¾åŸºæœ¬ç¸¾åˆ† ä¿¸ç´šç¸¾åˆ†
 						pfbas = 0;
 						pfdat = 0;
 						if ("Y".equals(csflag)) {
@@ -8706,8 +8817,8 @@ public class SalNTDAO {
 				}
 			}
 			end = new Date();
-			log.info(me + "  ...********* dataaccess:" + (end.getTime() - start.getTime()) + " ¦@ªá¶O¡G"
-					+ (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...********* dataaccess:" + (end.getTime() - start.getTime()) + " å…±èŠ±è²»ï¼š"
+					+ (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new SQLException(me + ", fail!!." + e);
@@ -8718,8 +8829,8 @@ public class SalNTDAO {
 		return jsonRtn;
 	}
 
-	// ¨Ì±ø¥ó,¨ú±opa.pabaspsn
-	// Åª¨ú½d³òitem:0(°ò¥»ÀÉ) 1(°ò¥»ÀÉ+²§°ÊÀÉ_·s¶i)
+	// ä¾æ¢ä»¶,å–å¾—pa.pabaspsn
+	// è®€å–ç¯„åœitem:0(åŸºæœ¬æª”) 1(åŸºæœ¬æª”+ç•°å‹•æª”_æ–°é€²)
 	public Pabaspsn getBasPsnByKey(String in_data, String item, String hid, VGHDataAccess da) throws Exception {
 		Pabaspsn pabaspsn = null;
 		String me = getClass().getName() + ".getBasPsnByKey()";
@@ -8743,7 +8854,7 @@ public class SalNTDAO {
 			data_nm = (!object_in_data.has("data_nm")) ? "" : object_in_data.getString("data_nm");
 			data_tradt = (!object_in_data.has("data_tradt")) ? "" : object_in_data.getString("data_tradt");
 		}
-		// Åª¨úpa.pabaspsn
+		// è®€å–pa.pabaspsn
 		strSelect_bas = "PAYLVEFG, A.PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, PAYEMPDT, PAYSGNDT, PAYRSGDT, PAYBKID, PAYACNO, "
 				+ "PAYGEDNO, COALESCE(A.PAYINFLG,0) as PAYINFLG, COALESCE(A.PAYDPNO,'0') as PAYDPNO,  PAYTITLE, PAYRNK2N, COALESCE(A.PAYRANK3,0) as PAYRANK3, COALESCE(A.PAYDEGR2,0) as PAYDEGR2, "
 				+ "COALESCE(A.PAYDEGRE,0) as PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, COALESCE(A.PAYPFDOC,0) as PAYPFDOC, PACSFLAG, "
@@ -8751,7 +8862,7 @@ public class SalNTDAO {
 				+ "PATRADT, COALESCE(A.PAYTAXNO,0) as PAYTAXNO, A.PAYUPDID, A.PAYUPDTM, PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3, COALESCE(A.PAYRANK4,0) as PAYRANK4, PAYCTCBACNO, PAYCTCBGEDNO, "
 				+ "INSUAMT, PARETENTION, A.HID, " + tmpZbaspsn + ","
 				+ "B.PADEPNMC,B.PACSTNO,C.PAYTITLP,C.PATITSUB,D.RANKNAME,E.RNK4NAME,F.TRANAME ";
-		// Åª¨úpa.patrapsn
+		// è®€å–pa.patrapsn
 		strSelect_tra = "PAYLVEFG, A.PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, PAYEMPDT, PAYSGNDT, PAYRSGDT, PAYBKID, PAYACNO, "
 				+ "PAYGEDNO, COALESCE(A.PAYINFLG,0) as PAYINFLG, COALESCE(A.PAYDPNO,'0') as PAYDPNO,  PAYTITLE, PAYRNK2N, COALESCE(A.PAYRANK3,0) as PAYRANK3, COALESCE(A.PAYDEGR2,0) as PAYDEGR2, "
 				+ "COALESCE(A.PAYDEGRE,0) as PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, COALESCE(A.PAYPFDOC,0) as PAYPFDOC, PACSFLAG, "
@@ -8774,20 +8885,20 @@ public class SalNTDAO {
 			sql += " and A.paycard=? ";
 		}
 		params.add(data_val);
-		// ¦]¦­´Á¥d¸¹¦³­«ÂĞ
+		// å› æ—©æœŸå¡è™Ÿæœ‰é‡è¦†
 		sql += " order by PAYGOVDT desc FETCH FIRST 1 ROW ONLY with ur";
 
 		log.info(me + "  " + sql + "...params:" + params.toString());
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
 				connFlg = true;
 			}
-			// ¥ı§ä °ò¥»ÀÉ
+			// å…ˆæ‰¾ åŸºæœ¬æª”
 			result = da.arraylistbyQuery(sql, params, META_TYPE);
 			log.info(me + "...size:" + result.size());
 			if (result.size() > 0) {
@@ -8796,7 +8907,7 @@ public class SalNTDAO {
 					PropertyUtils.copyProperties(pabaspsn, data);
 				}
 			} else {
-				// ¥[Åª ²§°ÊÀÉ·s¶i,­n¦³µoÁ~¤é
+				// åŠ è®€ ç•°å‹•æª”æ–°é€²,è¦æœ‰ç™¼è–ªæ—¥
 				if ("1".equals(item)) {
 					if (!"".equals(data_tradt)) {
 						sql = "select " + strSelect_tra + sqlFrom + " and A.PATRACOD BETWEEN 1 AND 10 and A.PATRADT=? ";
@@ -8822,7 +8933,7 @@ public class SalNTDAO {
 				}
 			}
 
-			log.info(me + "  ...********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new SQLException(me + ", fail!!." + e);
@@ -8832,7 +8943,7 @@ public class SalNTDAO {
 		return pabaspsn;
 	}
 
-	// ¨Ì±ø¥ó,¨ú±opa.patrapay
+	// ä¾æ¢ä»¶,å–å¾—pa.patrapay
 	public Patrapay getTrapayByKey(String in_data, String hid, VGHDataAccess da) throws Exception {
 		Patrapay patrapay = null;
 		String me = getClass().getName() + ".getTrapayByKey()";
@@ -8855,7 +8966,7 @@ public class SalNTDAO {
 			data_tradt = (!object_in_data.has("data_tradt")) ? "" : object_in_data.getString("data_tradt");
 			data_idno = (!object_in_data.has("data_idno")) ? "" : object_in_data.getString("data_idno");
 		}
-		// Åª¨úpa.patrapay
+		// è®€å–pa.patrapay
 		strSelect_bat = "TRANUM, PAYIDNO, PATRADT, PAYSORT, PAYCODE, PAYAMT, PAYAUTH, PAYIFTAX, PAYUPDTM, PAYFLAG, HID, "
 				+ tmpZtrapay;
 		sql = "select " + strSelect_bat + " from " + this.tTraPay
@@ -8871,7 +8982,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -8886,7 +8997,7 @@ public class SalNTDAO {
 				}
 			}
 
-			log.info(me + "  ...********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new SQLException(me + ", fail!!." + e);
@@ -8896,7 +9007,7 @@ public class SalNTDAO {
 		return patrapay;
 	}
 
-	// ¨Ì±ø¥ó,¨ú±opa.pabatpay
+	// ä¾æ¢ä»¶,å–å¾—pa.pabatpay
 	public Pabatpay getBatpayByKey(String in_data, String hid, VGHDataAccess da) throws Exception {
 		Pabatpay pabatpay = null;
 		String me = getClass().getName() + ".getBatpayByKey()";
@@ -8919,7 +9030,7 @@ public class SalNTDAO {
 			data_tradt = (!object_in_data.has("data_tradt")) ? "" : object_in_data.getString("data_tradt");
 			data_idno = (!object_in_data.has("data_idno")) ? "" : object_in_data.getString("data_idno");
 		}
-		// Åª¨úpa.pabatpay
+		// è®€å–pa.pabatpay
 		strSelect_bat = "PATRADT, PAYIDNO, SALNUM, PAYCARD, PAYCODE, PAUPBAS, PAYAMT, PADUTYID, PAYUPDAT, PAYFLAG, UPMASTDT, HID, "
 				+ tmpZbatpay + " ZPABATPAY ";
 		sql = "select " + strSelect_bat + " from " + this.tBatPay
@@ -8934,7 +9045,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -8949,7 +9060,7 @@ public class SalNTDAO {
 				}
 			}
 
-			log.info(me + "  ...********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new SQLException(me + ", fail!!." + e);
@@ -8959,7 +9070,7 @@ public class SalNTDAO {
 		return pabatpay;
 	}
 
-	// ¨Ì±ø¥ó,¨ú±opa.panhical ¦P¦~«×¤W´Á²Ö¥[¼úª÷
+	// ä¾æ¢ä»¶,å–å¾—pa.panhical åŒå¹´åº¦ä¸ŠæœŸç´¯åŠ çé‡‘
 	public int getJackpotByKey(String idtno, String yy, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getJackpotByKey(),userid = " + userid;
 		log.info(me + " idtno = " + idtno + " yy = " + yy + " hid = " + hid);
@@ -8969,7 +9080,7 @@ public class SalNTDAO {
 		ArrayList<Object> params = new ArrayList<Object>();
 		starttime = System.currentTimeMillis();
 
-		// Åª¨úpa.panhical
+		// è®€å–pa.panhical
 		sql = "select coalesce(SUM(BONUSAMT),0) AS BONUSAMT " + " from " + this.tNhiCal + " where HID=? "
 				+ " and payidno=? " + " and year(PAPAYDT)=? with ur";
 		params.add(hid);
@@ -8980,7 +9091,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -8993,7 +9104,7 @@ public class SalNTDAO {
 			}
 			log.info(me + "...rtn:" + rtn);
 
-			log.info(me + "  ...********* ¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...********* å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new SQLException(me + ", fail!!." + e);
@@ -9003,7 +9114,7 @@ public class SalNTDAO {
 		return rtn;
 	}
 
-	// ¨Ì¿z¿ï±ø¥ó,¨ú±opa.pabaspsn¶°¦X item:1­Ó¤H©ú²Ó,2¿z¿ï
+	// ä¾ç¯©é¸æ¢ä»¶,å–å¾—pa.pabaspsné›†åˆ item:1å€‹äººæ˜ç´°,2ç¯©é¸
 	public JSONArray getBasPsnList(String code_data, String item, String userid, String hid, VGHDataAccess da)
 			throws Exception {
 		String me = getClass().getName() + ".getBasPsnList(),userid = " + userid;
@@ -9082,7 +9193,7 @@ public class SalNTDAO {
 					: ("".equals(object_code_data.getString("insuamt")) ? null
 							: object_code_data.getString("insuamt").split(","));
 		}
-		// Åª¨úpa.pabaspsn
+		// è®€å–pa.pabaspsn
 		strSelect = "PAYLVEFG, A.PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, PAYEMPDT, PAYSGNDT, PAYRSGDT, PAYBKID, PAYACNO, "
 				+ "PAYGEDNO, COALESCE(A.PAYINFLG,0) as PAYINFLG, COALESCE(A.PAYDPNO,'0') as PAYDPNO, PAYPSW, PAYTITLE, PAYRNK2N, COALESCE(A.PAYRANK3,0) as PAYRANK3, COALESCE(A.PAYDEGR2,0) as PAYDEGR2, "
 				+ "COALESCE(A.PAYDEGRE,0) as PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, COALESCE(A.PAYPFDOC,0) as PAYPFDOC, PACSFLAG, "
@@ -9097,43 +9208,43 @@ public class SalNTDAO {
 				+ " left outer join " + this.tTraCode + " F on A.PATRACOD=F.TRACODE " + " where A.HID=? ";
 		params.add(hid);
 
-		if (!"".equals(cardno)) {// ¥d¸¹
+		if (!"".equals(cardno)) {// å¡è™Ÿ
 			subsql += " and PAYCARD=? ";
 			params.add(cardno);
-		} else if (!"".equals(idtno)) {// ¨­¤ÀÃÒ
+		} else if (!"".equals(idtno)) {// èº«åˆ†è­‰
 			subsql += " and PAYIDNO=? ";
 			params.add(idtno);
 
-		} else if (!"".equals(namec)) {// ©m¦W
+		} else if (!"".equals(namec)) {// å§“å
 			subsql += " and PAYNAMEC like ? ";
 			params.add(namec + "%");
-		} else if (!"".equals(empno)) {// Â¾¸¹
+		} else if (!"".equals(empno)) {// è·è™Ÿ
 			subsql += " and PAYEMPNO like ? ";
 			params.add(empno + "%");
 		}
-		if (!"".equals(lvefg)) {// Â÷Â¾§_(Y/N)
+		if (!"".equals(lvefg)) {// é›¢è·å¦(Y/N)
 			subsql += " and PAYLVEFG=? ";
 			params.add(lvefg);
 		}
-		if (!"".equals(paret)) {// ¯dÂ¾¯dÁ~,¤ä»â±M2(Y/N)
+		if (!"".equals(paret)) {// ç•™è·ç•™è–ª,æ”¯é ˜å°ˆ2(Y/N)
 			subsql += " and PARETENTION=? ";
 			params.add(paret);
 		}
-		if (!"".equals(tracod)) {// ²§°Ê­ì¦]
+		if (!"".equals(tracod)) {// ç•°å‹•åŸå› 
 			subsql += " and PATRACOD=? ";
 			params.add(tracod);
 		}
-		if (!"".equals(csflag)) {// ¤ä»â¤u§@¼úª÷(Y/N)
+		if (!"".equals(csflag)) {// æ”¯é ˜å·¥ä½œçé‡‘(Y/N)
 			subsql += " and PACSFLAG=? ";
 			params.add(csflag);
 		}
-		if (!"".equals(inflg)) {// «OÀI¸É§U¤ñ¨Ò
+		if (!"".equals(inflg)) {// ä¿éšªè£œåŠ©æ¯”ä¾‹
 			subsql += " and PAYINFLG<>0 ";
 		}
-		if (!"".equals(expfsp)) {// ÃB¥~ÂI¼Æ1 2 3¦³­È¬Ò­n¦C¤J
+		if (!"".equals(expfsp)) {// é¡å¤–é»æ•¸1 2 3æœ‰å€¼çš†è¦åˆ—å…¥
 			subsql += " and (PAYPFSP1<>0 or PAYPFSP2<>0 or PAYPFSP3<>0) ";
 		}
-		if (!(patradt == null || (patradt != null && patradt.length == 0))) { // ²§°Ê¤é´Á
+		if (!(patradt == null || (patradt != null && patradt.length == 0))) { // ç•°å‹•æ—¥æœŸ
 			subsql += " and PATRADT in ( ";
 			for (i = 0; i < patradt.length; i++) {
 				if (i != 0)
@@ -9143,7 +9254,7 @@ public class SalNTDAO {
 			}
 			subsql += ")";
 		}
-		if (!(payrank == null || (payrank != null && payrank.length == 0))) { // ¶¥¯Å
+		if (!(payrank == null || (payrank != null && payrank.length == 0))) { // éšç´š
 			subsql += " and PAYRANK in ( ";
 			for (i = 0; i < payrank.length; i++) {
 				if (i != 0)
@@ -9153,7 +9264,7 @@ public class SalNTDAO {
 			}
 			subsql += ")";
 		}
-		if (!(paytitle == null || (paytitle != null && paytitle.length == 0))) { // Â¾ºÙ
+		if (!(paytitle == null || (paytitle != null && paytitle.length == 0))) { // è·ç¨±
 			subsql += " and PAYTITLE in ( ";
 			for (i = 0; i < paytitle.length; i++) {
 				if (i != 0)
@@ -9163,7 +9274,7 @@ public class SalNTDAO {
 			}
 			subsql += ")";
 		}
-		if (!(paydept == null || (paydept != null && paydept.length == 0))) { // ³æ¦ì
+		if (!(paydept == null || (paydept != null && paydept.length == 0))) { // å–®ä½
 			subsql += " and paydept in ( ";
 			for (i = 0; i < paydept.length; i++) {
 				if (i != 0)
@@ -9173,7 +9284,7 @@ public class SalNTDAO {
 			}
 			subsql += ")";
 		}
-		if ( !(expfkey1 == null || (expfkey1 != null && expfkey1.length == 0) || (expfkey1.length == 1 && expfkey1[0].equals("0"))) ) { // ÃB¥~ÂI¼Æ1
+		if ( !(expfkey1 == null || (expfkey1 != null && expfkey1.length == 0) || (expfkey1.length == 1 && expfkey1[0].equals("0"))) ) { // é¡å¤–é»æ•¸1
 			subsql += " and ( payexpfkey1 in ( ";
 			for (i = 0; i < expfkey1.length; i++) {
 				if (i != 0)
@@ -9197,7 +9308,7 @@ public class SalNTDAO {
 			}
 			subsql += ") )";
 		}
-		/*if (!(expfkey2 == null || (expfkey2 != null && expfkey2.length == 0) || (expfkey2.length == 1 && expfkey2[0].equals("0"))) ) { // ÃB¥~ÂI¼Æ2
+		/*if (!(expfkey2 == null || (expfkey2 != null && expfkey2.length == 0) || (expfkey2.length == 1 && expfkey2[0].equals("0"))) ) { // é¡å¤–é»æ•¸2
 			subsql += " and payexpfkey2 in ( ";
 			for (i = 0; i < expfkey2.length; i++) {
 				if (i != 0)
@@ -9207,7 +9318,7 @@ public class SalNTDAO {
 			}
 			subsql += ")";
 		}
-		if (!(expfkey3 == null || (expfkey3 != null && expfkey3.length == 0) || (expfkey3.length == 1 && expfkey3[0].equals("0")))) { // ÃB¥~ÂI¼Æ3
+		if (!(expfkey3 == null || (expfkey3 != null && expfkey3.length == 0) || (expfkey3.length == 1 && expfkey3[0].equals("0")))) { // é¡å¤–é»æ•¸3
 			subsql += " and payexpfkey3 in ( ";
 			for (i = 0; i < expfkey3.length; i++) {
 				if (i != 0)
@@ -9217,7 +9328,7 @@ public class SalNTDAO {
 			}
 			subsql += ")";
 		}*/
-		if (!(insuamt == null || (insuamt != null && insuamt.length == 0))) { // «OÀI¯Å¶Z
+		if (!(insuamt == null || (insuamt != null && insuamt.length == 0))) { // ä¿éšªç´šè·
 			subsql += " and insuamt in ( ";
 			for (i = 0; i < insuamt.length; i++) {
 				if (i != 0)
@@ -9233,7 +9344,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -9295,7 +9406,7 @@ public class SalNTDAO {
 						jsonOne.put("paypfsp3", StringUtil.nullToString(data.get("paypfsp3")));
 						jsonOne.put("paretention", baspsnObj.getParetention());
 						jsonOne.put("paypfdoc", StringUtil.nullToString(data.get("paypfdoc")));
-						// ¤u§@¼úª÷=Y,§ä°ò¥»ÁZ¤À ­Ä¯ÅÁZ¤À
+						// å·¥ä½œçé‡‘=Y,æ‰¾åŸºæœ¬ç¸¾åˆ† ä¿¸ç´šç¸¾åˆ†
 						pfbas = 0;
 						pfdat = 0;
 						pfkey = "";
@@ -9317,8 +9428,8 @@ public class SalNTDAO {
 				}
 			}
 			end = new Date();
-			log.info(me + "  ...********* dataaccess:" + (end.getTime() - start.getTime()) + ", ¦@ªá¶O¡G"
-					+ (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...********* dataaccess:" + (end.getTime() - start.getTime()) + ", å…±èŠ±è²»ï¼š"
+					+ (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new SQLException(me + ", fail!!." + e);
@@ -9329,8 +9440,8 @@ public class SalNTDAO {
 		return jsonRtn;
 	}
 
-	// ¨Ì¿z¿ï±ø¥ó,¨ú±o©Ò±oµ|¶°¦X
-	// typ:1Âà±b 2²{ª÷ 3Âà±b+²{ª÷
+	// ä¾ç¯©é¸æ¢ä»¶,å–å¾—æ‰€å¾—ç¨…é›†åˆ
+	// typ:1è½‰å¸³ 2ç¾é‡‘ 3è½‰å¸³+ç¾é‡‘
 	public JSONArray getTaxViewList(String code_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getTaxViewList(),userid = " + userid;
 		log.info(me + " code_data = " + code_data + " hid = " + hid);
@@ -9378,23 +9489,23 @@ public class SalNTDAO {
 		}
 		paramA.add(hid);
 		paramB.add(hid);
-		if (!"".equals(cardno)) {// ¥d¸¹
+		if (!"".equals(cardno)) {// å¡è™Ÿ
 			subsqlA += " and PAYCARD=? ";
 			subsqlB += " and PAYCARD=? ";
 			paramA.add(cardno);
 			paramB.add(cardno);
-		} else if (!"".equals(idtno)) {// ¨­¤ÀÃÒ
+		} else if (!"".equals(idtno)) {// èº«åˆ†è­‰
 			subsqlA += " and A.PAYIDNO=? ";
 			subsqlB += " and A.PAYIDNO=? ";
 			paramA.add(idtno);
 			paramB.add(idtno);
-		} else if (!"".equals(namec)) {// ©m¦W
+		} else if (!"".equals(namec)) {// å§“å
 			subsqlA += " and PAYNAMEC like ? ";
 			subsqlB += " and PAYNAMEC like ? ";
 			paramA.add(namec + "%");
 			paramB.add(namec + "%");
 		}
-		if (!(payear == null || (payear != null && payear.length == 0))) { // ¦~
+		if (!(payear == null || (payear != null && payear.length == 0))) { // å¹´
 			subsqlA += " and a.PAYEAR in ( ";
 			subsqlB += " and a.PAYEAR in ( ";
 			for (i = 0; i < payear.length; i++) {
@@ -9410,7 +9521,7 @@ public class SalNTDAO {
 			subsqlA += ")";
 			subsqlB += ")";
 		}
-		if (!(paymonth == null || (paymonth != null && paymonth.length == 0))) { // ¤ë
+		if (!(paymonth == null || (paymonth != null && paymonth.length == 0))) { // æœˆ
 			subsqlA += " and PAYMONTH in ( ";
 			subsqlB += " and PAYMONTH in ( ";
 			for (i = 0; i < paymonth.length; i++) {
@@ -9427,13 +9538,13 @@ public class SalNTDAO {
 			subsqlB += ")";
 		}
 
-		if (!"".equals(paycitation)) {// ¶Ç²¼»s²¼¸¹
+		if (!"".equals(paycitation)) {// å‚³ç¥¨è£½ç¥¨è™Ÿ
 			subsqlB += " and PAYCITATION = ? ";
 			paramB.add(paycitation);
-			blnTran = false; // ²{ª÷
+			blnTran = false; // ç¾é‡‘
 		}
 
-		if (!(payformat == null || (payformat != null && payformat.length == 0))) { // ®æ¦¡
+		if (!(payformat == null || (payformat != null && payformat.length == 0))) { // æ ¼å¼
 			subsqlB += " and PAYFORMAT in ( ";
 			for (i = 0; i < payformat.length; i++) {
 				if (i != 0)
@@ -9443,7 +9554,7 @@ public class SalNTDAO {
 				payformats += payformat[i] + ";";
 			}
 			subsqlB += ")";
-			// if ("50".equals(payformat[i])) blnTran=false; //²{ª÷
+			// if ("50".equals(payformat[i])) blnTran=false; //ç¾é‡‘
 			// else typ = "2";
 			if (!payformats.contains("50")) {
 				typ = "2";
@@ -9451,10 +9562,10 @@ public class SalNTDAO {
 		}
 
 		strSelect = " PAYTAXPAY, PAYTAXDEDUCT, a.PAYUPDID, a.PAYUPDTM, a.HID,PACSTNO,PADEPNMC,PAYCARD, PAYNAMEC, B.PAYDEPT, PAYIDFLG, PAYBEGIN, PAYEND, PAYSEREAMT,PAYEMPNO, PAYSERNO, PAYSERNO9A, PAYSERNO9B, PAYSERNO92, PAYSERNO91,  PAYSERNO51 ";
-		// 1Âà±b 2²{ª÷ 3Âà±b+²{ª÷
+		// 1è½‰å¸³ 2ç¾é‡‘ 3è½‰å¸³+ç¾é‡‘
 		sql = "";
 		if (typ.matches("1|3") && blnTran) {
-			sql = "select a.PAYIDNO, a.PAYEAR, PAYMONTH,  0 AS PAYCATG,  'Âà±b' AS PAYITEM,'50' AS PAYFORMAT,'         ' AS PAYCITATION,'µL' CATGNAME,"
+			sql = "select a.PAYIDNO, a.PAYEAR, PAYMONTH,  0 AS PAYCATG,  'è½‰å¸³' AS PAYITEM,'50' AS PAYFORMAT,'         ' AS PAYCITATION,'ç„¡' CATGNAME,"
 					+ strSelect + " from " + this.tTaxTran + " A " + " left outer join " + this.tTaxPsn
 					+ " B on a.payidno=b.payidno AND a.hid=b.hid AND a.payear=b.payear " + " left outer join "
 					+ this.tDept + " D on B.PAYDEPT=D.PADEPCOD AND B.HID=D.HID " + " where A.HID=? " + subsqlA;
@@ -9466,7 +9577,7 @@ public class SalNTDAO {
 			sql += " union all ";
 		}
 		if (typ.matches("2|3")) {
-			sql += "select a.PAYIDNO, a.PAYEAR, PAYMONTH, a.PAYCATG, '¤H¤u' AS PAYITEM,payformat,paycitation,CATGNAME,"
+			sql += "select a.PAYIDNO, a.PAYEAR, PAYMONTH, a.PAYCATG, 'äººå·¥' AS PAYITEM,payformat,paycitation,CATGNAME,"
 					+ strSelect + " from " + this.tTaxCash + " A " + " left outer join " + this.tTaxPsn
 					+ " B on a.payidno=b.payidno AND a.hid=b.hid AND a.payear=b.payear " + " left outer join "
 					+ this.tCatgTbl + " C on a.PAYCATG=c.PAYCATG " + " left outer join " + this.tDept
@@ -9482,7 +9593,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -9504,22 +9615,22 @@ public class SalNTDAO {
 					jsonOne.put("payempno", StringUtil.nullToString(data.get("payempno")));
 					jsonOne.put("pacstno", StringUtil.nullToString(data.get("pacstno")));
 					jsonOne.put("padepnmc", StringUtil.nullToString(data.get("padepnmc")));//
-					jsonOne.put("payitem", StringUtil.nullToString(data.get("payitem")));// ©Ê½è
-					jsonOne.put("payformat", StringUtil.nullToString(data.get("payformat")));// ®æ¦¡
-					jsonOne.put("catgname", StringUtil.nullToString(data.get("catgname")));// Âà±b¶µ¥Ø
-					jsonOne.put("paycitation", StringUtil.nullToString(data.get("paycitation")));// ¶Ç²¼»s²¼¸¹
-					jsonOne.put("paybegin", StringUtil.nullToString(data.get("paybegin")));// °_¤é
-					jsonOne.put("payend", StringUtil.nullToString(data.get("payend")));// °W¤é
-					jsonOne.put("paytaxpay", StringUtil.nullToString(data.get("paytaxpay")));// À³µ|©Ò±o
-					jsonOne.put("paytaxdeduct", StringUtil.nullToString(data.get("paytaxdeduct")));// ¤v¦©
-					jsonOne.put("paysereamt", StringUtil.nullToString(data.get("paysereamt")));// ¦ÛÃº°h¥ğª÷
+					jsonOne.put("payitem", StringUtil.nullToString(data.get("payitem")));// æ€§è³ª
+					jsonOne.put("payformat", StringUtil.nullToString(data.get("payformat")));// æ ¼å¼
+					jsonOne.put("catgname", StringUtil.nullToString(data.get("catgname")));// è½‰å¸³é …ç›®
+					jsonOne.put("paycitation", StringUtil.nullToString(data.get("paycitation")));// å‚³ç¥¨è£½ç¥¨è™Ÿ
+					jsonOne.put("paybegin", StringUtil.nullToString(data.get("paybegin")));// èµ·æ—¥
+					jsonOne.put("payend", StringUtil.nullToString(data.get("payend")));// è¨–æ—¥
+					jsonOne.put("paytaxpay", StringUtil.nullToString(data.get("paytaxpay")));// æ‡‰ç¨…æ‰€å¾—
+					jsonOne.put("paytaxdeduct", StringUtil.nullToString(data.get("paytaxdeduct")));// å·±æ‰£
+					jsonOne.put("paysereamt", StringUtil.nullToString(data.get("paysereamt")));// è‡ªç¹³é€€ä¼‘é‡‘
 					jsonOne.put("payserno", StringUtil.nullToString(data.get("payserno")));
 					jsonOne.put("payserno9a", StringUtil.nullToString(data.get("payserno9a")));
 					jsonOne.put("payserno9b", StringUtil.nullToString(data.get("payserno9b")));
 					jsonOne.put("payserno91", StringUtil.nullToString(data.get("payserno91")));
 					jsonOne.put("payserno92", StringUtil.nullToString(data.get("payserno92")));
 					jsonOne.put("payserno51", StringUtil.nullToString(data.get("payserno51")));
-					jsonOne.put("payidflg", StringUtil.nullToString(data.get("payidflg")));// ¨­¤ÀÃÒÀË¬d½Xµù°O
+					jsonOne.put("payidflg", StringUtil.nullToString(data.get("payidflg")));// èº«åˆ†è­‰æª¢æŸ¥ç¢¼è¨»è¨˜
 					jsonOne.put("payupdid", StringUtil.nullToString(data.get("payupdid")));
 					jsonOne.put("payupdtm", StringUtil.nullToString(data.get("payupdtm")));
 					jsonOne.put("hid", StringUtil.nullToString(data.get("hid")));
@@ -9540,7 +9651,7 @@ public class SalNTDAO {
 		return jsonRtn;
 	}
 
-	// ¨Ì¦~,¶Ç²¼»s²¼¸¹,¨­¤ÀÃÒ,¥d¸¹,©m¦W,¨ú±o©Ò±oµ|­Ó¤H©ú²Ó(pataxpsn)
+	// ä¾å¹´,å‚³ç¥¨è£½ç¥¨è™Ÿ,èº«åˆ†è­‰,å¡è™Ÿ,å§“å,å–å¾—æ‰€å¾—ç¨…å€‹äººæ˜ç´°(pataxpsn)
 	public JSONArray getTaxTaskList(String code_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getTaxTaskList(),userid = " + userid;
 		log.info(me + " code_data = " + code_data + " hid = " + hid);
@@ -9574,17 +9685,17 @@ public class SalNTDAO {
 			;
 		}
 		paramA.add(hid);
-		if (!"".equals(cardno)) {// ¥d¸¹
+		if (!"".equals(cardno)) {// å¡è™Ÿ
 			subsqlA += " and PAYCARD=? ";
 			paramA.add(cardno);
-		} else if (!"".equals(idtno)) {// ¨­¤ÀÃÒ
+		} else if (!"".equals(idtno)) {// èº«åˆ†è­‰
 			subsqlA += " and A.PAYIDNO=? ";
 			paramA.add(idtno);
-		} else if (!"".equals(namec)) {// ©m¦W
+		} else if (!"".equals(namec)) {// å§“å
 			subsqlA += " and PAYNAMEC like ? ";
 			paramA.add(namec + "%");
 		}
-		if (!(payear == null || (payear != null && payear.length == 0))) { // ¦~
+		if (!(payear == null || (payear != null && payear.length == 0))) { // å¹´
 			subsqlA += " and a.PAYEAR in ( ";
 			for (i = 0; i < payear.length; i++) {
 				if (i != 0) {
@@ -9599,7 +9710,7 @@ public class SalNTDAO {
 		sql = "select PACSTNO,PADEPNMC,a.PAYIDNO, a.PAYEAR, PAYCARD, PAYNAMEC, PAYDEPT, PAYIDFLG, PAYBEGIN, PAYEND, PAYSERNO, a.PAYUPDID, PAYUPDTM, PAYSERNO9A, PAYSERNO9B, PAYSEREAMT, PAYSERNO92, PAYSERNO91, a.HID, PAYEMPNO, PAYSERNO51 "
 				+ " from " + this.tTaxPsn + " A " + " left outer join " + this.tDept
 				+ " D on A.PAYDEPT=D.PADEPCOD AND A.HID=D.HID ";
-		if (!"".equals(paycitation)) {// ¶Ç²¼»s²¼¸¹
+		if (!"".equals(paycitation)) {// å‚³ç¥¨è£½ç¥¨è™Ÿ
 			sql += "INNER JOIN (SELECT hid,payidno,payear FROM " + this.tTaxCash
 					+ " WHERE hid=? AND PAYCITATION=?) b ON a.hid=b.hid AND a.payidno=b.payidno and a.payear=b.payear ";
 			param.add(hid);
@@ -9613,7 +9724,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -9633,13 +9744,13 @@ public class SalNTDAO {
 					jsonOne.put("payempno", StringUtil.nullToString(data.get("payempno")));
 					jsonOne.put("paynamec", StringUtil.nullToString(data.get("paynamec")));//
 					jsonOne.put("paydept", StringUtil.nullToString(data.get("paydept")));
-					jsonOne.put("payidflg", StringUtil.nullToString(data.get("payidflg")));// ¨­¤ÀÃÒÀË¬d½Xµù°O
-					jsonOne.put("paybegin", StringUtil.nullToString(data.get("paybegin")));// °_¤é
-					jsonOne.put("payend", StringUtil.nullToString(data.get("payend")));// °W¤é
+					jsonOne.put("payidflg", StringUtil.nullToString(data.get("payidflg")));// èº«åˆ†è­‰æª¢æŸ¥ç¢¼è¨»è¨˜
+					jsonOne.put("paybegin", StringUtil.nullToString(data.get("paybegin")));// èµ·æ—¥
+					jsonOne.put("payend", StringUtil.nullToString(data.get("payend")));// è¨–æ—¥
 
 					jsonOne.put("pacstno", StringUtil.nullToString(data.get("pacstno")));
 					jsonOne.put("padepnmc", StringUtil.nullToString(data.get("padepnmc")));//
-					jsonOne.put("paysereamt", StringUtil.nullToString(data.get("paysereamt")));// ¦ÛÃº°h¥ğª÷
+					jsonOne.put("paysereamt", StringUtil.nullToString(data.get("paysereamt")));// è‡ªç¹³é€€ä¼‘é‡‘
 					jsonOne.put("payserno", StringUtil.nullToString(data.get("payserno")));
 					jsonOne.put("payserno9a", StringUtil.nullToString(data.get("payserno9a")));
 					jsonOne.put("payserno9b", StringUtil.nullToString(data.get("payserno9b")));
@@ -9666,7 +9777,7 @@ public class SalNTDAO {
 		return jsonRtn;
 	}
 
-	// ¨Ì¿z¿ï±ø¥ó,¨ú±o©Ò±oµ|·JÁ`
+	// ä¾ç¯©é¸æ¢ä»¶,å–å¾—æ‰€å¾—ç¨…å½™ç¸½
 	public JSONArray getTaxSumList(String code_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getTaxSumList(),userid = " + userid;
 		log.info(me + " code_data = " + code_data + " hid = " + hid);
@@ -9705,7 +9816,7 @@ public class SalNTDAO {
 		}
 		paramA.add(hid);
 		paramB.add(hid);
-		if (!(payear == null || (payear != null && payear.length == 0))) { // ¦~
+		if (!(payear == null || (payear != null && payear.length == 0))) { // å¹´
 			subsqlA += " and a.PAYEAR in ( ";
 			subsqlB += " and a.PAYEAR in ( ";
 			for (i = 0; i < payear.length; i++) {
@@ -9721,7 +9832,7 @@ public class SalNTDAO {
 			subsqlA += ")";
 			subsqlB += ")";
 		}
-		if (!(paymonth == null || (paymonth != null && paymonth.length == 0))) { // ¤ë
+		if (!(paymonth == null || (paymonth != null && paymonth.length == 0))) { // æœˆ
 			subsqlA += " and PAYMONTH in ( ";
 			subsqlB += " and PAYMONTH in ( ";
 			for (i = 0; i < paymonth.length; i++) {
@@ -9738,14 +9849,14 @@ public class SalNTDAO {
 			subsqlB += ")";
 		}
 
-		if (!"".equals(paycitation)) {// ¶Ç²¼»s²¼¸¹
+		if (!"".equals(paycitation)) {// å‚³ç¥¨è£½ç¥¨è™Ÿ
 			subsqlB += " and PAYCITATION = ? ";
 			paramB.add(paycitation);
 
 		}
 
-		if (!(payformat == null || (payformat != null && payformat.length == 0))) { // ®æ¦¡
-			// Âà±b©Ò±oµ|³£¬O50,²{ª÷©Ò±oµ|®æ¦¡³£¦³
+		if (!(payformat == null || (payformat != null && payformat.length == 0))) { // æ ¼å¼
+			// è½‰å¸³æ‰€å¾—ç¨…éƒ½æ˜¯50,ç¾é‡‘æ‰€å¾—ç¨…æ ¼å¼éƒ½æœ‰
 			subsqlB += " and PAYFORMAT in ( ";
 			for (i = 0; i < payformat.length; i++) {
 				if (i != 0)
@@ -9760,10 +9871,10 @@ public class SalNTDAO {
 		}
 
 		strSelect = " payear,a.hid, SUM(PAYTAXPAY) AS TAXPAY, SUM(PAYTAXDEDUCT) AS TAXDEDUCT, COUNT(*) AS TAXPER ";
-		// 1Âà±b 2²{ª÷ 3Âà±b+²{ª÷
+		// 1è½‰å¸³ 2ç¾é‡‘ 3è½‰å¸³+ç¾é‡‘
 		sql = "";
 		if (typ.matches("1|3") && ("".equals(paycitation))) {
-			sql = "select PAYMONTH,PAYCATG,'µL' CATGNAME, '50' AS PAYFORMAT," + strSelect + " from " + this.tTaxTran
+			sql = "select PAYMONTH,PAYCATG,'ç„¡' CATGNAME, '50' AS PAYFORMAT," + strSelect + " from " + this.tTaxTran
 					+ " A " + " where A.HID=? " + subsqlA;
 			for (int j = 0; j < paramA.size(); j++) {
 				param.add(paramA.get(j));
@@ -9788,7 +9899,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -9802,14 +9913,14 @@ public class SalNTDAO {
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
 					jsonOne = new JSONObject();
-					jsonOne.put("paycatg", StringUtil.nullToString(data.get("paycatg")));// Âà±b¶µ¥Ø¥N½X
-					jsonOne.put("payformat", StringUtil.nullToString(data.get("payformat")));// ®æ¦¡
-					jsonOne.put("catgname", StringUtil.nullToString(data.get("catgname")));// Âà±b¤¤¤å
-					jsonOne.put("payear", StringUtil.nullToString(data.get("payear")));// ¦~
-					jsonOne.put("paymonth", StringUtil.nullToString(data.get("paymonth")));// ¤ë
-					jsonOne.put("taxpay", StringUtil.nullToString(data.get("taxpay")));// À³µ|©Ò±o
-					jsonOne.put("taxdeduct", StringUtil.nullToString(data.get("taxdeduct")));// ¤v¦©
-					jsonOne.put("taxper", StringUtil.nullToString(data.get("taxper")));// ¤H¼Æ
+					jsonOne.put("paycatg", StringUtil.nullToString(data.get("paycatg")));// è½‰å¸³é …ç›®ä»£ç¢¼
+					jsonOne.put("payformat", StringUtil.nullToString(data.get("payformat")));// æ ¼å¼
+					jsonOne.put("catgname", StringUtil.nullToString(data.get("catgname")));// è½‰å¸³ä¸­æ–‡
+					jsonOne.put("payear", StringUtil.nullToString(data.get("payear")));// å¹´
+					jsonOne.put("paymonth", StringUtil.nullToString(data.get("paymonth")));// æœˆ
+					jsonOne.put("taxpay", StringUtil.nullToString(data.get("taxpay")));// æ‡‰ç¨…æ‰€å¾—
+					jsonOne.put("taxdeduct", StringUtil.nullToString(data.get("taxdeduct")));// å·±æ‰£
+					jsonOne.put("taxper", StringUtil.nullToString(data.get("taxper")));// äººæ•¸
 					jsonOne.put("hid", StringUtil.nullToString(data.get("hid")));
 
 					jsonRtn.add(jsonOne);
@@ -9827,8 +9938,8 @@ public class SalNTDAO {
 		return jsonRtn;
 	}
 
-	// ¨Ì¿z¿ï±ø¥ó,¨ú±o©Ò±oµ|²Î­p_­­©w®æ¦¡50
-	// 2026.3.24¥[Â¾ºÙ
+	// ä¾ç¯©é¸æ¢ä»¶,å–å¾—æ‰€å¾—ç¨…çµ±è¨ˆ_é™å®šæ ¼å¼50
+	// 2026.3.24åŠ è·ç¨±
 	public JSONArray getTaxStatList(String code_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getTaxStatList(),userid = " + userid;
 		log.info(me + " code_data = " + code_data + " hid = " + hid);
@@ -9867,7 +9978,7 @@ public class SalNTDAO {
 							: object_code_data.getString("paydept").split(","));
 
 		}
-		if (!(paymonth == null || (paymonth != null && paymonth.length == 0))) { // ¤ë
+		if (!(paymonth == null || (paymonth != null && paymonth.length == 0))) { // æœˆ
 			tmpsqlA += " and PAYMONTH in ( ";
 			for (i = 0; i < paymonth.length; i++) {
 				if (i != 0) {
@@ -9893,17 +10004,17 @@ public class SalNTDAO {
 
 		param.add(hid);
 
-		if (!"".equals(cardno)) {// ¥d¸¹
+		if (!"".equals(cardno)) {// å¡è™Ÿ
 			subsqlA += " and A.PAYCARD=? ";
 			param.add(cardno);
-		} else if (!"".equals(idtno)) {// ¨­¤ÀÃÒ
+		} else if (!"".equals(idtno)) {// èº«åˆ†è­‰
 			subsqlA += " and A.PAYIDNO=? ";
 			param.add(idtno);
-		} else if (!"".equals(namec)) {// ©m¦W
+		} else if (!"".equals(namec)) {// å§“å
 			subsqlA += " and A.PAYNAMEC like ? ";
 			param.add(namec + "%");
 		}
-		if (!(payear == null || (payear != null && payear.length == 0))) { // ¦~
+		if (!(payear == null || (payear != null && payear.length == 0))) { // å¹´
 			subsqlA += " and a.PAYEAR in ( ";
 			for (i = 0; i < payear.length; i++) {
 				if (i != 0) {
@@ -9914,7 +10025,7 @@ public class SalNTDAO {
 			}
 			subsqlA += ")";
 		}
-		if (!(paydept == null || (paydept != null && paydept.length == 0))) { // ³æ¦ì
+		if (!(paydept == null || (paydept != null && paydept.length == 0))) { // å–®ä½
 			subsqlA += " and a.paydept in ( ";
 			for (i = 0; i < paydept.length; i++) {
 				if (i != 0) {
@@ -9925,7 +10036,7 @@ public class SalNTDAO {
 			}
 			subsqlA += ")";
 		}
-		// §ä¸Ó¦~­û¤u®æ¦¡50Á`©Ò±o,<>0¦C¥X
+		// æ‰¾è©²å¹´å“¡å·¥æ ¼å¼50ç¸½æ‰€å¾—,<>0åˆ—å‡º
 		sql = "select a.hid,a.payear,a.payidno,a.paycard,a.paynamec,a.paydept,COALESCE(e.PADEPNMC,d.PADEPNMC)PADEPNMC,a.paydept,COALESCE(b.PAY,0)+COALESCE(c.PAY,0) paytaxpay,COALESCE(b.DEDUCT,0)+COALESCE(c.DEDUCT,0) paytaxdeduct,D.PAYTITLP "
 				+ "from " + tTaxPsn + " A "
 				+ " left outer join (select PAYEAR,PAYIDNO,hid, COALESCE(sum(PAYTAXPAY),0) PAY, COALESCE(sum(PAYTAXDEDUCT),0) DEDUCT "
@@ -9947,7 +10058,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -9961,14 +10072,14 @@ public class SalNTDAO {
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
 					jsonOne = new JSONObject();
-					jsonOne.put("payear", StringUtil.nullToString(data.get("payear")));// ¦~
-					jsonOne.put("payidno", StringUtil.nullToString(data.get("payidno")));// ¨­¤ÀÃÒ¦r¸¹
-					jsonOne.put("paycard", StringUtil.nullToString(data.get("paycard")));// ¥d¸¹
-					jsonOne.put("paynamec", StringUtil.trimWideEmpty(StringUtil.nullToString(data.get("paynamec"))));// ©m¦W
-					jsonOne.put("padepnmc", StringUtil.nullToString(data.get("padepnmc")));// ³æ¦ì PADEPNMC
-					jsonOne.put("paytitlp", StringUtil.nullToString(data.get("paytitlp")));// Â¾ºÙ
-					jsonOne.put("taxpay", StringUtil.nullToString(data.get("paytaxpay")));// À³µ|©Ò±o
-					jsonOne.put("taxdeduct", StringUtil.nullToString(data.get("paytaxdeduct")));// ¤v¦©
+					jsonOne.put("payear", StringUtil.nullToString(data.get("payear")));// å¹´
+					jsonOne.put("payidno", StringUtil.nullToString(data.get("payidno")));// èº«åˆ†è­‰å­—è™Ÿ
+					jsonOne.put("paycard", StringUtil.nullToString(data.get("paycard")));// å¡è™Ÿ
+					jsonOne.put("paynamec", StringUtil.trimWideEmpty(StringUtil.nullToString(data.get("paynamec"))));// å§“å
+					jsonOne.put("padepnmc", StringUtil.nullToString(data.get("padepnmc")));// å–®ä½ PADEPNMC
+					jsonOne.put("paytitlp", StringUtil.nullToString(data.get("paytitlp")));// è·ç¨±
+					jsonOne.put("taxpay", StringUtil.nullToString(data.get("paytaxpay")));// æ‡‰ç¨…æ‰€å¾—
+					jsonOne.put("taxdeduct", StringUtil.nullToString(data.get("paytaxdeduct")));// å·±æ‰£
 					jsonOne.put("hid", StringUtil.nullToString(data.get("hid")));
 					jsonRtn.add(jsonOne);
 				}
@@ -9985,7 +10096,7 @@ public class SalNTDAO {
 		return jsonRtn;
 	}
 
-	// ¨Ì¿z¿ï±ø¥ó,¨ú±opa.PAREPDETAIL
+	// ä¾ç¯©é¸æ¢ä»¶,å–å¾—pa.PAREPDETAIL
 	public JSONArray getRrtDtlList(String in_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getRrtDtlList(),userid = " + userid;
 		log.info(me + " in_data = " + in_data + " hid = " + hid);
@@ -10001,7 +10112,7 @@ public class SalNTDAO {
 		long starttime = 0;
 		int l_paynet = 0;
 		int l_paytotis = 0;
-		// 1:¤ë³ø:Prt_M selCode:selNm:selEn
+		// 1:æœˆå ±:Prt_M selCode:selNm:selEn
 		if (in_data != null && !in_data.equals("")) {
 			object_in_data = JSONObject.fromObject(in_data);
 			selEn = (!object_in_data.has("selEn")) ? "" : object_in_data.getString("selEn");
@@ -10141,11 +10252,11 @@ public class SalNTDAO {
 				jsonRtn.add(jsonOne);
 			}
 		}
-		log.info(me + ",µ§¼Æ:" + result.size() + "¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+		log.info(me + ",ç­†æ•¸:" + result.size() + "å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		return jsonRtn;
 	}
 
-	// ¨Ì¿z¿ï±ø¥ó,¨ú±opa.padatpsn¶°¦X
+	// ä¾ç¯©é¸æ¢ä»¶,å–å¾—pa.padatpsné›†åˆ
 	public JSONArray getDatPsnList(String in_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getDatPsnList(),userid = " + userid;
 		log.info(me + " in_data = " + in_data + " hid = " + hid);
@@ -10167,17 +10278,17 @@ public class SalNTDAO {
 		String[] paytitle = null;
 		String[] paydept = null;
 		String[] insuamt = null;
-		String xbank = "";// µoÁ~¤é
-		String csflag = "";// ¤u¼úYN
-		int rank3 = 0;// ¥»¥\
-		String title = "";// Â¾ºÙ
-		String rank2 = "";// Åv²z
-		String rnk2n = "";// Â¾µ¥
-		String degr2 = "";// ¯Å§O
-		String rank = "";// ¶¥§O
-		String pfkey = "";// ¤u¼úKEY
-		int pfbas = 0;// ¤u¼ú°ò¥»ÂI¼Æ
-		int pfdat = 0;// ¤u¼úÂ¾µ¥ÂI¼Æ
+		String xbank = "";// ç™¼è–ªæ—¥
+		String csflag = "";// å·¥çYN
+		int rank3 = 0;// æœ¬åŠŸ
+		String title = "";// è·ç¨±
+		String rank2 = "";// æ¬Šç†
+		String rnk2n = "";// è·ç­‰
+		String degr2 = "";// ç´šåˆ¥
+		String rank = "";// éšåˆ¥
+		String pfkey = "";// å·¥çKEY
+		int pfbas = 0;// å·¥çåŸºæœ¬é»æ•¸
+		int pfdat = 0;// å·¥çè·ç­‰é»æ•¸
 		String subsql = "";
 		String strSelect = "";
 		long starttime = 0;
@@ -10219,21 +10330,21 @@ public class SalNTDAO {
 				+ " where A.HID=? ";
 		params.add(hid);
 
-		if (!"".equals(cardno)) {// ¥d¸¹
+		if (!"".equals(cardno)) {// å¡è™Ÿ
 			subsql += " and PAYCARD=? ";
 			params.add(cardno);
 			paramsub.add(cardno);
-		} else if (!"".equals(idtno)) {// ¨­¤ÀÃÒ
+		} else if (!"".equals(idtno)) {// èº«åˆ†è­‰
 			subsql += " and PAYIDNO=? ";
 			params.add(idtno);
 			paramsub.add(idtno);
-		} else if (!"".equals(namec)) {// ©m¦W
+		} else if (!"".equals(namec)) {// å§“å
 			subsql += " and PAYNAMEC like ? ";
 			params.add(namec + "%");
 			paramsub.add(namec + "%");
 		}
 		starttime = System.currentTimeMillis();
-		if (!(paybank == null || (paybank != null && paybank.length == 0))) { // µoÁ~¤é
+		if (!(paybank == null || (paybank != null && paybank.length == 0))) { // ç™¼è–ªæ—¥
 			subsql += " and PAYBANK in ( ";
 			for (i = 0; i < paybank.length; i++) {
 				if (i != 0)
@@ -10243,7 +10354,7 @@ public class SalNTDAO {
 				paramsub.add(paybank[i]);
 			}
 			subsql += ")";
-		} else if (!(salnum == null || (salnum != null && salnum.length == 0))) { // »è³æ½s¸¹
+		} else if (!(salnum == null || (salnum != null && salnum.length == 0))) { // é¤‰å–®ç·¨è™Ÿ
 			subsql += " and SALNUM in ( ";
 			for (i = 0; i < salnum.length; i++) {
 				if (i != 0)
@@ -10254,7 +10365,7 @@ public class SalNTDAO {
 			}
 			subsql += ")";
 		}
-		if (!(payrank == null || (payrank != null && payrank.length == 0))) { // ¶¥¯Å
+		if (!(payrank == null || (payrank != null && payrank.length == 0))) { // éšç´š
 			subsql += " and PAYRANK in ( ";
 			for (i = 0; i < payrank.length; i++) {
 				if (i != 0)
@@ -10265,7 +10376,7 @@ public class SalNTDAO {
 			}
 			subsql += ")";
 		}
-		if (!(paytitle == null || (paytitle != null && paytitle.length == 0))) { // Â¾ºÙ
+		if (!(paytitle == null || (paytitle != null && paytitle.length == 0))) { // è·ç¨±
 			subsql += " and PAYTITLE in ( ";
 			for (i = 0; i < paytitle.length; i++) {
 				if (i != 0)
@@ -10276,7 +10387,7 @@ public class SalNTDAO {
 			}
 			subsql += ")";
 		}
-		if (!(paydept == null || (paydept != null && paydept.length == 0))) { // ³æ¦ì
+		if (!(paydept == null || (paydept != null && paydept.length == 0))) { // å–®ä½
 			subsql += " and paydept in ( ";
 			for (i = 0; i < paydept.length; i++) {
 				if (i != 0)
@@ -10287,7 +10398,7 @@ public class SalNTDAO {
 			}
 			subsql += ")";
 		}
-		if (!(insuamt == null || (insuamt != null && insuamt.length == 0))) { // §ë«O¯Å¶Z
+		if (!(insuamt == null || (insuamt != null && insuamt.length == 0))) { // æŠ•ä¿ç´šè·
 			subsql += " and insuamt in ( ";
 			for (i = 0; i < insuamt.length; i++) {
 				if (i != 0)
@@ -10299,7 +10410,7 @@ public class SalNTDAO {
 			subsql += ")";
 		}
 		sql += subsql + " union all ";
-		// ¥[¤W¾ú¥v¤ë¤ä­Ó¤H©ú²Ó
+		// åŠ ä¸Šæ­·å²æœˆæ”¯å€‹äººæ˜ç´°
 		sql += "select " + strSelect + " from " + this.tDatPsnDw + " A " + " left outer join " + this.tDept
 				+ " B on A.PAYDEPT=B.PADEPCOD  AND A.HID=B.HID " + " left outer join " + this.tTitle
 				+ " C on A.PAYTITLE=C.PAYTITLK AND A.HID=C.HID " + " left outer join " + this.tRankCode
@@ -10317,7 +10428,7 @@ public class SalNTDAO {
 		try {
 
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -10325,7 +10436,7 @@ public class SalNTDAO {
 			}
 			cDAO = new CommDAO(da, hid);
 			start = new Date();
-			// §ä¨ú±oÁZ®ÄÂI¼Æmap
+			// æ‰¾å–å¾—ç¸¾æ•ˆé»æ•¸map
 			CspfMap = cDAO.getCsPfByAll(da, hid);
 			log.info(me + "  " + sql + "...params:" + params.toString());
 			result = da.arraylistbyQuery(sql, params, META_TYPE);
@@ -10375,7 +10486,7 @@ public class SalNTDAO {
 					pfbas = 0;
 					pfdat = 0;
 					pfkey = "";
-					// ÁZ®ÄÂI¼Æ
+					// ç¸¾æ•ˆé»æ•¸
 					if ("Y".equals(csflag) && hid.matches("1A0|2A0")) {
 
 						cspfRtn = cDAO.getCsPfByMap(rank3, title, rank, rnk2n, Integer.valueOf(degr2), xbank, hid,
@@ -10394,8 +10505,8 @@ public class SalNTDAO {
 				}
 			}
 			end = new Date();
-			log.info(me + "  ...********* dataaccess:" + (end.getTime() - start.getTime()) + "¦@ªá¶O¡G"
-					+ (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...********* dataaccess:" + (end.getTime() - start.getTime()) + "å…±èŠ±è²»ï¼š"
+					+ (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
@@ -10407,11 +10518,11 @@ public class SalNTDAO {
 		return jsonRtn;
 	}
 
-	// ¨Ì²§°Ê/§å¦¸,¨ú±o»è³æ½s¸¹²M³æ
+	// ä¾ç•°å‹•/æ‰¹æ¬¡,å–å¾—é¤‰å–®ç·¨è™Ÿæ¸…å–®
 	public JSONArray getSalnumList(String in_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getSalnumList(),userid = " + userid;
 		log.info(me + "in_data=" + in_data + " hid = " + hid);
-		ArrayList<Padatpay> datpayAry = new ArrayList<Padatpay>(); // ¤ä¦©¶°¦X
+		ArrayList<Padatpay> datpayAry = new ArrayList<Padatpay>(); // æ”¯æ‰£é›†åˆ
 		JSONArray jsonRtn = new JSONArray();
 		JSONObject jsonOne = null;
 		JSONObject object_in_data = null;
@@ -10438,9 +10549,9 @@ public class SalNTDAO {
 		if (!"".equals(patradt)) {
 			subsql += " and A.PATRADT=? ";
 		}
-		// 1.»è³æ½s¸¹>0
-		// 2.»è³æ½s¸¹+µoÁ~¤é+¥d¸¹,³£¬OªÅ¥Õ,§ì»è³æ½s¸¹=0
-		// 2026.3.19§ï¦¨¶Ç¤J»è³æ½s¸¹
+		// 1.é¤‰å–®ç·¨è™Ÿ>0
+		// 2.é¤‰å–®ç·¨è™Ÿ+ç™¼è–ªæ—¥+å¡è™Ÿ,éƒ½æ˜¯ç©ºç™½,æŠ“é¤‰å–®ç·¨è™Ÿ=0
+		// 2026.3.19æ”¹æˆå‚³å…¥é¤‰å–®ç·¨è™Ÿ
 		// if ( !"".equals(salnum) ||
 		// ( "".equals(salnum) && "".equals(patradt) && "".equals(cardno) ) ){
 		// subsql+=" and A.SALNUM=? ";
@@ -10448,7 +10559,7 @@ public class SalNTDAO {
 		if (!"".equals(salnum)) {
 			subsql += " and A.SALNUM=? ";
 		}
-		// Åª¨ú»è³æ½s³æ=0(1²§°ÊÀÉ 2§å¦¸ÀÉ)
+		// è®€å–é¤‰å–®ç·¨å–®=0(1ç•°å‹•æª” 2æ‰¹æ¬¡æª”)
 		if (selCode.equals("1"))
 			sql = " select A.PAYCARD,A.PAYIDNO,A.PAYNAMEC,B.TRANAME,A.PATRADT,A.PATRACOD,a.SALNUM " + " from "
 					+ this.tTraPsn + " A " + " left outer join " + this.tTraCode + " B on a.PATRACOD = b.TRACODE "
@@ -10476,7 +10587,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -10496,11 +10607,11 @@ public class SalNTDAO {
 					jsonOne.put("salnum", StringUtil.nullToString(data.get("salnum")));
 					jsonOne.put("payidno", StringUtil.nullToString(data.get("payidno")));
 					if (selCode.equals("1")) {
-						jsonOne.put("typnm", "²§°Ê");
+						jsonOne.put("typnm", "ç•°å‹•");
 						jsonOne.put("itmnm", StringUtil.nullToString(data.get("traname")));
 						jsonOne.put("patracod", StringUtil.nullToString(data.get("patracod")));
 					} else if (selCode.equals("2")) {
-						jsonOne.put("typnm", "§å¦¸");
+						jsonOne.put("typnm", "æ‰¹æ¬¡");
 						jsonOne.put("itmnm", StringUtil.nullToString(data.get("pacodnmc")));
 						jsonOne.put("paycode", StringUtil.nullToString(data.get("paycode")));
 					}
@@ -10520,12 +10631,12 @@ public class SalNTDAO {
 		return jsonRtn;
 	}
 
-	// ¨Ì»è³æ½s¸¹/µoÁ~¤é´Á,¨ú±o¤ë¤ä¤ä¦©pa.padatpay_Sum
+	// ä¾é¤‰å–®ç·¨è™Ÿ/ç™¼è–ªæ—¥æœŸ,å–å¾—æœˆæ”¯æ”¯æ‰£pa.padatpay_Sum
 	public JSONArray getCheckPayBykey(String in_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getCheckPayBykey(),userid = " + userid;
 		log.info(me + " in_data = " + in_data + " hid = " + hid);
 		Padatpay datpayObj = null;
-		ArrayList<Padatpay> datpayAry = new ArrayList<Padatpay>(); // ¤ä¦©¶°¦X
+		ArrayList<Padatpay> datpayAry = new ArrayList<Padatpay>(); // æ”¯æ‰£é›†åˆ
 		CommDAO cDAO = null;
 		HashMap rtnMap = new HashMap();
 		JSONArray jsonRtn = new JSONArray();
@@ -10550,23 +10661,23 @@ public class SalNTDAO {
 			paybank = (!object_in_data.has("paybank")) ? "" : object_in_data.getString("paybank");
 			salnum = (!object_in_data.has("salnum")) ? "" : object_in_data.getString("salnum");
 		}
-		// Åª¨úpa.padatpay+pa.padatpay_dw
+		// è®€å–pa.padatpay+pa.padatpay_dw
 		strSelect = " a.PAYCODE, SUM(a.PAYAMT) AS sum_amt, b.PACODNMC, a.SALNUM,count(*) as cnt ";
 		sql = "select " + strSelect + " from " + this.tDatPay + " A " + " left outer join " + this.tPayItm
 				+ " B on A.PAYCODE=B.PAYCODE and A.HID=B.HID " + " left outer join " + this.tDatPsn
 				+ " C on A.PAYIDNO=C.PAYIDNO AND A.SALNUM=C.SALNUM and A.HID=B.HID " + " where A.HID=? ";
 		params.add(hid);
-		if (!"".equals(paybank)) {// µoÁ~¤é
+		if (!"".equals(paybank)) {// ç™¼è–ªæ—¥
 			subsql += " and C.PAYBANK=? ";
 			params.add(paybank);
 			paramsub.add(paybank);
-		} else if (!"".equals(salnum)) {// »è³æ½s¸¹
+		} else if (!"".equals(salnum)) {// é¤‰å–®ç·¨è™Ÿ
 			subsql += " and A.SALNUM=? ";
 			params.add(salnum);
 			paramsub.add(salnum);
 		}
 		sql += subsql + " GROUP BY a.SALNUM, a.PAYCODE, b.PACODNMC " + "union all ";
-		// ¥[¤W¾ú¥v¤ë¤ä©ú²Ó
+		// åŠ ä¸Šæ­·å²æœˆæ”¯æ˜ç´°
 		sql += " select " + strSelect + " from " + this.tDatPayDw + " A " + " left outer join " + this.tPayItm
 				+ " B on A.PAYCODE=B.PAYCODE and A.HID=B.HID " + " left outer join " + this.tDatPsnDw
 				+ " C on A.PAYIDNO=C.PAYIDNO AND A.SALNUM=C.SALNUM and A.HID=B.HID " + " where A.HID=? ";
@@ -10581,7 +10692,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -10625,7 +10736,7 @@ public class SalNTDAO {
 		return jsonRtn;
 	}
 
-	// ÀÉ®×²£»s selCode:selNm:selEn 1:¥D­p«Ç_µo©ñ:BAS_1 2:¥D­p«Ç_¦©´Ú:BAS_2
+	// æª”æ¡ˆç”¢è£½ selCode:selNm:selEn 1:ä¸»è¨ˆå®¤_ç™¼æ”¾:BAS_1 2:ä¸»è¨ˆå®¤_æ‰£æ¬¾:BAS_2
 	public JSONArray getBASFileList(String in_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getBASFileList(),userid = " + userid;
 		log.info(me + " in_data = " + in_data + " hid = " + hid);
@@ -10641,22 +10752,22 @@ public class SalNTDAO {
 		int i = 0;
 		String jsonStr = "";
 		String strRank = "";
-		String l_Govfg = " "; // 2023.6.21 A-·s¨îµL¤½«O¦~¸ê B-·s¨î¦³¤½«O¦~¸ê(¦¹Ãş«İ¦³¤H­û,¦A³]©w)
-		String strGovdt = ""; // ªì¥ô¤½Â¾¤é
-		String l_Contract = "";// ªÅ¥Õ(¤ëÀY) Y(¤ë§À)
-		String l_paycode = ""; // ¤ä¦©¥N½X
-		String l_Idtno = ""; // ¨­¤ÀÃÒ
-		int l_Dat_payamt = 0; // µoÁ~©ú²Óª÷ÃB
+		String l_Govfg = " "; // 2023.6.21 A-æ–°åˆ¶ç„¡å…¬ä¿å¹´è³‡ B-æ–°åˆ¶æœ‰å…¬ä¿å¹´è³‡(æ­¤é¡å¾…æœ‰äººå“¡,å†è¨­å®š)
+		String strGovdt = ""; // åˆä»»å…¬è·æ—¥
+		String l_Contract = "";// ç©ºç™½(æœˆé ­) Y(æœˆå°¾)
+		String l_paycode = ""; // æ”¯æ‰£ä»£ç¢¼
+		String l_Idtno = ""; // èº«åˆ†è­‰
+		int l_Dat_payamt = 0; // ç™¼è–ªæ˜ç´°é‡‘é¡
 		int l_prepaynum = 0;
 		String l_prepaycode = "";
 		HashMap trapsnMap = new HashMap();
 		Padatpsn padatpsn = null;
 		long starttime9 = 0;
-		HashMap<String, Object> prPrtMap = new HashMap(); // ³øªí¬[ºc map
-		HashMap datpayMap = new HashMap();// ¤ë¤ä¤ä¦©ÀÉ map
+		HashMap<String, Object> prPrtMap = new HashMap(); // å ±è¡¨æ¶æ§‹ map
+		HashMap datpayMap = new HashMap();// æœˆæ”¯æ”¯æ‰£æª” map
 		TreeMap<Integer, Integer> valMap = new TreeMap();
-		ArrayList<Padatpay> datpayAry = null;// ¤ë¤ä¤ä¦©ÀÉ Array
-		Pareport prtrptobj = null; // ³øªíÀÉ¬[ºc
+		ArrayList<Padatpay> datpayAry = null;// æœˆæ”¯æ”¯æ‰£æª” Array
+		Pareport prtrptobj = null; // å ±è¡¨æª”æ¶æ§‹
 		ArrayList<Object> param = new ArrayList<Object>();
 		BufferedWriter bfw = null;
 		String strLine = "";
@@ -10685,20 +10796,20 @@ public class SalNTDAO {
 				connFlg = true;
 			}
 			starttime9 = System.currentTimeMillis();
-			// ¼g¤J¸ê®Æ§¨³]©w
+			// å¯«å…¥è³‡æ–™å¤¾è¨­å®š
 			FileUtil fileUtil = new FileUtil();
-			if (selEn.matches("BAS_1|BAS_2")) { // BAS_1¥D­p_µo©ñ BAS_2¥D­p_¦©´Ú
+			if (selEn.matches("BAS_1|BAS_2")) { // BAS_1ä¸»è¨ˆ_ç™¼æ”¾ BAS_2ä¸»è¨ˆ_æ‰£æ¬¾
 				// folderPath = hospInfo.fileSRV+"bak\\";
 				folderPath = hospInfo.fileAPSRV;
-				if (selEn.equals("BAS_1")) { // ¥D­p_µo©ñ
+				if (selEn.equals("BAS_1")) { // ä¸»è¨ˆ_ç™¼æ”¾
 					filename = "PAY";
-				} else if (selEn.equals("BAS_2")) { // ¥D­p_¦©´Ú
+				} else if (selEn.equals("BAS_2")) { // ä¸»è¨ˆ_æ‰£æ¬¾
 					filename = "DEDUCT";
 				}
-				if (patradt.substring(8, 10).equals("02") && hid.equals("1A0")) {// °ªºa2¸¹¬O¯}¤ë
+				if (patradt.substring(8, 10).equals("02") && hid.equals("1A0")) {// é«˜æ¦®2è™Ÿæ˜¯ç ´æœˆ
 					filename = "QUIT" + filename;
 				}
-				if (hid.matches("2A0|3A0")) { // «Ìºa,ÁpÂå,ÀÉ¦W¥[HID
+				if (hid.matches("2A0|3A0")) { // å±æ¦®,è¯é†«,æª”ååŠ HID
 					filename += hid;
 				}
 			}
@@ -10708,32 +10819,32 @@ public class SalNTDAO {
 			if (!FileUtil.FileToSmbFile(folderPath, hid).exists()) {
 				fileUtil.FileToSmbFile(folderPath, hid).mkdirs();
 			}
-			// «Ø¥ßÀÉ®× Ãø¦r­n¥Îutf8
+			// å»ºç«‹æª”æ¡ˆ é›£å­—è¦ç”¨utf8
 			SmbFile payfile = fileUtil.FileToSmbFile(filePath, hid);
 			bfw = new BufferedWriter(new OutputStreamWriter(new SmbFileOutputStream(payfile, false), "utf-8"));
 
-			log.info(me + "  1.Åª¨ú³øªí¬[ºc ,");
+			log.info(me + "  1.è®€å–å ±è¡¨æ¶æ§‹ ,");
 			param = new ArrayList<Object>();
 			param.add(hid);
-			if (selEn.equals("BAS_1")) { // ¥D­p_µo©ñ
+			if (selEn.equals("BAS_1")) { // ä¸»è¨ˆ_ç™¼æ”¾
 				param.add("2");
-			} else if (selEn.equals("BAS_2")) { // ¥D­p_¦©´Ú
+			} else if (selEn.equals("BAS_2")) { // ä¸»è¨ˆ_æ‰£æ¬¾
 				param.add("3");
 			}
 			prPrtMap = this.getPaItmMap(param, "PrtRpt", hid, da);
 
-			log.info(me + "  1.Åª¨ú³øªí¬[ºc ,µ§¼Æ:" + prPrtMap.size() + "¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime9)
-					+ "²@¬í");
+			log.info(me + "  1.è®€å–å ±è¡¨æ¶æ§‹ ,ç­†æ•¸:" + prPrtMap.size() + "å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime9)
+					+ "æ¯«ç§’");
 
 			starttime9 = System.currentTimeMillis();
 			param = new ArrayList<Object>();
 			param.add(salnum);
 			param.add(hid);
 			datpayMap = this.getPaItmMap(param, "DATPAY", hid, da);
-			log.info(me + "  2-1.Åª¨ú¤ë¤ä©ú²Ó ,µ§¼Æ:" + datpayMap.size() + "¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime9)
-					+ "²@¬í");
+			log.info(me + "  2-1.è®€å–æœˆæ”¯æ˜ç´° ,ç­†æ•¸:" + datpayMap.size() + "å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime9)
+					+ "æ¯«ç§’");
 
-			// Åª¨úpa.padatpsn
+			// è®€å–pa.padatpsn
 			if (hid.equals("1A0")) {
 				// tmp=" and a.paycard in ('3007','0168' ) ";
 				sql = "select A.PAYBANK, A.PAYDEPT, A.PAYCARD, A.PAYNAMEC, A.PAYTITLE, T.PAYTITLP,SUBSTR(A.PAYIDNO,2,1) AS SEX, A.PAYEMPNO ,COALESCE(tra.PAYGOVDT, B.PAYGOVDT) PAYGOVDT,COALESCE(tra.PAYEMPDT, B.PAYEMPDT) PAYEMPDT,A.PAYIDNO,A.PAYRANK,A.hid "
@@ -10746,7 +10857,7 @@ public class SalNTDAO {
 			params.add(hid);
 			params.add(salnum);
 
-			log.info(me + "  2-2.Åª¨úpa.padatpsn:" + sql + "...params:" + params.toString());
+			log.info(me + "  2-2.è®€å–pa.padatpsn:" + sql + "...params:" + params.toString());
 			log.info(me + "  " + sql + "...params:" + params.toString());
 
 			result = da.arraylistbyQuery(sql, params, META_TYPE);
@@ -10777,7 +10888,7 @@ public class SalNTDAO {
 					jsonOne.put("sex", StringUtil.nullToString(padatpsn.getSex()));
 					strLine += StringUtil.fillChar(StringUtil.nullToString(padatpsn.getPayempno()), 7, " ", true);
 					jsonOne.put("payempno", StringUtil.nullToString(padatpsn.getPayempno()));
-					// 2023.6.21 A-·s¨îµL¤½«O¦~¸ê B-·s¨î¦³¤½«O¦~¸ê(¦¹Ãş«İ¦³¤H­û,¦A³]©w)
+					// 2023.6.21 A-æ–°åˆ¶ç„¡å…¬ä¿å¹´è³‡ B-æ–°åˆ¶æœ‰å…¬ä¿å¹´è³‡(æ­¤é¡å¾…æœ‰äººå“¡,å†è¨­å®š)
 					strRank = StringUtil.nullToString(padatpsn.getPayrank());
 					l_Govfg = " ";
 					strGovdt = StringUtil.nullToString(padatpsn.getStrgovdt());
@@ -10785,24 +10896,24 @@ public class SalNTDAO {
 						l_Govfg = "A";
 					}
 					strLine += l_Govfg;
-					jsonOne.put("l_Govfg", l_Govfg);// ·s¨î¤½«O
-					// «´¬ù¤ë§ÀÁ~Y
+					jsonOne.put("l_Govfg", l_Govfg);// æ–°åˆ¶å…¬ä¿
+					// å¥‘ç´„æœˆå°¾è–ªY
 					l_Contract = padatpsn.getContract();
 					if (l_Contract.equals("N") || l_Contract == "") {
 						l_Contract = " ";
 					}
 
-					if (selEn.equals("BAS_1")) { // ¥D­p_µo©ñ
+					if (selEn.equals("BAS_1")) { // ä¸»è¨ˆ_ç™¼æ”¾
 						strLine += l_Contract;
-						jsonOne.put("l_contract", l_Contract);// «´¬ù¤ëÀY(ªÅ¥Õ) ¤ë§À(Y)
+						jsonOne.put("l_contract", l_Contract);// å¥‘ç´„æœˆé ­(ç©ºç™½) æœˆå°¾(Y)
 					}
-					// ²MªÅ³øªí¬[ºc
+					// æ¸…ç©ºå ±è¡¨æ¶æ§‹
 					for (Map.Entry<String, Object> structEntry : prPrtMap.entrySet()) {
 						prtrptobj = (Pareport) structEntry.getValue();
 						prtrptobj.setPayamt(0);
 						// System.out.println(prtrptobj.getPaynum() + " : " + prtrptobj.getPaycode());
 					}
-					// ¤ë¤ä¤ä¦©
+					// æœˆæ”¯æ”¯æ‰£
 					l_Idtno = StringUtil.nullToString(padatpsn.getPayidno());
 					datpayAry = (ArrayList) datpayMap.get(l_Idtno);
 					if (datpayAry != null) {
@@ -10821,7 +10932,7 @@ public class SalNTDAO {
 							}
 						}
 					}
-					// ±N¦Ppaynum¼Æ¦r¥[Á`©ñvalMap
+					// å°‡åŒpaynumæ•¸å­—åŠ ç¸½æ”¾valMap
 					valMap = new TreeMap();
 					l_prepaycode = "";
 					for (Map.Entry<String, Object> prtEntry : prPrtMap.entrySet()) {
@@ -10834,13 +10945,13 @@ public class SalNTDAO {
 							valMap.put(l_prepaynum, prtrptobj.getPayamt());
 						}
 					}
-					// ¼g¤JjsonOne
+					// å¯«å…¥jsonOne
 					String tmpKey = "";
 					for (Map.Entry<Integer, Integer> entry : valMap.entrySet()) {
 						// System.out.println(entry.getKey() + " : " + entry.getValue());
-						if (selEn.equals("BAS_1")) { // ¥D­p_µo©ñ
+						if (selEn.equals("BAS_1")) { // ä¸»è¨ˆ_ç™¼æ”¾
 							tmpKey = "P" + entry.getKey();
-						} else if (selEn.equals("BAS_2")) { // ¥D­p_¦©´Ú
+						} else if (selEn.equals("BAS_2")) { // ä¸»è¨ˆ_æ‰£æ¬¾
 							tmpKey = "D" + entry.getKey();
 						}
 						jsonOne.put(tmpKey, entry.getValue());
@@ -10853,7 +10964,7 @@ public class SalNTDAO {
 					jsonRtn.add(jsonOne);
 				}
 			}
-			log.info(me + "  ...********* dataaccess:¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...********* dataaccess:å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new SQLException(me + ", fail!!." + e);
@@ -10866,8 +10977,8 @@ public class SalNTDAO {
 		return jsonRtn;
 	}
 
-	// ÀÉ®×²£»s selCode:selNm:selEn
-	// 1:ÁZ®Ä²Õ_Âå®v:Perf_1 2:ÁZ®Ä²Õ_­û¤u:Perf_2
+	// æª”æ¡ˆç”¢è£½ selCode:selNm:selEn
+	// 1:ç¸¾æ•ˆçµ„_é†«å¸«:Perf_1 2:ç¸¾æ•ˆçµ„_å“¡å·¥:Perf_2
 	public JSONArray getPerfFileList(String in_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getPerfFileList(),userid = " + userid;
 		log.info(me + " in_data = " + in_data + " hid = " + hid);
@@ -10875,7 +10986,7 @@ public class SalNTDAO {
 		JSONObject jsonOne = null;
 		JSONObject object_in_data = null;
 		CommDAO cDAO = null;
-		HashMap CspfMap = new HashMap(); // ¤u§@¼úª÷¤ä¦© ¹ï·Óªí
+		HashMap CspfMap = new HashMap(); // å·¥ä½œçé‡‘æ”¯æ‰£ å°ç…§è¡¨
 		long starttime = 0;
 		String selEn = "";
 		String selCode = "";
@@ -10884,44 +10995,44 @@ public class SalNTDAO {
 		int salnum = 0;
 		int i = 0;
 		String jsonStr = "";
-		String l_Idtno = ""; // ¨­¤ÀÃÒ
-		String l_paycode = ""; // ¤ä¦©¥N½X
+		String l_Idtno = ""; // èº«åˆ†è­‰
+		String l_paycode = ""; // æ”¯æ‰£ä»£ç¢¼
 
-		int l_Pfdoc = 0; // ±M¶ÔÃB«×
-		String l_Rnk2n = "";// Â¾ºÙ
-		String l_Title = "";// Â¾ºÙ
-		String l_TitSub = "";// Â¾ºÙ¤ÀÃş
-		int l_DEGR2 = 0; // ¯Å§O
-		int l_Open = 0; // ¤£¶}·~¼úª÷ ±M¤G/¤u¤G
-		String l_Csflag = "";// ¤u§@¼úª÷(Y/N)
+		int l_Pfdoc = 0; // å°ˆå‹¤é¡åº¦
+		String l_Rnk2n = "";// è·ç¨±
+		String l_Title = "";// è·ç¨±
+		String l_TitSub = "";// è·ç¨±åˆ†é¡
+		int l_DEGR2 = 0; // ç´šåˆ¥
+		int l_Open = 0; // ä¸é–‹æ¥­çé‡‘ å°ˆäºŒ/å·¥äºŒ
+		String l_Csflag = "";// å·¥ä½œçé‡‘(Y/N)
 		int l_Tracod = 0;
 
 		boolean blnflag = false;
-		String l_Paretention = "";// [±M¤@]0,[±M¤G]Y/N
+		String l_Paretention = "";// [å°ˆä¸€]0,[å°ˆäºŒ]Y/N
 		HashMap datpsnAdjMap = new HashMap();
 		Padatpsn padatpsn = null;
 		Padatpsn padatpsnadj = null;
 		Padatpay padatpay = null;
-		int l_VP01 = 0; // ±M¤@
-		int l_FP80 = 0; // ¤u§@¼úª÷_¦í±J¬z¶K
-		int l_VP049 = 0; // ±M¤G_¸É
-		int l_FP440 = 0; // ±M¤@_°ö°V¸É§U
-		int l_teach_00 = 0; // ±ĞÂ¾¼úÀy
-		int l_teach_09 = 0; // ±ĞÂ¾¼úÀy_¸É
-		int l_thesis_10 = 0; // ½×¤å¼úÀy²Ä1½g
-		int l_thesis_19 = 0; // ½×¤å¼úÀy²Ä1½g_¸É
-		int l_thesis_20 = 0; // ½×¤å¼úÀy²Ä2½g
-		int l_thesis_29 = 0; // ½×¤å¼úÀy²Ä2½g_¸É
-		String l_pfcr = ""; // Á`Âå®v
-		String l_pfbas = ""; // °ò¥»ÁZ¤À
-		String l_pfdat = ""; // ­Ä¯ÅÁZ¤À
-		String l_Paysgndt = ""; // ²{Â¾¤é
-		String l_Paybank = ""; // µoÁ~¤é
+		int l_VP01 = 0; // å°ˆä¸€
+		int l_FP80 = 0; // å·¥ä½œçé‡‘_ä½å®¿æ´¥è²¼
+		int l_VP049 = 0; // å°ˆäºŒ_è£œ
+		int l_FP440 = 0; // å°ˆä¸€_åŸ¹è¨“è£œåŠ©
+		int l_teach_00 = 0; // æ•™è·çå‹µ
+		int l_teach_09 = 0; // æ•™è·çå‹µ_è£œ
+		int l_thesis_10 = 0; // è«–æ–‡çå‹µç¬¬1ç¯‡
+		int l_thesis_19 = 0; // è«–æ–‡çå‹µç¬¬1ç¯‡_è£œ
+		int l_thesis_20 = 0; // è«–æ–‡çå‹µç¬¬2ç¯‡
+		int l_thesis_29 = 0; // è«–æ–‡çå‹µç¬¬2ç¯‡_è£œ
+		String l_pfcr = ""; // ç¸½é†«å¸«
+		String l_pfbas = ""; // åŸºæœ¬ç¸¾åˆ†
+		String l_pfdat = ""; // ä¿¸ç´šç¸¾åˆ†
+		String l_Paysgndt = ""; // ç¾è·æ—¥
+		String l_Paybank = ""; // ç™¼è–ªæ—¥
 		String vDate = "";
 		long starttime9 = 0;
-		HashMap datdocMap = new HashMap(); // ¤ë¤ä¤ä¦©ÀÉ map
+		HashMap datdocMap = new HashMap(); // æœˆæ”¯æ”¯æ‰£æª” map
 		TreeMap<Integer, Integer> valMap = new TreeMap();
-		ArrayList<Padatpay> datpayAry = null;// ¤ë¤ä¤ä¦©ÀÉ Array
+		ArrayList<Padatpay> datpayAry = null;// æœˆæ”¯æ”¯æ‰£æª” Array
 		ArrayList<Object> param = new ArrayList<Object>();
 		ResultSet rs = null;
 		BufferedWriter bfw = null;
@@ -10954,20 +11065,20 @@ public class SalNTDAO {
 				connFlg = true;
 			}
 			starttime9 = System.currentTimeMillis();
-			// ¼g¤J¸ê®Æ§¨³]©w
+			// å¯«å…¥è³‡æ–™å¤¾è¨­å®š
 			FileUtil fileUtil = new FileUtil();
-			if (selEn.matches("Perf_1")) { // Perf_1ÁZ®Ä²Õ_Âå®v
+			if (selEn.matches("Perf_1")) { // Perf_1ç¸¾æ•ˆçµ„_é†«å¸«
 				folderPath = hospInfo.fileSRV+"bak\\";
 				//folderPath = hospInfo.fileSALPPF;
 				filename = "DocBas";
-				if (hid.matches("2A0")) { // «Ìºa,ÀÉ¦W¥[HID ÁpÂå¨S¦³¥Î
+				if (hid.matches("2A0")) { // å±æ¦®,æª”ååŠ HID è¯é†«æ²’æœ‰ç”¨
 					filename += hid;
 				}
-			} else if (selEn.matches("Perf_2")) { // Perf_2ÁZ®Ä²Õ_­û¤u
+			} else if (selEn.matches("Perf_2")) { // Perf_2ç¸¾æ•ˆçµ„_å“¡å·¥
 				folderPath = hospInfo.fileSRV+"bak\\";
 				//folderPath = hospInfo.fileSALEPF;
 				filename = "EmpEff";
-				if (hid.matches("2A0")) { // «Ìºa,ÀÉ¦W¥[HID ÁpÂå¨S¦³¥Î
+				if (hid.matches("2A0")) { // å±æ¦®,æª”ååŠ HID è¯é†«æ²’æœ‰ç”¨
 					filename += hid;
 				}
 			}
@@ -10977,7 +11088,7 @@ public class SalNTDAO {
 			if (!FileUtil.FileToSmbFile(folderPath, hid).exists()) {
 				fileUtil.FileToSmbFile(folderPath, hid).mkdirs();
 			}
-			// «Ø¥ßÀÉ®× Ãø¦r­n¥Îutf8
+			// å»ºç«‹æª”æ¡ˆ é›£å­—è¦ç”¨utf8
 			SmbFile payfile = fileUtil.FileToSmbFile(filePath, hid);
 			//bfw = new BufferedWriter(new OutputStreamWriter(new SmbFileOutputStream(payfile, false), "utf-8"));
 			bfw = new BufferedWriter(new OutputStreamWriter(new SmbFileOutputStream(payfile, false), "big5"));
@@ -10993,8 +11104,8 @@ public class SalNTDAO {
 			param.add(hid);
 			param.add(patradt);
 			datdocMap = this.getPaItmMap(param, "DATDOC", hid, da);
-			log.info(me + "  1-1.Åª¨ú¤ë¤ä©ú²ÓVP01±M¤@¸Éµo¶µ+VP04±M¤G¸Éµo¶µ+FP80¤u§@¼úª÷_¦í±J¬z¶K+FP440+Åª¨ú±ĞÂ¾¤Î½×¤å¼úÀy,µ§¼Æ:" + datdocMap.size()
-					+ "¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime9) + "²@¬í");
+			log.info(me + "  1-1.è®€å–æœˆæ”¯æ˜ç´°VP01å°ˆä¸€è£œç™¼é …+VP04å°ˆäºŒè£œç™¼é …+FP80å·¥ä½œçé‡‘_ä½å®¿æ´¥è²¼+FP440+è®€å–æ•™è·åŠè«–æ–‡çå‹µ,ç­†æ•¸:" + datdocMap.size()
+					+ "å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 			if (selEn.matches("Perf_1")) {
 				starttime9 = System.currentTimeMillis();
 				param = new ArrayList<Object>();
@@ -11006,14 +11117,14 @@ public class SalNTDAO {
 				vDate = formatter.format(DateUtil.add(dd, Calendar.MONTH, -2));
 				param.add(vDate);
 				datpsnAdjMap = this.getPaItmMap(param, "DATDOCAdj", hid, da);
-				log.info(me + "  1-2.Åª¨úÂå®v¦³Â¾°È²§°Ê,µ§¼Æ:" + datdocMap.size() + "¦@ªá¶O¡G"
-						+ (System.currentTimeMillis() - starttime9) + "²@¬í");
+				log.info(me + "  1-2.è®€å–é†«å¸«æœ‰è·å‹™ç•°å‹•,ç­†æ•¸:" + datdocMap.size() + "å…±èŠ±è²»ï¼š"
+						+ (System.currentTimeMillis() - starttime9) + "æ¯«ç§’");
 
-				// ÁZ®Ä²Õ_Âå®v
-				// 1.±M¶ÔÃB«×>0
-				// 2.±M¶ÔÃB«×=0 and ±M¶Ô¼úª÷²Ó¶µ>0,¤£§t(VP010 VP013)
-				// 3.±M1=0,±M2=Y(PARETENTION)
-				// 4.paeffdt Â÷Â¾2­Ó¤ë¤ºªºÂå®v
+				// ç¸¾æ•ˆçµ„_é†«å¸«
+				// 1.å°ˆå‹¤é¡åº¦>0
+				// 2.å°ˆå‹¤é¡åº¦=0 and å°ˆå‹¤çé‡‘ç´°é …>0,ä¸å«(VP010 VP013)
+				// 3.å°ˆ1=0,å°ˆ2=Y(PARETENTION)
+				// 4.paeffdt é›¢è·2å€‹æœˆå…§çš„é†«å¸«
 				strTmp = " (DAT.PAYPFDOC >0 "
 						+ " or  (DAT.PAYPFDOC = 0 AND DAT.PACSFLAG = 'N' AND DAT.PAYPFSP1+DAT.PAYPFSP2+DAT.PAYPFSP3 = 0 "
 						+ " AND (DAT.PAYIDNO IN (SELECT PAYIDNO FROM " + this.tDatPay + " WHERE HID=? AND SALNUM = ? "
@@ -11034,12 +11145,12 @@ public class SalNTDAO {
 				         " AND TRA.PaeffDT BETWEEN DATE('" + patradt+ "') - 2 MONTH + 1 DAY AND DATE('" + patradt + "') + 1 MONTH - 1 DAY "+
 						 " AND tra.payidno NOT IN (SELECT payidno FROM " + this.tDatPsn + " WHERE hid=? AND salnum=?) ";
 
-			} else if (selEn.matches("Perf_2")) { // Perf_2ÁZ®Ä²Õ_­û¤u 1.­û¤u¼úª÷=Y,2.­û¤u¼úª÷=N and ¨ä¥LÂI¼Æ>0
+			} else if (selEn.matches("Perf_2")) { // Perf_2ç¸¾æ•ˆçµ„_å“¡å·¥ 1.å“¡å·¥çé‡‘=Y,2.å“¡å·¥çé‡‘=N and å…¶ä»–é»æ•¸>0
 				strTmp = " (DAT.PACSFLAG = 'Y' "
 						+ "OR (DAT.PACSFLAG = 'N' AND DAT.PAYPFSP1+DAT.PAYPFSP2+DAT.PAYPFSP3>0) ) ";
 			}
 
-			// Åª¨úpa.padatpsn,²§°ÊÀÉ§ì1·s¶i33Â¾°È½Õ¾ã 21Â÷Â¾22°h¥ğ23°±Á~
+			// è®€å–pa.padatpsn,ç•°å‹•æª”æŠ“1æ–°é€²33è·å‹™èª¿æ•´ 21é›¢è·22é€€ä¼‘23åœè–ª
 
 			//tmp=" and dat.paycard in ('0133','0168') ";
 			sql = "select DAT.PAYBANK, DAT.PAYDEPT, D.PADEPNMC, DAT.PAYCARD, DAT.PAYNAMEC, DAT.PAYTITLE, T.PAYTITLP,DAT.PAYRNK2N, DAT.PAYRANK3, DAT.PAYDEGR2, DAT.PAYDEGRE, "
@@ -11063,13 +11174,13 @@ public class SalNTDAO {
 				params.add(hid);
 				params.add(salnum);
 			}
-			log.info(me + "  2-2.Åª¨úpa.padatpsn:" + sql + "...params:" + params.toString());
+			log.info(me + "  2-2.è®€å–pa.padatpsn:" + sql + "...params:" + params.toString());
 			log.info(me + "  " + sql + "...params:" + params.toString());
 
 			result = da.arraylistbyQuery(sql, params, META_TYPE);
 			log.info(me + "...size:" + result.size());
-			// ­û¤u
-			// µoÁ~¤é;³æ¦ì¥N½X;³æ¦ì¤¤¤å;¥d¸¹;©m¦W;Â¾ºÙ¥N½X;Â¾ºÙ¤¤¤å;©xÂ¾µ¥;¥»¥\;¯Å§O;²{Â¾¤é;°ò¥»ÁZ¤À;­Ä¯ÅÁZ¤À;ÃB¥~ÁZ¤À;¤u¤G;¼úÀy_±ĞÂ¾¼úÀyFP420;±ĞÂ¾¼úÀy¸Éµo¦©;¼úÀy_½×¤å¼úÀy²Ä1½g;½×¤å¼úÀy²Ä1½g¸Éµo¦©;¼úÀy_½×¤å¼úÀy²Ä2½g;½×¤å¼úÀy²Ä2½g¸Éµo¦©;¤u§@_¦í±J¬z¶KFP800;¼úª÷®tÃB;Á`Âå®v
+			// å“¡å·¥
+			// ç™¼è–ªæ—¥;å–®ä½ä»£ç¢¼;å–®ä½ä¸­æ–‡;å¡è™Ÿ;å§“å;è·ç¨±ä»£ç¢¼;è·ç¨±ä¸­æ–‡;å®˜è·ç­‰;æœ¬åŠŸ;ç´šåˆ¥;ç¾è·æ—¥;åŸºæœ¬ç¸¾åˆ†;ä¿¸ç´šç¸¾åˆ†;é¡å¤–ç¸¾åˆ†;å·¥äºŒ;çå‹µ_æ•™è·çå‹µFP420;æ•™è·çå‹µè£œç™¼æ‰£;çå‹µ_è«–æ–‡çå‹µç¬¬1ç¯‡;è«–æ–‡çå‹µç¬¬1ç¯‡è£œç™¼æ‰£;çå‹µ_è«–æ–‡çå‹µç¬¬2ç¯‡;è«–æ–‡çå‹µç¬¬2ç¯‡è£œç™¼æ‰£;å·¥ä½œ_ä½å®¿æ´¥è²¼FP800;çé‡‘å·®é¡;ç¸½é†«å¸«
 			// DAT.PAYBANK, DAT.PAYDEPT, D.PADEPNMC, DAT.PAYCARD, DAT.PAYNAMEC,
 			// DAT.PAYTITLE, T.PAYTITLP,DAT.PAYRNK2N, DAT.PAYRANK3, DAT.PAYDEGR2,
 			// DAT.PAYDEGRE, COALESCE(tra.PAYEMPDT, BAS.PAYSGNDT) PAYEMPDT, DAT.PAYIDNO,
@@ -11079,11 +11190,11 @@ public class SalNTDAO {
 			// PAYRSGDT,COALESCE(TRA.PAYEMPDT,BAS.PAYEMPDT) PAYEMPDT,
 			// COALESCE(tra.PAYSGNDT,bas.PAYSGNDT)
 			// PAYSGNDT,tra.PATRACOD,tra.PAYMONNO,tra.PAYDAYNO
-			// Âå®v
-			// '0µoÁ~¤é1³æ¦ì¥N½X 2³æ¦ì¤¤¤å 3¥d¸¹ 4©m¦W 5Â¾ºÙ¥N½X 6Â¾ºÙ¤¤¤å 7Â¾µ¥ 8¥»¥\ 9¯Å§O 10²{Â¾¤é´Á 11±M¶ÔÂå®v°ò¥»ÃB«× 12±M2ÃB«×
-			// '13·s¶i¸Éµo ­È¯Z¶O ¸ÉµoÃº¦^'VP01' AND <>('VP013','VP010') 14±M¶Ô¼úª÷2 VP049 15±M¶Ô¼úª÷¤@°ö°V¸É§UVP049
-			// '16±ĞÂ¾¼úÀyFP420 17 FP429 18½×¤å-1 FP430-1 19 FP439-1 20½×¤å-2 FP430-2 21 FP430-2
-			// 22Â÷Â¾¤é
+			// é†«å¸«
+			// '0ç™¼è–ªæ—¥1å–®ä½ä»£ç¢¼ 2å–®ä½ä¸­æ–‡ 3å¡è™Ÿ 4å§“å 5è·ç¨±ä»£ç¢¼ 6è·ç¨±ä¸­æ–‡ 7è·ç­‰ 8æœ¬åŠŸ 9ç´šåˆ¥ 10ç¾è·æ—¥æœŸ 11å°ˆå‹¤é†«å¸«åŸºæœ¬é¡åº¦ 12å°ˆ2é¡åº¦
+			// '13æ–°é€²è£œç™¼ å€¼ç­è²» è£œç™¼ç¹³å›'VP01' AND <>('VP013','VP010') 14å°ˆå‹¤çé‡‘2 VP049 15å°ˆå‹¤çé‡‘ä¸€åŸ¹è¨“è£œåŠ©VP049
+			// '16æ•™è·çå‹µFP420 17 FP429 18è«–æ–‡-1 FP430-1 19 FP439-1 20è«–æ–‡-2 FP430-2 21 FP430-2
+			// 22é›¢è·æ—¥
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
 					padatpsn = new Padatpsn();
@@ -11094,22 +11205,22 @@ public class SalNTDAO {
 					l_VP049 = 0;
 					l_FP440 = 0;
 					l_FP80 = 0;
-					l_teach_00 = 0; // ±ĞÂ¾¼úÀy
-					l_teach_09 = 0; // ±ĞÂ¾¼úÀy_¸É
-					l_thesis_10 = 0; // ½×¤å¼úÀy²Ä1½g
-					l_thesis_19 = 0; // ½×¤å¼úÀy²Ä1½g_¸É
-					l_thesis_20 = 0; // ½×¤å¼úÀy²Ä2½g
-					l_thesis_29 = 0; // ½×¤å¼úÀy²Ä2½g_¸É
-					l_pfbas = "0"; // °ò¥»ÁZ¤À
-					l_pfdat = "0"; // ­Ä¯ÅÁZ¤À
+					l_teach_00 = 0; // æ•™è·çå‹µ
+					l_teach_09 = 0; // æ•™è·çå‹µ_è£œ
+					l_thesis_10 = 0; // è«–æ–‡çå‹µç¬¬1ç¯‡
+					l_thesis_19 = 0; // è«–æ–‡çå‹µç¬¬1ç¯‡_è£œ
+					l_thesis_20 = 0; // è«–æ–‡çå‹µç¬¬2ç¯‡
+					l_thesis_29 = 0; // è«–æ–‡çå‹µç¬¬2ç¯‡_è£œ
+					l_pfbas = "0"; // åŸºæœ¬ç¸¾åˆ†
+					l_pfdat = "0"; // ä¿¸ç´šç¸¾åˆ†
 					l_Open = 0;
-					l_pfcr = "    "; // Á`Âå®v
+					l_pfcr = "    "; // ç¸½é†«å¸«
 					jsonOne = new JSONObject();
 					PropertyUtils.copyProperties(padatpsn, data);
 
-					// ±M¶ÔÃB«×
+					// å°ˆå‹¤é¡åº¦
 					l_Pfdoc = padatpsn.getPaypfdoc();
-					// [±M¤@]0,[±M¤G]Y/N
+					// [å°ˆä¸€]0,[å°ˆäºŒ]Y/N
 					l_Paretention = StringUtil.nullToString(padatpsn.getParetention());
 					l_Title = StringUtil.nullToString(padatpsn.getPaytitle());
 					l_TitSub = StringUtil.nullToString(padatpsn.getPatitsub());
@@ -11120,8 +11231,8 @@ public class SalNTDAO {
 					l_Tracod = padatpsn.getPatracod();
 					l_Paysgndt = StringUtil.nullToString(padatpsn.getPaysgndt());
 					l_Paybank = StringUtil.nullToString(padatpsn.getPaybank());
-					// ¤£¶}·~¼úª÷(±M¤G/¤u¤G) 6
-					// Â¾°È½Õ¾ã,§äµoÁ~«e2­Ó¤ëªºpadatpsn
+					// ä¸é–‹æ¥­çé‡‘(å°ˆäºŒ/å·¥äºŒ) 6
+					// è·å‹™èª¿æ•´,æ‰¾ç™¼è–ªå‰2å€‹æœˆçš„padatpsn
 					padatpsnadj = (Padatpsn) datpsnAdjMap.get(l_Idtno);
 					if (padatpsnadj != null) {
 						l_Rnk2n = padatpsnadj.getPayrnk2n();
@@ -11138,7 +11249,7 @@ public class SalNTDAO {
 					jsonOne.put("padepnmc", StringUtil.nullToString(padatpsn.getPaynamec()));
 					strLine += StringUtil.nullToString(padatpsn.getPaycard());
 					jsonOne.put("paycard", StringUtil.nullToString(padatpsn.getPaycard()));
-					//¤¤¤å©m¦W,­nÀË´úÃø¦r,¬OÃø¦rÂà´«¦¨¡¼
+					//ä¸­æ–‡å§“å,è¦æª¢æ¸¬é›£å­—,æ˜¯é›£å­—è½‰æ›æˆâ–¡
 					strLine += StringUtil2.decodeTxtEntity(StringUtil.strFillWideWhite(StringUtil.nullToString(padatpsn.getPaynamec()), 6, true));
 					jsonOne.put("paynamec", StringUtil.nullToString(padatpsn.getPaynamec()));
 					strLine += StringUtil.nullToString(padatpsn.getPaytitle());
@@ -11154,9 +11265,9 @@ public class SalNTDAO {
 					strTmp = StringUtil.nullToString(padatpsn.getPaysgndt());
 					strLine += strTmp.substring(0, 4) + strTmp.substring(5, 7) + strTmp.substring(8, 10);
 					jsonOne.put("paysgndt", StringUtil.nullToString(padatpsn.getPaysgndt()));
-					// VP01±M¤@_¸É 8 VP049±M¤G_¸É 8 FP440±M¤@_°ö°V¸É§U(8) l_teach_00±ĞÂ¾¼úÀy(6) l_teach_09±ĞÂ¾¼úÀy_¸É(6)
-					// l_thesis_10½×¤å¼úÀy²Ä1½g(6) l_thesis_19½×¤å¼úÀy²Ä1½g_¸É(6) l_thesis_20½×¤å¼úÀy²Ä2½g(6)
-					// l_thesis_29½×¤å¼úÀy²Ä2½g_¸É(6)
+					// VP01å°ˆä¸€_è£œ 8 VP049å°ˆäºŒ_è£œ 8 FP440å°ˆä¸€_åŸ¹è¨“è£œåŠ©(8) l_teach_00æ•™è·çå‹µ(6) l_teach_09æ•™è·çå‹µ_è£œ(6)
+					// l_thesis_10è«–æ–‡çå‹µç¬¬1ç¯‡(6) l_thesis_19è«–æ–‡çå‹µç¬¬1ç¯‡_è£œ(6) l_thesis_20è«–æ–‡çå‹µç¬¬2ç¯‡(6)
+					// l_thesis_29è«–æ–‡çå‹µç¬¬2ç¯‡_è£œ(6)
 					datpayAry = (ArrayList) datdocMap.get(l_Idtno);
 					if (datpayAry != null) {
 						for (Padatpay dataP : datpayAry) {
@@ -11184,7 +11295,7 @@ public class SalNTDAO {
 						}
 					}
 					if (selEn.matches("Perf_1")) {
-						// ±M¤@ÃB«× 7
+						// å°ˆä¸€é¡åº¦ 7
 						strLine += StringUtil.fillChar(StringUtil.nullToString(padatpsn.getPaypfdoc()), 7, " ", false);
 						jsonOne.put("pfdoc", StringUtil.nullToString(padatpsn.getPaypfdoc()));
 						strLine += StringUtil.fillChar((l_Open == 0 ? "" : String.valueOf(l_Open)), 6, " ", false);
@@ -11222,7 +11333,7 @@ public class SalNTDAO {
 							jsonOne.put("payrsgdt", "");
 						}
 					} else if (selEn.matches("Perf_2")) {
-						// ¤u§@¼úª÷=Y,§ä°ò¥»ÁZ¤À ­Ä¯ÅÁZ¤À
+						// å·¥ä½œçé‡‘=Y,æ‰¾åŸºæœ¬ç¸¾åˆ† ä¿¸ç´šç¸¾åˆ†
 						if ("Y".equals(padatpsn.getPacsflag())) {
 							CspfMap = cDAO.getCsPfByKey(padatpsn.getPayrank3(), padatpsn.getPaytitle(),
 									padatpsn.getPayrank(), padatpsn.getPayrnk2n(), padatpsn.getPaydegr2(),
@@ -11238,7 +11349,7 @@ public class SalNTDAO {
 						jsonOne.put("pfsp", StringUtil.nullToString(padatpsn.getPaypfsp()));
 						strLine += StringUtil.fillChar((l_Open == 0 ? "" : String.valueOf(l_Open)), 6, " ", false);
 						jsonOne.put("pfopen", l_Open);
-						// ±ĞÂ¾ ½×¤å
+						// æ•™è· è«–æ–‡
 						strLine += StringUtil.fillChar((l_teach_00 == 0 ? "" : String.valueOf(l_teach_00)), 6, " ",
 								false);
 						jsonOne.put("teach_00", l_teach_00);
@@ -11261,7 +11372,7 @@ public class SalNTDAO {
 						jsonOne.put("fp80", l_FP80);
 						strLine += StringUtil.fillChar("", 6, " ", false);
 						jsonOne.put("pfdiff", 0);
-						// Á`Âå®v
+						// ç¸½é†«å¸«
 						strTmp = StringUtil.nullToString(padatpsn.getPayexpfkey2());
 						if (strTmp.equals("6")) {
 							l_pfcr = "  20";
@@ -11276,7 +11387,7 @@ public class SalNTDAO {
 				}
 
 			}
-			log.info(me + "  ...********* dataaccess:¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...********* dataaccess:å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new SQLException(me + ", fail!!." + e);
@@ -11289,7 +11400,7 @@ public class SalNTDAO {
 		return jsonRtn;
 	}
 
-	// ¨Ì¤ä¦©¥N½X,¨ú±o¤é´Á½d³ò¦W³æ
+	// ä¾æ”¯æ‰£ä»£ç¢¼,å–å¾—æ—¥æœŸç¯„åœåå–®
 	public JSONArray getItmPayList(String in_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getItmPayList(),userid = " + userid;
 		log.info(me + " in_data = " + in_data + " hid = " + hid);
@@ -11322,7 +11433,7 @@ public class SalNTDAO {
 			namec = (!object_in_data.has("namec")) ? "" : object_in_data.getString("namec");
 			paycode = (!object_in_data.has("paycode")) ? "" : object_in_data.getString("paycode");
 		}
-		// Åª¨úpa.padatpay+pa.padatpay_dw
+		// è®€å–pa.padatpay+pa.padatpay_dw
 		strSelect = " paybank,paycard,paynamec,a.payidno,a.salnum,paydept,c.padepnmc,paytitle,paytitlc,b.payamt,b.paycode,e.pacodnmc ";
 		sql = "select " + strSelect + " from " + this.tDatPsn + " A " + " inner join " + this.tDatPay
 				+ " B on A.PAYIDNO=b.PAYIDNO   AND A.SALNUM=b.SALNUM and A.HID=B.HID " + " left outer join "
@@ -11331,20 +11442,20 @@ public class SalNTDAO {
 				+ " e on b.paycode=e.paycode   and A.HID=e.HID " + " where A.HID=? and b.paycode=?";
 		params.add(hid);
 		params.add(paycode);
-		if (!"".equals(cardno)) {// ¥d¸¹
+		if (!"".equals(cardno)) {// å¡è™Ÿ
 			subsql += " and a.PAYCARD=? ";
 			params.add(cardno);
 			paramsub.add(cardno);
-		} else if (!"".equals(idtno)) {// ¨­¤ÀÃÒ
+		} else if (!"".equals(idtno)) {// èº«åˆ†è­‰
 			subsql += " and a.PAYIDNO=? ";
 			params.add(idtno);
 			paramsub.add(idtno);
-		} else if (!"".equals(namec)) {// ©m¦W
+		} else if (!"".equals(namec)) {// å§“å
 			subsql += " and a.PAYNAMEC like ? ";
 			params.add(namec + "%");
 			paramsub.add(namec + "%");
 		}
-		if (!(paydept == null || (paydept != null && paydept.length == 0))) { // ³æ¦ì
+		if (!(paydept == null || (paydept != null && paydept.length == 0))) { // å–®ä½
 			subsql += " and a.paydept in ( ";
 			for (i = 0; i < paydept.length; i++) {
 				if (i != 0)
@@ -11355,20 +11466,20 @@ public class SalNTDAO {
 			}
 			subsql += ")";
 		}
-		if (!"".equals(pabankdt_beg) && !"".equals(pabankdt_end)) {// µoÁ~¤é´Á¶¡
+		if (!"".equals(pabankdt_beg) && !"".equals(pabankdt_end)) {// ç™¼è–ªæ—¥æœŸé–“
 			subsql += " and a.paybank between ? and ? ";
 			params.add(pabankdt_beg);
 			params.add(pabankdt_end);
 			paramsub.add(pabankdt_beg);
 			paramsub.add(pabankdt_end);
-		} else if (!"".equals(pabankdt_beg) && "".equals(pabankdt_end)) {// µoÁ~¤é°_
+		} else if (!"".equals(pabankdt_beg) && "".equals(pabankdt_end)) {// ç™¼è–ªæ—¥èµ·
 			subsql += " and a.paybank = ? ";
 			params.add(pabankdt_beg);
 			paramsub.add(pabankdt_beg);
 		}
 
 		sql += subsql + "union all ";
-		// ¥[¤W¾ú¥v¤ë¤ä©ú²Ó
+		// åŠ ä¸Šæ­·å²æœˆæ”¯æ˜ç´°
 		sql += " select " + strSelect + " from " + this.tDatPsnDw + " A " + " inner join " + this.tDatPayDw
 				+ " B on A.PAYIDNO=b.PAYIDNO   AND A.SALNUM=b.SALNUM and A.HID=B.HID " + " left outer join "
 				+ this.tDept + " C on a.paydept=c.padepcod  and A.HID=c.HID " + " left outer join " + this.tTitle
@@ -11386,7 +11497,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -11416,7 +11527,7 @@ public class SalNTDAO {
 					jsonRtn.add(jsonOne);
 				}
 			}
-			log.info(me + "  ...********* dataaccess:¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...********* dataaccess:å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new SQLException(me + ", fail!!." + e);
@@ -11427,7 +11538,7 @@ public class SalNTDAO {
 		return jsonRtn;
 	}
 
-	// ¨ÌKEY,¨ú±opa.pataxtran pa.pataxcash
+	// ä¾KEY,å–å¾—pa.pataxtran pa.pataxcash
 	public HashMap<String, Object> getTaxPayListbyKey(String code_data, String userid, String hid, VGHDataAccess da)
 			throws Exception {
 		String me = getClass().getName() + ".getTaxPayListbyKey(),userid = " + userid;
@@ -11450,7 +11561,7 @@ public class SalNTDAO {
 			idtno = (!object_code_data.has("idtno")) ? "" : object_code_data.getString("idtno");
 			payear = (!object_code_data.has("payear")) ? "" : object_code_data.getString("payear");
 		}
-		// Åª¨úpa.pataxtran
+		// è®€å–pa.pataxtran
 		strsql_tran = "select PAYIDNO, PAYEAR, PAYMONTH, PAYCATG, PAYTAXPAY, PAYTAXDEDUCT, PAYUPDID, PAYUPDTM, HID, "
 				+ tmpZtaxtran + " ZPATAXTRAN " + " from " + this.tTaxTran + " where PAYEAR=? and PAYIDNO=? and HID=? "
 				+ "order by 3 with ur ";
@@ -11458,7 +11569,7 @@ public class SalNTDAO {
 		params.add(idtno);
 		params.add(hid);
 
-		// Åª¨úpa.pataxcash
+		// è®€å–pa.pataxcash
 		strsql_cash = "select PAYIDNO, PAYEAR, PAYMONTH, PAYCATG, PAYFORMAT, PAYCITATION, PAYTAXPAY, PAYTAXDEDUCT, PAYUPDID, PAYUPDTM, PAYFLAG, HID, "
 				+ tmpZtaxcash + " ZPATAXCASH " + " from " + this.tTaxCash + " where PAYEAR=? and PAYIDNO=? and HID=? "
 				+ "order by 3 with ur ";
@@ -11467,15 +11578,15 @@ public class SalNTDAO {
 		paramA.add(hid);
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
 				connFlg = true;
 			}
 			start = new Date();
-			// --Âà±b
-			log.info(me + " Âà±b©Ò±oµ|: " + strsql_tran + "...params:" + params.toString());
+			// --è½‰å¸³
+			log.info(me + " è½‰å¸³æ‰€å¾—ç¨…: " + strsql_tran + "...params:" + params.toString());
 			result = da.arraylistbyQuery(strsql_tran, params, META_TYPE);
 			log.info(me + "...size:" + result.size());
 
@@ -11497,8 +11608,8 @@ public class SalNTDAO {
 				}
 			}
 			rtnMap.put("taxTran_json", jsonRtn);
-			// --²{ª÷©Ò±oµ|
-			log.info(me + " ²{ª÷©Ò±oµ|: " + strsql_cash + "...params:" + paramA.toString());
+			// --ç¾é‡‘æ‰€å¾—ç¨…
+			log.info(me + " ç¾é‡‘æ‰€å¾—ç¨…: " + strsql_cash + "...params:" + paramA.toString());
 			result = da.arraylistbyQuery(strsql_cash, paramA, META_TYPE);
 			log.info(me + "...size:" + result.size());
 			jsonRtn = new JSONArray();
@@ -11535,13 +11646,13 @@ public class SalNTDAO {
 		return rtnMap;
 	}
 
-	// ¨ÌKEY,¨ú±opa.padatpay
+	// ä¾KEY,å–å¾—pa.padatpay
 	public HashMap<String, Object> getDatPayList(String code_data, Padatpsn psnitem, String userid, String hid,
 			VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getDatPayList(),userid = " + userid;
 		log.info(me + " code_data = " + code_data + " hid = " + hid);
 		Padatpay datpayObj = null;
-		ArrayList<Padatpay> datpayAry = new ArrayList<Padatpay>(); // ¤ä¦©¶°¦X
+		ArrayList<Padatpay> datpayAry = new ArrayList<Padatpay>(); // æ”¯æ‰£é›†åˆ
 		CommDAO cDAO = null;
 		HashMap<String, Object> rtnMap = new HashMap();
 		JSONArray jsonRtn = new JSONArray();
@@ -11564,7 +11675,7 @@ public class SalNTDAO {
 			idtno = (!object_code_data.has("idtno")) ? "" : object_code_data.getString("idtno");
 			salnum = (!object_code_data.has("salnum")) ? "" : object_code_data.getString("salnum");
 		}
-		// Åª¨úpa.padatpay+pa.padatpay_dw
+		// è®€å–pa.padatpay+pa.padatpay_dw
 		strSelect = " SALNUM, PAYIDNO, A.PAYCODE, PAYAMT, A.PAYAUTH, A.PAYIFTAX, A.HID, PACODNMC,PACODDEL,PAYREWARD ";
 		sql = "select " + strSelect + " from " + this.tDatPay + " A " + " left outer join " + this.tPayItm
 				+ " B on A.PAYCODE=B.PAYCODE and A.HID=B.HID " + " where SALNUM=? and PAYIDNO=? and A.HID=? "
@@ -11580,7 +11691,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -11594,7 +11705,7 @@ public class SalNTDAO {
 
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
-					// ©ñ¸m¦bArraylist
+					// æ”¾ç½®åœ¨Arraylist
 					datpayObj = new Padatpay();
 					PropertyUtils.copyProperties(datpayObj, data);
 					datpayAry.add(datpayObj);
@@ -11624,7 +11735,7 @@ public class SalNTDAO {
 				}
 			}
 			rtnMap.put("datpay_json", jsonRtn);
-			// ¥[Á`
+			// åŠ ç¸½
 			sumListMap = cDAO.Sum_Pay_Deduct(datpayAry, psnitem.getPayrank(), psnitem.getPayrank2(),
 					psnitem.getPayrnk2n(), psnitem.getPaydegre(), psnitem.getStrgovdt(), psnitem.getStrbank());
 			rtnMap.put("datpaySum_map", sumListMap);
@@ -11640,13 +11751,13 @@ public class SalNTDAO {
 		return rtnMap;
 	}
 
-	// ¨ÌKEY,¨ú±opa.pabaspay
+	// ä¾KEY,å–å¾—pa.pabaspay
 	public HashMap<String, Object> getBasPayList(String idtno, String tracod, String userid, String hid,
 			VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getBasPayList(),userid = " + userid;
 		log.info(me + " idtno = " + idtno + " tracod = " + tracod + " hid = " + hid);
 		Pabaspay baspayObj = null;
-		ArrayList<Pabaspay> baspayAry = new ArrayList<Pabaspay>(); // ¤ä¦©¶°¦X
+		ArrayList<Pabaspay> baspayAry = new ArrayList<Pabaspay>(); // æ”¯æ‰£é›†åˆ
 		HashMap rtnMap = new HashMap();
 		JSONArray jsonRtn = new JSONArray();
 		JSONObject jsonOne = null;
@@ -11662,7 +11773,7 @@ public class SalNTDAO {
 		int i = 0;
 		ArrayList<Object> params = new ArrayList<Object>();
 
-		// Åª¨úpa.pabaspay 12¦ÒÁZ¼úª÷,51¦~²×¼úª÷=>Åª¨úFP000 FP010 FP030 FP080
+		// è®€å–pa.pabaspay 12è€ƒç¸¾çé‡‘,51å¹´çµ‚çé‡‘=>è®€å–FP000 FP010 FP030 FP080
 		if (tracod.matches("12|51")) {
 			if (hid.matches("1A0|2A0")) {
 				coderng = " AND A.PAYCODE IN ('FP000','FP010','FP030','FP080') ";
@@ -11682,7 +11793,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -11695,7 +11806,7 @@ public class SalNTDAO {
 
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
-					// ©ñ¸m¦bArraylist
+					// æ”¾ç½®åœ¨Arraylist
 					baspayObj = new Pabaspay();
 					PropertyUtils.copyProperties(baspayObj, data);
 					baspayAry.add(baspayObj);
@@ -11736,12 +11847,12 @@ public class SalNTDAO {
 		return rtnMap;
 	}
 
-	// ¨ÌKEY,¨ú±opa.patrapay
+	// ä¾KEY,å–å¾—pa.patrapay
 	public HashMap<String, Object> getTraPayList(String code_data, String userid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getTraPayList(),userid = " + userid;
 		log.info(me + " code_data = " + code_data + " hid = " + hid);
 		Patrapay trapayObj = null;
-		ArrayList<Patrapay> trapayAry = new ArrayList<Patrapay>(); // ¤ä¦©¶°¦X
+		ArrayList<Patrapay> trapayAry = new ArrayList<Patrapay>(); // æ”¯æ‰£é›†åˆ
 		HashMap rtnMap = new HashMap();
 		JSONArray jsonRtn = new JSONArray();
 		JSONArray oTtrapayRtn = new JSONArray();
@@ -11766,7 +11877,7 @@ public class SalNTDAO {
 			tranum = (!object_code_data.has("tranum")) ? "" : object_code_data.getString("tranum");
 			patradt = (!object_code_data.has("tradt")) ? "" : object_code_data.getString("tradt");
 		}
-		// Åª¨úpa.patrapay
+		// è®€å–pa.patrapay
 		strSelect = " TRANUM, PAYIDNO, PATRADT, PAYSORT, A.PAYCODE, PAYAMT, A.PAYAUTH, A.PAYIFTAX, PAYUPDTM, PAYFLAG, A.HID, PACODNMC,PACODDEL,PAYREWARD,PAYUPDTM ";
 		sql = "select " + strSelect + " from " + this.tTraPay + " A " + " left outer join " + this.tPayItm
 				+ " B on A.PAYCODE=B.PAYCODE and A.HID=B.HID " + " where A.HID=? and PAYIDNO=? and PATRADT=? "
@@ -11784,7 +11895,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -11797,7 +11908,7 @@ public class SalNTDAO {
 
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
-					// ©ñ¸m¦bArraylist
+					// æ”¾ç½®åœ¨Arraylist
 					trapayObj = new Patrapay();
 					PropertyUtils.copyProperties(trapayObj, data);
 					trapayAry.add(trapayObj);
@@ -11852,13 +11963,13 @@ public class SalNTDAO {
 		return rtnMap;
 	}
 
-	// ¨ÌKEY,¨ú±opa.pahist
+	// ä¾KEY,å–å¾—pa.pahist
 	public HashMap<String, Object> getHistList(String idtno, String userid, String hid, VGHDataAccess da)
 			throws Exception {
 		String me = getClass().getName() + ".getHistList(),userid = " + userid;
 		log.info(me + " idtno = " + idtno + " hid = " + hid);
 		Pahist pahistObj = null;
-		ArrayList<Pahist> pahistAry = new ArrayList<Pahist>(); // ¾ú¥vÀÉ¶°¦X
+		ArrayList<Pahist> pahistAry = new ArrayList<Pahist>(); // æ­·å²æª”é›†åˆ
 		HashMap rtnMap = new HashMap();
 		JSONArray jsonRtn = new JSONArray();
 		JSONObject jsonOne = null;
@@ -11873,7 +11984,7 @@ public class SalNTDAO {
 		int i = 0;
 		ArrayList<Object> params = new ArrayList<Object>();
 
-		// Åª¨úpa.pahist
+		// è®€å–pa.pahist
 		strSelect = "A.PATRADT,A.PATRACOD, A.PAYIDNO, A.PAYCARD, A.PAYEMPNO, A.PAYNAMEC, A.PAYDEPT, "
 				+ "A.PAYTITLE,COALESCE(A.PAYRNK2N,'') as PAYRNK2N, COALESCE(A.PAYRANK3,0) as PAYRANK3, COALESCE(A.PAYDEGR2,0) as PAYDEGR2, "
 				+ "COALESCE(A.PAYDEGRE,0) as PAYDEGRE, A.PAYRANK, COALESCE(A.PAYRANK2,'') as PAYRANK2, COALESCE(A.PAYRANKC,'') as PAYRANKC, "
@@ -11892,7 +12003,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -11905,7 +12016,7 @@ public class SalNTDAO {
 
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
-					// ©ñ¸m¦bArraylist
+					// æ”¾ç½®åœ¨Arraylist
 					pahistObj = new Pahist();
 					PropertyUtils.copyProperties(pahistObj, data);
 					pahistAry.add(pahistObj);
@@ -11941,7 +12052,7 @@ public class SalNTDAO {
 		return rtnMap;
 	}
 
-	// °·«O¥Ó³ø¦©¶O©ú²ÓPANHIDET:papaydt+paysource+itemnum+payidno+hid
+	// å¥ä¿ç”³å ±æ‰£è²»æ˜ç´°PANHIDET:papaydt+paysource+itemnum+payidno+hid
 	public HashMap<String, Object> getNhiDetList(String in_data, String userid, String hid, VGHDataAccess da)
 			throws Exception {
 		String me = getClass().getName() + ".getNhiDetList() userid:" + userid;
@@ -11963,15 +12074,15 @@ public class SalNTDAO {
 		String[] paymon = null;
 		String[] paydt = null;
 		int i = 0;
-		int tmpPartPayDet = 0;// ­İÂ¾µ¹¥IÁ`ÃB
-		int tmpPartNHIDet = 0;// ­İÂ¾µ¹¥IÁ`ÃB
-		int tmpGEINFPayDet = 0;// ¤½«Oµ¹¥IÁ`ÃB
-		int tmpGEINFNHIDet = 0;// ¤½«Oµ¹¥IÁ`ÃB
-		int tmpLBINFPayDet = 0;// ³Ò«Oµ¹¥IÁ`ÃB
-		int tmpLBINFNHIDet = 0;// ³Ò«Oµ¹¥IÁ`ÃB
-		int intINSUIDENT = 0;// ¨­¥÷§O:0µL1¤½«O2³Ò«O
-		int intPAYAMT = 0;// ³æ¦¸¼úª÷
-		int intNHIAMT = 0;// ¸É¥R«OÀI¶Oª÷ÃB
+		int tmpPartPayDet = 0;// å…¼è·çµ¦ä»˜ç¸½é¡
+		int tmpPartNHIDet = 0;// å…¼è·çµ¦ä»˜ç¸½é¡
+		int tmpGEINFPayDet = 0;// å…¬ä¿çµ¦ä»˜ç¸½é¡
+		int tmpGEINFNHIDet = 0;// å…¬ä¿çµ¦ä»˜ç¸½é¡
+		int tmpLBINFPayDet = 0;// å‹ä¿çµ¦ä»˜ç¸½é¡
+		int tmpLBINFNHIDet = 0;// å‹ä¿çµ¦ä»˜ç¸½é¡
+		int intINSUIDENT = 0;// èº«ä»½åˆ¥:0ç„¡1å…¬ä¿2å‹ä¿
+		int intPAYAMT = 0;// å–®æ¬¡çé‡‘
+		int intNHIAMT = 0;// è£œå……ä¿éšªè²»é‡‘é¡
 
 		starttime = System.currentTimeMillis();
 		if (in_data != null && !in_data.equals("")) {
@@ -11994,21 +12105,21 @@ public class SalNTDAO {
 		sql = "select PAPAYDT, PAYIDNO, PAYITEM, PAYCARD, PAYNAMEC, SERIAL, PAYAMT, NHIAMT, MONINSU, JACKPOT, INSUIDENT, PAYFLAG, PAYUPDID, PAYUPDAT, HID "
 				+ " from " + this.tNhiDet + " where HID=? ";
 		params.add(hid);
-		if (!"".equals(cardno)) {// ¥d¸¹
+		if (!"".equals(cardno)) {// å¡è™Ÿ
 			subsqlA += " and PAYCARD=? ";
 			params.add(cardno);
-		} else if (!"".equals(idtno)) {// ¨­¤ÀÃÒ
+		} else if (!"".equals(idtno)) {// èº«åˆ†è­‰
 			subsqlA += " and PAYIDNO=? ";
 			params.add(idtno);
-		} else if (!"".equals(namec)) {// ©m¦W
+		} else if (!"".equals(namec)) {// å§“å
 			subsqlA += " and PAYNAMEC like ? ";
 			params.add(namec + "%");
 		}
-		if (!"".equals(payitem)) { // Ãş§O
+		if (!"".equals(payitem)) { // é¡åˆ¥
 			subsqlA += " and PAYITEM= ? ";
 			params.add(payitem);
 		}
-		if (!(payyr == null || (payyr != null && payyr.length == 0))) { // ¦~
+		if (!(payyr == null || (payyr != null && payyr.length == 0))) { // å¹´
 			subsqlA += " and year(PAPAYDT) in ( ";
 			for (i = 0; i < payyr.length; i++) {
 				if (i != 0) {
@@ -12019,7 +12130,7 @@ public class SalNTDAO {
 			}
 			subsqlA += ")";
 		}
-		if (!(paymon == null || (paymon != null && paymon.length == 0))) { // ¤ë
+		if (!(paymon == null || (paymon != null && paymon.length == 0))) { // æœˆ
 			subsqlA += " and month(PAPAYDT) in ( ";
 			for (i = 0; i < paymon.length; i++) {
 				if (i != 0) {
@@ -12030,7 +12141,7 @@ public class SalNTDAO {
 			}
 			subsqlA += ")";
 		}
-		if (!(paydt == null || (paydt != null && paydt.length == 0))) { // µ¹¥I¤é´Á
+		if (!(paydt == null || (paydt != null && paydt.length == 0))) { // çµ¦ä»˜æ—¥æœŸ
 			subsqlA += " and PAPAYDT in ( ";
 			for (i = 0; i < paydt.length; i++) {
 				if (i != 0) {
@@ -12046,7 +12157,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -12080,7 +12191,7 @@ public class SalNTDAO {
 					jsonOne.put("payupdat", formatter.format(data.get("payupdat")));
 
 					jsonRtn.add(jsonOne);
-					// ª÷ÃB¥[Á`
+					// é‡‘é¡åŠ ç¸½
 					if (intINSUIDENT == 0) {
 						tmpPartPayDet += intPAYAMT;
 						tmpPartNHIDet += intNHIAMT;
@@ -12101,7 +12212,7 @@ public class SalNTDAO {
 			rtnMap.put("LBINFPayDet", tmpLBINFPayDet);
 			rtnMap.put("LBINFNHIDet", tmpLBINFNHIDet);
 
-			log.info(me + "  ...********* dataaccess:¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...********* dataaccess:å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new SQLException(me + ", fail!!." + e);
@@ -12112,7 +12223,7 @@ public class SalNTDAO {
 		return rtnMap;
 	}
 
-	// ¸É¥R¶O_²Ö¿n¼Æ
+	// è£œå……è²»_ç´¯ç©æ•¸
 	public HashMap<String, Object> getNhiAccuList(String in_data, String userid, String hid, VGHDataAccess da)
 			throws Exception {
 		String me = getClass().getName() + ".getNhiAccuList() userid:" + userid;
@@ -12150,17 +12261,17 @@ public class SalNTDAO {
 				+ "WHERE a.hid=? AND payitem=? ";
 		params.add(hid);
 		params.add("62");
-		if (!"".equals(payyr)) {// ¦~
+		if (!"".equals(payyr)) {// å¹´
 			subsqlA += " and year(a.PAPAYDT) = ? ";
 			params.add(payyr);
 		}
-		if (!"".equals(cardno)) {// ¥d¸¹
+		if (!"".equals(cardno)) {// å¡è™Ÿ
 			subsqlA += " and a.PAYCARD=? ";
 			params.add(cardno);
-		} else if (!"".equals(idtno)) {// ¨­¤ÀÃÒ
+		} else if (!"".equals(idtno)) {// èº«åˆ†è­‰
 			subsqlA += " and a.PAYIDNO=? ";
 			params.add(idtno);
-		} else if (!"".equals(namec)) {// ©m¦W
+		} else if (!"".equals(namec)) {// å§“å
 			subsqlA += " and a.PAYNAMEC like ? ";
 			params.add(namec + "%");
 		}
@@ -12170,7 +12281,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -12199,7 +12310,7 @@ public class SalNTDAO {
 			}
 			rtnMap.put("nhidet_json", jsonRtn);
 
-			log.info(me + "  ...********* dataaccess:¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...********* dataaccess:å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new SQLException(me + ", fail!!." + e);
@@ -12210,7 +12321,7 @@ public class SalNTDAO {
 		return rtnMap;
 	}
 
-	// §å¦¸ÀÉ PAbatpay:patradt+payidno+salnum+paycode+hid
+	// æ‰¹æ¬¡æª” PAbatpay:patradt+payidno+salnum+paycode+hid
 	public HashMap<String, Object> getBatPayList(String in_data, String userid, String hid, VGHDataAccess da)
 			throws Exception {
 		String me = getClass().getName() + ".getBatPayList() userid:" + userid;
@@ -12251,22 +12362,22 @@ public class SalNTDAO {
 				+ " where A.HID=? ";
 		params.add(hid);
 
-		if (!"".equals(patradt)) { // µoÁ~¤é
+		if (!"".equals(patradt)) { // ç™¼è–ªæ—¥
 			subsqlA += " and A.PATRADT= ? ";
 			params.add(patradt);
 		}
-		if (!"".equals(salnum)) { // »è³æ½s¸¹
+		if (!"".equals(salnum)) { // é¤‰å–®ç·¨è™Ÿ
 			subsqlA += " and A.SALNUM=? ";
 			params.add(salnum);
 		}
-		if (!"".equals(paycode)) { // ¤ä¦©¶µ¥Ø
+		if (!"".equals(paycode)) { // æ”¯æ‰£é …ç›®
 			subsqlA += " and A.PAYCODE= ? ";
 			params.add(paycode);
 		}
-		if (!"".equals(cardno)) {// ¥d¸¹
+		if (!"".equals(cardno)) {// å¡è™Ÿ
 			subsqlA += " and A.PAYCARD=? ";
 			params.add(cardno);
-		} else if (!"".equals(idtno)) {// ¨­¤ÀÃÒ
+		} else if (!"".equals(idtno)) {// èº«åˆ†è­‰
 			subsqlA += " and A.PAYIDNO=? ";
 			params.add(idtno);
 		}
@@ -12276,7 +12387,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -12330,7 +12441,7 @@ public class SalNTDAO {
 			}
 			rtnMap.put("batpay_json", jsonRtn);
 
-			log.info(me + "  ...********* dataaccess:¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...********* dataaccess:å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new SQLException(me + ", fail!!." + e);
@@ -12341,7 +12452,7 @@ public class SalNTDAO {
 		return rtnMap;
 	}
 
-	// ¨Ì¸É¥R«O¶OPANHICAL:papaydt+paysource+itemnum+payidno+hid
+	// ä¾è£œå……ä¿è²»PANHICAL:papaydt+paysource+itemnum+payidno+hid
 	public HashMap<String, Object> getNhiCalList(String in_data, String userid, String hid, VGHDataAccess da)
 			throws Exception {
 		String me = getClass().getName() + ".getNhiCalList() userid:" + userid;
@@ -12363,15 +12474,15 @@ public class SalNTDAO {
 		String[] paymon = null;
 		String[] paydt = null;
 		int i = 0;
-		int tmpPartPayAmt = 0;// ­İÂ¾µ¹¥IÁ`ÃB
-		int tmpPartNHIAmt = 0;// ­İÂ¾µ¹¥IÁ`ÃB
-		int tmpGEINFPayAmt = 0;// ¤½«Oµ¹¥IÁ`ÃB
-		int tmpGEINFNHIAmt = 0;// ¤½«Oµ¹¥IÁ`ÃB
-		int tmpLBINFPayAmt = 0;// ³Ò«Oµ¹¥IÁ`ÃB
-		int tmpLBINFNHIAmt = 0;// ³Ò«Oµ¹¥IÁ`ÃB
-		int intINSUIDENT = 0;// ¨­¥÷§O:0µL1¤½«O2³Ò«O
-		int intBONUSAMT = 0;// ³æ¦¸¼úª÷
-		int intNHIAMT = 0;// ¸É¥R«OÀI¶Oª÷ÃB
+		int tmpPartPayAmt = 0;// å…¼è·çµ¦ä»˜ç¸½é¡
+		int tmpPartNHIAmt = 0;// å…¼è·çµ¦ä»˜ç¸½é¡
+		int tmpGEINFPayAmt = 0;// å…¬ä¿çµ¦ä»˜ç¸½é¡
+		int tmpGEINFNHIAmt = 0;// å…¬ä¿çµ¦ä»˜ç¸½é¡
+		int tmpLBINFPayAmt = 0;// å‹ä¿çµ¦ä»˜ç¸½é¡
+		int tmpLBINFNHIAmt = 0;// å‹ä¿çµ¦ä»˜ç¸½é¡
+		int intINSUIDENT = 0;// èº«ä»½åˆ¥:0ç„¡1å…¬ä¿2å‹ä¿
+		int intBONUSAMT = 0;// å–®æ¬¡çé‡‘
+		int intNHIAMT = 0;// è£œå……ä¿éšªè²»é‡‘é¡
 
 		starttime = System.currentTimeMillis();
 		if (in_data != null && !in_data.equals("")) {
@@ -12396,25 +12507,25 @@ public class SalNTDAO {
 				+ " from " + this.tNhiCal + " A " + " left outer join " + this.tBasPsn
 				+ " B on A.PAYIDNO=B.PAYIDNO AND A.HID=B.HID " + " where A.HID=? ";
 		params.add(hid);
-		if (!"".equals(cardno)) {// ¥d¸¹
+		if (!"".equals(cardno)) {// å¡è™Ÿ
 			subsqlA += " and A.PAYCARD=? ";
 			params.add(cardno);
-		} else if (!"".equals(idtno)) {// ¨­¤ÀÃÒ
+		} else if (!"".equals(idtno)) {// èº«åˆ†è­‰
 			subsqlA += " and A.PAYIDNO=? ";
 			params.add(idtno);
-		} else if (!"".equals(namec)) {// ©m¦W
+		} else if (!"".equals(namec)) {// å§“å
 			subsqlA += " and A.PAYNAMEC like ? ";
 			params.add(namec + "%");
 		}
-		if (!"".equals(painsu)) { // «OÀI§O
+		if (!"".equals(painsu)) { // ä¿éšªåˆ¥
 			subsqlA += " and INSUIDENT= ? ";
 			params.add(painsu);
 		}
-		if (!"".equals(payitem)) { // Ãş§O
+		if (!"".equals(payitem)) { // é¡åˆ¥
 			subsqlA += " and PAYITEM= ? ";
 			params.add(payitem);
 		}
-		if (!(payyr == null || (payyr != null && payyr.length == 0))) { // ¦~
+		if (!(payyr == null || (payyr != null && payyr.length == 0))) { // å¹´
 			subsqlA += " and year(PAPAYDT) in ( ";
 			for (i = 0; i < payyr.length; i++) {
 				if (i != 0) {
@@ -12425,7 +12536,7 @@ public class SalNTDAO {
 			}
 			subsqlA += ")";
 		}
-		if (!(paymon == null || (paymon != null && paymon.length == 0))) { // ¤ë
+		if (!(paymon == null || (paymon != null && paymon.length == 0))) { // æœˆ
 			subsqlA += " and month(PAPAYDT) in ( ";
 			for (i = 0; i < paymon.length; i++) {
 				if (i != 0) {
@@ -12436,7 +12547,7 @@ public class SalNTDAO {
 			}
 			subsqlA += ")";
 		}
-		if (!(paydt == null || (paydt != null && paydt.length == 0))) { // µ¹¥I¤é´Á
+		if (!(paydt == null || (paydt != null && paydt.length == 0))) { // çµ¦ä»˜æ—¥æœŸ
 			subsqlA += " and PAPAYDT in ( ";
 			for (i = 0; i < paydt.length; i++) {
 				if (i != 0) {
@@ -12452,7 +12563,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -12490,7 +12601,7 @@ public class SalNTDAO {
 					jsonOne.put("payupdat", formatter.format(data.get("payupdat")));
 					jsonOne.put("payempno", StringUtil.nullToString(data.get("payempno")));
 					jsonRtn.add(jsonOne);
-					// ª÷ÃB¥[Á`
+					// é‡‘é¡åŠ ç¸½
 					if (intINSUIDENT == 0) {
 						tmpPartPayAmt += intBONUSAMT;
 						tmpPartNHIAmt += intNHIAMT;
@@ -12511,7 +12622,7 @@ public class SalNTDAO {
 			rtnMap.put("LBINFPayAmt", tmpLBINFPayAmt);
 			rtnMap.put("LBINFNHIAmt", tmpLBINFNHIAmt);
 
-			log.info(me + "  ...********* dataaccess:¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...********* dataaccess:å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new SQLException(me + ", fail!!." + e);
@@ -12522,7 +12633,7 @@ public class SalNTDAO {
 		return rtnMap;
 	}
 
-	// ¨Ìsalnum+paycode§äpa.padaypay²M³æ
+	// ä¾salnum+paycodeæ‰¾pa.padaypayæ¸…å–®
 	public JSONArray getDayPayByCode(String in_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getDayPayByCode(),userid = " + userid;
 		log.info(me + " in_data = " + in_data + " hid = " + hid);
@@ -12543,7 +12654,7 @@ public class SalNTDAO {
 			paycode = (!object_in_data.has("paycode")) ? "" : object_in_data.getString("paycode");
 			salnum = (!object_in_data.has("salnum")) ? "" : object_in_data.getString("salnum");
 		}
-		// Åª¨úpa.padatpay+pa.padatpay_dw
+		// è®€å–pa.padatpay+pa.padatpay_dw
 		strSelect = " A.SALNUM,A.PAYIDNO,A.PAYCODE, A.PAYAMT,"
 				+ "B.PAYCARD, B.PAYEMPNO,PAYNAMEC, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK2, PAYBANK,"
 				+ "C.PADEPNMC,D.PAYTITLC, E.PACODNMC ";
@@ -12568,7 +12679,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -12613,12 +12724,12 @@ public class SalNTDAO {
 		return jsonRtn;
 	}
 
-	// ¨ÌKEY,¨ú±opa.padatPSN
+	// ä¾KEY,å–å¾—pa.padatPSN
 	public Padatpsn getDatPsnBykey(String in_data, String userid, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getDatPsnBykey(),userid = " + userid;
 		log.info(me + " in_data = " + in_data + " hid = " + hid);
 		CommDAO cDAO = null;
-		HashMap CspfMap = new HashMap(); // ¤u§@¼úª÷¤ä¦© ¹ï·Óªí
+		HashMap CspfMap = new HashMap(); // å·¥ä½œçé‡‘æ”¯æ‰£ å°ç…§è¡¨
 		JSONArray jsonRtn = new JSONArray();
 		JSONObject jsonOne = null;
 		JSONObject object_in_data = null;
@@ -12636,7 +12747,7 @@ public class SalNTDAO {
 			idtno = (!object_in_data.has("idtno")) ? "" : object_in_data.getString("idtno");
 			salnum = (!object_in_data.has("salnum")) ? "" : object_in_data.getString("salnum");
 		}
-		// Åª¨úpa.padatpsn+pa.padatpsn_dw
+		// è®€å–pa.padatpsn+pa.padatpsn_dw
 		strSelect = " a.SALNUM, PAYBANK, A.PAYIDNO, A.PAYCARD, A.PAYEMPNO, A.PAYNAMEC, A.PAYDEPT, A.PAYTITLE, A.PAYRNK2N, "
 				+ "COALESCE(A.PAYRANK3,0) as PAYRANK3, COALESCE(A.PAYDEGR2,0) as PAYDEGR2, COALESCE(A.PAYDEGRE,0) as PAYDEGRE, A.PAYRANK, A.PAYRANK2, A.PAYRANKC, COALESCE(A.PAYPFDOC,0) as PAYPFDOC, A.PACSFLAG, "
 				+ "COALESCE(A.PAYPFSP1,0) as PAYPFSP1, COALESCE(A.PAYPFSP2,0) as PAYPFSP2, COALESCE(A.PAYPFSP3,0) as PAYPFSP3, A.PAYUPDID, A.PAYUPDTM, A.PAYRANK4, A.HID, A.INSUAMT, "
@@ -12667,7 +12778,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -12683,7 +12794,7 @@ public class SalNTDAO {
 					padatpsn = new Padatpsn();
 					PropertyUtils.copyProperties(padatpsn, data);
 					if (hid.matches("1A0|2A0")) {
-						// ¤u§@¼úª÷=Y,§ä°ò¥»ÁZ¤À ­Ä¯ÅÁZ¤À
+						// å·¥ä½œçé‡‘=Y,æ‰¾åŸºæœ¬ç¸¾åˆ† ä¿¸ç´šç¸¾åˆ†
 						if ("Y".equals(padatpsn.getPacsflag())) {
 							CspfMap = cDAO.getCsPfByKey(padatpsn.getPayrank3(), padatpsn.getPaytitle(),
 									padatpsn.getPayrank(), padatpsn.getPayrnk2n(), padatpsn.getPaydegr2(),
@@ -12709,13 +12820,13 @@ public class SalNTDAO {
 		return padatpsn;
 	}
 
-	// ¨ÌKEY,¨ú±opa.patraPSN
+	// ä¾KEY,å–å¾—pa.patraPSN
 	public Patrapsn getTraPsnBykey(String code_data, String userid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getTraPsnBykey(),userid = " + userid;
 		log.info(me + " code_data = " + code_data + " hid = " + hid);
 
 		CommDAO cDAO = null;
-		HashMap CspfMap = new HashMap(); // ¤u§@¼úª÷¤ä¦© ¹ï·Óªí
+		HashMap CspfMap = new HashMap(); // å·¥ä½œçé‡‘æ”¯æ‰£ å°ç…§è¡¨
 		JSONObject object_code_data = null;
 		Patrapsn patrapsn = null;
 		Date start = new Date();
@@ -12733,7 +12844,7 @@ public class SalNTDAO {
 			idtno = (!object_code_data.has("idtno")) ? "" : object_code_data.getString("idtno");
 			hid = (!object_code_data.has("hid")) ? "" : object_code_data.getString("hid");
 		}
-		// Åª¨úpa.patrapsn
+		// è®€å–pa.patrapsn
 		strSelect = "PATRACOD, PATRADT, COALESCE(PAEFFDT,'9999-12-31') as PAEFFDT, SALNUM, PAYLVEFG, A.PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, "
 				+ "PAYEMPDT, PAYSGNDT, COALESCE(PAYRSGDT,'9999-12-31') as PAYRSGDT, PAYBKID, PAYACNO, PAYGEDNO, COALESCE(A.PAYINFLG,0) as PAYINFLG,COALESCE(PAYDPNO,'0') as PAYDPNO, PAYPFLAG, PAYTITLE, "
 				+ "PAYRNK2N, COALESCE(A.PAYRANK3,0) as PAYRANK3, COALESCE(A.PAYDEGR2,0) as PAYDEGR2, COALESCE(A.PAYDEGRE,0) as PAYDEGRE, PAYRANK, COALESCE(A.PAYRANK2,'') as PAYRANK2, "
@@ -12775,7 +12886,7 @@ public class SalNTDAO {
 		log.info(me + "  " + sql + "...params:" + params.toString());
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -12790,7 +12901,7 @@ public class SalNTDAO {
 				for (Map<String, Object> data : result) {
 					patrapsn = new Patrapsn();
 					PropertyUtils.copyProperties(patrapsn, data);
-					// ¤u§@¼úª÷=Y,§ä°ò¥»ÁZ¤À ­Ä¯ÅÁZ¤À
+					// å·¥ä½œçé‡‘=Y,æ‰¾åŸºæœ¬ç¸¾åˆ† ä¿¸ç´šç¸¾åˆ†
 					if (hid.matches("1A0|2A0")) {
 						if ("Y".equals(patrapsn.getPacsflag())) {
 							CspfMap = cDAO.getCsPfByKey(patrapsn.getPayrank3(), patrapsn.getPaytitle(),
@@ -12825,10 +12936,10 @@ public class SalNTDAO {
 		return patrapsn;
 	}
 
-	// ¨ÌKEY,¨ú±o»s§@³øªí©ú²ÓPA.PAREPDETAIL
-	// itm¬O³øªí¸s²Õ
-	// selEn:Prt_M_1Á~¬zªí Prt_M_2¦©´Úªí Prt_M_3Á~¬zªí(¸Éµo¦©) Prt_M_4Á~¬z²§°Ê©ú²Óªí Prt_M_5µoÁ~¨ü´ÚªÌ©ú²Óªí
-	// Prt_M_6»È¦æÂà±b©ú²Óªí Bank_T»È¦æ´CÅé¶Ç¿é
+	// ä¾KEY,å–å¾—è£½ä½œå ±è¡¨æ˜ç´°PA.PAREPDETAIL
+	// itmæ˜¯å ±è¡¨ç¾¤çµ„
+	// selEn:Prt_M_1è–ªæ´¥è¡¨ Prt_M_2æ‰£æ¬¾è¡¨ Prt_M_3è–ªæ´¥è¡¨(è£œç™¼æ‰£) Prt_M_4è–ªæ´¥ç•°å‹•æ˜ç´°è¡¨ Prt_M_5ç™¼è–ªå—æ¬¾è€…æ˜ç´°è¡¨
+	// Prt_M_6éŠ€è¡Œè½‰å¸³æ˜ç´°è¡¨ Bank_TéŠ€è¡Œåª’é«”å‚³è¼¸
 	public ArrayList<Paprtdtl> getPrtdtlBykey(String in_data, int itm, String userid, String hid, VGHDataAccess da)
 			throws Exception {
 		String me = getClass().getName() + ".getPrtdtlBykey(),userid = " + userid;
@@ -12848,7 +12959,7 @@ public class SalNTDAO {
 		String strSelect = "";
 		String subWhere = "";
 		String strOrder = "";
-		// 1:¤ë³ø:Prt_M_1 selCode:selNm:selEn
+		// 1:æœˆå ±:Prt_M_1 selCode:selNm:selEn
 		if (in_data != null && !in_data.equals("")) {
 			object_in_data = JSONObject.fromObject(in_data);
 			selEn = (!object_in_data.has("selEn")) ? "" : object_in_data.getString("selEn");
@@ -12859,140 +12970,140 @@ public class SalNTDAO {
 		}
 		if (hid.equals("1A0")) {
 			if (selEn.matches("Prt_M_1|Prt_M_2")) {
-				if (itm == 0) // Á`­p
+				if (itm == 0) // ç¸½è¨ˆ
 					subWhere = " ";
-				else if (itm == 1) // Å@²z_®v¯Å
+				else if (itm == 1) // è­·ç†_å¸«ç´š
 					subWhere = " and SUBSTR(PAYEMPNO,1,3) IN ('W04','W06') ";
-				else if (itm == 2) // Å@²z_«´¬ù
+				else if (itm == 2) // è­·ç†_å¥‘ç´„
 					subWhere = " and PAYEMPNO LIKE 'TV%' ";
-				else if (itm == 3) // Â¾­û_¤½Â¾
+				else if (itm == 3) // è·å“¡_å…¬è·
 					subWhere = " and PAYEMPNO LIKE 'A%' AND PAYTITLE <>'16' ";
-				else if (itm == 4) // Âå¨Æ_«´¬ù
+				else if (itm == 4) // é†«äº‹_å¥‘ç´„
 					subWhere = " and SUBSTR(PAYEMPNO,1,2) IN ('TA') ";
-				else if (itm == 5) // Âå¨Æ_®v¯Å
+				else if (itm == 5) // é†«äº‹_å¸«ç´š
 					subWhere = " and SUBSTR(PAYEMPNO,1,3) BETWEEN 'W09' AND 'W19' ";
-				else if (itm == 6) // Âå®v_¶i­×,¹ê²ß
+				else if (itm == 6) // é†«å¸«_é€²ä¿®,å¯¦ç¿’
 					subWhere = " and PAYEMPNO LIKE 'TB%' ";
-				else if (itm == 7) // Âå®v_¤½Â¾
+				else if (itm == 7) // é†«å¸«_å…¬è·
 					subWhere = " and PAYTITLE ='16' ";
-				else if (itm == 8) // Âå®v_®v¯Å
+				else if (itm == 8) // é†«å¸«_å¸«ç´š
 					subWhere = " and SUBSTR(PAYEMPNO,1,3) IN ('W01','W02','W03') ";
-				else if (itm == 9) // Âå®v_¸u¥Î
+				else if (itm == 9) // é†«å¸«_è˜ç”¨
 					subWhere = " and SUBSTR(PAYEMPNO,1,1) IN ('C') ";
-				else if (itm == 10) // Âå®v_«´¬ù
+				else if (itm == 10) // é†«å¸«_å¥‘ç´„
 					subWhere = " and SUBSTR(PAYEMPNO,1,1) IN ('J','E') ";
-				else if (itm == 11) // ¤£¤À¬ì
+				else if (itm == 11) // ä¸åˆ†ç§‘
 					subWhere = " and SUBSTR(PAYEMPNO,1,1) IN ('F') ";
-				else if (itm == 12) // ¤jªZ
+				else if (itm == 12) // å¤§æ­¦
 					subWhere = " and SUBSTR(PAYEMPNO,1,1) IN ('Y') ";
-				else if (itm == 13) // ­İÂ¾
+				else if (itm == 13) // å…¼è·
 					subWhere = " and SUBSTR(PAYEMPNO,1,1) IN ('B') ";
-				else if (itm == 14) // §Ş¤u¤Í
+				else if (itm == 14) // æŠ€å·¥å‹
 					subWhere = " and SUBSTR(PAYEMPNO,1,1) IN ('G','H') ";
-				else if (itm == 15) // ­pµe
+				else if (itm == 15) // è¨ˆç•«
 					subWhere = " and SUBSTR(PAYEMPNO,1,1) IN ('Z') ";
-				else if (itm == 16) // ¾n½ÃÄµ
+				else if (itm == 16) // é§è¡›è­¦
 					subWhere = " and SUBSTR(PAYEMPNO,1,2) IN ('TP') ";
-				else if (itm == 17) // ¥~Äy·ÓªA­û 2025.9.15
+				else if (itm == 17) // å¤–ç±ç…§æœå“¡ 2025.9.15
 					subWhere = " and SUBSTR(PAYEMPNO,1,2) IN ('TF') ";
 			}
-			// Á~¬zªí(¸Éµo¦©)
+			// è–ªæ´¥è¡¨(è£œç™¼æ‰£)
 			else if (selEn.matches("Prt_M_3")) {
 				subWhere = " and (PAYRBASE<>0 OR PAYRSPSU<>0 OR PAYRSPSD <> 0 OR PAYRCHALW<>0 OR PAYRSUPLY<> 0 )";
 			}
-			// Á~¬z²§°Ê©ú²Óªí
+			// è–ªæ´¥ç•°å‹•æ˜ç´°è¡¨
 			else if (selEn.matches("Prt_M_4")) {
 				subWhere = " and TRANAME <> '' "
 						+ " and NOT ( (PAYOBASE + PAYOSPSU + PAYOCHALW + PAYOSUPLY) =(PAYBASE + PAYSPSU + PAYCHALW  + PAYSUPLY) AND (PAYRBASE + PAYRSPSU + PAYRCHALW  + PAYRSUPLY)=0 ) ";
 			}
-			// µoÁ~¨ü´ÚªÌ©ú²Óªí
+			// ç™¼è–ªå—æ¬¾è€…æ˜ç´°è¡¨
 			else if (selEn.matches("Prt_M_5")) {
 				subWhere = " GROUP BY PAYBANK ";
 			}
-			// Prt_M_6»È¦æÂà±b©ú²Óªí Bank_T»È¦æ¶Ç¿é
+			// Prt_M_6éŠ€è¡Œè½‰å¸³æ˜ç´°è¡¨ Bank_TéŠ€è¡Œå‚³è¼¸
 			else if (selEn.matches("Prt_M_6|Bank_T")) {
-				if (itm == 0) // Á~¬z
+				if (itm == 0) // è–ªæ´¥
 					subWhere = " and LTRIM(PAYACNO)<>'' AND (PAYNET + PAYTOTIS) > 0 ";
-				else if (itm == 1) // ¤½Àx
+				else if (itm == 1) // å…¬å„²
 					subWhere = " and LTRIM(PAYGEDNO)<>'' AND PAYGEDP > 0 ";
-				else if (itm == 2) // °±Á~
+				else if (itm == 2) // åœè–ª
 					subWhere = " ";
 			}
 		} else if (hid.equals("2A0")) {
 			if (selEn.matches("Prt_M_1|Prt_M_2")) {
-				if (itm == 0) // Á`­p
+				if (itm == 0) // ç¸½è¨ˆ
 					subWhere = " ";
-				else if (itm == 1) // Å@²z_®v¯Å
+				else if (itm == 1) // è­·ç†_å¸«ç´š
 					subWhere = " and PAYRANK='8' AND PATITSUB='N' ";
-				else if (itm == 2) // Å@²z_«´¬ù
-					subWhere = " and PAYRANK='F' AND PAYTITLP LIKE '%Å@%' ";
-				else if (itm == 3) // Â¾­û_¤½Â¾
+				else if (itm == 2) // è­·ç†_å¥‘ç´„
+					subWhere = " and PAYRANK='F' AND PAYTITLP LIKE '%è­·%' ";
+				else if (itm == 3) // è·å“¡_å…¬è·
 					subWhere = " and PAYRANK IN ('1','2','3') ";
-				else if (itm == 4) // Âå¨Æ_«´¬ù
-					subWhere = " and PAYRANK='F' AND not (PAYTITLP LIKE ('%Âå®v%') OR PAYTITLP LIKE ('%Å@%')) ";
-				else if (itm == 5) // Âå¨Æ_®v¯Å
-					subWhere = " and PAYRANK='8' AND not (PAYTITLP LIKE ('%Âå®v%') OR PAYTITLP LIKE ('%Å@²z%')) ";
-				else if (itm == 6) // Âå®v_®v¯Å+¸u¥Î
+				else if (itm == 4) // é†«äº‹_å¥‘ç´„
+					subWhere = " and PAYRANK='F' AND not (PAYTITLP LIKE ('%é†«å¸«%') OR PAYTITLP LIKE ('%è­·%')) ";
+				else if (itm == 5) // é†«äº‹_å¸«ç´š
+					subWhere = " and PAYRANK='8' AND not (PAYTITLP LIKE ('%é†«å¸«%') OR PAYTITLP LIKE ('%è­·ç†%')) ";
+				else if (itm == 6) // é†«å¸«_å¸«ç´š+è˜ç”¨
 					subWhere = " and (PAYRANK='8' AND PATITSUB='V') or PAYRANK IN ('E') ";
-				else if (itm == 7) // Âå®v_«´¬ù
-					subWhere = " and PAYRANK='F' AND PAYTITLP LIKE '%Âå®v%' ";
-				else if (itm == 8) // §Ş¤u¤Í
+				else if (itm == 7) // é†«å¸«_å¥‘ç´„
+					subWhere = " and PAYRANK='F' AND PAYTITLP LIKE '%é†«å¸«%' ";
+				else if (itm == 8) // æŠ€å·¥å‹
 					subWhere = " and PAYRANK IN ('5','6') ";
 			}
-			// Á~¬zªí(¸Éµo¦©)
+			// è–ªæ´¥è¡¨(è£œç™¼æ‰£)
 			else if (selEn.matches("Prt_M_3")) {
 				subWhere = " and (PAYRBASE<>0 OR PAYRSPSU<>0 OR PAYRSPSD <> 0 OR PAYRCHALW<>0 OR PAYRSTBN<> 0) ";
 			}
-			// Á~¬z²§°Ê©ú²Óªí
+			// è–ªæ´¥ç•°å‹•æ˜ç´°è¡¨
 			else if (selEn.matches("Prt_M_4")) {
 				subWhere = " and TRANAME <> '' "
 						+ " and NOT ( (PAYOBASE + PAYOSPSU + PAYOCHALW + PAYOSTBN) = (PAYBASE + PAYSPSU + PAYCHALW  + PAYSTBNT) AND (PAYRBASE + PAYRSPSU + PAYRCHALW  + PAYRSTBN)=0 ) ";
 			}
-			// µoÁ~¨ü´ÚªÌ©ú²Óªí
+			// ç™¼è–ªå—æ¬¾è€…æ˜ç´°è¡¨
 			else if (selEn.matches("Prt_M_5")) {
 				subWhere = " GROUP BY PAYBANK ";
 			}
-			// Prt_M_6»È¦æÂà±b©ú²Óªí Bank_T»È¦æ¶Ç¿é
+			// Prt_M_6éŠ€è¡Œè½‰å¸³æ˜ç´°è¡¨ Bank_TéŠ€è¡Œå‚³è¼¸
 			else if (selEn.matches("Prt_M_6|Bank_T")) {
-				if (itm == 0) // Á~¬z
+				if (itm == 0) // è–ªæ´¥
 					subWhere = " and LTRIM(PAYACNO)<>'' AND (PAYNET + PAYTOTIS) > 0 ";
-				else if (itm == 1) // ¤½Àx
+				else if (itm == 1) // å…¬å„²
 					subWhere = " and LTRIM(PAYGEDNO)<>'' AND PAYGEDP > 0 ";
 			}
 		} else if (hid.equals("3A0")) {
 			if (selEn.matches("Prt_M_1|Prt_M_2")) {
-				if (itm == 0) // Á`­p
+				if (itm == 0) // ç¸½è¨ˆ
 					subWhere = " ";
-				else if (itm == 1) // ¤½Â¾
+				else if (itm == 1) // å…¬è·
 					subWhere = " and PAYRANK in('1','2','3','8','9','H','G') ";
-				else if (itm == 2) // ¤u¯Å
+				else if (itm == 2) // å·¥ç´š
 					subWhere = " and PAYRANK IN ('5','6') ";
-				else if (itm == 3) // «´¬ù
+				else if (itm == 3) // å¥‘ç´„
 					subWhere = " and PAYRANK not in('1','2','3','8','9','5','6','H','G') ";
 			}
-			// Á~¬zªí(¸Éµo¦©)
+			// è–ªæ´¥è¡¨(è£œç™¼æ‰£)
 			else if (selEn.matches("Prt_M_3")) {
 				subWhere = " and (PAYRBASE<>0 OR PAYRSPSU<>0 OR PAYRSPSD <> 0 OR PAYRCHALW<>0 OR PAYRSTBN<> 0 or PAYRSUPLY<>0)";
 			}
-			// Á~¬z²§°Ê©ú²Óªí
+			// è–ªæ´¥ç•°å‹•æ˜ç´°è¡¨
 			else if (selEn.matches("Prt_M_4")) {
 				subWhere = " and TRANAME <> '' "
 						+ " and NOT ( (PAYOBASE + PAYOSPSU + PAYOCHALW + PAYOSTBN + PAYOSUPLY) = (PAYBASE + PAYSPSU + PAYCHALW  + PAYSTBNT + PAYSUPLY) AND (PAYRBASE + PAYRSPSU + PAYRCHALW  + PAYRSTBN +PAYRSUPLY)=0 ) ";
 			}
-			// µoÁ~¨ü´ÚªÌ©ú²Óªí
+			// ç™¼è–ªå—æ¬¾è€…æ˜ç´°è¡¨
 			else if (selEn.matches("Prt_M_5")) {
 				subWhere = " GROUP BY PAYBANK ";
 			}
-			// Prt_M_6»È¦æÂà±b©ú²Óªí Bank_T»È¦æ¶Ç¿é
+			// Prt_M_6éŠ€è¡Œè½‰å¸³æ˜ç´°è¡¨ Bank_TéŠ€è¡Œå‚³è¼¸
 			else if (selEn.matches("Prt_M_6|Bank_T")) {
-				if (itm == 0) // Á~¬z
+				if (itm == 0) // è–ªæ´¥
 					subWhere = " and LTRIM(PAYACNO)<>'' AND (PAYNET + PAYTOTIS) > 0 ";
-				else if (itm == 1) // ¤½Àx
+				else if (itm == 1) // å…¬å„²
 					subWhere = " and LTRIM(PAYGEDNO)<>'' AND PAYGEDP > 0 ";
 			}
 		}
 
-		// Prt_M_1Á~¬zªí Prt_M_2¦©´Úªí Prt_M_3Á~¬zªí(¸Éµo¦©) Prt_M_4Á~¬z²§°Ê©ú²Óªí
+		// Prt_M_1è–ªæ´¥è¡¨ Prt_M_2æ‰£æ¬¾è¡¨ Prt_M_3è–ªæ´¥è¡¨(è£œç™¼æ‰£) Prt_M_4è–ªæ´¥ç•°å‹•æ˜ç´°è¡¨
 		if (selEn.matches("Prt_M_1|Prt_M_2|Prt_M_3|Prt_M_4")) {
 			strSelect = " PAYIDNO, PAYBANK, PAYCARD, PAYNAMEC, PAYEMPNO, PAYACNO, PAYGEDNO, PAYDEPT, PADEPNMC, PATITSUB, PAYTITLE, PAYTITLP, PAYRANK, RANKABBR, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYLVEFG, TRANAME, case PAEFFDT when '9999-12-31' then PAYBANK else PAEFFDT end as PAEFFDT , LASTDAYNO, PAYDAYNO, PAYOBASE, PAYOSPSU, PAYOCHALW, PAYOSTBN, PAYOSUPLY, PAYBASE, PAYRBASE, PAYSPSU, PAYRSPSU, PAYSPSD, PAYRSPSD, PAYCHALW, PAYRCHALW, PAYSTBNT, PAYRSTBN, PAYTRANS, PAYSUPLY, PAYRSUPLY, PAYPFNT, PAYSTAL, PAYSTALD, PAYNIGHT, PAYYEAR, PAYADDHL, PAYGRADE, PAYPROMO, PAYADRTN, PAYCPLM1, PAYCPLM2, PAYCPLM3, PAYEMPFD, PAYSARS, PAYEXTRA, PAYGEINS, PAYDPINS, PAYLBINS, PAYRETIR, PAYTAX, PAYGEDP, PAYVETD1, PAYHLOA1, PAYHLOA2, PAYHLOA3, PAYHLOA4, PAYHLOA5, PAYHLOA6, PAYDLOAN, PAYMHOUS, PAYNSPFD, PAYPARK1, PAYPARK2, PAYGYM, PAYLIEN, PAYMEAL, PAYCARDF, PAYDORM1, PAYDORM2, PAYDORM3, PAYOTHER1, PAYOTHER2, PAYOTHER3, PAYAGEN1, PAYTOTAL, PAYTOTIS, PAYTLDED, PAYNET, HID, SALNUM ";
 			if (hid.matches("1A0|2A0"))
@@ -13000,10 +13111,10 @@ public class SalNTDAO {
 			else if (hid.matches("3A0"))
 				strOrder = " order by paycard ";
 		}
-		// Prt_M_5µoÁ~¨ü´ÚªÌ©ú²Óªí
+		// Prt_M_5ç™¼è–ªå—æ¬¾è€…æ˜ç´°è¡¨
 		else if (selEn.matches("Prt_M_5")) {
 			if (hid.matches("1A0"))
-				// 2025-8-20°ªºa PAYOTHER2 PGY²²ªÙºŞ²z¶O
+				// 2025-8-20é«˜æ¦® PAYOTHER2 PGYçœ·èˆç®¡ç†è²»
 				strSelect = " PAYBANK, SUM(PAYNET + PAYTOTIS + PAYGEDP) AS pay, SUM(PAYHLOA5) AS PAYHLOA5,SUM(PAYHLOA3) AS PAYHLOA3,SUM(PAYHLOA2) AS PAYHLOA2,SUM(PAYHLOA4) AS PAYHLOA4, "
 						+ "SUM(PAYHLOA1) AS PAYHLOA1,SUM(PAYHLOA6) AS PAYHLOA6,SUM(PAYGEINS) AS PAYGEINS,SUM(PAYDPINS) AS PAYDPINS,SUM(PAYLBINS) AS PAYLBINS,SUM(PAYOTHER1) AS PAYOTHER1,SUM(PAYDLOAN) AS PAYDLOAN,SUM(PAYRETIR) AS PAYRETIR,"
 						+ "SUM(PAYTAX) AS PAYTAX,SUM(PAYMHOUS) AS PAYMHOUS,SUM(PAYNSPFD) AS PAYNSPFD,SUM(PAYPARK1) AS PAYPARK1,SUM(PAYPARK2) AS PAYPARK2,SUM(PAYOTHER2) AS PAYOTHER2, SUM(PAYGYM) AS PAYGYM,SUM(PAYLIEN) AS PAYLIEN,"
@@ -13017,68 +13128,68 @@ public class SalNTDAO {
 				strSelect = "PAYBANK, SUM(PAYNET + PAYTOTIS + PAYGEDP) AS pay,SUM(PAYGEINS) AS PAYGEINS,SUM(PAYDPINS) AS PAYDPINS,SUM(PAYLBINS) AS PAYLBINS, "
 						+ "SUM(PAYRETIR) AS PAYRETIR,SUM(PAYTAX) AS PAYTAX,SUM(PAYDLOAN) AS PAYDLOAN,SUM(PAYOTHER1) AS PAYOTHER1,SUM(PAYLIEN) AS PAYLIEN,SUM(PAYTOTAL + PAYTOTIS) AS NT1";
 		}
-		// Prt_M_6»È¦æÂà±b©ú²Óªí
+		// Prt_M_6éŠ€è¡Œè½‰å¸³æ˜ç´°è¡¨
 		else if (selEn.matches("Prt_M_6")) {
 			if (hid.matches("1A0")) {
 				strOrder = " ORDER BY DEPOSIT,ACNO ";
-				// Á~¬z
+				// è–ªæ´¥
 				if (String.valueOf(itm).matches("0"))
 					strSelect = " SUBSTR(PAYACNO,1,5) AS DEPOSIT, SUBSTR(PAYACNO,6,7) AS ACNO, (PAYNET + PAYTOTIS) AS PAYAMT, "
 							+ "PAYCARD, PAYNAMEC, PAYBANK";
-				// ¤½Àx
+				// å…¬å„²
 				else if (String.valueOf(itm).matches("1"))
 					strSelect = " SUBSTR(PAYGEDNO,1,5) AS DEPOSIT, SUBSTR(PAYGEDNO,6,7) AS ACNO, PAYGEDP AS PAYAMT, "
 							+ "PAYCARD, PAYNAMEC, PAYBANK";
-				// °±Á~
+				// åœè–ª
 				else if (String.valueOf(itm).matches("2")) {
 					strSelect = " SUBSTR(PAYCTCBACNO, 1, 5) AS DEPOSIT, SUBSTR(PAYCTCBACNO, 6, 7) AS ACNO, 0 AS PAYAMT, "
 							+ " PAYCARD, PAYNAMEC, date('" + patradt + "') AS PAYBANK ";
 				}
 			} else if (hid.matches("2A0")) {
-				// Á~¬z
+				// è–ªæ´¥
 				if (String.valueOf(itm).matches("0")) {
 					strOrder = " ORDER BY PAYACNO ";
 					strSelect = " PAYACNO, (PAYNET + PAYTOTIS) AS PAYAMT,PAYIDNO,PAYNAMEC, PAYBANK";
 				}
-				// ¤½Àx
+				// å…¬å„²
 				else if (String.valueOf(itm).matches("1")) {
 					strOrder = " ORDER BY PAYGEDNO ";
 					strSelect = " PAYGEDNO AS PAYACNO, PAYGEDP AS PAYAMT,PAYIDNO,PAYNAMEC, PAYBANK";
 				}
 			} else if (hid.matches("3A0")) {
 				strOrder = " ORDER BY PAYCARD ";
-				// Á~¬z
+				// è–ªæ´¥
 				if (String.valueOf(itm).matches("0")) {
 					strSelect = " PAYACNO, (PAYNET + PAYTOTIS) AS PAYAMT,PAYIDNO,PAYNAMEC, PAYBANK,PAYTITLP,PAYCARD";
 				}
-				// ¤½Àx
+				// å…¬å„²
 				else if (String.valueOf(itm).matches("1")) {
 					strSelect = " PAYGEDNO AS PAYACNO, PAYGEDP AS PAYAMT,PAYIDNO,PAYNAMEC, PAYBANK,PAYTITLP,PAYCARD";
 				}
 			}
 		}
-		// Bank_T»È¦æ¶Ç¿é
+		// Bank_TéŠ€è¡Œå‚³è¼¸
 		else if (selEn.matches("Bank_T")) {
 			if (hid.matches("1A0")) {
 				strOrder = " ORDER BY PAYACNO ";
-				// Á~¬z
+				// è–ªæ´¥
 				if (String.valueOf(itm).matches("0"))
 					strSelect = " RTRIM(PAYACNO) AS PAYACNO, (PAYNET + PAYTOTIS) AS PAYAMT, PAYBANK,PAYIDNO";
-				// ¤½Àx
+				// å…¬å„²
 				else if (String.valueOf(itm).matches("1"))
 					strSelect = " RTRIM(PAYGEDNO) AS PAYACNO, PAYGEDP AS PAYAMT, PAYBANK,PAYIDNO";
-				// °±Á~
+				// åœè–ª
 				else if (String.valueOf(itm).matches("2")) {
 					strSelect = " RTRIM(PAYCTCBACNO) AS PAYACNO , 0 AS PAYAMT, date('" + patradt
 							+ "') AS PAYBANK,PAYIDNO ";
 				}
 			} else if (hid.matches("2A0|3A0")) {
 				strOrder = " ORDER BY ACNO ";
-				// Á~¬z
+				// è–ªæ´¥
 				if (String.valueOf(itm).matches("0")) {
 					strSelect = " PAYACNO AS ACNO, (PAYNET + PAYTOTIS) AS PAYAMT, PAYBANK, PAYIDNO";
 				}
-				// ¤½Àx
+				// å…¬å„²
 				else if (String.valueOf(itm).matches("1")) {
 					strSelect = " PAYGEDNO AS ACNO, PAYGEDP AS PAYAMT, PAYBANK, PAYIDNO";
 				}
@@ -13086,7 +13197,7 @@ public class SalNTDAO {
 
 		}
 		// sql
-		// 1A0°ªºa-2°±Á~-[Prt_M_6»È¦æÂà±b©ú²Óªí/Bank_T»È¦æ¶Ç¿é]
+		// 1A0é«˜æ¦®-2åœè–ª-[Prt_M_6éŠ€è¡Œè½‰å¸³æ˜ç´°è¡¨/Bank_TéŠ€è¡Œå‚³è¼¸]
 		if (hid.equals("1A0") && String.valueOf(itm).matches("2") && selEn.matches("Prt_M_6|Bank_T")) {
 			sql = "select " + strSelect + " from " + this.tTraPsn + " where HID=? and SALNUM=? and PATRACOD in (23,24) "
 					+ " union" + " select " + strSelect + " from " + this.tBasPsn
@@ -13100,7 +13211,7 @@ public class SalNTDAO {
 			params.add(hid);
 			params.add(salnum);
 		}
-		// °ªºa-µoÁ~¨ü´ÚªÌ©ú²Óªí ,­n¥t§ä±b¸¹ªÅ¥Õ
+		// é«˜æ¦®-ç™¼è–ªå—æ¬¾è€…æ˜ç´°è¡¨ ,è¦å¦æ‰¾å¸³è™Ÿç©ºç™½
 		else if (selEn.matches("Prt_M_5") && hid.equals("1A0")) {
 			sql = "select " + strSelect + " from " + this.tRPDTL + " where HID=?  and SALNUM=? " + subWhere + " union "
 					+ "select " + strSelect + " from " + this.tRPDTL + " where HID=?  and SALNUM=? and payacno='' "
@@ -13110,7 +13221,7 @@ public class SalNTDAO {
 			params.add(hid);
 			params.add(salnum);
 		}
-		// 2A0«Ìºa-Bank_T»È¦æ¶Ç¿é
+		// 2A0å±æ¦®-Bank_TéŠ€è¡Œå‚³è¼¸
 		else if (hid.matches("2A0|3A0") && selEn.matches("Bank_T")) {
 			sql = "select '' AS ACNO,sum(paynet)+sum(PAYTOTIS) PAYAMT,DATE('" + patradt
 					+ "') AS PAYBANK,TO_CHAR(COUNT(*)) AS PAYIDNO " + " from " + this.tRPDTL
@@ -13131,7 +13242,7 @@ public class SalNTDAO {
 		starttime = System.currentTimeMillis();
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -13148,7 +13259,7 @@ public class SalNTDAO {
 					aryRtn.add(paprtdtl);
 				}
 			}
-			log.info(me + ",µ§¼Æ:" + result.size() + "¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + ",ç­†æ•¸:" + result.size() + "å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
@@ -13159,7 +13270,7 @@ public class SalNTDAO {
 		return aryRtn;
 	}
 
-	// ¨ÌKEY,¨ú±opa.pataxPSN
+	// ä¾KEY,å–å¾—pa.pataxPSN
 	public Pataxpsn getTaxPsnBykey(String code_data, String hid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getTaxPsnBykey()";
 		log.info(me + " code_data = " + code_data + " hid = " + hid);
@@ -13181,7 +13292,7 @@ public class SalNTDAO {
 			idtno = (!object_code_data.has("idtno")) ? "" : object_code_data.getString("idtno");
 			payear = (!object_code_data.has("payear")) ? "" : object_code_data.getString("payear");
 		}
-		// Åª¨úpa.pataxpsn
+		// è®€å–pa.pataxpsn
 		strSelect = "a.PAYIDNO, PAYEAR, PAYCARD, PAYNAMEC, PAYDEPT, PAYIDFLG, PAYBEGIN, PAYEND, PAYSERNO, a.PAYUPDID, PAYUPDTM, PAYSERNO9A, PAYSERNO9B, PAYSEREAMT, PAYSERNO92, PAYSERNO91, a.HID, PAYEMPNO, PAYSERNO51, "
 				+ "B.PADEPNMC,c.PAYADDRS ";
 		sql = "select " + strSelect + " from " + this.tTaxPsn + " A " + " left outer join " + this.tDept
@@ -13194,7 +13305,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -13226,15 +13337,15 @@ public class SalNTDAO {
 		return pataxpsn;
 	}
 
-	// ¨ÌKEY(idtno),¨ú±o¥D¾÷¤H¨Æps.psbasic
+	// ä¾KEY(idtno),å–å¾—ä¸»æ©Ÿäººäº‹ps.psbasic
 	public Pabaspsn getPSBasicById(String code_data, String userid, VGHDataAccess da, VGHDataAccess daDSN)
 			throws Exception {
 		String me = getClass().getName() + ".getBasPsnBykey(),userid = " + userid;
 		log.info(me + " code_data = " + code_data + " hid = " + hid);
 		CommDAO cDAO = null;
 		PsDSNDAO psDAO = null;
-		HashMap deptMap = new HashMap(); // ³æ¦ì ¹ï·Óªí
-		HashMap jtMap = new HashMap(); // Â¾ºÙ ¹ï·Óªí
+		HashMap deptMap = new HashMap(); // å–®ä½ å°ç…§è¡¨
+		HashMap jtMap = new HashMap(); // è·ç¨± å°ç…§è¡¨
 		JSONArray jsonRtn = new JSONArray();
 		JSONObject jsonOne = null;
 		JSONObject object_code_data = null;
@@ -13247,24 +13358,24 @@ public class SalNTDAO {
 		String idtno = "";
 		String cardno = "";
 		long starttime = 0;
-		String s_empno = "";// ¥D¾÷_Â¾°È½s¸¹
-		String s_wkcode = "";// ¥D¾÷_³æ¦ì
-		String s_titcod = "";// ¥D¾÷_Â¾ºÙ
-		String s_pagrad = "";// ¥D¾÷_­Ä¯Å
-		String s_porank = "";// ¥D¾÷_©xÂ¾µ¥
-		String s_papont = "";// ¥D¾÷_­ÄÂI
-		String a_empno = "";// Á~¸ê_Â¾°È½s¸¹
-		String a_wkcode = "";// Á~¸ê_³æ¦ì
-		Padept a_deptobj = null;// Á~¸ê_³æ¦ìobj
-		Patitle a_titleobj = null;// Á~¸ê_Â¾ºÙobj
-		String a_dept = "";// Á~¸ê_³æ¦ì
-		String a_title = "";// Á~¸ê_Â¾ºÙ
-		String a_rank = "";// Á~¸ê_¶¥§O
-		String a_rnk2n = "";// Á~¸ê_Â¾µ¥
-		int a_rank3 = 0;// Á~¸ê_¥»¥\
-		int a_degr2 = 0;// Á~¸ê_¯Å§O
-		int a_degre = 0;// Á~¸ê_­ÄÂI
-		HashMap degrMap = new HashMap(); // ¤H¨Æ-Á~¸ê ¯Å¼Æ¹ï·Ó
+		String s_empno = "";// ä¸»æ©Ÿ_è·å‹™ç·¨è™Ÿ
+		String s_wkcode = "";// ä¸»æ©Ÿ_å–®ä½
+		String s_titcod = "";// ä¸»æ©Ÿ_è·ç¨±
+		String s_pagrad = "";// ä¸»æ©Ÿ_ä¿¸ç´š
+		String s_porank = "";// ä¸»æ©Ÿ_å®˜è·ç­‰
+		String s_papont = "";// ä¸»æ©Ÿ_ä¿¸é»
+		String a_empno = "";// è–ªè³‡_è·å‹™ç·¨è™Ÿ
+		String a_wkcode = "";// è–ªè³‡_å–®ä½
+		Padept a_deptobj = null;// è–ªè³‡_å–®ä½obj
+		Patitle a_titleobj = null;// è–ªè³‡_è·ç¨±obj
+		String a_dept = "";// è–ªè³‡_å–®ä½
+		String a_title = "";// è–ªè³‡_è·ç¨±
+		String a_rank = "";// è–ªè³‡_éšåˆ¥
+		String a_rnk2n = "";// è–ªè³‡_è·ç­‰
+		int a_rank3 = 0;// è–ªè³‡_æœ¬åŠŸ
+		int a_degr2 = 0;// è–ªè³‡_ç´šåˆ¥
+		int a_degre = 0;// è–ªè³‡_ä¿¸é»
+		HashMap degrMap = new HashMap(); // äººäº‹-è–ªè³‡ ç´šæ•¸å°ç…§
 		ArrayList<Object> params = new ArrayList<Object>();
 
 		if (code_data != null && !code_data.equals("")) {
@@ -13281,11 +13392,11 @@ public class SalNTDAO {
 				daDSN = new VGHDataAccess(g_dataSource);
 				connFlg = true;
 			}
-			// ¨ú±o³æ¦ìmap,key=B¤H¨Æ³æ¦ì¥N½X
+			// å–å¾—å–®ä½map,key=Bäººäº‹å–®ä½ä»£ç¢¼
 			cDAO = new CommDAO(da, hid);
 			deptMap = cDAO.getDeptMap("B", hid, da);
 
-			// ¨ú±oÂ¾ºÙmap,key=¤H¨Æ³æ¦ì¥N½X
+			// å–å¾—è·ç¨±map,key=äººäº‹å–®ä½ä»£ç¢¼
 			jtMap = cDAO.getTitleMap("B", hid, da);
 
 			psDAO = new PsDSNDAO(daDSN, hid);
@@ -13297,32 +13408,32 @@ public class SalNTDAO {
 				pabaspsn.setPaycard(StringUtil.nullToString(psbasic.getPbcardno()));
 				pabaspsn.setPaynamec(StringUtil.trimWideEmpty(psbasic.getPbnamefd()));
 				if ("9999-12-31".equals(psbasic.getPbgocdat().toString()))
-					pabaspsn.setPaygovdt(psbasic.getPbgoadat());// ªì¥ô¤½Â¾¤é,ªÅ­È§ï§ì¨ì°|¤é
+					pabaspsn.setPaygovdt(psbasic.getPbgoadat());// åˆä»»å…¬è·æ—¥,ç©ºå€¼æ”¹æŠ“åˆ°é™¢æ—¥
 				else
-					pabaspsn.setPaygovdt(psbasic.getPbgocdat());// ªì¥ô¤½Â¾¤é
-				pabaspsn.setPayempdt(psbasic.getPbgoadat());// ¨ì°|¤é
-				pabaspsn.setPaysgndt(psbasic.getPbposdat());// ²{Â¾¤é
-				pabaspsn.setPayrsgdt(java.sql.Date.valueOf("9999-12-31"));// Â÷Â¾¤é
-				pabaspsn.setPayaddrs(StringUtil.trimWideEmpty(psbasic.getPbdomadr()));// ¤áÄy¦a§}
-				pabaspsn.setPaydpno("1");// °·«O¤f¼Æ
-				// Â¾¸¹¨ú­º2½X
+					pabaspsn.setPaygovdt(psbasic.getPbgocdat());// åˆä»»å…¬è·æ—¥
+				pabaspsn.setPayempdt(psbasic.getPbgoadat());// åˆ°é™¢æ—¥
+				pabaspsn.setPaysgndt(psbasic.getPbposdat());// ç¾è·æ—¥
+				pabaspsn.setPayrsgdt(java.sql.Date.valueOf("9999-12-31"));// é›¢è·æ—¥
+				pabaspsn.setPayaddrs(StringUtil.trimWideEmpty(psbasic.getPbdomadr()));// æˆ¶ç±åœ°å€
+				pabaspsn.setPaydpno("1");// å¥ä¿å£æ•¸
+				// è·è™Ÿå–é¦–2ç¢¼
 				s_empno = "";
 				a_empno = "";
-				// DA¦æ¬F¤½°È­û DWÂåÀø¤½°È­û DC¸u¥Î¦í°|Âå®v DE«´¬ù¦í°|Âå®v DF¤£¤À¬ì¦í°|Âå®v DJ«´¥Dªv
-				// ¤£¦C¤J--DG§Ş¤u DH¤u¤Í ET¬ã¨s§U²z EB¾nÄµ EC¥ş®É¤ä´©(¤£¬OÂå°|ªº¤H)
-				// ½s½X¤£¤@­P,³][ªÅ¥Õ]--EA­É½Õ DK«´¬ù
+				// DAè¡Œæ”¿å…¬å‹™å“¡ DWé†«ç™‚å…¬å‹™å“¡ DCè˜ç”¨ä½é™¢é†«å¸« DEå¥‘ç´„ä½é™¢é†«å¸« DFä¸åˆ†ç§‘ä½é™¢é†«å¸« DJå¥‘ä¸»æ²»
+				// ä¸åˆ—å…¥--DGæŠ€å·¥ DHå·¥å‹ ETç ”ç©¶åŠ©ç† EBé§è­¦ ECå…¨æ™‚æ”¯æ´(ä¸æ˜¯é†«é™¢çš„äºº)
+				// ç·¨ç¢¼ä¸ä¸€è‡´,è¨­[ç©ºç™½]--EAå€Ÿèª¿ DKå¥‘ç´„
 				s_empno = StringUtil.nullToString(psbasic.getPbposino());
 				if (!"".equals(s_empno) && s_empno.length() > 2) {
 					s_empno = s_empno.substring(0, 2);
 				}
 				if (s_empno.matches("DA|DW|DC|DE|DF|DJ"))
-					a_empno = psbasic.getPbposino().substring(1, 8); // ¨ú²Ä2½X-²Ä8½X
+					a_empno = psbasic.getPbposino().substring(1, 8); // å–ç¬¬2ç¢¼-ç¬¬8ç¢¼
 				else if (s_empno.matches("DK")) {
 					if (hid.matches("2A0|3A0"))
 						a_empno = psbasic.getPbposino();
 				}
-				pabaspsn.setPayempno(a_empno);// Â¾¸¹
-				// ³æ¦ì,¥ı¥H¥ş½X§ä,§ä¤£¨ì,§ï¥Î­º2½X+00§ä
+				pabaspsn.setPayempno(a_empno);// è·è™Ÿ
+				// å–®ä½,å…ˆä»¥å…¨ç¢¼æ‰¾,æ‰¾ä¸åˆ°,æ”¹ç”¨é¦–2ç¢¼+00æ‰¾
 				s_wkcode = psbasic.getPbwkcode();
 				a_dept = "";
 				a_deptobj = (Padept) deptMap.get(s_wkcode);
@@ -13336,9 +13447,9 @@ public class SalNTDAO {
 					}
 				}
 				pabaspsn.setPaydept(a_dept);
-				// Â¾ºÙ
+				// è·ç¨±
 				s_titcod = StringUtil.nullToString(psbasic.getPbtitcod());
-				// ¤H¨ÆÂ¾ºÙµLªk¹ïÀ³Á~¸êÂ¾ºÙ,±j¨î§ï
+				// äººäº‹è·ç¨±ç„¡æ³•å°æ‡‰è–ªè³‡è·ç¨±,å¼·åˆ¶æ”¹
 				if (s_titcod.equals("A236"))
 					s_titcod = "A245";
 
@@ -13348,17 +13459,17 @@ public class SalNTDAO {
 					a_title = a_titleobj.getPaytitlk();
 				}
 				pabaspsn.setPaytitle(a_title);
-				// ©xÂ¾µ¥
+				// å®˜è·ç­‰
 				s_porank = StringUtil.nullToString(psbasic.getPbporank());
-				// ­Ä¯Å
+				// ä¿¸ç´š
 				s_pagrad = psbasic.getPbpagrad();
-				if (s_empno.equals("DC")) { // ¸u¥Î¦í°|Âå®v
+				if (s_empno.equals("DC")) { // è˜ç”¨ä½é™¢é†«å¸«
 					a_rank = "E";
 					a_degr2 = Integer.parseInt(s_pagrad);
 					if (StringUtil.nullToString(psbasic.getPbpapont()) != "")
 						a_degre = Integer.parseInt(psbasic.getPbpapont());
 				}
-				// DA¦æ¬F¤½°È­û DWÂåÀø¤½°È­û DE«´¬ù¦í°|Âå®v DJ«´¥Dªv DK«´¬ù
+				// DAè¡Œæ”¿å…¬å‹™å“¡ DWé†«ç™‚å…¬å‹™å“¡ DEå¥‘ç´„ä½é™¢é†«å¸« DJå¥‘ä¸»æ²» DKå¥‘ç´„
 				else if (s_empno.matches("DA|DW|DE|DJ|DK")) {
 					degrMap = cDAO.getDegrBygrade(s_porank, s_pagrad, s_titcod, s_empno, hid);
 					a_rank = (String) degrMap.get("rank");
@@ -13370,13 +13481,13 @@ public class SalNTDAO {
 						a_degre = Integer.parseInt(psbasic.getPbpapont());
 
 				}
-				pabaspsn.setPayrank(a_rank); // Á~¸ê_¶¥§O
-				pabaspsn.setPayrnk2n(a_rnk2n); // Á~¸ê_Â¾µ¥
-				pabaspsn.setPayrank3(a_rank3); // Á~¸ê_¥»¥\
-				pabaspsn.setPaydegr2(a_degr2); // Á~¸ê_¯Å§O
-				pabaspsn.setPaydegre(a_degre); // Á~¸ê_­ÄÂI
+				pabaspsn.setPayrank(a_rank); // è–ªè³‡_éšåˆ¥
+				pabaspsn.setPayrnk2n(a_rnk2n); // è–ªè³‡_è·ç­‰
+				pabaspsn.setPayrank3(a_rank3); // è–ªè³‡_æœ¬åŠŸ
+				pabaspsn.setPaydegr2(a_degr2); // è–ªè³‡_ç´šåˆ¥
+				pabaspsn.setPaydegre(a_degre); // è–ªè³‡_ä¿¸é»
 			}
-			log.info(me + "  ...********* dataaccess:¦@ªá¶O¡G" + (System.currentTimeMillis() - starttime) + "²@¬í");
+			log.info(me + "  ...********* dataaccess:å…±èŠ±è²»ï¼š" + (System.currentTimeMillis() - starttime) + "æ¯«ç§’");
 		} catch (Exception e) {
 			log.info(me + " fail, " + e);
 			throw new SQLException(me + ", fail!!." + e);
@@ -13387,12 +13498,12 @@ public class SalNTDAO {
 		return pabaspsn;
 	}
 
-	// ¨ÌKEY(idtno,cardno),¨ú±opa.pabasPSN
+	// ä¾KEY(idtno,cardno),å–å¾—pa.pabasPSN
 	public Pabaspsn getBasPsnBykey(String code_data, String userid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getBasPsnBykey(),userid = " + userid;
 		log.info(me + " code_data = " + code_data + " hid = " + hid);
 		CommDAO cDAO = null;
-		HashMap CspfMap = new HashMap(); // ¤u§@¼úª÷¤ä¦© ¹ï·Óªí
+		HashMap CspfMap = new HashMap(); // å·¥ä½œçé‡‘æ”¯æ‰£ å°ç…§è¡¨
 		JSONArray jsonRtn = new JSONArray();
 		JSONObject jsonOne = null;
 		JSONObject object_code_data = null;
@@ -13411,7 +13522,7 @@ public class SalNTDAO {
 			cardno = (!object_code_data.has("cardno")) ? "" : object_code_data.getString("cardno");
 			hid = (!object_code_data.has("hid")) ? "" : object_code_data.getString("hid");
 		}
-		// Åª¨úpa.pabaspsn
+		// è®€å–pa.pabaspsn
 		strSelect = "PAYLVEFG, A.PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, PAYEMPDT, PAYSGNDT, COALESCE(PAYRSGDT,'9999-12-31') PAYRSGDT, PAYBKID, PAYACNO, "
 				+ "PAYGEDNO, PAYINFLG, PAYDPNO, PAYPSW, PAYTITLE, PAYRNK2N, COALESCE(A.PAYRANK3,0) as PAYRANK3, COALESCE(A.PAYDEGR2,0) as PAYDEGR2, "
 				+ "COALESCE(A.PAYDEGRE,0) as PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, COALESCE(A.PAYPFDOC,0) as PAYPFDOC, PACSFLAG, "
@@ -13438,7 +13549,7 @@ public class SalNTDAO {
 
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -13452,7 +13563,7 @@ public class SalNTDAO {
 				for (Map<String, Object> data : result) {
 					pabaspsn = new Pabaspsn();
 					PropertyUtils.copyProperties(pabaspsn, data);
-					// ¤u§@¼úª÷=Y,§ä°ò¥»ÁZ¤À ­Ä¯ÅÁZ¤À
+					// å·¥ä½œçé‡‘=Y,æ‰¾åŸºæœ¬ç¸¾åˆ† ä¿¸ç´šç¸¾åˆ†
 					if (hid.matches("1A0|2A0")) {
 						if ("Y".equals(pabaspsn.getPacsflag())) {
 							CspfMap = cDAO.getCsPfByKey(pabaspsn.getPayrank3(), pabaspsn.getPaytitle(),
@@ -13478,7 +13589,7 @@ public class SalNTDAO {
 		return pabaspsn;
 	}
 
-	// ¨Ìtable¦W³æ¤ÎKEY,¨ú±o¦U¶µ°Ñ¦ÒÀÉ
+	// ä¾tableåå–®åŠKEY,å–å¾—å„é …åƒè€ƒæª”
 	public JSONArray qryCodeList(String tblname, String code_data, String userid, String hid, VGHDataAccess da)
 			throws Exception {
 		String me = getClass().getName() + ".qryCodeList(),userid = " + userid;
@@ -13494,14 +13605,14 @@ public class SalNTDAO {
 		JSONObject object_code_data = null;
 		if (code_data != null && !code_data.equals("")) {
 			object_code_data = JSONObject.fromObject(code_data);
-			if (tblname.matches("PATITLE|PATAXTBL|PAPOSI|PARANK|PAPAYITM")) {// KEY¤£¤î¤@¶µ
+			if (tblname.matches("PATITLE|PATAXTBL|PAPOSI|PARANK|PAPAYITM")) {// KEYä¸æ­¢ä¸€é …
 
 			} else {
 				key = StringUtil.nullToString(object_code_data.getString("key"));
 			}
 		}
 
-		if ("PATRACODE".equals(tblname)) {// ²§°Ê¥N½X PATRACOD
+		if ("PATRACODE".equals(tblname)) {// ç•°å‹•ä»£ç¢¼ PATRACOD
 
 			sql = "SELECT TRANAME, TRACODE FROM " + this.tTraCode;
 			if (!key.equals("")) {
@@ -13510,7 +13621,7 @@ public class SalNTDAO {
 			}
 			sql = sql + subsql + " ORDER BY TRACODE WITH UR";
 		}
-		// ³æ¦ì¥N½X
+		// å–®ä½ä»£ç¢¼
 		else if ("PADEPT".equals(tblname)) {
 
 			sql = "SELECT PADEPCOD, PACSTNO, PADEPNMC, PAYUPDID, PAYUPDAT, HID,PBWKCODE " + "FROM " + this.tDept
@@ -13521,7 +13632,7 @@ public class SalNTDAO {
 				params.add(key);
 			}
 			sql = sql + subsql + " ORDER BY PACSTNO,PADEPCOD WITH UR";
-		} else if ("PARANKCODE".equals(tblname)) {// ¶¥§O¥N½X
+		} else if ("PARANKCODE".equals(tblname)) {// éšåˆ¥ä»£ç¢¼
 
 			sql = "SELECT RANKCODE,RANKNAME,RANKABBR FROM " + this.tRankCode;
 			if (!key.equals("")) {
@@ -13530,7 +13641,7 @@ public class SalNTDAO {
 			}
 
 			sql = sql + subsql + " ORDER BY RANKCODE WITH UR";
-		} else if ("PACATGTBL".equals(tblname)) {// ¤H¤u³y¥UÀ³­pÂà±b¶µ¥Ø¥N½X
+		} else if ("PACATGTBL".equals(tblname)) {// äººå·¥é€ å†Šæ‡‰è¨ˆè½‰å¸³é …ç›®ä»£ç¢¼
 
 			sql = "SELECT PAYCATG, CATGNAME, PAYUPDID, PAYUPDAT FROM " + this.tCatgTbl;
 			if (!key.equals("")) {
@@ -13539,7 +13650,7 @@ public class SalNTDAO {
 			}
 
 			sql = sql + subsql + " ORDER BY PAYCATG WITH UR";
-		} else if ("PAEXPFTBL".equals(tblname)) {// ÁZ®ÄÃB¥~ÂI¼Æ¹ï·Óªí
+		} else if ("PAEXPFTBL".equals(tblname)) {// ç¸¾æ•ˆé¡å¤–é»æ•¸å°ç…§è¡¨
 
 			sql = "SELECT EXPFKEY, EXPFNAME, PAYUPDID, PAYUPDAT FROM " + this.tExpfTbl;
 			if (!key.equals("")) {
@@ -13548,7 +13659,7 @@ public class SalNTDAO {
 			}
 
 			sql = sql + subsql + " ORDER BY EXPFKEY WITH UR";
-		} else if ("PARNK4TBL".equals(tblname)) {// ¾A¥Î±M·~¥[µ¹¹ï·Óªí
+		} else if ("PARNK4TBL".equals(tblname)) {// é©ç”¨å°ˆæ¥­åŠ çµ¦å°ç…§è¡¨
 
 			sql = "SELECT RNK4KEY, RNK4NAME, PAYUPDTM FROM " + this.tRnk4Tbl;
 			if (!key.equals("")) {
@@ -13557,7 +13668,7 @@ public class SalNTDAO {
 			}
 
 			sql = sql + subsql + " ORDER BY RNK4KEY WITH UR";
-		} else if ("PABANK".equals(tblname)) {// µoÁ~¤é¤Î¤J±b¤é¹ïÀ³ÀÉ
+		} else if ("PABANK".equals(tblname)) {// ç™¼è–ªæ—¥åŠå…¥å¸³æ—¥å°æ‡‰æª”
 
 			sql = "SELECT SALNUM, PAYBANK, PAYSALDT, PAYUPDID, PAYUPDAT,HID FROM " + this.tBankDtTbl + " where hid=?";
 			params.add(hid);
@@ -13567,7 +13678,7 @@ public class SalNTDAO {
 			}
 
 			sql = sql + subsql + " ORDER BY SALNUM DESC WITH UR";
-		} else if ("PATAXTBL".equals(tblname)) {// Á~¸ê©Ò±o¦©Ãºµ|ÃBªí
+		} else if ("PATAXTBL".equals(tblname)) {// è–ªè³‡æ‰€å¾—æ‰£ç¹³ç¨…é¡è¡¨
 
 			sql = "SELECT SALLOW, SALHIGH, KINDRED, TAXAMT, PAYUPDID, PAYUPDAT FROM " + this.tTaxTbl;
 			if (!object_code_data.getString("sallow").equals("")) {
@@ -13580,7 +13691,7 @@ public class SalNTDAO {
 			}
 
 			sql = sql + subsql + " ORDER BY SALLOW, KINDRED WITH UR";
-		} else if ("PAPFTL".equals(tblname)) {// ¥ş°|ÁZ®Ä·JÁ`
+		} else if ("PAPFTL".equals(tblname)) {// å…¨é™¢ç¸¾æ•ˆå½™ç¸½
 
 			sql = "SELECT PAYPFMON, PAYPFUNT, PAPFAMT, PAYPFPF, PAYPFREV, PAYPFYMD, PAYPFD, PAYPFE FROM "
 					+ this.tPftlTbl;
@@ -13590,7 +13701,7 @@ public class SalNTDAO {
 			}
 
 			sql = sql + subsql + " ORDER BY PAYPFMON desc WITH UR";
-		} else if ("PADPINTBL".equals(tblname)) {// ¥ş¥Á°·±d«OÀI­t¾áª÷ÃBªí
+		} else if ("PADPINTBL".equals(tblname)) {// å…¨æ°‘å¥åº·ä¿éšªè² æ“”é‡‘é¡è¡¨
 
 			sql = "SELECT DPINLOW, DPINHIGH, DPINAMT, PAYUPDID, PAYUPDAT, DPINDEPT1, DPINDEPT3, " + tmpZdpintbl
 					+ " FROM " + this.tDpinTbl;
@@ -13600,7 +13711,7 @@ public class SalNTDAO {
 			}
 
 			sql = sql + subsql + " ORDER BY DPINLOW WITH UR";
-		} else if ("PALBINTBL".equals(tblname)) {// ³Ò«O§ë«Oª÷ÃB¹ï·Óªí
+		} else if ("PALBINTBL".equals(tblname)) {// å‹ä¿æŠ•ä¿é‡‘é¡å°ç…§è¡¨
 
 			sql = "SELECT LBINLOW, LBINHIGH, LBINAMT, LBINDEPT, " + tmpZlbintbl + " FROM " + this.tLbinTbl;
 			if (!key.equals("")) {
@@ -13609,7 +13720,7 @@ public class SalNTDAO {
 			}
 
 			sql = sql + subsql + " ORDER BY LBINLOW WITH UR";
-		} else if ("PALBRPTBL".equals(tblname)) {// ³Ò¤u°h¥ğª÷¤ë´£Ãº¤u¸ê¤À¯Åªí
+		} else if ("PALBRPTBL".equals(tblname)) {// å‹å·¥é€€ä¼‘é‡‘æœˆæç¹³å·¥è³‡åˆ†ç´šè¡¨
 
 			sql = "SELECT LBRPLOW, LBRPHIGH, LBRPAMT, MASTERAMT,ASSOCC, " + tmpZrpintbl + " FROM " + this.tLbrpTbl;
 			if (!key.equals("")) {
@@ -13619,7 +13730,7 @@ public class SalNTDAO {
 
 			sql = sql + subsql + " ORDER BY LBRPLOW WITH UR";
 		}
-		// Â¾ºÙ
+		// è·ç¨±
 		else if ("PATITLE".equals(tblname)) {
 
 			sql = "SELECT PAYTITLK, PATITSUB, PACHIEF, PAYTITLP, PAYTITLC, PACODDEL, PAYUPDID, PAYUPDAT, HID " + "FROM "
@@ -13639,7 +13750,7 @@ public class SalNTDAO {
 				params.add(StringUtil.nullToString(object_code_data.get("pacoddel")));
 			}
 			sql = sql + subsql + " ORDER BY PATITSUB,PAYTITLK WITH UR";
-		} else if ("PAPOSI".equals(tblname)) {// Â¾µ¥¤ä¦©--±M·~¥[µ¹¤Î¥DºŞ¥[µ¹
+		} else if ("PAPOSI".equals(tblname)) {// è·ç­‰æ”¯æ‰£--å°ˆæ¥­åŠ çµ¦åŠä¸»ç®¡åŠ çµ¦
 
 			sql = "SELECT PAYPOSIK, DEGRLOW, DEGRHIGH, PAYPSP1, PAYPSP2, PAYPSP3, PAYPSP4, PAYPSP5, PAYPSP6, PAYPOSID, PAYPSP7, PAYUPDAT, PAYPSP8 FROM "
 					+ this.tPosiTbl;
@@ -13658,7 +13769,7 @@ public class SalNTDAO {
 			}
 
 			sql = sql + subsql + " ORDER BY PAYPOSIK, DEGRLOW WITH UR";
-		} else if ("PARANK".equals(tblname)) {// ¶¥¯Å¤ä¦©
+		} else if ("PARANK".equals(tblname)) {// éšç´šæ”¯æ‰£
 
 			sql = "SELECT PAYLEV1V, PAYLEV2V, PAYDEGRV, PAYRANKV, PAYBASEV, PAYGEINF, PAYLBINF, PAYDPINV, PAYGEINN, PAYREBEF, PAYREBEN,PAYUSEID, PAYUPDAT "
 					+ "FROM " + this.tRankTbl + " where hid=? ";
@@ -13677,7 +13788,7 @@ public class SalNTDAO {
 			}
 
 			sql = sql + subsql + " ORDER BY PAYRANKV, PAYLEV1V, PAYLEV2V  WITH UR";
-		} else if ("PACSPF".equals(tblname)) {// ¤u§@¼úª÷¤ä¦©
+		} else if ("PACSPF".equals(tblname)) {// å·¥ä½œçé‡‘æ”¯æ‰£
 
 			sql = "SELECT PACSKEY, PACSBASE, PACSDATA, PACSNAME, " + tmpZcspf + " FROM " + this.tCspfTbl;
 			if (!key.equals("")) {
@@ -13688,7 +13799,7 @@ public class SalNTDAO {
 				params.add(key);
 			}
 			sql = sql + subsql + " ORDER BY PACSKEY WITH UR";
-		} else if ("PAPAYITM".equals(tblname)) {// ¤ä¦©¶µ¥Ø
+		} else if ("PAPAYITM".equals(tblname)) {// æ”¯æ‰£é …ç›®
 
 			sql = "SELECT PAYCODE, PACODNMC, PACODDEL, PAYAUTH, PAYIFTAX, PAUPBAS, PAYREWARD, PAYUPDID, PAYUPDAT, HID, "
 					+ tmpZpayitm + " FROM " + this.tPayItm;
@@ -13708,7 +13819,7 @@ public class SalNTDAO {
 		}
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -13721,10 +13832,10 @@ public class SalNTDAO {
 			if (result.size() > 0) {
 				for (Map<String, Object> data : result) {
 					jsonOne = new JSONObject();
-					if ("PATRACODE".equals(tblname)) {// ²§°Ê¥N½X PATRACODE
+					if ("PATRACODE".equals(tblname)) {// ç•°å‹•ä»£ç¢¼ PATRACODE
 						jsonOne.put("tracode", StringUtil.nullToString(data.get("tracode")));
 						jsonOne.put("traname", StringUtil.nullToString(data.get("traname")));
-					} else if ("PADEPT".equals(tblname)) {// ³æ¦ì¥N½X PAdept
+					} else if ("PADEPT".equals(tblname)) {// å–®ä½ä»£ç¢¼ PAdept
 						jsonOne.put("padepcod", StringUtil.nullToString(data.get("padepcod")));
 						jsonOne.put("pacstno", StringUtil.nullToString(data.get("pacstno")));
 						jsonOne.put("padepnmc", StringUtil.nullToString(data.get("padepnmc")));
@@ -13733,28 +13844,28 @@ public class SalNTDAO {
 								: sdf.format(data.get("payupdat")));
 						jsonOne.put("hid", StringUtil.nullToString(data.get("hid")));
 						jsonOne.put("pbwkcode", StringUtil.nullToString(data.get("pbwkcode")));
-					} else if ("PARANKCODE".equals(tblname)) {// ¶¥§O¥N½X
+					} else if ("PARANKCODE".equals(tblname)) {// éšåˆ¥ä»£ç¢¼
 						jsonOne.put("rankcode", StringUtil.nullToString(data.get("rankcode")));
 						jsonOne.put("rankname", StringUtil.nullToString(data.get("rankname")));
 						jsonOne.put("rankabbr", StringUtil.nullToString(data.get("rankabbr")));
-					} else if ("PACATGTBL".equals(tblname)) {// ¤H¤u³y¥UÀ³­pÂà±b¶µ¥Ø¥N½X
+					} else if ("PACATGTBL".equals(tblname)) {// äººå·¥é€ å†Šæ‡‰è¨ˆè½‰å¸³é …ç›®ä»£ç¢¼
 						jsonOne.put("paycatg", StringUtil.nullToString(data.get("paycatg")));
 						jsonOne.put("catgname", StringUtil.nullToString(data.get("catgname")));
 						jsonOne.put("payupdid", StringUtil.nullToString(data.get("payupdid")));
 						jsonOne.put("payupdat", StringUtil.nullToString(data.get("payupdat")) == "" ? ""
 								: sdf.format(data.get("payupdat")));
-					} else if ("PAEXPFTBL".equals(tblname)) {// ÁZ®ÄÃB¥~ÂI¼Æ¹ï·Óªí
+					} else if ("PAEXPFTBL".equals(tblname)) {// ç¸¾æ•ˆé¡å¤–é»æ•¸å°ç…§è¡¨
 						jsonOne.put("expfkey", StringUtil.nullToString(data.get("expfkey")));
 						jsonOne.put("expfname", StringUtil.nullToString(data.get("expfname")));
 						jsonOne.put("payupdid", StringUtil.nullToString(data.get("payupdid")));
 						jsonOne.put("payupdat", StringUtil.nullToString(data.get("payupdat")) == "" ? ""
 								: sdf.format(data.get("payupdat")));
-					} else if ("PARNK4TBL".equals(tblname)) {// ¾A¥Î±M·~¥[µ¹¹ï·Óªí
+					} else if ("PARNK4TBL".equals(tblname)) {// é©ç”¨å°ˆæ¥­åŠ çµ¦å°ç…§è¡¨
 						jsonOne.put("rnk4key", StringUtil.nullToString(data.get("rnk4key")));
 						jsonOne.put("rnk4name", StringUtil.nullToString(data.get("rnk4name")));
 						jsonOne.put("payupdtm", StringUtil.nullToString(data.get("payupdtm")) == "" ? ""
 								: sdf.format(data.get("payupdtm")));
-					} else if ("PABANK".equals(tblname)) {// µoÁ~¤é¤Î¤J±b¤é¹ïÀ³ÀÉ
+					} else if ("PABANK".equals(tblname)) {// ç™¼è–ªæ—¥åŠå…¥å¸³æ—¥å°æ‡‰æª”
 						jsonOne.put("salnum", StringUtil.nullToString(data.get("salnum")));
 						jsonOne.put("paybank", StringUtil.nullToString(data.get("paybank")));
 						jsonOne.put("paysaldt", StringUtil.nullToString(data.get("paysaldt")));
@@ -13762,7 +13873,7 @@ public class SalNTDAO {
 						jsonOne.put("payupdat", StringUtil.nullToString(data.get("payupdat")) == "" ? ""
 								: sdf.format(data.get("payupdat")));
 						jsonOne.put("hid", StringUtil.nullToString(data.get("hid")));
-					} else if ("PATAXTBL".equals(tblname)) {// Á~¸ê©Ò±o¦©Ãºµ|ÃBªí
+					} else if ("PATAXTBL".equals(tblname)) {// è–ªè³‡æ‰€å¾—æ‰£ç¹³ç¨…é¡è¡¨
 						jsonOne.put("sallow", StringUtil.nullToString(data.get("sallow")));
 						jsonOne.put("kindred", StringUtil.nullToString(data.get("kindred")));
 						jsonOne.put("salhigh", StringUtil.nullToString(data.get("salhigh")));
@@ -13770,7 +13881,7 @@ public class SalNTDAO {
 						jsonOne.put("payupdid", StringUtil.nullToString(data.get("payupdid")));
 						jsonOne.put("payupdat", StringUtil.nullToString(data.get("payupdat")) == "" ? ""
 								: sdf.format(data.get("payupdat")));
-					} else if ("PAPFTL".equals(tblname)) {// ¥ş°|ÁZ®Ä·JÁ`
+					} else if ("PAPFTL".equals(tblname)) {// å…¨é™¢ç¸¾æ•ˆå½™ç¸½
 						jsonOne.put("paypfmon", StringUtil.nullToString(data.get("paypfmon")));
 						jsonOne.put("paypfunt", StringUtil.nullToString(data.get("paypfunt")));
 						jsonOne.put("papfamt", StringUtil.nullToString(data.get("papfamt")));
@@ -13780,7 +13891,7 @@ public class SalNTDAO {
 						jsonOne.put("paypfe", StringUtil.nullToString(data.get("paypfe")));
 						jsonOne.put("paypfymd", StringUtil.nullToString(data.get("paypfymd")) == "" ? ""
 								: sdf.format(data.get("paypfymd")));
-					} else if ("PADPINTBL".equals(tblname)) {// ¥ş¥Á°·±d«OÀI­t¾áª÷ÃBªí
+					} else if ("PADPINTBL".equals(tblname)) {// å…¨æ°‘å¥åº·ä¿éšªè² æ“”é‡‘é¡è¡¨
 						jsonOne.put("dpinlow", StringUtil.nullToString(data.get("dpinlow")));
 						jsonOne.put("dpinhigh", StringUtil.nullToString(data.get("dpinhigh")));
 						jsonOne.put("dpinamt", StringUtil.nullToString(data.get("dpinamt")));
@@ -13796,14 +13907,14 @@ public class SalNTDAO {
 						else if (hid.equals("3A0"))
 							jsonOne.put("zpadpintbl", StringUtil.nullToString(data.get("zlhdpintbl")) == "" ? ""
 									: sdf.format(data.get("zlhdpintbl")));
-					} else if ("PALBINTBL".equals(tblname)) {// ³Ò«O§ë«Oª÷ÃB¹ï·Óªí
+					} else if ("PALBINTBL".equals(tblname)) {// å‹ä¿æŠ•ä¿é‡‘é¡å°ç…§è¡¨
 						jsonOne.put("lbinlow", StringUtil.nullToString(data.get("lbinlow")));
 						jsonOne.put("lbinhigh", StringUtil.nullToString(data.get("lbinhigh")));
 						jsonOne.put("lbinamt", StringUtil.nullToString(data.get("lbinamt")));
 						jsonOne.put("lbindept", StringUtil.nullToString(data.get("lbindept")));
 						jsonOne.put("zpalbintbl", StringUtil.nullToString(data.get("zpalbintbl")) == "" ? ""
 								: sdf.format(data.get("zpalbintbl")));
-					} else if ("PALBRPTBL".equals(tblname)) {// ³Ò¤u°h¥ğª÷¤ë´£Ãº¤u¸ê¤À¯Åªí
+					} else if ("PALBRPTBL".equals(tblname)) {// å‹å·¥é€€ä¼‘é‡‘æœˆæç¹³å·¥è³‡åˆ†ç´šè¡¨
 						jsonOne.put("lbrplow", StringUtil.nullToString(data.get("lbrplow")));
 						jsonOne.put("lbrphigh", StringUtil.nullToString(data.get("lbrphigh")));
 						jsonOne.put("lbrpamt", StringUtil.nullToString(data.get("lbrpamt")));
@@ -13811,7 +13922,7 @@ public class SalNTDAO {
 						jsonOne.put("assocc", StringUtil.nullToString(data.get("assocc")));
 						jsonOne.put("zpalbrptbl", StringUtil.nullToString(data.get("zpalbrptbl")) == "" ? ""
 								: sdf.format(data.get("zpalbrptbl")));
-					} else if ("PATITLE".equals(tblname)) {// Â¾ºÙ¥N½X
+					} else if ("PATITLE".equals(tblname)) {// è·ç¨±ä»£ç¢¼
 						jsonOne.put("paytitlk", StringUtil.nullToString(data.get("paytitlk")));
 						jsonOne.put("patitsub", StringUtil.nullToString(data.get("patitsub")));
 						jsonOne.put("pachief", StringUtil.nullToString(data.get("pachief")));
@@ -13822,7 +13933,7 @@ public class SalNTDAO {
 						jsonOne.put("hid", StringUtil.nullToString(data.get("hid")));
 						jsonOne.put("payupdat", StringUtil.nullToString(data.get("payupdat")) == "" ? ""
 								: sdf.format(data.get("payupdat")));
-					} else if ("PAPOSI".equals(tblname)) {// Â¾µ¥¤ä¦©--±M·~¥[µ¹¤Î¥DºŞ¥[µ¹
+					} else if ("PAPOSI".equals(tblname)) {// è·ç­‰æ”¯æ‰£--å°ˆæ¥­åŠ çµ¦åŠä¸»ç®¡åŠ çµ¦
 						jsonOne.put("payposik", StringUtil.nullToString(data.get("payposik")));
 						jsonOne.put("degrlow", StringUtil.nullToString(data.get("degrlow")));
 						jsonOne.put("degrhigh", StringUtil.nullToString(data.get("degrhigh")));
@@ -13837,7 +13948,7 @@ public class SalNTDAO {
 						jsonOne.put("payposid", StringUtil.nullToString(data.get("payposid")));
 						jsonOne.put("payupdat", StringUtil.nullToString(data.get("payupdat")) == "" ? ""
 								: sdf.format(data.get("payupdat")));
-					} else if ("PARANK".equals(tblname)) {// ¶¥¯Å¤ä¦©
+					} else if ("PARANK".equals(tblname)) {// éšç´šæ”¯æ‰£
 						jsonOne.put("paylev1v", StringUtil.nullToString(data.get("paylev1v")));
 						jsonOne.put("paylev2v", StringUtil.nullToString(data.get("paylev2v")));
 						jsonOne.put("paydegrv", StringUtil.nullToString(data.get("paydegrv")));
@@ -13853,14 +13964,14 @@ public class SalNTDAO {
 						jsonOne.put("hid", StringUtil.nullToString(data.get("hid")));
 						jsonOne.put("payupdat", StringUtil.nullToString(data.get("payupdat")) == "" ? ""
 								: sdf.format(data.get("payupdat")));
-					} else if ("PACSPF".equals(tblname)) {// ¤u§@¼úª÷¤ä¦©
+					} else if ("PACSPF".equals(tblname)) {// å·¥ä½œçé‡‘æ”¯æ‰£
 						jsonOne.put("pacskey", StringUtil.nullToString(data.get("pacskey")));
 						jsonOne.put("pacsbase", StringUtil.nullToString(data.get("pacsbase")));
 						jsonOne.put("pacsdata", StringUtil.nullToString(data.get("pacsdata")));
 						jsonOne.put("pacsname", StringUtil.nullToString(data.get("pacsname")));
 						jsonOne.put("zpacspf", StringUtil.nullToString(data.get("zpacspf")) == "" ? ""
 								: sdf.format(data.get("zpacspf")));
-					} else if ("PAPAYITM".equals(tblname)) {// ¤ä¦©¶µ¥Ø
+					} else if ("PAPAYITM".equals(tblname)) {// æ”¯æ‰£é …ç›®
 						jsonOne.put("paycode", StringUtil.nullToString(data.get("paycode")));
 						jsonOne.put("pacodnmc", StringUtil.nullToString(data.get("pacodnmc")));
 						jsonOne.put("pacoddel", StringUtil.nullToString(data.get("pacoddel")));
@@ -13890,7 +14001,7 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * insert/update (¥N½XºûÅ@ ) item:insert/update,tabJson(tblname,value) ¶Ç¥X:true/false
+	 * insert/update (ä»£ç¢¼ç¶­è­· ) item:insert/update,tabJson(tblname,value) å‚³å‡º:true/false
 	 */
 	public boolean updSalCodeTbl(String item, String tabJson, String userid, String hid, VGHDataAccess da)
 			throws SQLException {
@@ -13902,7 +14013,7 @@ public class SalNTDAO {
 		ArrayList<Object> params = new ArrayList<Object>();
 		try {
 			if (da == null) {
-				// §ï¥Î¦CÁ|
+				// æ”¹ç”¨åˆ—èˆ‰
 				Hospitals hospInfo = Hospitals.getOneHosp(hid);
 				g_dataSourceNT = hospInfo.dataSourceNT;
 				da = new VGHDataAccess(g_dataSourceNT);
@@ -13914,14 +14025,14 @@ public class SalNTDAO {
 				JSONObject obj = tabJsonary.getJSONObject(i);
 				if (obj != null && obj.has("formnm")) {
 					formnm = StringUtil.nullToString(obj.getString("formnm"));
-					// ²§°Ê¥N½X
+					// ç•°å‹•ä»£ç¢¼
 					if ("PATRACODE".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tTraCode + " set (TRANAME) = (?) where TRACODE=? ";
 						else if (item.equals("insert"))
 							sql = " insert into " + this.tTraCode + " (TRANAME, TRACODE) values (?,?) ";
 					}
-					// ³æ¦ì
+					// å–®ä½
 					else if ("PADEPT".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tDept
@@ -13930,14 +14041,14 @@ public class SalNTDAO {
 							sql = " insert into " + this.tDept
 									+ " (PACSTNO, PADEPNMC, PAYUPDID, PAYUPDAT,PBWKCODE, HID,PADEPCOD) values (?,?,?,CURRENT TIMESTAMP,?,?,?) ";
 					}
-					// ¶¥§O¥N½X
+					// éšåˆ¥ä»£ç¢¼
 					else if ("PARANKCODE".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tRankCode + " set (RANKNAME, RANKABBR) = (?,?) where RANKCODE=? ";
 						else if (item.equals("insert"))
 							sql = " insert into " + this.tRankCode + " (RANKNAME,RANKABBR,RANKCODE) values (?,?,?) ";
 					}
-					// ¤H¤u³y¥UÀ³­pÂà±b¶µ¥Ø¥N½X
+					// äººå·¥é€ å†Šæ‡‰è¨ˆè½‰å¸³é …ç›®ä»£ç¢¼
 					else if ("PACATGTBL".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tCatgTbl
@@ -13946,7 +14057,7 @@ public class SalNTDAO {
 							sql = " insert into " + this.tCatgTbl
 									+ " (CATGNAME,PAYUPDID, PAYUPDAT,PAYCATG) values (?,?,CURRENT TIMESTAMP,?) ";
 					}
-					// ÁZ®ÄÃB¥~ÂI¼Æ¹ï·Óªí
+					// ç¸¾æ•ˆé¡å¤–é»æ•¸å°ç…§è¡¨
 					else if ("PAEXPFTBL".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tExpfTbl
@@ -13955,7 +14066,7 @@ public class SalNTDAO {
 							sql = " insert into " + this.tExpfTbl
 									+ " (EXPFNAME, PAYUPDID, PAYUPDAT,EXPFKEY) values (?,?,CURRENT TIMESTAMP,?) ";
 					}
-					// ¾A¥Î±M·~¥[µ¹¹ï·Óªí
+					// é©ç”¨å°ˆæ¥­åŠ çµ¦å°ç…§è¡¨
 					else if ("PARNK4TBL".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tRnk4Tbl
@@ -13964,7 +14075,7 @@ public class SalNTDAO {
 							sql = " insert into " + this.tRnk4Tbl
 									+ " (RNK4NAME, PAYUPDTM,RNK4KEY) values (?,CURRENT TIMESTAMP,?) ";
 					}
-					// µoÁ~¤é¤Î¤J±b¤é¹ïÀ³ÀÉ
+					// ç™¼è–ªæ—¥åŠå…¥å¸³æ—¥å°æ‡‰æª”
 					else if ("PABANK".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tBankDtTbl
@@ -13973,7 +14084,7 @@ public class SalNTDAO {
 							sql = " insert into " + this.tBankDtTbl
 									+ " (PAYBANK, PAYSALDT, PAYUPDID, PAYUPDAT,SALNUM,HID) values (?,?,?,CURRENT TIMESTAMP,?,?) ";
 					}
-					// Á~¸ê©Ò±o¦©Ãºµ|ÃBªí
+					// è–ªè³‡æ‰€å¾—æ‰£ç¹³ç¨…é¡è¡¨
 					else if ("PATAXTBL".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tTaxTbl
@@ -13982,7 +14093,7 @@ public class SalNTDAO {
 							sql = " insert into " + this.tTaxTbl
 									+ " (SALHIGH, TAXAMT, PAYUPDID, PAYUPDAT,SALLOW,KINDRED) values (?,?,?,CURRENT TIMESTAMP,?,?) ";
 					}
-					// ¥ş°|ÁZ®Ä·JÁ`
+					// å…¨é™¢ç¸¾æ•ˆå½™ç¸½
 					else if ("PAPFTL".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tPftlTbl
@@ -13991,7 +14102,7 @@ public class SalNTDAO {
 							sql = " insert into " + this.tPftlTbl
 									+ " (PAYPFUNT, PAPFAMT, PAYPFPF, PAYPFREV, PAYPFYMD, PAYPFD, PAYPFE,PAYPFMON) values (?,?,?,?,CURRENT TIMESTAMP,?,?,?) ";
 					}
-					// ¥ş¥Á°·±d«OÀI­t¾áª÷ÃBªí
+					// å…¨æ°‘å¥åº·ä¿éšªè² æ“”é‡‘é¡è¡¨
 					else if ("PADPINTBL".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tDpinTbl
@@ -14000,7 +14111,7 @@ public class SalNTDAO {
 							sql = " insert into " + this.tDpinTbl
 									+ " (DPINHIGH, DPINAMT, PAYUPDID, PAYUPDAT, DPINDEPT1, DPINDEPT3,DPINLOW) values (?,?,?,CURRENT TIMESTAMP,?,?,?) ";
 					}
-					// ³Ò«O§ë«Oª÷ÃB¹ï·Óªí
+					// å‹ä¿æŠ•ä¿é‡‘é¡å°ç…§è¡¨
 					else if ("PALBINTBL".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tLbinTbl
@@ -14009,7 +14120,7 @@ public class SalNTDAO {
 							sql = " insert into " + this.tLbinTbl
 									+ " (LBINHIGH, LBINAMT, LBINDEPT,LBINLOW) values (?,?,?,?) ";
 					}
-					// ³Ò¤u°h¥ğª÷¤ë´£Ãº¤u¸ê¤À¯Åªí
+					// å‹å·¥é€€ä¼‘é‡‘æœˆæç¹³å·¥è³‡åˆ†ç´šè¡¨
 					else if ("PALBRPTBL".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tLbrpTbl
@@ -14018,7 +14129,7 @@ public class SalNTDAO {
 							sql = " insert into " + this.tLbrpTbl
 									+ " (LBRPHIGH, LBRPAMT, MASTERAMT,ASSOCC,LBRPLOW) values (?,?,?,?,?) ";
 					}
-					// Â¾ºÙ¥N½X
+					// è·ç¨±ä»£ç¢¼
 					else if ("PATITLE".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tTitle
@@ -14027,7 +14138,7 @@ public class SalNTDAO {
 							sql = " insert into " + this.tTitle
 									+ " (PATITSUB, PACHIEF, PAYTITLP, PAYTITLC, PACODDEL, PAYUPDID, PAYUPDAT, PAYTITLK,HID) values (?,?,?,?,?,?,CURRENT TIMESTAMP,?,?) ";
 					}
-					// ¤ä¦©¥N½X
+					// æ”¯æ‰£ä»£ç¢¼
 					else if ("PAPAYITM".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tPayItm
@@ -14036,7 +14147,7 @@ public class SalNTDAO {
 							sql = " insert into " + this.tPayItm
 									+ " (PACODNMC, PACODDEL, PAYAUTH, PAYIFTAX, PAUPBAS, PAYREWARD, PAYUPDID, PAYUPDAT,PAYCODE,HID) values (?,?,?,?,?,?,?,CURRENT TIMESTAMP,?,?) ";
 					}
-					// Â¾µ¥¤ä¦©--±M·~¥[µ¹¤Î¥DºŞ¥[µ¹
+					// è·ç­‰æ”¯æ‰£--å°ˆæ¥­åŠ çµ¦åŠä¸»ç®¡åŠ çµ¦
 					else if ("PAPOSI".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tPosiTbl
@@ -14045,7 +14156,7 @@ public class SalNTDAO {
 							sql = " insert into " + this.tPosiTbl
 									+ " (DEGRHIGH, PAYPSP1, PAYPSP2, PAYPSP3, PAYPSP4, PAYPSP5, PAYPSP6, PAYPSP7, PAYPSP8, PAYPOSID, PAYUPDAT, PAYPOSIK, DEGRLOW) values (?,?,?,?,?,?,?,?,?,?,CURRENT TIMESTAMP,?,?) ";
 					}
-					// ¶¥¯Å¤ä¦©
+					// éšç´šæ”¯æ‰£
 					else if ("PARANK".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tRankTbl
@@ -14054,7 +14165,7 @@ public class SalNTDAO {
 							sql = " insert into " + this.tRankTbl
 									+ " (PAYDEGRV, PAYBASEV, PAYGEINF, PAYLBINF, PAYDPINV, PAYGEINN,PAYREBEF, PAYREBEN,PAYUSEID, PAYUPDAT,PAYLEV1V, PAYLEV2V, PAYRANKV,HID) values (?,?,?,?,?,?,?,?,?,CURRENT TIMESTAMP,?,?,?,?) ";
 					}
-					// ¤u§@¼úª÷¤ä¦©
+					// å·¥ä½œçé‡‘æ”¯æ‰£
 					else if ("PACSPF".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tCspfTbl
@@ -14063,7 +14174,7 @@ public class SalNTDAO {
 							sql = " insert into " + this.tCspfTbl
 									+ " (PACSBASE, PACSDATA, PACSNAME, PACSKEY) values (?,?,?,?) ";
 					}
-					// ²§°Ê¤ä¦©
+					// ç•°å‹•æ”¯æ‰£
 					else if ("PATRAPAY".equals(formnm)) {
 						if (item.equals("update"))
 							sql = " update " + this.tTraPay
@@ -14078,44 +14189,44 @@ public class SalNTDAO {
 					if (null != array && array.size() > 0) {
 						for (int j = 0; j < array.size(); j++) {
 							JSONObject obj_item = array.getJSONObject(j);
-							if ("PATRACODE".equals(formnm)) {// ²§°Ê¥N½X
+							if ("PATRACODE".equals(formnm)) {// ç•°å‹•ä»£ç¢¼
 								params.add((!obj_item.has("traname")) ? "" : obj_item.getString("traname"));
 								params.add((!obj_item.has("tracode")) ? "" : obj_item.getString("tracode"));
-							} else if ("PADEPT".equals(formnm)) {// ³æ¦ì
+							} else if ("PADEPT".equals(formnm)) {// å–®ä½
 								params.add((!obj_item.has("pacstno")) ? "" : obj_item.getString("pacstno"));
 								params.add((!obj_item.has("padepnmc")) ? "" : obj_item.getString("padepnmc"));
 								params.add(userid);
 								params.add(hid);
 								params.add((!obj_item.has("padepcod")) ? "" : obj_item.getString("padepcod"));
 								params.add((!obj_item.has("pbwkcode")) ? "" : obj_item.getString("pbwkcode"));
-							} else if ("PARANKCODE".equals(formnm)) {// ¶¥§O
+							} else if ("PARANKCODE".equals(formnm)) {// éšåˆ¥
 								params.add((!obj_item.has("rankname")) ? "" : obj_item.getString("rankname"));
 								params.add((!obj_item.has("rankabbr")) ? "" : obj_item.getString("rankabbr"));
 								params.add((!obj_item.has("rankcode")) ? "" : obj_item.getString("rankcode"));
-							} else if ("PACATGTBL".equals(formnm)) {// ¤H¤u³y¥UÀ³­pÂà±b¶µ¥Ø¥N½X
+							} else if ("PACATGTBL".equals(formnm)) {// äººå·¥é€ å†Šæ‡‰è¨ˆè½‰å¸³é …ç›®ä»£ç¢¼
 								params.add((!obj_item.has("catgname")) ? "" : obj_item.getString("catgname"));
 								params.add(userid);
 								params.add((!obj_item.has("paycatg")) ? "" : obj_item.getString("paycatg"));
-							} else if ("PAEXPFTBL".equals(formnm)) {// ÁZ®ÄÃB¥~ÂI¼Æ¹ï·Óªí
+							} else if ("PAEXPFTBL".equals(formnm)) {// ç¸¾æ•ˆé¡å¤–é»æ•¸å°ç…§è¡¨
 								params.add((!obj_item.has("expfname")) ? "" : obj_item.getString("expfname"));
 								params.add(userid);
 								params.add((!obj_item.has("expfkey")) ? "" : obj_item.getString("expfkey"));
-							} else if ("PARNK4TBL".equals(formnm)) {// ¾A¥Î±M·~¥[µ¹¹ï·Óªí
+							} else if ("PARNK4TBL".equals(formnm)) {// é©ç”¨å°ˆæ¥­åŠ çµ¦å°ç…§è¡¨
 								params.add((!obj_item.has("rnk4name")) ? "" : obj_item.getString("rnk4name"));
 								params.add((!obj_item.has("rnk4key")) ? "" : obj_item.getString("rnk4key"));
-							} else if ("PABANK".equals(formnm)) {// µoÁ~¤é¤Î¤J±b¤é¹ïÀ³ÀÉ
+							} else if ("PABANK".equals(formnm)) {// ç™¼è–ªæ—¥åŠå…¥å¸³æ—¥å°æ‡‰æª”
 								params.add((!obj_item.has("paybank")) ? "" : obj_item.getString("paybank"));
 								params.add((!obj_item.has("paysaldt")) ? "" : obj_item.getString("paysaldt"));
 								params.add(userid);
 								params.add((!obj_item.has("salnum")) ? "" : obj_item.getString("salnum"));
 								params.add(hid);
-							} else if ("PATAXTBL".equals(formnm)) {// Á~¸ê©Ò±o¦©Ãºµ|ÃBªí
+							} else if ("PATAXTBL".equals(formnm)) {// è–ªè³‡æ‰€å¾—æ‰£ç¹³ç¨…é¡è¡¨
 								params.add((!obj_item.has("salhigh")) ? "" : obj_item.getString("salhigh"));
 								params.add((!obj_item.has("taxamt")) ? "" : obj_item.getString("taxamt"));
 								params.add(userid);
 								params.add((!obj_item.has("sallow")) ? "" : obj_item.getString("sallow"));
 								params.add((!obj_item.has("kindred")) ? "" : obj_item.getString("kindred"));
-							} else if ("PAPFTL".equals(formnm)) {// ¥ş°|ÁZ®Ä·JÁ`
+							} else if ("PAPFTL".equals(formnm)) {// å…¨é™¢ç¸¾æ•ˆå½™ç¸½
 								params.add((!obj_item.has("paypfunt")) ? ""
 										: ("").equals(StringUtil.nullToString(obj_item.getString("paypfunt"))) ? "0"
 												: StringUtil.nullToString(obj_item.getString("paypfunt")));
@@ -14135,7 +14246,7 @@ public class SalNTDAO {
 										: ("").equals(StringUtil.nullToString(obj_item.getString("paypfe"))) ? "0"
 												: StringUtil.nullToString(obj_item.getString("paypfe")));
 								params.add((!obj_item.has("paypfmon")) ? "" : obj_item.getString("paypfmon"));
-							} else if ("PADPINTBL".equals(formnm)) {// ¥ş¥Á°·±d«OÀI­t¾áª÷ÃBªí
+							} else if ("PADPINTBL".equals(formnm)) {// å…¨æ°‘å¥åº·ä¿éšªè² æ“”é‡‘é¡è¡¨
 								params.add((!obj_item.has("dpinhigh")) ? ""
 										: StringUtil.nullToString(obj_item.getString("dpinhigh")));
 								params.add((!obj_item.has("dpinamt")) ? ""
@@ -14148,7 +14259,7 @@ public class SalNTDAO {
 										: StringUtil.nullToString(obj_item.getString("dpindept3")));
 								params.add((!obj_item.has("dpinlow")) ? ""
 										: StringUtil.nullToString(obj_item.getString("dpinlow")));
-							} else if ("PALBINTBL".equals(formnm)) {// ³Ò«O§ë«Oª÷ÃB¹ï·Óªí
+							} else if ("PALBINTBL".equals(formnm)) {// å‹ä¿æŠ•ä¿é‡‘é¡å°ç…§è¡¨
 								params.add((!obj_item.has("lbinhigh")) ? ""
 										: StringUtil.nullToString(obj_item.getString("lbinhigh")));
 								params.add((!obj_item.has("lbinamt")) ? ""
@@ -14157,7 +14268,7 @@ public class SalNTDAO {
 										: StringUtil.nullToString(obj_item.getString("lbindept")));
 								params.add((!obj_item.has("lbinlow")) ? ""
 										: StringUtil.nullToString(obj_item.getString("lbinlow")));
-							} else if ("PALBRPTBL".equals(formnm)) {// ³Ò¤u°h¥ğª÷¤ë´£Ãº¤u¸ê¤À¯Åªí
+							} else if ("PALBRPTBL".equals(formnm)) {// å‹å·¥é€€ä¼‘é‡‘æœˆæç¹³å·¥è³‡åˆ†ç´šè¡¨
 								params.add((!obj_item.has("lbrphigh")) ? ""
 										: StringUtil.nullToString(obj_item.getString("lbrphigh")));
 								params.add((!obj_item.has("lbrpamt")) ? ""
@@ -14168,7 +14279,7 @@ public class SalNTDAO {
 										: StringUtil.nullToString(obj_item.getString("assocc")));
 								params.add((!obj_item.has("lbrplow")) ? ""
 										: StringUtil.nullToString(obj_item.getString("lbrplow")));
-							} else if ("PATITLE".equals(formnm)) {// Â¾ºÙ
+							} else if ("PATITLE".equals(formnm)) {// è·ç¨±
 								params.add((!obj_item.has("patitsub")) ? "" : obj_item.getString("patitsub"));
 								params.add((!obj_item.has("pachief")) ? "" : obj_item.getString("pachief"));
 								params.add((!obj_item.has("paytitlp")) ? "" : obj_item.getString("paytitlp"));
@@ -14177,7 +14288,7 @@ public class SalNTDAO {
 								params.add(userid);
 								params.add((!obj_item.has("paytitlk")) ? "" : obj_item.getString("paytitlk"));
 								params.add(hid);
-							} else if ("PAPAYITM".equals(formnm)) {// ¤ä¦©¶µ¥Ø
+							} else if ("PAPAYITM".equals(formnm)) {// æ”¯æ‰£é …ç›®
 								params.add((!obj_item.has("pacodnmc")) ? "" : obj_item.getString("pacodnmc"));
 								params.add((!obj_item.has("pacoddel")) ? "" : obj_item.getString("pacoddel"));
 								params.add((!obj_item.has("payauth")) ? "" : obj_item.getString("payauth"));
@@ -14187,7 +14298,7 @@ public class SalNTDAO {
 								params.add(userid);
 								params.add((!obj_item.has("paycode")) ? "" : obj_item.getString("paycode"));
 								params.add(hid);
-							} else if ("PAPOSI".equals(formnm)) {// Â¾µ¥¤ä¦©--±M·~¥[µ¹¤Î¥DºŞ¥[µ¹
+							} else if ("PAPOSI".equals(formnm)) {// è·ç­‰æ”¯æ‰£--å°ˆæ¥­åŠ çµ¦åŠä¸»ç®¡åŠ çµ¦
 								params.add((!obj_item.has("degrhigh")) ? ""
 										: ("").equals(StringUtil.nullToString(obj_item.getString("degrhigh"))) ? "0"
 												: StringUtil.nullToString(obj_item.getString("degrhigh")));
@@ -14218,7 +14329,7 @@ public class SalNTDAO {
 								params.add(userid);
 								params.add((!obj_item.has("payposik")) ? "" : obj_item.getString("payposik"));
 								params.add((!obj_item.has("degrlow")) ? "" : obj_item.getString("degrlow"));
-							} else if ("PARANK".equals(formnm)) {// ¶¥¯Å¤ä¦©
+							} else if ("PARANK".equals(formnm)) {// éšç´šæ”¯æ‰£
 								params.add((!obj_item.has("paydegrv")) ? ""
 										: ("").equals(StringUtil.nullToString(obj_item.getString("paydegrv"))) ? "0"
 												: StringUtil.nullToString(obj_item.getString("paydegrv")));
@@ -14248,12 +14359,12 @@ public class SalNTDAO {
 								params.add((!obj_item.has("paylev2v")) ? "" : obj_item.getString("paylev2v"));
 								params.add((!obj_item.has("payrankv")) ? "" : obj_item.getString("payrankv"));
 								params.add(hid);
-							} else if ("PACSPF".equals(formnm)) {// ¤u§@¼úª÷¤ä¦©
+							} else if ("PACSPF".equals(formnm)) {// å·¥ä½œçé‡‘æ”¯æ‰£
 								params.add((!obj_item.has("pacsbase")) ? "" : obj_item.getString("pacsbase"));
 								params.add((!obj_item.has("pacsdata")) ? "" : obj_item.getString("pacsdata"));
 								params.add((!obj_item.has("pacsname")) ? "" : obj_item.getString("pacsname"));
 								params.add((!obj_item.has("pacskey")) ? "" : obj_item.getString("pacskey"));
-							} else if ("PATRAPAY".equals(formnm)) {// ²§°Ê¤ä¦©
+							} else if ("PATRAPAY".equals(formnm)) {// ç•°å‹•æ”¯æ‰£
 								// PAYIDNO, PAYAMT, PAYAUTH, PAYIFTAX, PAYUPDTM, PAYFLAG,TRANUM,PATRADT,PAYSORT
 								// ,PAYCODE,HID
 								params.add((!obj_item.has("payidno")) ? "" : obj_item.getString("payidno"));
@@ -14286,13 +14397,13 @@ public class SalNTDAO {
 		return success;
 	}
 
-	// ¨ú±o¬Û¹ïÀ³¥d¸¹¤§©m¦W
-	// 2026.5.27 2A0 3A0 ¬d¦Û®aªº,1A0¤£­­
+	// å–å¾—ç›¸å°æ‡‰å¡è™Ÿä¹‹å§“å
+	// 2026.5.27 2A0 3A0 æŸ¥è‡ªå®¶çš„,1A0ä¸é™
 	public JSONObject queryNamebyID(String cardno, String Loginhid) throws Exception {
 		JSONObject user = new JSONObject();
 
 		try {
-			// ¥Ñldap¨ú±o­Ó¤H¸ê®Æ
+			// ç”±ldapå–å¾—å€‹äººè³‡æ–™
 			String hostname = InetAddress.getLocalHost().getHostName();
 			String programName = this.getClass().getName();
 			LDAPUtil ldapUtil = LDAPUtil.getInstance();
@@ -14300,39 +14411,39 @@ public class SalNTDAO {
 			if ((Loginhid.matches("2A0|3A0") && userHID.equals(Loginhid)) || Loginhid.matches("1A0")) {
 				String userName = ldapUtil.getUserNm(cardno);
 				String userCosId = ldapUtil.getCostId(cardno);
-				// ¦¨¥»¤¤¤ß¤¤¤å
+				// æˆæœ¬ä¸­å¿ƒä¸­æ–‡
 				String userDeptName = ldapUtil.getDeptName(cardno, hostname, programName);
 
-				// ¦¨¥»¤¤¤ß­^¤å
+				// æˆæœ¬ä¸­å¿ƒè‹±æ–‡
 				String userDept = ldapUtil.getDeptNo(cardno, hostname, programName);
 				if (userDept.length() >= 3 && userDept.substring(0, 3).equals("NUR"))
 					userDept = userDept.substring(3, userDept.length());
-				// Â¾ºÙ¥N½X
+				// è·ç¨±ä»£ç¢¼
 				String user_psWkTypd = ldapUtil.getLdapAttr(cardno, "payWkTyd", hostname, programName);
 
-				// ¬d¸ß¬O§_¬°Á~¸êºŞ²zªÌÅv­­
+				// æŸ¥è©¢æ˜¯å¦ç‚ºè–ªè³‡ç®¡ç†è€…æ¬Šé™
 				boolean pa_admin = ldapUtil.checkUserinGroup(cardno, Globals.SESSION_SYS_ADMIN);
-				System.out.println("ºŞ²zªÌ" + ":" + pa_admin);
+				System.out.println("ç®¡ç†è€…" + ":" + pa_admin);
 				String strAdmin = pa_admin ? "Y" : "N";
 
-				// ¬d¸ß¬O§_¬°Á~¸ê¨t²Î_ºûÅ@¨¤¦â
+				// æŸ¥è©¢æ˜¯å¦ç‚ºè–ªè³‡ç³»çµ±_ç¶­è­·è§’è‰²
 				boolean pa_edit = ldapUtil.checkUserinGroup(cardno, Globals.SESSION_SYS_EDIT);
-				System.out.println("ºûÅ@¨¤¦â" + ":" + pa_edit);
+				System.out.println("ç¶­è­·è§’è‰²" + ":" + pa_edit);
 				String strEdit = pa_edit ? "Y" : "N";
 
-				// ¬d¸ß¬O§_¬°Á~¸ê¨t²Î_¬d¸ß¨¤¦â
+				// æŸ¥è©¢æ˜¯å¦ç‚ºè–ªè³‡ç³»çµ±_æŸ¥è©¢è§’è‰²
 				boolean pa_view = ldapUtil.checkUserinGroup(cardno, Globals.SESSION_SYS_VIEW);
-				System.out.println("¬d¸ß¨¤¦â" + ":" + pa_view);
+				System.out.println("æŸ¥è©¢è§’è‰²" + ":" + pa_view);
 				String strView = pa_view ? "Y" : "N";
 
-				// ¬d¸ß¬O§_¬°Á~¸ê¨t²Î_­û¤u¼úª÷¨¤¦â
+				// æŸ¥è©¢æ˜¯å¦ç‚ºè–ªè³‡ç³»çµ±_å“¡å·¥çé‡‘è§’è‰²
 				boolean pa_bones = ldapUtil.checkUserinGroup(cardno, Globals.SESSION_SYS_BONES);
-				System.out.println("­û¤u¼úª÷¨¤¦â" + ":" + pa_bones);
+				System.out.println("å“¡å·¥çé‡‘è§’è‰²" + ":" + pa_bones);
 				String strBones = pa_bones ? "Y" : "N";
 
-				// ¬d¸ß¬O§_¬°Á~¸ê¨t²Î_©Ò±oµ|¨¤¦â
+				// æŸ¥è©¢æ˜¯å¦ç‚ºè–ªè³‡ç³»çµ±_æ‰€å¾—ç¨…è§’è‰²
 				boolean pa_tax = ldapUtil.checkUserinGroup(cardno, Globals.SESSION_SYS_TAX);
-				System.out.println("©Ò±oµ|¨¤¦â" + ":" + pa_tax);
+				System.out.println("æ‰€å¾—ç¨…è§’è‰²" + ":" + pa_tax);
 				String strTax = pa_tax ? "Y" : "N";
 
 				user.element("userCardno", cardno);
@@ -14357,7 +14468,7 @@ public class SalNTDAO {
 	}
 
 	/**
-	 * Ãö³¬VGHDataAccess»PResultSet
+	 * é—œé–‰VGHDataAccessèˆ‡ResultSet
 	 * 
 	 * @param da
 	 * @param rs
@@ -14381,5 +14492,310 @@ public class SalNTDAO {
 				}
 			}
 		}
+	}
+
+	/**
+	 * editMode:1/2 
+	 * table1:PA.PABASPSN(è–ªè³‡åŸºæœ¬æª”)  PABATPAY	 
+	   * å‚³å‡º:true/false
+	 */	
+	public Map<String, Object> updateTblID(String editMode,String in_data,String userid,String hid,VGHDataAccess da) throws SQLException {
+		int Cnt = 0;
+		String me = getClass().getName() + ".updPATblByKey() userid:"+userid;
+		log.info(me + " editMode = " + editMode + " in_data = " + in_data + " userid = " + userid+ " hid = " + hid);
+		
+		String cardno="";	    //èˆŠå¡è™Ÿ
+		String cardno_new="";	//æ–°å¡è™Ÿ
+		String idtno="";	    //èˆŠid
+		String idtno_new="";	//æ–°id
+		JSONObject object_in_data = JSONObject.fromObject(in_data);		
+		cardno = StringUtil.nullToString( object_in_data.getString("cardno") );
+		cardno_new = StringUtil.nullToString( object_in_data.getString("cardno_new") );
+		idtno = StringUtil.nullToString( object_in_data.getString("idtno") );
+		idtno_new = StringUtil.nullToString( object_in_data.getString("idtno_new") );
+		boolean success=false;
+		StringBuilder msg = new StringBuilder();
+		
+		try{
+			if (editMode.equals("1")) {
+				//åŸºæœ¬å€‹äººæ˜ç´°
+				sql="UPDATE "+this.tBasPsn+ " SET PAYCARD=? , "+tmpZbaspsn+" =current timestamp where PAYCARD=? and hid=? ";
+				params = new ArrayList<Object>();
+				params.add(cardno_new);
+				params.add(cardno);
+				params.add(hid);
+				
+				Cnt=da.update(sql, params);	
+				if (Cnt <= 0) {
+					log.info(me + "åŸºæœ¬å€‹äººæ˜ç´°ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éå¡è™Ÿ " + cardno);
+				    msg.append("åŸºæœ¬å€‹äººæ˜ç´°ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œå¡è™Ÿ "+ cardno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "åŸºæœ¬å€‹äººæ˜ç´°ï¼š"+ Cnt +" å¡è™Ÿ " + cardno + " â†’ " + cardno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("åŸºæœ¬å€‹äººæ˜ç´°ï¼šå¡è™Ÿ " + cardno + " â†’ " + cardno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				//æ‰€å¾—ç¨…å€‹äººæ˜ç´° (åˆ¤æ–·ç•¶å¹´åº¦PAYEAR)
+				sql="UPDATE "+this.tTaxPsn+" SET PAYCARD=? , "+tmpZtaxpsn+" =current timestamp where PAYCARD=? and PAYEAR=YEAR(CURRENT DATE) and hid=? ";
+				params = new ArrayList<Object>();
+				params.add(cardno_new);
+				params.add(cardno);
+				params.add(hid);
+				Cnt=da.update(sql, params);
+				if (Cnt <= 0) {
+					log.info(me + "æ‰€å¾—ç¨…ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éå¡è™Ÿ " + cardno);
+				    msg.append("æ‰€å¾—ç¨…ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œå¡è™Ÿ "+ cardno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "ç•¶å¹´åº¦æ‰€å¾—ç¨…ï¼š"+ Cnt +" å¡è™Ÿ  " + cardno + " â†’ " + cardno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("ç•¶å¹´åº¦æ‰€å¾—ç¨…ï¼šå¡è™Ÿ  " + cardno + " â†’ " + cardno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+								
+			}else if (editMode.equals("2")) {
+				//åŸºæœ¬å€‹äººæ˜ç´°
+				sql="UPDATE "+this.tBasPsn+ " SET PAYIDNO=? , "+tmpZbaspsn+" =current timestamp where PAYIDNO=? and hid=? ";
+				params = new ArrayList<Object>();
+				params.add(idtno_new);
+				params.add(idtno);
+				params.add(hid);
+				Cnt=da.update(sql, params);					
+				if (Cnt <= 0) {
+					log.info(me + "åŸºæœ¬å€‹äººæ˜ç´°ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éèº«ä»½è­‰ " + idtno);
+				    msg.append("åŸºæœ¬å€‹äººæ˜ç´°ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œèº«ä»½è­‰ "+ idtno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "åŸºæœ¬å€‹äººæ˜ç´°ï¼š"+ Cnt +" èº«ä»½è­‰  " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("åŸºæœ¬å€‹äººæ˜ç´°ï¼šèº«ä»½è­‰  " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				//ç•°å‹•æ”¯æ‰£æ˜ç´°
+				sql="UPDATE "+this.tTraPay+" SET PAYIDNO=? , "+tmpZtrapay+" =current timestamp where PAYIDNO=? and hid=? ";	
+				params = new ArrayList<Object>();
+				params.add(idtno_new);
+				params.add(idtno);
+				params.add(hid);
+				Cnt=da.update(sql, params);
+				if (Cnt <= 0) {
+					log.info(me + "ç•°å‹•æ”¯æ‰£æ˜ç´°ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éèº«ä»½è­‰ " + idtno);
+				    msg.append("ç•°å‹•æ”¯æ‰£æ˜ç´°ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œèº«ä»½è­‰ "+ idtno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "ç•°å‹•æ”¯æ‰£æ˜ç´°ï¼š"+ Cnt +" èº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("ç•°å‹•æ”¯æ‰£æ˜ç´°ï¼šèº«ä»½è­‰ " + idtno + " â†’ "+ idtno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				//æ‰¹æ¬¡æª”
+				sql="UPDATE "+this.tBatPay+" SET PAYIDNO=? , "+tmpZbatpay+" =current timestamp where PAYIDNO=? and hid=? ";
+				params = new ArrayList<Object>();
+				params.add(idtno_new);
+				params.add(idtno);
+				params.add(hid);
+				Cnt=da.update(sql, params);
+				if (Cnt <= 0) {
+					log.info(me + "æ‰¹æ¬¡æª”ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éèº«ä»½è­‰ " + idtno);
+				    msg.append("æ‰¹æ¬¡æª”ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œèº«ä»½è­‰ "+ idtno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "æ‰¹æ¬¡æª”ï¼š"+ Cnt +" èº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("æ‰¹æ¬¡æª”ï¼šèº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				//æ‰€å¾—ç¨…å€‹äººæ˜ç´°
+				sql="UPDATE "+this.tTaxPsn+" SET PAYIDNO=? , "+tmpZtaxpsn+" =current timestamp where PAYIDNO=? and hid=? ";	
+				params = new ArrayList<Object>();
+				params.add(idtno_new);
+				params.add(idtno);
+				params.add(hid);
+				Cnt=da.update(sql, params);
+				if (Cnt <= 0) {
+					log.info(me + "æ‰€å¾—ç¨…å€‹äººæ˜ç´°ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éèº«ä»½è­‰ " + idtno);
+				    msg.append("æ‰€å¾—ç¨…å€‹äººæ˜ç´°ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œèº«ä»½è­‰ "+ idtno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "æ‰€å¾—ç¨…å€‹äººæ˜ç´°ï¼š"+ Cnt +" èº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("æ‰€å¾—ç¨…å€‹äººæ˜ç´°ï¼šèº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				//ä½å€
+				sql="UPDATE "+this.tBasAdr+" SET PAYIDNO=? , "+tmpZbasadr+" =current timestamp where PAYIDNO=? ";
+				params = new ArrayList<Object>();
+				params.add(idtno_new);
+				params.add(idtno);
+				Cnt=da.update(sql, params);
+				if (Cnt <= 0) {
+					log.info(me + "ä½å€ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éèº«ä»½è­‰ " + idtno);
+				    msg.append("ä½å€ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œèº«ä»½è­‰ "+ idtno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "ä½å€ï¼š"+ Cnt +" èº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("ä½å€ï¼šèº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				//æœˆæ”¯æ”¯æ‰£æ˜ç´°
+				sql="UPDATE "+this.tDatPay+" SET PAYIDNO=? , "+tmpZdatpay+" =current timestamp where PAYIDNO=? ";
+				params = new ArrayList<Object>();
+				params.add(idtno_new);
+				params.add(idtno);
+				Cnt=da.update(sql, params);
+				if (Cnt <= 0) {
+					log.info(me + "æœˆæ”¯æ”¯æ‰£æ˜ç´°ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éèº«ä»½è­‰ " + idtno);
+				    msg.append("æœˆæ”¯æ”¯æ‰£æ˜ç´°ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œèº«ä»½è­‰ "+ idtno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "æœˆæ”¯æ”¯æ‰£æ˜ç´°ï¼š"+ Cnt +" èº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("æœˆæ”¯æ”¯æ‰£æ˜ç´°ï¼šèº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				//æœˆæ”¯å€‹äººæ˜ç´°
+				sql="UPDATE "+this.tDatPsn+" SET PAYIDNO=? , "+tmpZdatpsn+" =current timestamp where PAYIDNO=? ";
+				params = new ArrayList<Object>();
+				params.add(idtno_new);
+				params.add(idtno);
+				Cnt=da.update(sql, params);
+				if (Cnt <= 0) {
+					log.info(me + "æœˆæ”¯å€‹äººæ˜ç´°ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éèº«ä»½è­‰ " + idtno);
+				    msg.append("æœˆæ”¯å€‹äººæ˜ç´°ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œèº«ä»½è­‰ "+ idtno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "æœˆæ”¯å€‹äººæ˜ç´°ï¼š"+ Cnt +" èº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("æœˆæ”¯å€‹äººæ˜ç´°ï¼šèº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				//æ­·å²æª”
+				sql="UPDATE "+this.tHist+" SET PAYIDNO=? , "+tmpZhist+" =current timestamp where PAYIDNO=? ";
+				params = new ArrayList<Object>();
+				params.add(idtno_new);
+				params.add(idtno);
+				Cnt=da.update(sql, params);
+				if (Cnt <= 0) {
+					log.info(me + "æ­·å²æª”ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éèº«ä»½è­‰ " + idtno);
+				    msg.append("æ­·å²æª”ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œèº«ä»½è­‰ "+ idtno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "æ­·å²æª”ï¼š"+ Cnt +" èº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("æ­·å²æª”ï¼šèº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				//äºŒä»£å¥ä¿
+				sql="UPDATE "+this.tNhiCal+" SET PAYIDNO=? , "+tmpZnhical+" =current timestamp where PAYIDNO=? ";
+				params = new ArrayList<Object>();
+				params.add(idtno_new);
+				params.add(idtno);
+				Cnt=da.update(sql, params);
+				if (Cnt <= 0) {
+					log.info(me + "äºŒä»£å¥ä¿ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éèº«ä»½è­‰ " + idtno);
+				    msg.append("äºŒä»£å¥ä¿ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œèº«ä»½è­‰ "+ idtno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "äºŒä»£å¥ä¿ï¼š"+ Cnt +" èº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("äºŒä»£å¥ä¿ï¼šèº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				//äºŒä»£å¥ä¿ç”³å ±æ‰£è²»æ˜ç´°
+				sql="UPDATE "+this.tNhiDet+" SET PAYIDNO=? , "+tmpZnhidet+" =current timestamp where PAYIDNO=? ";
+				params = new ArrayList<Object>();
+				params.add(idtno_new);
+				params.add(idtno);
+				Cnt=da.update(sql, params);
+				if (Cnt <= 0) {
+					log.info(me + "äºŒä»£å¥ä¿ç”³å ±æ‰£è²»æ˜ç´°ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éèº«ä»½è­‰ " + idtno);
+				    msg.append("äºŒä»£å¥ä¿ç”³å ±æ‰£è²»æ˜ç´°ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œèº«ä»½è­‰ "+ idtno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "äºŒä»£å¥ä¿ç”³å ±æ‰£è²»æ˜ç´°ï¼š"+ Cnt +" èº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("äºŒä»£å¥ä¿ç”³å ±æ‰£è²»æ˜ç´°ï¼šèº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				//è£½ä½œå ±è¡¨æ˜ç´°
+				sql="UPDATE "+this.tRPDTL+" SET PAYIDNO=? , "+tmpZrpdtl+" =current timestamp where PAYIDNO=? ";
+				params = new ArrayList<Object>();
+				params.add(idtno_new);
+				params.add(idtno);
+				Cnt=da.update(sql, params);
+				if (Cnt <= 0) {
+					log.info(me + "è£½ä½œå ±è¡¨æ˜ç´°ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éèº«ä»½è­‰ " + idtno);
+				    msg.append("è£½ä½œå ±è¡¨æ˜ç´°ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œèº«ä»½è­‰ "+ idtno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "è£½ä½œå ±è¡¨æ˜ç´°ï¼š"+ Cnt +" èº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("è£½ä½œå ±è¡¨æ˜ç´°ï¼šèº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				//æ‰€å¾—ç¨…è½‰å¸³æ˜ç´°
+				sql="UPDATE "+this.tTaxTran+" SET PAYIDNO=? , "+tmpZtaxtran+" =current timestamp where PAYIDNO=? ";
+				params = new ArrayList<Object>();
+				params.add(idtno_new);
+				params.add(idtno);
+				Cnt=da.update(sql, params);
+				if (Cnt <= 0) {
+					log.info(me + "æ‰€å¾—ç¨…è½‰å¸³æ˜ç´°ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éèº«ä»½è­‰ " + idtno);
+				    msg.append("æ‰€å¾—ç¨…è½‰å¸³æ˜ç´°ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œèº«ä»½è­‰ "+ idtno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "æ‰€å¾—ç¨…è½‰å¸³æ˜ç´°ï¼š"+ Cnt +" èº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("æ‰€å¾—ç¨…è½‰å¸³æ˜ç´°ï¼šèº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				//æ‰€å¾—ç¨…ç¾é‡‘æ˜ç´°
+				sql="UPDATE "+this.tTaxCash+" SET PAYIDNO=? , "+tmpZtaxcash+" =current timestamp where PAYIDNO=? ";
+				params = new ArrayList<Object>();
+				params.add(idtno_new);
+				params.add(idtno);
+				Cnt=da.update(sql, params);
+				if (Cnt <= 0) {
+					log.info(me + "æ‰€å¾—ç¨…ç¾é‡‘æ˜ç´°ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éèº«ä»½è­‰ " + idtno);
+				    msg.append("æ‰€å¾—ç¨…ç¾é‡‘æ˜ç´°ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œèº«ä»½è­‰ "+ idtno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "æ‰€å¾—ç¨…ç¾é‡‘æ˜ç´°ï¼š"+ Cnt +" èº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("æ‰€å¾—ç¨…ç¾é‡‘æ˜ç´°ï¼šèº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				//å‹å·¥é€€ä¼‘é‡‘æª”
+				sql="UPDATE "+this.tWKRETIR+" SET PAYIDNO=? , "+tmpZwkretir+" =current timestamp where PAYIDNO=? ";
+				params = new ArrayList<Object>();
+				params.add(idtno_new);
+				params.add(idtno);
+				Cnt=da.update(sql, params);
+				if (Cnt <= 0) {
+					log.info(me + "å‹å·¥é€€ä¼‘é‡‘æª”ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éèº«ä»½è­‰ " + idtno);
+				    msg.append("å‹å·¥é€€ä¼‘é‡‘æª”ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œèº«ä»½è­‰ "+ idtno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "å‹å·¥é€€ä¼‘é‡‘æª”ï¼š"+ Cnt +" èº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("å‹å·¥é€€ä¼‘é‡‘æª”ï¼šèº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				//è£½ä½œå ±è¡¨æ˜ç´°(MIS)
+				sql="UPDATE "+this.tLMONT+" SET PAYIDNO=? , "+tmpZlmont+" =current timestamp where PAYIDNO=? ";
+				params = new ArrayList<Object>();
+				params.add(idtno_new);
+				params.add(idtno);
+				Cnt=da.update(sql, params);
+				if (Cnt <= 0) {
+					log.info(me + "è£½ä½œå ±è¡¨æ˜ç´°(MIS)ï¼š"+ Cnt +" ç„¡ç•°å‹•è³‡æ–™ï¼Œå·²è·³éèº«ä»½è­‰ " + idtno);
+				    msg.append("è£½ä½œå ±è¡¨æ˜ç´°(MIS)ï¼šç„¡ç•°å‹•è³‡æ–™ï¼Œèº«ä»½è­‰ "+ idtno +" å·²è·³é\n");
+				}else{
+					success=true;
+					log.info(me + "è£½ä½œå ±è¡¨æ˜ç´°(MIS)ï¼š"+ Cnt +" èº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ ");
+					msg.append("è£½ä½œå ±è¡¨æ˜ç´°(MIS)ï¼šèº«ä»½è­‰ " + idtno + " â†’ " + idtno_new +" æ›´æ–°æˆåŠŸ \n");
+				}
+				
+				success=true;
+			}else{
+				
+			}
+		}catch(Exception e){
+			log.info(me + " fail, " + e);
+			throw new SQLException(me + ", fail!!." + e);
+		}
+		finally{
+		
+		}
+		//return success;
+		Map<String, Object> result = new HashMap<String, Object>();
+	    result.put("success", success);
+	    result.put("msg", msg.toString());
+	    return result;
 	}
 }

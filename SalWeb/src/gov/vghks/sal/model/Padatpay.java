@@ -1,35 +1,35 @@
 package gov.vghks.sal.model;
 
 public class Padatpay {
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** »è³æ½s¸¹*/
+	/** é¤‰å–®ç·¨è™Ÿ*/
     private int salnum;
-    /** ¨­¥÷ÃÒ¦r¸¹*/
+    /** èº«ä»½è­‰å­—è™Ÿ*/
     private String payidno;
-    /** ­ìO/·sN */
+    /** åŸO/æ–°N */
     private String paysort;
-    /** ¤ä¦©¥N½X*/
+    /** æ”¯æ‰£ä»£ç¢¼*/
     private String paycode;
-    /** ª÷ÃB*/
+    /** é‡‘é¡*/
     private int payamt;
-    /** ±ÂÅv½X*/
+    /** æˆæ¬Šç¢¼*/
     private String payauth;
-    /** ¬O§_¦C¤J©Ò±o*/
+    /** æ˜¯å¦åˆ—å…¥æ‰€å¾—*/
     private String payiftax;
-    /** ³Ì«á§ó§ïTIME*/
+    /** æœ€å¾Œæ›´æ”¹TIME*/
     private java.sql.Timestamp payupdtm;
-    /** ³B²zºX¼Ğ*/
+    /** è™•ç†æ——æ¨™*/
     private String payflag;
-    /** Âå°|§O*/
+    /** é†«é™¢åˆ¥*/
     private String hid;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpadatpay;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zptdatpay;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhdatpay;
-    /** ¤ä¦©¥N½X ¤¤¤å*/
+    /** æ”¯æ‰£ä»£ç¢¼ ä¸­æ–‡*/
     private String pacodnmc;
     
 	public int getSalnum() {

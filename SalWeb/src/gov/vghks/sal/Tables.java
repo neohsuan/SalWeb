@@ -3,45 +3,47 @@ package gov.vghks.sal;
 
 public enum Tables {
 	KSVGH(
-			"1A0", 
-			"PA.PATAXPSN",
-			"PA.PATAXTRAN",
-			"PA.PATAXCASH",
-			"PA.PABASPSN",
-			"PA.PABASPAY",
-			"PA.PABATPAY",
-			"PA.PATRACODE",
-			"PA.PADEPT",
-			"PA.PATITLE",
-			"PA.PARANKCODE",
-			"PA.PACATGTBL",
-			"PA.PAEXPFTBL",
-			"PA.PARNK4TBL",
-			"PA.PABANK",
-			"PA.PATAXTBL",
-			"PA.PAPFTL",
-			"PA.PADPINTBL",
-			"PA.PALBINTBL",
-			"PA.PALBRPTBL",
-			"PA.PAPOSI",
-			"PA.PARANK",
-			"PA.PACSPF",
-			"PA.PADATPSN",
-			"PA.PADATPSN_DW",
-			"PA.PADATPAY",
-			"PA.PADATPAY_DW",
-			"PA.PAPAYITM",
-			"PA.PABASADR",
-			"PA.PAHIST",
-			"PA.PATRAPSN",
-			"PA.PATRAPSN_DW",
-			"PA.PATRAPAY",
-			"PA.PATRAPAY_DW",
-			"PA.PAREPDETAIL",
-			"PA.PAREPORT",
-			"PA.PANHICAL",
-			"PA.PANHIDET",
-			"PA.PATEACHAW",
+			"1A0", 			//0醫院別
+			"PA.PATAXPSN",	//1所得稅個人明細
+			"PA.PATAXTRAN",	//2所得稅轉帳明細
+			"PA.PATAXCASH",	//3所得稅現金明細
+			"PA.PABASPSN",	//4基本檔
+			"PA.PABASPAY",	//5基本支扣	
+			"PA.PABATPAY",	//6批次檔
+			"PA.PATRACODE",	//7異動代碼
+			"PA.PADEPT",	//8單位代碼
+			"PA.PATITLE",	//9職稱
+			"PA.PARANKCODE",//10階別代碼
+			"PA.PACATGTBL",	//11人工造冊應計轉帳項目代碼
+			"PA.PAEXPFTBL",	//12績效額外點數對照表
+			"PA.PARNK4TBL",	//13適用專業加給對照表
+			"PA.PABANK",	//14發薪日及入帳日對應檔
+			"PA.PATAXTBL",	//15薪資所得扣繳稅額表 
+			"PA.PAPFTL",	//16全院績效彙總 
+			"PA.PADPINTBL",	//17全民健康保險負擔金額表 
+			"PA.PALBINTBL",	//18勞保投保金額對照表
+			"PA.PALBRPTBL",	//19勞工退休金月提繳工資分級表
+			"PA.PAPOSI",	//20職等支扣--專業加給及主管加給
+			"PA.PARANK",	//21階級支扣
+			"PA.PACSPF",	//22工作獎金支扣
+			"PA.PADATPSN",	//23月支個人明細
+			"PA.PADATPSN_DW",//24月支個人明細_歷史
+			"PA.PADATPAY",	//25月支支扣明細
+			"PA.PADATPAY_DW",	//26月支支扣明細_歷史
+			"PA.PAPAYITM",	//27支扣項目彙總
+			"PA.PABASADR",	//28地址
+			"PA.PAHIST",	//29歷史檔
+			"PA.PATRAPSN",	//30異動個人明細
+			"PA.PATRAPSN_DW",	//31異動個人明細_歷史
+			"PA.PATRAPAY",	//32異動支扣明細
+			"PA.PATRAPAY_DW",	//33異動支扣明細_歷史
+			"PA.PAREPDETAIL",	//34製作報表明細
+			"PA.PAREPORT",	//35報表檔架構
+			"PA.PANHICAL",	//36二代健保(補充保險費_獎金)
+			"PA.PANHIDET",	//37二代健保申報扣費明細
+			"PA.PATEACHAW",	//38教職及論文獎勵
+			"PA.SALMONT",	//39製作報表明細(MIS用)
+			"PA.PAWKRETIR",	//40勞工退休金檔
 			
 			"ZPATITLE",
 			"ZPARANKCODE",
@@ -62,48 +64,58 @@ public enum Tables {
 			"ZPAPAYITM",
 			"ZPATAXTRAN",
 			"ZPATAXCASH",
-			"ZPABASADR"
+			"ZPABASADR",
+			"ZPATAXPSN",
+			"ZPADATPAY",
+			"ZPADATPSN",
+			"ZPANHICAL",
+			"ZPANHIDET",
+			"ZPAREPDETAIL",
+			"ZPAWKRETIR",
+			"ZSALMONT"
 	),
 	PTVGH(
-		"2A0", 
-		"PA.PTTAXPSN",
-		"PA.PTTAXTRAN",
-		"PA.PTTAXCASH",
-		"PA.PTBASPSN",
-		"PA.PTBASPAY",
-		"PA.PTBATPAY",
-		"PA.PTTRACODE",
-		"PA.PTDEPT",
-		"PA.PTTITLE",
-		"PA.PTRANKCE",
-		"PA.PTCATGTBL",
-		"PA.PTEXPFTBL",
-		"PA.PTRNK4TBL",
-		"PA.PTBANK",
-		"PA.PTTAXTBL",
-		"PA.PTPFTL",
-		"PA.PTDPINTBL",
-		"PA.PTLBINTBL",
-		"PA.PTLBRPTBL",
-		"PA.PTPOSI",
-		"PA.PTRANK",
-		"PA.PTCSPF",
-		"PA.PTDATPSN",
-		"PA.PTDA#TPSN",
-		"PA.PTDATPAY",
-		"PA.PTDA#TPAY",
-		"PA.PTPAYITM",
-		"PA.PTBASADR",
-		"PA.PTHIST",
-		"PA.PTTRAPSN",
-		"PA.PTTR#APSN",
-		"PA.PTTRAPAY",
-		"PA.PTTR#APAY",
-		"PA.PTRPDTL",
-		"PA.PTREPORT",
-		"PA.PTNHICAL",
-		"PA.PTNHIDET",
-		"PA.PTTEACHAW",
+		"2A0", 			//0醫院別
+		"PA.PTTAXPSN",	//1所得稅個人明細
+		"PA.PTTAXTRAN",	//2所得稅轉帳明細
+		"PA.PTTAXCASH",	//3所得稅現金明細
+		"PA.PTBASPSN",	//4基本檔
+		"PA.PTBASPAY",	//5基本支扣
+		"PA.PTBATPAY",	//6批次檔
+		"PA.PTTRACODE",	//7異動代碼
+		"PA.PTDEPT",	//8單位代碼
+		"PA.PTTITLE",	//9職稱
+		"PA.PTRANKCE",	//10階別代碼
+		"PA.PTCATGTBL",	//11人工造冊應計轉帳項目代碼
+		"PA.PTEXPFTBL",	//12績效額外點數對照表
+		"PA.PTRNK4TBL",	//13適用專業加給對照表
+		"PA.PTBANK",	//14發薪日及入帳日對應檔
+		"PA.PTTAXTBL",	//15薪資所得扣繳稅額表 
+		"PA.PTPFTL",	//16全院績效彙總 
+		"PA.PTDPINTBL",	//17全民健康保險負擔金額表 
+		"PA.PTLBINTBL",	//18勞保投保金額對照表
+		"PA.PTLBRPTBL",	//19勞工退休金月提繳工資分級表
+		"PA.PTPOSI",	//20職等支扣--專業加給及主管加給
+		"PA.PTRANK",	//21階級支扣
+		"PA.PTCSPF",	//22工作獎金支扣
+		"PA.PTDATPSN",	//23月支個人明細
+		"PA.PTDA#TPSN",	//24月支個人明細_歷史
+		"PA.PTDATPAY",	//25月支支扣明細
+		"PA.PTDA#TPAY",	//26月支支扣明細_歷史
+		"PA.PTPAYITM",	//27支扣項目彙總
+		"PA.PTBASADR",	//28地址
+		"PA.PTHIST",	//29歷史檔
+		"PA.PTTRAPSN",	//30異動個人明細
+		"PA.PTTR#APSN",	//31異動個人明細_歷史
+		"PA.PTTRAPAY",	//32異動支扣明細
+		"PA.PTTR#APAY",	//33異動支扣明細_歷史
+		"PA.PTRPDTL",	//34製作報表明細
+		"PA.PTREPORT",	//35報表檔架構
+		"PA.PTNHICAL",	//36二代健保(補充保險費_獎金)
+		"PA.PTNHIDET",	//37二代健保申報扣費明細
+		"PA.PTTEACHAW",	//38教職及論文獎勵
+		"PA.PTLMONT",	//39製作報表明細(MIS用)
+		"PA.PTWKRETIR",	//40勞工退休金檔
 		
 		"ZPTTITLE",
 		"ZPTRANKCE",
@@ -124,50 +136,60 @@ public enum Tables {
 		"ZPTPAYITM",
 		"ZPTTAXTRAN",
 		"ZPTTAXCASH",
-		"ZPTBASADR"
+		"ZPTBASADR",
+		"ZPTTAXPSN",
+		"ZPTDATPAY",
+		"ZPTDATPSN",
+		"ZPTNHICAL", 
+		"ZPTNHIDET",
+		"ZPTRPDTL",
+		"ZPTWKRETIR",
+		"ZPTLMONT"
 	),
 	KMUH(
-		"3A0",          //1��|�O
-		"PA.LHTAXPSN",  //2�ұo�|�ӤH����
-		"PA.LHTAXTRAN", //3�ұo�|��b����
-		"PA.LHTAXCASH", //4�ұo�|�{������
-		"PA.LHBASPSN",  //5����
-		"PA.LHBASPAY",  //6�򥻤䦩
-		"PA.LHBATPAY",  //6�妸��
-		"PA.LHTRACODE", //7���ʥN�X
-		"PA.LHDEPT",    //8���N�X
-		"PA.LHTITLE",   //9¾��
-		"PA.LHRANKCE",  //10���O�N�X
-		"PA.LHCATGTBL", //11�H�u�y�U���p��b���إN�X
-		"PA.LHEXPFTBL", //12�Z���B�~�I�ƹ�Ӫ�
-		"PA.LHRNK4TBL", //13�A�αM�~�[����Ӫ�
-		"PA.LHBANK",    //14�o�~��ΤJ�b�������
-		"PA.LHTAXTBL",  //15�~��ұo��ú�|�B�� 
-		"PA.LHPFTL",    //16���|�Z�ķJ�` 
-		"PA.LHDPINTBL", //17�������d�O�I�t����B�� 
-		"PA.LHLBINTBL", //18�ҫO��O���B��Ӫ�
-		"PA.LHLBRPTBL", //19�Ҥu�h����봣ú�u����Ū�
-		"PA.LHPOSI",    //20¾���䦩--�M�~�[���ΥD�ޥ[��
-		"PA.LHRANK",    //21���Ť䦩
-		"PA.LHCSPF",    //22�u�@�����䦩
-		"PA.LHDATPSN",  //23���ӤH����
-		"PA.LHDA#TPSN", //24���ӤH����_���v
-		"PA.LHDATPAY",  //25���䦩����
-		"PA.LHDA#TPAY", //26���䦩����_���v
-		"PA.LHPAYITM",  //27�䦩���طJ�`
-		"PA.LHBASADR",  //28�a�}
-		"PA.LHHIST",    //29���v��
-		"PA.LHTRAPSN",  //30���ʭӤH����
-		"PA.LHTR#APSN", //31���ʭӤH����_���v
-		"PA.LHTRAPAY",  //32���ʤ䦩����
-		"PA.LHTR#APAY", //33���ʤ䦩����_���v
-		"PA.LHRPDTL",   //34�s�@��������
-		"PA.LHREPORT",  //35�����ɬ[�c
-		"PA.LHNHICAL",  //�G�N���O(�ɥR�O�I�O_����)
-		"PA.LHNHIDET",  //�G�N���O�ӳ����O����		
-		"",				//��¾�νפ���y
+		"3A0",          //0醫院別
+		"PA.LHTAXPSN",  //1所得稅個人明細
+		"PA.LHTAXTRAN", //2所得稅轉帳明細
+		"PA.LHTAXCASH", //3所得稅現金明細
+		"PA.LHBASPSN",  //4基本檔
+		"PA.LHBASPAY",  //5基本支扣
+		"PA.LHBATPAY",  //6批次檔
+		"PA.LHTRACODE", //7異動代碼
+		"PA.LHDEPT",    //8單位代碼
+		"PA.LHTITLE",   //9職稱
+		"PA.LHRANKCE",  //10階別代碼
+		"PA.LHCATGTBL", //11人工造冊應計轉帳項目代碼
+		"PA.LHEXPFTBL", //12績效額外點數對照表
+		"PA.LHRNK4TBL", //13適用專業加給對照表
+		"PA.LHBANK",    //14發薪日及入帳日對應檔
+		"PA.LHTAXTBL",  //15薪資所得扣繳稅額表 
+		"PA.LHPFTL",    //16全院績效彙總 
+		"PA.LHDPINTBL", //17全民健康保險負擔金額表 
+		"PA.LHLBINTBL", //18勞保投保金額對照表
+		"PA.LHLBRPTBL", //19勞工退休金月提繳工資分級表
+		"PA.LHPOSI",    //20職等支扣--專業加給及主管加給
+		"PA.LHRANK",    //21階級支扣
+		"PA.LHCSPF",    //22工作獎金支扣
+		"PA.LHDATPSN",  //23月支個人明細
+		"PA.LHDA#TPSN", //24月支個人明細_歷史
+		"PA.LHDATPAY",  //25月支支扣明細
+		"PA.LHDA#TPAY", //26月支支扣明細_歷史
+		"PA.LHPAYITM",  //27支扣項目彙總
+		"PA.LHBASADR",  //28地址
+		"PA.LHHIST",    //29歷史檔
+		"PA.LHTRAPSN",  //30異動個人明細
+		"PA.LHTR#APSN", //31異動個人明細_歷史
+		"PA.LHTRAPAY",  //32異動支扣明細
+		"PA.LHTR#APAY",  //33異動支扣明細_歷史
+		"PA.LHRPDTL",   //34製作報表明細
+		"PA.LHREPORT",  //35報表檔架構
+		"PA.LHNHICAL",  //36二代健保(補充保險費_獎金)
+		"PA.LHNHIDET",  //37二代健保申報扣費明細		
+		"",				//38教職及論文獎勵
+		"PA.LHLMONT",   //39製作報表明細(MIS用)
+		"PA.LHWKRETIR", //40勞工退休金檔
 		
-		"ZLHTITLE",    //���W
+		"ZLHTITLE",    //時戳
 		"ZLHRANKCE",
 		"ZLHBANK",
 		"ZLHDEPT",
@@ -186,53 +208,63 @@ public enum Tables {
 		"ZLHPAYITM",
 		"ZLHTAXTRAN",
 		"ZLHTAXCASH",
-		"ZLHBASADR"
+		"ZLHBASADR",
+		"ZLHTAXPSN",
+		"ZLHDATPAY", 
+		"ZLHDATPSN",
+		"ZLHNHICAL",
+		"ZLHNHIDET",
+		"ZLHRPDTL",
+		"ZLHWKRETIR",
+		"ZLHLMONT"
 	),
 	;
 	
 
 	public final String aa=null;
-	public final String hid;   				//1��|�O
-	public final String tTaxPsn;			//2�ұo�|�ӤH����
-	public final String tTaxTran;			//3�ұo�|��b����
-	public final String tTaxCash;			//4�ұo�|�{������ 
-	public final String tBasPsn;			//5����
-	public final String tBasPay;			//6�򥻤䦩
-	public final String tBatPay;			//6�妸��
-	public final String tTraCode;			//7���ʥN�X
-	public final String tDept;				//8���N�X
-	public final String tTitle;				//9¾��
-	public final String tRankCode;			//10���O�N�X
-	public final String tCatgTbl;			//11�H�u�y�U���p��b���إN�X 
-	public final String tExpfTbl;			//12�Z���B�~�I�ƹ�Ӫ� 
-	public final String tRnk4Tbl;			//13�A�αM�~�[����Ӫ�
-	public final String tBankDtTbl;			//14�o�~��ΤJ�b�������
-	public final String tTaxTbl;			//15�~��ұo��ú�|�B�� 
-	public final String tPftlTbl;			//16���|�Z�ķJ�` 
-	public final String tDpinTbl;			//17�������d�O�I�t����B�� 
-	public final String tLbinTbl;			//18�ҫO��O���B��Ӫ�
-	public final String tLbrpTbl;			//19�Ҥu�h����봣ú�u����Ū�
-	public final String tPosiTbl;			//20¾���䦩--�M�~�[���ΥD�ޥ[��
-	public final String tRankTbl;			//21���Ť䦩
-	public final String tCspfTbl;			//22�u�@�����䦩
-	public final String tDatPsn;			//23���ӤH����
-	public final String tDatPsnDw;			//24���ӤH����_���v
-	public final String tDatPay;			//25���䦩����
-	public final String tDatPayDw;			//26���䦩����_���v
-	public final String tPayItm;			//27�䦩���طJ�`
-	public final String tBasAdr;			//28�a�}
-	public final String tHist;				//29���v��
-	public final String tTraPsn;			//30���ʭӤH����
-	public final String tTraPsnDw;			//31���ʭӤH����_���v
-	public final String tTraPay;			//32���ʤ䦩����
-	public final String tTraPayDw;			//33���ʤ䦩����_���v
-	public final String tRPDTL;				//34�s�@��������
-	public final String tRPPRT;				//35�����ɬ[�c
-	public final String tNhiCal;			//�G�N���O(�ɥR�O�I�O_����)
-	public final String tNhiDet;			//�G�N���O�ӳ����O����
-	public final String tTeaChaw;			//��¾�νפ���y
+	public final String hid;   				//0醫院別
+	public final String tTaxPsn;			//1所得稅個人明細
+	public final String tTaxTran;			//2所得稅轉帳明細
+	public final String tTaxCash;			//3所得稅現金明細 
+	public final String tBasPsn;			//4基本檔
+	public final String tBasPay;			//5基本支扣
+	public final String tBatPay;			//6批次檔
+	public final String tTraCode;			//7異動代碼
+	public final String tDept;				//8單位代碼
+	public final String tTitle;				//9職稱
+	public final String tRankCode;			//10階別代碼
+	public final String tCatgTbl;			//11人工造冊應計轉帳項目代碼 
+	public final String tExpfTbl;			//12績效額外點數對照表 
+	public final String tRnk4Tbl;			//13適用專業加給對照表
+	public final String tBankDtTbl;			//14發薪日及入帳日對應檔
+	public final String tTaxTbl;			//15薪資所得扣繳稅額表 
+	public final String tPftlTbl;			//16全院績效彙總 
+	public final String tDpinTbl;			//17全民健康保險負擔金額表 
+	public final String tLbinTbl;			//18勞保投保金額對照表
+	public final String tLbrpTbl;			//19勞工退休金月提繳工資分級表
+	public final String tPosiTbl;			//20職等支扣--專業加給及主管加給
+	public final String tRankTbl;			//21階級支扣
+	public final String tCspfTbl;			//22工作獎金支扣
+	public final String tDatPsn;			//23月支個人明細
+	public final String tDatPsnDw;			//24月支個人明細_歷史
+	public final String tDatPay;			//25月支支扣明細
+	public final String tDatPayDw;			//26月支支扣明細_歷史
+	public final String tPayItm;			//27支扣項目彙總
+	public final String tBasAdr;			//28地址
+	public final String tHist;				//29歷史檔
+	public final String tTraPsn;			//30異動個人明細
+	public final String tTraPsnDw;			//31異動個人明細_歷史
+	public final String tTraPay;			//32異動支扣明細
+	public final String tTraPayDw;			//33異動支扣明細_歷史
+	public final String tRPDTL;				//34製作報表明細
+	public final String tRPPRT;				//35報表檔架構
+	public final String tNhiCal;			//二代健保(補充保險費_獎金)
+	public final String tNhiDet;			//二代健保申報扣費明細
+	public final String tTeaChaw;			//教職及論文獎勵
+	public final String tLMONT;				//39製作報表明細(MIS用)
+	public final String tWKRETIR;			//40勞工退休金檔
 	
-	public final String tmpZtitle;		    //���W
+	public final String tmpZtitle;		    //時戳
 	public final String tmpZrankce;
 	public final String tmpZbank;
 	public final String tmpZdept;
@@ -252,6 +284,14 @@ public enum Tables {
 	public final String tmpZtaxtran;
 	public final String tmpZtaxcash;
 	public final String tmpZbasadr;
+	public final String tmpZtaxpsn;
+	public final String tmpZdatpay;
+	public final String tmpZdatpsn;
+	public final String tmpZnhical;
+	public final String tmpZnhidet;
+	public final String tmpZrpdtl;
+	public final String tmpZwkretir;
+	public final String tmpZlmont;
 	
 	Tables(
 		final String hid, 
@@ -293,6 +333,8 @@ public enum Tables {
 		final String tNhiCal,
 		final String tNhiDet,
 		final String tTeaChaw,
+		final String tLMONT,
+		final String tWKRETIR,
 		
 		final String tmpZtitle,		
 		final String tmpZrankce,
@@ -313,7 +355,15 @@ public enum Tables {
 		final String tmpZpayitm,
 		final String tmpZtaxtran,
 		final String tmpZtaxcash,
-		final String tmpZbasadr
+		final String tmpZbasadr,
+		final String tmpZtaxpsn,
+		final String tmpZdatpay,
+		final String tmpZdatpsn,
+		final String tmpZnhical,
+		final String tmpZnhidet,
+		final String tmpZrpdtl,
+		final String tmpZwkretir,
+		final String tmpZlmont
 	)
 	{
         this.hid= hid;
@@ -355,8 +405,10 @@ public enum Tables {
     	this.tNhiCal= tNhiCal;
     	this.tNhiDet= tNhiDet;
     	this.tTeaChaw= tTeaChaw;
+    	this.tLMONT= tLMONT;
+    	this.tWKRETIR= tWKRETIR;
     	
-    	this.tmpZtitle= tmpZtitle;		//���W
+    	this.tmpZtitle= tmpZtitle;		//時戳
     	this.tmpZrankce= tmpZrankce;
     	this.tmpZbank= tmpZbank;
     	this.tmpZdept= tmpZdept;
@@ -375,11 +427,19 @@ public enum Tables {
     	this.tmpZpayitm= tmpZpayitm;
     	this.tmpZtaxtran= tmpZtaxtran;
     	this.tmpZtaxcash= tmpZtaxcash;
-    	this.tmpZbasadr= tmpZbasadr; //0716 MP�s�W���W
+    	this.tmpZbasadr= tmpZbasadr; //0716 MP新增時戳
+    	this.tmpZtaxpsn= tmpZtaxpsn; //0903 MP新增時戳
+    	this.tmpZdatpay= tmpZdatpay; //0907 MP新增時戳
+    	this.tmpZdatpsn= tmpZdatpsn; //0907 MP新增時戳
+    	this.tmpZnhical= tmpZnhical; //0907 MP新增時戳
+    	this.tmpZnhidet= tmpZnhidet; //0907 MP新增時戳
+    	this.tmpZrpdtl= tmpZrpdtl; //0907 MP新增時戳
+    	this.tmpZwkretir= tmpZwkretir; //0907 MP新增時戳
+    	this.tmpZlmont= tmpZlmont; //0907 MP新增時戳
     }
 	
 	/**
-	 * ��hid���o�Y��|��T<br>
+	 * 依hid取得某醫院資訊<br>
 	 * @param hid
 	 * @return
 	 */
@@ -393,5 +453,5 @@ public enum Tables {
 		}
 		return rs;
 	}
-	
+	//test
 }

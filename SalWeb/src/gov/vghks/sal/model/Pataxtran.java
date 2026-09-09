@@ -1,33 +1,33 @@
 package gov.vghks.sal.model;
 
 import java.io.Serializable;
-//©Ò±oµ|Âà±b©ú²Ó  
+//æ‰€å¾—ç¨…è½‰å¸³æ˜ç´°  
 public class Pataxtran implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ¨­¤ÀÃÒ¦r¸¹*/
+	/** èº«åˆ†è­‰å­—è™Ÿ*/
     private String payidno;
-    /** ¦è¤¸¦~*/
+    /** è¥¿å…ƒå¹´*/
     private int payear;
-    /** ¤ë¥÷PAYMONTH*/
+    /** æœˆä»½PAYMONTH*/
     private int paymonth;
-    /** Âà±b¶µ¥ØPAYCATG*/
+    /** è½‰å¸³é …ç›®PAYCATG*/
     private int paycatg;
-    /** À³µ|©Ò±oPAYTAXPAY*/
+    /** æ‡‰ç¨…æ‰€å¾—PAYTAXPAY*/
     private int paytaxpay;
-    /** ¤w¦©©Ò±oµ|PAYTAXDEDUCT*/
+    /** å·²æ‰£æ‰€å¾—ç¨…PAYTAXDEDUCT*/
     private int paytaxdeduct;
-    /** §ó§ïªÌPAYUPDID*/
+    /** æ›´æ”¹è€…PAYUPDID*/
     private String payupdid;
-    /** ­×§ï¤é´Á®É¶¡ PAYUPDTM*/
+    /** ä¿®æ”¹æ—¥æœŸæ™‚é–“ PAYUPDTM*/
     private java.sql.Timestamp payupdtm;
-    /** Âå°|§O*/
+    /** é†«é™¢åˆ¥*/
     private String hid;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpataxtran;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhtaxtran;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpttaxtran;
     
 	public String getPayidno() {

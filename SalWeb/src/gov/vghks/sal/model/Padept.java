@@ -5,27 +5,27 @@ import gov.vghks.common.util.StringUtil;
 import java.io.Serializable;
 
 public class Padept implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ³æ¦ì¥N½X*/
+	/** å–®ä½ä»£ç¢¼*/
     private String padepcod;
-    /** ¦¨¥»¤¤¤ß¥N½X*/
+    /** æˆæœ¬ä¸­å¿ƒä»£ç¢¼*/
     private String pacstno;
-    /** ³æ¦ì¤¤¤å*/
+    /** å–®ä½ä¸­æ–‡*/
     private String padepnmc;
-    /** §ó§ïªÌ*/
+    /** æ›´æ”¹è€…*/
     private String payupdid;
-    /** ³Ì«á§ó§ïTIME*/
+    /** æœ€å¾Œæ›´æ”¹TIME*/
     private java.sql.Timestamp payupdat;
-    /** Âå°|§O*/
+    /** é†«é™¢åˆ¥*/
     private String hid;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpadept;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zptdept;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhdept;
-    /** ¤H¨Æ³æ¦ì¥N½X*/
+    /** äººäº‹å–®ä½ä»£ç¢¼*/
     private String pbwkcode;
     
 	public String getPadepcod() {

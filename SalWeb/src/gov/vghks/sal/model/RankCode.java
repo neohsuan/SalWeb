@@ -5,19 +5,19 @@ import gov.vghks.common.util.StringUtil;
 import java.io.Serializable;
 
 public class RankCode implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ¶¥§O¥N½X*/
+	/** éšåˆ¥ä»£ç¢¼*/
     private String rankcode;
-    /** ¤¤¤å»¡©ú*/
+    /** ä¸­æ–‡èªªæ˜*/
     private String rankname;
-    /** ¶¥§OÂ²ºÙ*/
+    /** éšåˆ¥ç°¡ç¨±*/
     private String rankabbr;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zparankcode;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zptrankce;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhrankce;
     
 	public String getRankcode() {

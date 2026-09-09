@@ -2,29 +2,29 @@ package gov.vghks.sal.model;
 import java.math.BigDecimal;
 
 public class Off0102v {
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ¦~¤ë*/
+	/** å¹´æœˆ*/
     private String ym;
-    /** ¥d¸¹*/
+    /** å¡è™Ÿ*/
     private String userid;
-    /** ©m¦W*/
+    /** å§“å*/
     private String empname;
-    /** Â¾¸¹¤ÀÃş posino²Ä2½X K¥ş¤é F¥b¤é P¤£¤À¬ì T¬ã¨s§U²z AÂ¾­ûWÂå¨ÆÂ¾­û G§Ş¤uH¤u¤Í B¾nÄµ C¸u¥Î¦í°| E«´¬ù¦í°| J«´¬ù¥Dªv*/
+    /** è·è™Ÿåˆ†é¡ posinoç¬¬2ç¢¼ Kå…¨æ—¥ FåŠæ—¥ Pä¸åˆ†ç§‘ Tç ”ç©¶åŠ©ç† Aè·å“¡Wé†«äº‹è·å“¡ GæŠ€å·¥Hå·¥å‹ Bé§è­¦ Cè˜ç”¨ä½é™¢ Eå¥‘ç´„ä½é™¢ Jå¥‘ç´„ä¸»æ²»*/
     private String pos;
-    /** °²§O*/
+    /** å‡åˆ¥*/
     private String offtype;
-    /** ®É¼Æ*/
+    /** æ™‚æ•¸*/
     private int offhour;
-    /** ²Ö­p®É¼Æ*/
+    /** ç´¯è¨ˆæ™‚æ•¸*/
     private int offhoursum;
-    /** ¤é¼Æ*/
+    /** æ—¥æ•¸*/
     private BigDecimal offday;
-    /** ²Ö­p¤é¼Æ(¤£§t·í¤ë)*/
+    /** ç´¯è¨ˆæ—¥æ•¸(ä¸å«ç•¶æœˆ)*/
     private BigDecimal offdaysum;
-    /** ¤£µoµ¹¤u¸ê¤Ñ¼Æ*/
+    /** ä¸ç™¼çµ¦å·¥è³‡å¤©æ•¸*/
     private BigDecimal nopay;
-    /** §é¥b¤Ñ¼Æ */
+    /** æŠ˜åŠå¤©æ•¸ */
     private BigDecimal payhalf;
     
 	public String getYm() {
