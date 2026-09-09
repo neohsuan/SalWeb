@@ -1,17 +1,17 @@
 package gov.vghks.sal.model;
 
 public class Pareport {
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ©Ê½è 1-¤ë³ø 2-¤W¶Ç¥D­p(¥[¶µ) 3-¤W¶Ç¥D­p(¦©¶µ) 5-¦~³øªí 6-¤£¥ğ°²¥[¯Z¶O ¥ğ°²¸É§U*/
+	/** æ€§è³ª 1-æœˆå ± 2-ä¸Šå‚³ä¸»è¨ˆ(åŠ é …) 3-ä¸Šå‚³ä¸»è¨ˆ(æ‰£é …) 5-å¹´å ±è¡¨ 6-ä¸ä¼‘å‡åŠ ç­è²» ä¼‘å‡è£œåŠ©*/
     private int paytpe;
-    /** ½s¸¹*/
+    /** ç·¨è™Ÿ*/
     private int paynum;
-    /** ¤ä¦©¥N½X*/
+    /** æ”¯æ‰£ä»£ç¢¼*/
     private String paycode;
-    /** ª÷ÃB*/
+    /** é‡‘é¡*/
     private int payamt;
-    /**Âå°|§O*/
+    /**é†«é™¢åˆ¥*/
     private String hid;
     
 	public int getPaytpe() {

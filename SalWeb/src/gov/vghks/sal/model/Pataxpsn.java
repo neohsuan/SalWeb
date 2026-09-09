@@ -3,57 +3,57 @@ package gov.vghks.sal.model;
 import gov.vghks.common.util.StringUtil;
 
 import java.io.Serializable;
-//©Ò±oµ|­Ó¤H©ú²Ó 
+//æ‰€å¾—ç¨…å€‹äººæ˜ç´° 
 public class Pataxpsn implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ¨­¤ÀÃÒ¦r¸¹*/
+	/** èº«åˆ†è­‰å­—è™Ÿ*/
     private String payidno;
-    /** ¦è¤¸¦~*/
+    /** è¥¿å…ƒå¹´*/
     private int payear;
-    /** ¥d¸¹*/
+    /** å¡è™Ÿ*/
     private String paycard;
-    /** ©m¦W*/
+    /** å§“å*/
     private String paynamec;
-    /** ³æ¦ì*/
+    /** å–®ä½*/
     private String paydept;
-    /** ¨­¤ÀÃÒÀË¬d½Xµù°O--F¥~Äy E¦³»~*/
+    /** èº«åˆ†è­‰æª¢æŸ¥ç¢¼è¨»è¨˜--Få¤–ç± Eæœ‰èª¤*/
     private String payidflg;
-    /** ©Ò±o¶}©l¤é´Á*/
+    /** æ‰€å¾—é–‹å§‹æ—¥æœŸ*/
     private java.sql.Date paybegin;
-    /** ©Ò±oµ²§ô¤é´Á*/
+    /** æ‰€å¾—çµæŸæ—¥æœŸ*/
     private java.sql.Date payend;
-    /** ¬y¤ô¸¹*/
+    /** æµæ°´è™Ÿ*/
     private int payserno;
-    /** §ó§ïªÌ*/
+    /** æ›´æ”¹è€…*/
     private String payupdid;
-    /** ³Ì«á§ó§ïTIME*/
+    /** æœ€å¾Œæ›´æ”¹TIME*/
     private java.sql.Timestamp payupdtm;
-    /** ¬y¤ô¸¹9A*/
+    /** æµæ°´è™Ÿ9A*/
     private int payserno9a;
-    /** ¬y¤ô¸¹9B*/
+    /** æµæ°´è™Ÿ9B*/
     private int payserno9b;
-    /** ¦ÛÃº°h¥ğª÷*/
+    /** è‡ªç¹³é€€ä¼‘é‡‘*/
     private int paysereamt;
-    /** ¬y¤ô¸¹91*/
+    /** æµæ°´è™Ÿ91*/
     private int payserno91;
-    /** ¬y¤ô¸¹92*/
+    /** æµæ°´è™Ÿ92*/
     private int payserno92;
-    /** Âå°|§O*/
+    /** é†«é™¢åˆ¥*/
     private String hid;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpataxpsn;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpttaxpsn;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhtaxpsn;
-    /** Â¾¸¹*/
+    /** è·è™Ÿ*/
     private String payempno;
-    /** ¬y¤ô¸¹51*/
+    /** æµæ°´è™Ÿ51*/
     private int payserno51;
-    /** ¤áÄy¦a§}*/
+    /** æˆ¶ç±åœ°å€*/
     private String payaddrs;
-    /** ³¡ªù¤¤¤å*/
+    /** éƒ¨é–€ä¸­æ–‡*/
     private String padepnmc;
     
 	public String getPayidno() {

@@ -1,53 +1,53 @@
 package gov.vghks.sal.model;
 
 public class Pahist {
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	 /** ²§°Ê¤é´Á*/
+	 /** ç•°å‹•æ—¥æœŸ*/
     private java.sql.Date patradt;
-	/** ²§°Ê¥N½X*/
+	/** ç•°å‹•ä»£ç¢¼*/
     private int patracod;
-    /** ¨­¥÷ÃÒ¦r¸¹*/
+    /** èº«ä»½è­‰å­—è™Ÿ*/
     private String payidno;
-    /** ¥d¸¹*/
+    /** å¡è™Ÿ*/
     private String paycard;
-    /** Â¾°È½s¸¹*/
+    /** è·å‹™ç·¨è™Ÿ*/
     private String payempno;
-    /** ©m¦W*/
+    /** å§“å*/
     private String paynamec;
-    /** ³¡ªù¥N½X*/
+    /** éƒ¨é–€ä»£ç¢¼*/
     private String paydept;
-    /** Â¾ºÙ¥N½X*/
+    /** è·ç¨±ä»£ç¢¼*/
     private String paytitle;
-    /** Â¾µ¥01-15,P1-P3,T1*/
+    /** è·ç­‰01-15,P1-P3,T1*/
     private String payrnk2n;
-    /** ¥»¥\1/2*/
+    /** æœ¬åŠŸ1/2*/
     private int payrank3;
-    /** ¯Å§O*/
+    /** ç´šåˆ¥*/
     private int paydegr2;
-    /** ­ÄÂI*/
+    /** ä¿¸é»*/
     private int paydegre;
-    /** ¶¥§O,1-9,A-F*/
+    /** éšåˆ¥,1-9,A-F*/
     private String payrank;
-    /** Åv²zÂ¾µ¥*/
+    /** æ¬Šç†è·ç­‰*/
     private String payrank2;
-    /** ¥DºŞ(Åv²z)*/
+    /** ä¸»ç®¡(æ¬Šç†)*/
     private String payrankc;
-    /** ¨ì°|¤é´Á*/
+    /** åˆ°é™¢æ—¥æœŸ*/
     private java.sql.Date payempdt;
-    /** Â÷Â¾¤é´Á*/
+    /** é›¢è·æ—¥æœŸ*/
     private java.sql.Date payrsgdt;
-    /** ³Ì«á§ó§ïID*/
+    /** æœ€å¾Œæ›´æ”¹ID*/
     private String payupdid;
-    /** ³Ì«á§ó§ïTIME*/
+    /** æœ€å¾Œæ›´æ”¹TIME*/
     private java.sql.Timestamp payupdtm;
-    /** Âå°|§O*/
+    /** é†«é™¢åˆ¥*/
     private String hid;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpahist;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpthist;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhhist;
     
 	public java.sql.Date getPatradt() {

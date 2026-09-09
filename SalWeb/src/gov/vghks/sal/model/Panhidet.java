@@ -1,45 +1,45 @@
 package gov.vghks.sal.model;
 
 import java.io.Serializable;
-//¤G¥N°·«O¥Ó³ø¦©¶O©ú²Ó
+//äºŒä»£å¥ä¿ç”³å ±æ‰£è²»æ˜ç´°
 public class Panhidet implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** µ¹¥I¤é´Á*/
+	/** çµ¦ä»˜æ—¥æœŸ*/
     private java.sql.Date papaydt;
-    /** ¨­¤ÀÃÒ¦r¸¹*/
+    /** èº«åˆ†è­‰å­—è™Ÿ*/
     private String payidno;
-    /** µ¹¥I©Ò±oÃş§O62¼úª÷ 63­İÂ¾*/
+    /** çµ¦ä»˜æ‰€å¾—é¡åˆ¥62çé‡‘ 63å…¼è·*/
     private String payitem;
-    /** ¥d¸¹*/
+    /** å¡è™Ÿ*/
     private String paycard;
-    /** ©m¦W*/
+    /** å§“å*/
     private String paynamec;
-    /** ¬y¤ô§Ç¸¹*/
+    /** æµæ°´åºè™Ÿ*/
     private int serial;
-    /** µ¹¥Iª÷ÃB*/
+    /** çµ¦ä»˜é‡‘é¡*/
     private int payamt;
-    /** ¦©¶OÃB*/
+    /** æ‰£è²»é¡*/
     private int nhiamt;
-    /** ·í¤ë§ë«Oª÷ÃB*/
+    /** ç•¶æœˆæŠ•ä¿é‡‘é¡*/
     private int moninsu;
-    /** ²Ö¿n¼úª÷ª÷ÃB*/
+    /** ç´¯ç©çé‡‘é‡‘é¡*/
     private int jackpot;
-    /** ¨­¥÷§O:0µL1¤½«O2³Ò«O*/
+    /** èº«ä»½åˆ¥:0ç„¡1å…¬ä¿2å‹ä¿*/
     private int insuident;
-    /** ³B²zºX¼Ğ*/
+    /** è™•ç†æ——æ¨™*/
     private int payflag;
-    /** §ó§ïªÌPAYUPDID*/
+    /** æ›´æ”¹è€…PAYUPDID*/
     private String payupdid;
-    /** ­×§ï¤é´Á®É¶¡ PAYUPDTM*/
+    /** ä¿®æ”¹æ—¥æœŸæ™‚é–“ PAYUPDTM*/
     private java.sql.Timestamp payupdat;
-    /** Âå°|§O*/
+    /** é†«é™¢åˆ¥*/
     private String hid;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpanhical;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhnhical;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zptnhical;
     
 	public java.sql.Date getPapaydt() {

@@ -1,55 +1,55 @@
 package gov.vghks.sal.model;
 
 import java.io.Serializable;
-//¤G¥N°·«O(¸É¥R«OÀI¶O_¼úª÷)
+//äºŒä»£å¥ä¿(è£œå……ä¿éšªè²»_çé‡‘)
 public class Panhical implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** µ¹¥I¤é´Á*/
+	/** çµ¦ä»˜æ—¥æœŸ*/
     private java.sql.Date papaydt;	
-    /** ¸ê®Æ¨Ó·½,DAT:µoÁ~©ú²Ó,TAX:¤H¤u­pµ|*/
+    /** è³‡æ–™ä¾†æº,DAT:ç™¼è–ªæ˜ç´°,TAX:äººå·¥è¨ˆç¨…*/
     private String paysource;
-    /** »è³æ½s¸¹/Âà±b¶µ¥Ø--0µL 1©]¯Z¶O 2Â÷Â¾¤H­û¸Éµo¦© 3¥NµoÁ~¸ê*/
+    /** é¤‰å–®ç·¨è™Ÿ/è½‰å¸³é …ç›®--0ç„¡ 1å¤œç­è²» 2é›¢è·äººå“¡è£œç™¼æ‰£ 3ä»£ç™¼è–ªè³‡*/
     private int itemnum;
-    /** ¨­¤ÀÃÒ¦r¸¹*/
+    /** èº«åˆ†è­‰å­—è™Ÿ*/
     private String payidno;
-    /** µ¹¥I©Ò±oÃş§O62¼úª÷ 63­İÂ¾*/
+    /** çµ¦ä»˜æ‰€å¾—é¡åˆ¥62çé‡‘ 63å…¼è·*/
     private String payitem;
-    /** ¥d¸¹*/
+    /** å¡è™Ÿ*/
     private String paycard;
-    /** ©m¦W*/
+    /** å§“å*/
     private String paynamec;
-    /** ·í¤ë§ë«Oª÷ÃB(A)*/
+    /** ç•¶æœˆæŠ•ä¿é‡‘é¡(A)*/
     private int moninsu;
-    /** 4­¿§ë«Oª÷ÃB(B=Ax4)*/
+    /** 4å€æŠ•ä¿é‡‘é¡(B=Ax4)*/
     private int moninsu4;
-    /** ³æ¦¸¼úª÷ª÷ÃB(C)*/
+    /** å–®æ¬¡çé‡‘é‡‘é¡(C)*/
     private int bonusamt;
-    /** ²Ö¿n¼úª÷ª÷ÃB(D)*/
+    /** ç´¯ç©çé‡‘é‡‘é¡(D)*/
     private int jackpot;
-    /** ²Ö¿n¶W¹L4­¿§ë«Oª÷ÃB¤§¼úª÷(E=D-B)*/
+    /** ç´¯ç©è¶…é4å€æŠ•ä¿é‡‘é¡ä¹‹çé‡‘(E=D-B)*/
     private int mtinsu;
-    /** ¸É¥R«OÀI¶O¶O°ò(F)min(E,C)*/
+    /** è£œå……ä¿éšªè²»è²»åŸº(F)min(E,C)*/
     private int suplybase;
-    /** ¸É¥R«OÀI¶Oª÷ÃB(G=F*2%)*/
+    /** è£œå……ä¿éšªè²»é‡‘é¡(G=F*2%)*/
     private int nhiamt;
-    /** ¨­¥÷§O:0µL1¤½«O2³Ò«O*/
+    /** èº«ä»½åˆ¥:0ç„¡1å…¬ä¿2å‹ä¿*/
     private int insuident;
-    /** ³B²zºX¼Ğ*/
+    /** è™•ç†æ——æ¨™*/
     private String payflag;
-    /** §ó§ïªÌPAYUPDID*/
+    /** æ›´æ”¹è€…PAYUPDID*/
     private String payupdid;
-    /** ­×§ï¤é´Á®É¶¡ PAYUPDTM*/
+    /** ä¿®æ”¹æ—¥æœŸæ™‚é–“ PAYUPDTM*/
     private java.sql.Timestamp payupdat;
-    /** Âå°|§O*/
+    /** é†«é™¢åˆ¥*/
     private String hid;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpanhical;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zptnhical;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhnhical;
-    /** ¦~«×*/
+    /** å¹´åº¦*/
     private int papayyr;
     
 	public java.sql.Date getPapaydt() {

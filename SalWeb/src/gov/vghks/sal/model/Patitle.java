@@ -5,33 +5,33 @@ import gov.vghks.common.util.StringUtil;
 import java.io.Serializable;
 
 public class Patitle implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ¥N½X*/
+	/** ä»£ç¢¼*/
     private String paytitlk;
-    /** ¸s²Õ¤ÀÃş*/
+    /** ç¾¤çµ„åˆ†é¡*/
     private String patitsub;
-    /** ¥DºŞ§_*/
+    /** ä¸»ç®¡å¦*/
     private String pachief;
-    /** ³øªí¥Î*/
+    /** å ±è¡¨ç”¨*/
     private String paytitlp;
-    /** ¤º³¡¥Î*/
+    /** å…§éƒ¨ç”¨*/
     private String paytitlc;
-    /** §R°£§_*/
+    /** åˆªé™¤å¦*/
     private String pacoddel;
-    /** §ó§ïªÌ*/
+    /** æ›´æ”¹è€…*/
     private String payupdid;
-    /** ³Ì«á§ó§ïTIME*/
+    /** æœ€å¾Œæ›´æ”¹TIME*/
     private java.sql.Timestamp payupdat;
-    /** Âå°|§O*/
+    /** é†«é™¢åˆ¥*/
     private String hid;
-    /** ¤H¨ÆÂ¾ºÙ¥N½X*/
+    /** äººäº‹è·ç¨±ä»£ç¢¼*/
     private String pbtitcod;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpatitle;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpttitle;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhtitle;
         
 	public String getPaytitlk() {

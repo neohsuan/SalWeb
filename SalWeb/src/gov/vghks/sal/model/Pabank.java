@@ -1,21 +1,21 @@
 package gov.vghks.sal.model;
 
 public class Pabank {
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** »è³æ½s¸¹*/
+	/** é¤‰å–®ç·¨è™Ÿ*/
     private int salnum;
-    /** µoÁ~¤é´Á*/
+    /** ç™¼è–ªæ—¥æœŸ*/
     private java.sql.Date paybank;
-    /** ¤J±b¤é´Á*/
+    /** å…¥å¸³æ—¥æœŸ*/
     private java.sql.Date paysaldt;
-    /** ­t³d¤HID*/
+    /** è² è²¬äººID*/
     private String payupdid;
-    /** ³Ì«á§ó§ïTIME*/
+    /** æœ€å¾Œæ›´æ”¹TIME*/
     private java.sql.Timestamp payupdat;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpabank;
-    /** Âå°|§O*/
+    /** é†«é™¢åˆ¥*/
     private String hid;
     
 	

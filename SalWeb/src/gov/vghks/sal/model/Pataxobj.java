@@ -3,61 +3,61 @@ package gov.vghks.sal.model;
 import gov.vghks.common.util.StringUtil;
 
 import java.io.Serializable;
-//©Ò±oµ|­Ó¤H©ú²Ó+Âà±b/²{ª÷©Ò±oµ| 
+//æ‰€å¾—ç¨…å€‹äººæ˜ç´°+è½‰å¸³/ç¾é‡‘æ‰€å¾—ç¨… 
 public class Pataxobj implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ¨­¤ÀÃÒ¦r¸¹*/
+	/** èº«åˆ†è­‰å­—è™Ÿ*/
     private String payidno;
-    /** ¦è¤¸¦~*/
+    /** è¥¿å…ƒå¹´*/
     private int payear;
-    /** ¥d¸¹*/
+    /** å¡è™Ÿ*/
     private String paycard;
-    /** ©m¦W*/
+    /** å§“å*/
     private String paynamec;
-    /** ³æ¦ì*/
+    /** å–®ä½*/
     private String paydept;
-    /** ¨­¤ÀÃÒÀË¬d½Xµù°O--F¥~Äy E¦³»~*/
+    /** èº«åˆ†è­‰æª¢æŸ¥ç¢¼è¨»è¨˜--Få¤–ç± Eæœ‰èª¤*/
     private String payidflg;
-    /** ©Ò±o¶}©l¤é´ÁPAYBEGIN*/
+    /** æ‰€å¾—é–‹å§‹æ—¥æœŸPAYBEGIN*/
     private java.sql.Date paybegin;
-    /** ©Ò±oµ²§ô¤é´ÁPAYEND*/
+    /** æ‰€å¾—çµæŸæ—¥æœŸPAYEND*/
     private java.sql.Date payend;
-    /** ¬y¤ô¸¹PAYSERNO*/
+    /** æµæ°´è™ŸPAYSERNO*/
     private int payserno;
-    /** §ó§ïªÌPAYUPDID*/
+    /** æ›´æ”¹è€…PAYUPDID*/
     private String payupdid;
-    /** ³Ì«á§ó§ïTIME PAYUPDTM*/
+    /** æœ€å¾Œæ›´æ”¹TIME PAYUPDTM*/
     private java.sql.Timestamp payupdtm;
-    /** ¬y¤ô¸¹PAYSERNO9A*/
+    /** æµæ°´è™ŸPAYSERNO9A*/
     private int payserno9a;
-    /** ¬y¤ô¸¹PAYSERNO9B*/
+    /** æµæ°´è™ŸPAYSERNO9B*/
     private int payserno9b;
-    /** ¦ÛÃº°h¥ğª÷PAYSEREAMT*/
+    /** è‡ªç¹³é€€ä¼‘é‡‘PAYSEREAMT*/
     private int payseramt;
-    /** ¬y¤ô¸¹PAYSERNO91*/
+    /** æµæ°´è™ŸPAYSERNO91*/
     private int payserno91;
-    /** ¬y¤ô¸¹PAYSERNO92*/
+    /** æµæ°´è™ŸPAYSERNO92*/
     private int payserno92;
-    /** Âå°|§O*/
+    /** é†«é™¢åˆ¥*/
     private String hid;
-     /** Â¾¸¹PAYEMPNO*/
+     /** è·è™ŸPAYEMPNO*/
     private int payempno;
-    /** ¬y¤ô¸¹PAYSERNO51*/
+    /** æµæ°´è™ŸPAYSERNO51*/
     private int payserno51;
     
-    /** ¤ë¥÷PAYMONTH*/
+    /** æœˆä»½PAYMONTH*/
     private int paymonth;
-    /** Âà±b¶µ¥ØPAYCATG*/
+    /** è½‰å¸³é …ç›®PAYCATG*/
     private int paycatg;
-    /** À³µ|©Ò±oPAYTAXPAY*/
+    /** æ‡‰ç¨…æ‰€å¾—PAYTAXPAY*/
     private int paytaxpay;
-    /** ¤w¦©©Ò±oµ|PAYTAXDEDUCT*/ 
+    /** å·²æ‰£æ‰€å¾—ç¨…PAYTAXDEDUCT*/ 
     private int paytaxdeduct;
     
-    /** ®æ¦¡--50Á~¸ê 9A°õ¦æ·~°È©Ò±oPAYFORMAT*/
+    /** æ ¼å¼--50è–ªè³‡ 9AåŸ·è¡Œæ¥­å‹™æ‰€å¾—PAYFORMAT*/
     private String payformat;
-    /** ¶Ç²¼»s²¼¸¹PAYCITATION*/
+    /** å‚³ç¥¨è£½ç¥¨è™ŸPAYCITATION*/
     private String paycitation;
     
     

@@ -6,28 +6,28 @@ import org.apache.log4j.Logger;
 public class Psbasic {
 	SimpleDateFormat sdf_d=new SimpleDateFormat("yyyy-MM-dd");
 	private static final long serialVersionUID = 1L;
-	static Logger log = Logger.getLogger(Psbasic.class); //©I¥slog4j
+	static Logger log = Logger.getLogger(Psbasic.class); //å‘¼å«log4j
 	
-	private String pbidtno = "";  //¨­¤ÀÃÒ¸¹
-	private String pbnamefd = ""; //©m¦W
-	private String pbposino = ""; //Â¾°È½s¸¹
-	private String pbposmsk = ""; //¦bÂ÷Â¾µù°O
-	private String pbcardno = ""; //¥d¸¹
-	private String pbcatego = ""; //Â¾Ãş
-	private String pbwkcode = ""; //¤u§@³æ¦ì¥N½X
-	private String pbwkname = ""; //¤u§@³æ¦ì
-	private String pbtitcod = ""; //Â¾ºÙ¤@¥N½X
-	private String pbtitnme = ""; //Â¾ºÙ¤@
-	private String pbpagrad = ""; //­Ä¯Å
-	private String pbpapont = ""; //­ÄÂI
-	private String pblastot = ""; //¦¨¥»¤¤¤ß
-	private String pbporank = ""; //©xÂ¾µ¥
-	private java.sql.Date pbposdat; //¨ìÂ¾¤é´Á
-	private java.sql.Date pbgocdat; //¤½Â¾°_±Ò¤é´Á
-	private java.sql.Date pbgoadat; //¨ì°|¤é´Á
-	private String pbpostus = ""; //²{Â¾ª¬ªp
-	private String pbpchief = ""; //¥DºŞ¯Å§O
-	private String pbdomadr = ""; //¤áÄy¦a§}
+	private String pbidtno = "";  //èº«åˆ†è­‰è™Ÿ
+	private String pbnamefd = ""; //å§“å
+	private String pbposino = ""; //è·å‹™ç·¨è™Ÿ
+	private String pbposmsk = ""; //åœ¨é›¢è·è¨»è¨˜
+	private String pbcardno = ""; //å¡è™Ÿ
+	private String pbcatego = ""; //è·é¡
+	private String pbwkcode = ""; //å·¥ä½œå–®ä½ä»£ç¢¼
+	private String pbwkname = ""; //å·¥ä½œå–®ä½
+	private String pbtitcod = ""; //è·ç¨±ä¸€ä»£ç¢¼
+	private String pbtitnme = ""; //è·ç¨±ä¸€
+	private String pbpagrad = ""; //ä¿¸ç´š
+	private String pbpapont = ""; //ä¿¸é»
+	private String pblastot = ""; //æˆæœ¬ä¸­å¿ƒ
+	private String pbporank = ""; //å®˜è·ç­‰
+	private java.sql.Date pbposdat; //åˆ°è·æ—¥æœŸ
+	private java.sql.Date pbgocdat; //å…¬è·èµ·å•Ÿæ—¥æœŸ
+	private java.sql.Date pbgoadat; //åˆ°é™¢æ—¥æœŸ
+	private String pbpostus = ""; //ç¾è·ç‹€æ³
+	private String pbpchief = ""; //ä¸»ç®¡ç´šåˆ¥
+	private String pbdomadr = ""; //æˆ¶ç±åœ°å€
 	private String hid = "";
 	
 	public String getPbidtno() {

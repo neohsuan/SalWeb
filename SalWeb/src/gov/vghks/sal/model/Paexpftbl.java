@@ -3,23 +3,23 @@ package gov.vghks.sal.model;
 import gov.vghks.common.util.StringUtil;
 
 import java.io.Serializable;
-//ÁZ®ÄÃB¥~ÂI¼Æ¹ï·Óªí 
+//ç¸¾æ•ˆé¡å¤–é»æ•¸å°ç…§è¡¨ 
 public class Paexpftbl implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ¥N½X*/
+	/** ä»£ç¢¼*/
     private int expfkey;
-    /** ¤¤¤å»¡©ú*/
+    /** ä¸­æ–‡èªªæ˜*/
     private String expfname;
-    /** §ó§ïªÌ*/
+    /** æ›´æ”¹è€…*/
     private String payupdid;
-    /** §ó§ï¤é´Á */
+    /** æ›´æ”¹æ—¥æœŸ */
     private java.sql.Timestamp payupdat;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpaexpftbl;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zptexpftbl;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhexpftbl;
     
 	public String getExpfname() {

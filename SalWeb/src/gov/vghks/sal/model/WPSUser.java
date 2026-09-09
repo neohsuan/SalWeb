@@ -4,44 +4,44 @@ import java.io.Serializable;
 
 public class WPSUser implements Serializable{
 	
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 2366284486426627547L;
-	/** µn¤JªÌ¥d¸¹ */
+	/** ç™»å…¥è€…å¡è™Ÿ */
 	private String loginId;
-	/** µn¤JªÌ©m¦W */
+	/** ç™»å…¥è€…å§“å */
 	private String userNm;
-	/** µn¤JªÌ³æ¦ì */
+	/** ç™»å…¥è€…å–®ä½ */
 	private String deptNo;
-	/** µn¤JªÌ³æ¦ì¤¤¤å */
+	/** ç™»å…¥è€…å–®ä½ä¸­æ–‡ */
 	private String deptName;
-	/** µn¤JªÌ¦¨¥»¤¤¤ß */
+	/** ç™»å…¥è€…æˆæœ¬ä¸­å¿ƒ */
 	private String cosId;
-	/** ¨Ï¥ÎªÌÂå®v³¹¸¹ */
+	/** ä½¿ç”¨è€…é†«å¸«ç« è™Ÿ */
 	private String docNo;
-	/** ¨Ï¥ÎªÌ¨­¥÷ÃÒ */
+	/** ä½¿ç”¨è€…èº«ä»½è­‰ */
 	private String idNo;
-	/** ¥DºŞ¯Å§O 1°|ªø 2°Æ°|ªø X¥D¥ô¯µ®Ñ 3¤@¯Å¥DºŞ 4¤G¯Å¥DºŞ 5Å@²zªø/°ÆÅ@²zªø */
+	/** ä¸»ç®¡ç´šåˆ¥ 1é™¢é•· 2å‰¯é™¢é•· Xä¸»ä»»ç§˜æ›¸ 3ä¸€ç´šä¸»ç®¡ 4äºŒç´šä¸»ç®¡ 5è­·ç†é•·/å‰¯è­·ç†é•· */
 	private String chieftyp;
-	/** Á~¸êÂ¾ºÙ¥N½X */
+	/** è–ªè³‡è·ç¨±ä»£ç¢¼ */
 	private String payWkTyd;
-	/** ¹q¤l¶l¥ó */
+	/** é›»å­éƒµä»¶ */
 	private String mail;
-	/** LDAP ¸s²Õ */
+	/** LDAP ç¾¤çµ„ */
 	private String groups;
-	/** Âå°|¥N¸¹ */
+	/** é†«é™¢ä»£è™Ÿ */
 	private String hid;	
-	/** ºŞ²zªÌ */
+	/** ç®¡ç†è€… */
 	private String pa_adm;
-	/** ½s¿èªÌ_ºûÅ@¨¤¦â */
+	/** ç·¨è¼¯è€…_ç¶­è­·è§’è‰² */
 	private String pa_edit;
-	/** ¬d¸ß¨¤¦â */
+	/** æŸ¥è©¢è§’è‰² */
 	private String pa_view;
-	/** ½s¿èªÌ_­û¤u¼úª÷ */
+	/** ç·¨è¼¯è€…_å“¡å·¥çé‡‘ */
 	private String pa_bones;
-	/** ½s¿èªÌ_©Ò±oµ| */
+	/** ç·¨è¼¯è€…_æ‰€å¾—ç¨… */
 	private String pa_tax;
 	/**
-	 * ¨ú±oµn¤JªÌ¥d¸¹
+	 * å–å¾—ç™»å…¥è€…å¡è™Ÿ
 	 * @return loginId
 	 */
 	public String getLoginId() {
@@ -49,7 +49,7 @@ public class WPSUser implements Serializable{
 	}
 	
 	/**
-	 * ³]©wµn¤JªÌ¥d¸¹
+	 * è¨­å®šç™»å…¥è€…å¡è™Ÿ
 	 * @param loginId
 	 */
 	public void setLoginId(String loginId) {
@@ -57,7 +57,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ¨ú±oµn¤JªÌ©m¦W
+	 * å–å¾—ç™»å…¥è€…å§“å
 	 * @return userNm
 	 */
 	public String getUserNm() {
@@ -65,7 +65,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ³]©wµn¤JªÌ©m¦W
+	 * è¨­å®šç™»å…¥è€…å§“å
 	 * @param userNm
 	 */
 	public void setUserNm(String userNm) {
@@ -73,7 +73,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ¨ú±oµn¤JªÌ³æ¦ì
+	 * å–å¾—ç™»å…¥è€…å–®ä½
 	 * @return deptNo
 	 */
 	public String getDeptNo() {
@@ -81,7 +81,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ³]©wµn¤JªÌ³æ¦ì
+	 * è¨­å®šç™»å…¥è€…å–®ä½
 	 * @param deptNo
 	 */
 	public void setDeptNo(String deptNo) {
@@ -89,7 +89,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ¨ú±oµn¤JªÌ³æ¦ì¤¤¤å
+	 * å–å¾—ç™»å…¥è€…å–®ä½ä¸­æ–‡
 	 * @return deptName
 	 */
 	public String getDeptName() {
@@ -97,7 +97,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ³]©wµn¤JªÌ³æ¦ì¤¤¤å
+	 * è¨­å®šç™»å…¥è€…å–®ä½ä¸­æ–‡
 	 * @param deptName
 	 */
 	public void setDeptName(String deptName) {
@@ -105,7 +105,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ¨ú±oµn¤JªÌ¦¨¥»¤¤¤ß
+	 * å–å¾—ç™»å…¥è€…æˆæœ¬ä¸­å¿ƒ
 	 * @return cosId
 	 */
 	public String getCosId() {
@@ -113,7 +113,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ³]©wµn¤JªÌ¦¨¥»¤¤¤ß
+	 * è¨­å®šç™»å…¥è€…æˆæœ¬ä¸­å¿ƒ
 	 * @param cosId
 	 */
 	public void setCosId(String cosId) {
@@ -121,7 +121,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ¨ú±o¨Ï¥ÎªÌÂå®v³¹¸¹
+	 * å–å¾—ä½¿ç”¨è€…é†«å¸«ç« è™Ÿ
 	 * @return docNo
 	 */
 	public String getDocNo() {
@@ -129,7 +129,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ³]©w¨Ï¥ÎªÌÂå®v³¹¸¹
+	 * è¨­å®šä½¿ç”¨è€…é†«å¸«ç« è™Ÿ
 	 * @param docNo
 	 */
 	public void setDocNo(String docNo) {
@@ -137,7 +137,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ¨ú±o¨Ï¥ÎªÌ¨­¥÷ÃÒ
+	 * å–å¾—ä½¿ç”¨è€…èº«ä»½è­‰
 	 * @return idNo
 	 */
 	public String getIdNo() {
@@ -145,7 +145,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ³]©w¨Ï¥ÎªÌ¨­¥÷ÃÒ
+	 * è¨­å®šä½¿ç”¨è€…èº«ä»½è­‰
 	 * @param idNo
 	 */
 	public void setIdNo(String idNo) {
@@ -153,7 +153,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ¨ú±o¥DºŞ¯Å§O
+	 * å–å¾—ä¸»ç®¡ç´šåˆ¥
 	 * @return chieftyp
 	 */
 	public String getChieftyp() {
@@ -161,7 +161,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ³]©w¥DºŞ¯Å§O
+	 * è¨­å®šä¸»ç®¡ç´šåˆ¥
 	 * @param chieftyp
 	 */
 	public void setChieftyp(String chieftyp) {
@@ -169,7 +169,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ¨ú±oÁ~¸êÂ¾ºÙ¥N½X
+	 * å–å¾—è–ªè³‡è·ç¨±ä»£ç¢¼
 	 * @return payWkTyd
 	 */
 	public String getPayWkTyd() {
@@ -177,7 +177,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ³]©wÁ~¸êÂ¾ºÙ¥N½X
+	 * è¨­å®šè–ªè³‡è·ç¨±ä»£ç¢¼
 	 * @param payWkTyd
 	 */
 	public void setPayWkTyd(String payWkTyd) {
@@ -185,7 +185,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ¨ú±o¹q¤l¶l¥ó
+	 * å–å¾—é›»å­éƒµä»¶
 	 * @return mail
 	 */
 	public String getMail() {
@@ -193,7 +193,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ³]©w¹q¤l¶l¥ó
+	 * è¨­å®šé›»å­éƒµä»¶
 	 * @param mail
 	 */
 	public void setMail(String mail) {
@@ -201,7 +201,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ¨ú±oLDAP ¸s²Õ
+	 * å–å¾—LDAP ç¾¤çµ„
 	 * @return groups
 	 */
 	public String getGroups() {
@@ -209,7 +209,7 @@ public class WPSUser implements Serializable{
 	}
 
 	/**
-	 * ³]©wLDAP ¸s²Õ
+	 * è¨­å®šLDAP ç¾¤çµ„
 	 * @param groups
 	 */
 	public void setGroups(String groups) {

@@ -1,11 +1,11 @@
 package gov.vghks.sal.model;
 
 public class Pabasadr {
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-    /** ¨­¥÷ÃÒ¦r¸¹*/
+    /** èº«ä»½è­‰å­—è™Ÿ*/
     private String payidno;
-    /** ¦í§}*/
+    /** ä½å€*/
     private String payaddrs;
     
 	public String getPayidno() {

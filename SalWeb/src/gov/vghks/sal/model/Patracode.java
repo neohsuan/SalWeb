@@ -1,19 +1,19 @@
 package gov.vghks.sal.model;
 
 import java.io.Serializable;
-//²§°Ê¥N½X 
+//ç•°å‹•ä»£ç¢¼ 
 public class Patracode implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ¥N½X*/
+	/** ä»£ç¢¼*/
     private int tracode;
-    /** ¤¤¤å»¡©ú*/
+    /** ä¸­æ–‡èªªæ˜*/
     private String traname;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpatracode;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zpttracode;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhtracode;
     
 	public int getTracode() {

@@ -1,16 +1,16 @@
 package gov.vghks.sal.model;
 
 import java.io.Serializable;
-//¥ş¥Á°·±d«OÀI­t¾áª÷ÃBªí 
+//å…¨æ°‘å¥åº·ä¿éšªè² æ“”é‡‘é¡è¡¨ 
 public class Padpintbl implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	private int dpinlow=0;      	//³Ì§C¤ë§ë«Oª÷ÃB
-	private int dpinhigh=0;      	//³Ì°ª¤ë§ë«Oª÷ÃB
-	private int dpinamt=0;      	//°·«O¶O
-	private String payupdid="";     //­t³d¤HID
-	private int dpindept1=0;      	//³æ¦ì­t¾á¤½«O¨­¥÷
-	private int dpindept3=0;      	//³æ¦ì­t¾á³Ò«O¨­¥÷
+	private int dpinlow=0;      	//æœ€ä½æœˆæŠ•ä¿é‡‘é¡
+	private int dpinhigh=0;      	//æœ€é«˜æœˆæŠ•ä¿é‡‘é¡
+	private int dpinamt=0;      	//å¥ä¿è²»
+	private String payupdid="";     //è² è²¬äººID
+	private int dpindept1=0;      	//å–®ä½è² æ“”å…¬ä¿èº«ä»½
+	private int dpindept3=0;      	//å–®ä½è² æ“”å‹ä¿èº«ä»½
 	
 	public int getDpinlow() {
 		return dpinlow;

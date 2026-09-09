@@ -1,43 +1,43 @@
 package gov.vghks.sal.model;
 
 import java.io.Serializable;
-//¶¥¯Å¤ä¦© 
+//éšç´šæ”¯æ‰£ 
 public class Parank implements Serializable{
-	/** §Ç¦Cª©¥»ID */
+	/** åºåˆ—ç‰ˆæœ¬ID */
 	private static final long serialVersionUID = 1L;
-	/** ¯Å§O*/
+	/** ç´šåˆ¥*/
     private String paylev1v;
-    /** ­Ä¯Å*/
+    /** ä¿¸ç´š*/
     private String pay2ev1v;
-    /** ­ÄÂI*/
+    /** ä¿¸é»*/
     private int paydegrv;
-    /** ¶¥¯Å*/
+    /** éšç´š*/
     private String payrankv;
-    /** ¥»Á~*/
+    /** æœ¬è–ª*/
     private int paybasev;
-    /** ¤½«O¶O*/
+    /** å…¬ä¿è²»*/
     private int paygeinf;
-    /** ³Ò«O¶O*/
+    /** å‹ä¿è²»*/
     private int paylbinf;
-    /** °·«O¶O*/
+    /** å¥ä¿è²»*/
     private int paydpinv;
-    /** ·s¨î¤½«O¶O*/
+    /** æ–°åˆ¶å…¬ä¿è²»*/
     private int paygeinn;
-    /** °h¼¾°òª÷/Â÷Â¾ª÷*/
+    /** é€€æ’«åŸºé‡‘/é›¢è·é‡‘*/
     private int payrebef;
-    /** ­×§ï¤H­û*/
+    /** ä¿®æ”¹äººå“¡*/
     private String payuseid;
-    /** Âå°|§O*/
+    /** é†«é™¢åˆ¥*/
     private String hid;
-	/** ·s¨î°h¼¾Â÷Â¾ª÷*/
+	/** æ–°åˆ¶é€€æ’«é›¢è·é‡‘*/
     private int payreben;
-    /** §ó§ï¤é´Á */
+    /** æ›´æ”¹æ—¥æœŸ */
     private java.sql.Timestamp payupdat;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zparank;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zptrank;
-    /** ¤é´Á®ÉÂW */
+    /** æ—¥æœŸæ™‚æˆ³ */
     private java.sql.Timestamp zlhrank;
     
 	public String getPaylev1v() {
