@@ -84,9 +84,9 @@ import com.ibm.mq.headers.Charsets;
 @RequestMapping(value = "/salController")
 public class SalController{
 	
-	/** ©I¥slog4j */
+	/** å‘¼å«log4j */
 	public static final Logger log = 	Logger.getLogger(SalController.class);
-	/** ½d¨Ò¥D­¶­± */
+	/** ç¯„ä¾‹ä¸»é é¢ */
 	public static final String main	=	"sal/main";
 	
 	JSONArray jsonArrRtn = null;
@@ -99,13 +99,13 @@ public class SalController{
 	String userid="";
 	
 	/**
-	 * ½d¨Ò¥D­¶­±
+	 * ç¯„ä¾‹ä¸»é é¢
 	 */
 	@RequestMapping(params="method=main")
 	public String main(HttpServletRequest request){
 		String me = getClass().getName() + ".main()";
 		try{
-			//³z¹LWPSAutoLogin¨ú±oµn¤JªÌ¸ê°T¡A¤w¸g¦s¦bsession¡A¥i¥H¦Û¦æ§PÂ_¬O§_»İ­n±a¤J­¶­±
+			//é€éWPSAutoLoginå–å¾—ç™»å…¥è€…è³‡è¨Šï¼Œå·²ç¶“å­˜åœ¨sessionï¼Œå¯ä»¥è‡ªè¡Œåˆ¤æ–·æ˜¯å¦éœ€è¦å¸¶å…¥é é¢
 			WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 			request.setAttribute("user", user);
 			
@@ -117,15 +117,15 @@ public class SalController{
 		return main;
 	}
 	/**
-	 * delTblCode §R°£
+	 * delTblCode åˆªé™¤
 	 */
 	@RequestMapping(params="method=delTblCode")
 	public void delTblCode(HttpServletRequest request, HttpServletResponse response)throws IOException{
 		String me = getClass().getName() + ".delTblCode()";
-		response.setCharacterEncoding("utf-8");//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		response.setCharacterEncoding("utf-8");//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 		PrintWriter out = response.getWriter();
 		jsonObj = new JSONObject();
-		//³z¹LWPSAutoLogin¨ú±oµn¤JªÌ¸ê°T¡A¤w¸g¦s¦bsession¡A¥i¥H¦Û¦æ§PÂ_¬O§_»İ­n±a¤J­¶­±
+		//é€éWPSAutoLoginå–å¾—ç™»å…¥è€…è³‡è¨Šï¼Œå·²ç¶“å­˜åœ¨sessionï¼Œå¯ä»¥è‡ªè¡Œåˆ¤æ–·æ˜¯å¦éœ€è¦å¸¶å…¥é é¢
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
@@ -135,7 +135,7 @@ public class SalController{
 		da=new VGHDataAccess(dataSourceNT);
 		boolean success=false;
 		try{			
-			String code_data = request.getParameter("code_data");//¶Ç¤Jjson
+			String code_data = request.getParameter("code_data");//å‚³å…¥json
 			String tblname = request.getParameter("tblname");
 			
 			tDAO = new SalNTDAO(da,hid);
@@ -143,7 +143,7 @@ public class SalController{
 			if (success)
 				jsonObj.element("msg", "OK");	
 			else
-				jsonObj.element("msg", "¥¢±Ñ");
+				jsonObj.element("msg", "å¤±æ•—");
 		}catch (Exception e) {
 			log.info(me + " fail, " + e);
 			jsonObj.element("msg", e.toString());
@@ -153,17 +153,17 @@ public class SalController{
 			da.close();
 			da = null;
 		}
-		// ¼g¥X¦ÜJSP­¶­±
+		// å¯«å‡ºè‡³JSPé é¢
 		out.print(jsonObj.toString());
 		out.flush();
 	}
 	/**
-	 * §ó·s°ò¥»¸ê®Æ
+	 * æ›´æ–°åŸºæœ¬è³‡æ–™
 	 *//*
 	@RequestMapping(params="method=updPATblByKey")
 	public void updPATblByKey(HttpServletRequest request, HttpServletResponse response)throws IOException{
 		String me = getClass().getName() + ".updPATBLByKey()";
-		response.setCharacterEncoding("utf-8");//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		response.setCharacterEncoding("utf-8");//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 		PrintWriter out = response.getWriter();
 		
 		boolean blnupd=false;
@@ -171,12 +171,12 @@ public class SalController{
 		String editMode=request.getParameter("editMode");
 		String tblname=request.getParameter("tblname");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
-		String pk_data = request.getParameter("pk_data")==null?"":request.getParameter("pk_data");//¶Ç¤Jjson
+		String pk_data = request.getParameter("pk_data")==null?"":request.getParameter("pk_data");//å‚³å…¥json
 		String dataSourceNT="";
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
 		dataSourceNT=hospInfo.dataSourceNT;
 		da=new VGHDataAccess(dataSourceNT);
-		//³z¹LWPSAutoLogin¨ú±oµn¤JªÌ¸ê°T¡A¤w¸g¦s¦bsession¡A¥i¥H¦Û¦æ§PÂ_¬O§_»İ­n±a¤J­¶­±
+		//é€éWPSAutoLoginå–å¾—ç™»å…¥è€…è³‡è¨Šï¼Œå·²ç¶“å­˜åœ¨sessionï¼Œå¯ä»¥è‡ªè¡Œåˆ¤æ–·æ˜¯å¦éœ€è¦å¸¶å…¥é é¢
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		if (user!=null){
 			tDAO = new SalNTDAO(da,hid);
@@ -184,16 +184,16 @@ public class SalController{
 	    		String tabJson = request.getParameter("tabJson");
 				String hidno=request.getParameter("hidno");
 				blnupd =  tDAO.updPATblByKey(editMode,tblname,pk_data,tabJson,userid,hid,da);
-				if (blnupd){	//update success,­«·sreload
-					jsonObj.put("msg", tblname+pk_data+" "+editMode+" ¦¨¥\");
+				if (blnupd){	//update success,é‡æ–°reload
+					jsonObj.put("msg", tblname+pk_data+" "+editMode+" æˆåŠŸ");
 				}else{
-					jsonObj.put("msg", tblname+pk_data+" "+editMode+" ¥¢±Ñ");
+					jsonObj.put("msg", tblname+pk_data+" "+editMode+" å¤±æ•—");
 				}
 				
 			}catch(Exception e){
 				jsonObj.element("msg", e.toString());
-				log.info(tblname+" "+editMode+"¥¢±Ñ==>"+e.toString());
-				SendMail.sendMail("[PSM]"+user.getLoginId()+" §ó·s "+ pk_data +" ¡mÁ~¸ê°ò¥»ÀÉ¡n¥¢±Ñ!",e.getMessage());
+				log.info(tblname+" "+editMode+"å¤±æ•—==>"+e.toString());
+				SendMail.sendMail("[PSM]"+user.getLoginId()+" æ›´æ–° "+ pk_data +" ã€Šè–ªè³‡åŸºæœ¬æª”ã€‹å¤±æ•—!",e.getMessage());
 				e.printStackTrace();			
 			}finally{
 				tDAO=null;
@@ -202,17 +202,17 @@ public class SalController{
 			}
 			
 		}
-		// ¼g¥X¦ÜJSP­¶­±
+		// å¯«å‡ºè‡³JSPé é¢
 		out.print(jsonObj.toString());
 		out.flush();		
 	}*/
 	/**
-	 * §ó·s©Ò±oµ|¸ê®Æ
+	 * æ›´æ–°æ‰€å¾—ç¨…è³‡æ–™
 	 */
 	@RequestMapping(params="method=updTaxByKey")
 	public void updTaxByKey(HttpServletRequest request, HttpServletResponse response)throws IOException{
 		String me = getClass().getName() + ".updTaxByKey()";
-		response.setCharacterEncoding("utf-8");//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		response.setCharacterEncoding("utf-8");//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 		PrintWriter out = response.getWriter();
 		
 		boolean blnupd=false;
@@ -220,13 +220,13 @@ public class SalController{
 		String item=request.getParameter("item");
 		String tblname=request.getParameter("tblname");
 		userid=request.getParameter("userid");
-		String pk_data = request.getParameter("pk_data")==null?"":request.getParameter("pk_data");//¶Ç¤Jjson
+		String pk_data = request.getParameter("pk_data")==null?"":request.getParameter("pk_data");//å‚³å…¥json
 		String tabJson = request.getParameter("tabJson");
 		String dataSourceNT="";
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
 		dataSourceNT=hospInfo.dataSourceNT;
 		da=new VGHDataAccess(dataSourceNT);
-		//³z¹LWPSAutoLogin¨ú±oµn¤JªÌ¸ê°T¡A¤w¸g¦s¦bsession¡A¥i¥H¦Û¦æ§PÂ_¬O§_»İ­n±a¤J­¶­±
+		//é€éWPSAutoLoginå–å¾—ç™»å…¥è€…è³‡è¨Šï¼Œå·²ç¶“å­˜åœ¨sessionï¼Œå¯ä»¥è‡ªè¡Œåˆ¤æ–·æ˜¯å¦éœ€è¦å¸¶å…¥é é¢
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		if (user!=null){
 			tDAO = new SalNTDAO(da,hid);
@@ -234,16 +234,16 @@ public class SalController{
 	    		
 				String hidno=request.getParameter("hidno");
 				blnupd =  tDAO.updTaxByKey(item,pk_data,tabJson,userid,hid,da);
-				if (blnupd){	//update success,­«·sreload
-					jsonObj.put("msg", tblname +" pk_data:"+pk_data+" item:"+item+" ¦¨¥\");
+				if (blnupd){	//update success,é‡æ–°reload
+					jsonObj.put("msg", tblname +" pk_data:"+pk_data+" item:"+item+" æˆåŠŸ");
 				}else{
-					jsonObj.put("msg", tblname +" pk_data:"+pk_data+" item:"+item+" ¥¢±Ñ");
+					jsonObj.put("msg", tblname +" pk_data:"+pk_data+" item:"+item+" å¤±æ•—");
 				}
 				
 			}catch(Exception e){
 				jsonObj.element("msg", e.toString());
-				log.info(tblname+" "+item+"¥¢±Ñ==>"+e.toString());
-				//SendMail.sendMail("[PSM]"+user.getLoginId()+" item:"+item +" pk_data:"+pk_data +" tabJson:"+tabJson+" ¡m"+tblname+"¡n¥¢±Ñ!",e.getMessage());
+				log.info(tblname+" "+item+"å¤±æ•—==>"+e.toString());
+				//SendMail.sendMail("[PSM]"+user.getLoginId()+" item:"+item +" pk_data:"+pk_data +" tabJson:"+tabJson+" ã€Š"+tblname+"ã€‹å¤±æ•—!",e.getMessage());
 				e.printStackTrace();			
 			}finally{
 				tDAO=null;
@@ -252,20 +252,20 @@ public class SalController{
 			}
 			
 		}
-		// ¼g¥X¦ÜJSP­¶­±
+		// å¯«å‡ºè‡³JSPé é¢
 		out.print(jsonObj.toString());
 		out.flush();		
 	}
 	/**
-	 * ¹w¥ı¸ü¤J¥N½X item:ªí³æ(payDetailµoÁ~©ú²Ó psnBasic°ò¥»ÀÉ) tranPay²§°ÊÀÉ payTax©Ò±oµ| batchPay§å¦¸ÀÉ)
+	 * é å…ˆè¼‰å…¥ä»£ç¢¼ item:è¡¨å–®(payDetailç™¼è–ªæ˜ç´° psnBasicåŸºæœ¬æª”) tranPayç•°å‹•æª” payTaxæ‰€å¾—ç¨… batchPayæ‰¹æ¬¡æª”)
 	 * 
 	 */
 	@RequestMapping(params="method=getLoadCodeTbl")
 	public void getLoadCodeTbl(HttpServletRequest request, HttpServletResponse response){
 		String me = getClass().getName() + ".getLoadCodeTbl()";
 		JsonConfig cfg = new JsonConfig();
-		String flag = request.getParameter("flag")==null?"":request.getParameter("flag");//Y:­«Åª,N:¤£³B²z	
-		String item = request.getParameter("item")==null?"":request.getParameter("item");	//ªí³æ
+		String flag = request.getParameter("flag")==null?"":request.getParameter("flag");//Y:é‡è®€,N:ä¸è™•ç†	
+		String item = request.getParameter("item")==null?"":request.getParameter("item");	//è¡¨å–®
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String dataSourceNT="";
@@ -283,15 +283,15 @@ public class SalController{
 		ArrayList alRnk4Tbl= null;
 		ArrayList alexpfTbl= null;
 		ArrayList altracdTbl= null;
-		ArrayList alpayitmTbl=null;//¤ä¦©¥N½X
-		ArrayList alDpinTbl=null;//°·«O¯Å¶Z
-		ArrayList alTaxYrTbl=null;//©Ò±oµ|¦~«×
-		ArrayList alTaxCatgTbl=null;//©Ò±oµ|Âà±b¶µ¥Ø
-		ArrayList alTaxTranYrTbl=null;//¤wÂà±b©Ò±oµ|¦~¤ë
-		ArrayList alPayDtTbl=null;//¸É¥R¶Oµ¹¥I¤é´Á
-		ArrayList alPayYrTbl=null;//¸É¥R¶Oµ¹¥I¦~«×
+		ArrayList alpayitmTbl=null;//æ”¯æ‰£ä»£ç¢¼
+		ArrayList alDpinTbl=null;//å¥ä¿ç´šè·
+		ArrayList alTaxYrTbl=null;//æ‰€å¾—ç¨…å¹´åº¦
+		ArrayList alTaxCatgTbl=null;//æ‰€å¾—ç¨…è½‰å¸³é …ç›®
+		ArrayList alTaxTranYrTbl=null;//å·²è½‰å¸³æ‰€å¾—ç¨…å¹´æœˆ
+		ArrayList alPayDtTbl=null;//è£œå……è²»çµ¦ä»˜æ—¥æœŸ
+		ArrayList alPayYrTbl=null;//è£œå……è²»çµ¦ä»˜å¹´åº¦
 		
-		//Åª¨úpspm.pccosttbl,©ñ¦Üsession,¥u»İÅª¤@¦¸
+		//è®€å–pspm.pccosttbl,æ”¾è‡³session,åªéœ€è®€ä¸€æ¬¡
 		alRankCodeTbl= (ArrayList) request.getSession().getAttribute("alRankCodeTbl");
 		alTitleCodeTbl= (ArrayList) request.getSession().getAttribute("alTitleCodeTbl");
 		alBankDtTbl= (ArrayList) request.getSession().getAttribute("alBankDtTbl");
@@ -319,7 +319,7 @@ public class SalController{
 			alPayDtTbl= (ArrayList) request.getSession().getAttribute("alPayDtTbl");
 			alPayYrTbl= (ArrayList) request.getSession().getAttribute("alPayYrTbl");
 		}
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			System.out.println("dataSourceNT:"+dataSourceNT);
 			if (da==null){
@@ -447,7 +447,7 @@ public class SalController{
 					jsonObj.element("alPayDtTbl", alPayDtTbl);					
 				}
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -462,7 +462,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -471,7 +471,7 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨ÌKEY,¨ú±o¿ï³æ¥N½XÀÉºûÅ@ codeId(A
+	 * ä¾KEY,å–å¾—é¸å–®ä»£ç¢¼æª”ç¶­è­· codeId(A
 	 */
 	@RequestMapping(params="method=qryCodeList")
 	public void qryCodeList(HttpServletRequest request, HttpServletResponse response){
@@ -480,7 +480,7 @@ public class SalController{
 		String tblname = request.getParameter("tblname")==null?"":request.getParameter("tblname");
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
-		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//¶Ç¤Jjson
+		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//å‚³å…¥json
 		
 		String dataSourceNT="";
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
@@ -493,10 +493,10 @@ public class SalController{
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				jsonArrRtn=tDAO.qryCodeList(tblname,code_data,userid,hid,da);
-				// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+				// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 				jsonObj.element("codeData", jsonArrRtn);  
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -505,7 +505,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -514,7 +514,7 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨ÌKEY,¨ú±o©Ò±oµ|­Ó¤H©ú²Ó/Âà±b+²{ª÷¤ä¦©
+	 * ä¾KEY,å–å¾—æ‰€å¾—ç¨…å€‹äººæ˜ç´°/è½‰å¸³+ç¾é‡‘æ”¯æ‰£
 	 */
 	@RequestMapping(params="method=getTaxPsnByKey")
 	public void getTaxPsnByKey(HttpServletRequest request, HttpServletResponse response){
@@ -525,7 +525,7 @@ public class SalController{
 		HashMap TaxMap=new HashMap();
 		HashMap TaxTranMap=new HashMap();
 		HashMap TaxCashMap=new HashMap();
-		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//¶Ç¤Jjson
+		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//å‚³å…¥json
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String dataSourceNT="";
@@ -533,21 +533,21 @@ public class SalController{
 		dataSourceNT=hospInfo.dataSourceNT;
 		da=new VGHDataAccess(dataSourceNT);
 		
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				jsonObj = new JSONObject();
-				//©Ò±oµ|­Ó¤H©ú²Ó
+				//æ‰€å¾—ç¨…å€‹äººæ˜ç´°
 				psnitem=tDAO.getTaxPsnBykey(code_data,hid,da);
 				jsonObj.element("taxPsnItem", psnitem,cfg);
-				//©Ò±oµ|Âà±b¤ä¦©
+				//æ‰€å¾—ç¨…è½‰å¸³æ”¯æ‰£
 				TaxMap=tDAO.getTaxPayListbyKey(code_data,userid,hid,da);
 				jsonObj.element("taxTranList", TaxMap.get("taxTran_json"));
-				//©Ò±oµ|²{ª÷¤ä¦©
+				//æ‰€å¾—ç¨…ç¾é‡‘æ”¯æ‰£
 				jsonObj.element("taxCashList", TaxMap.get("taxCash_json"));
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -556,7 +556,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -565,14 +565,14 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨ÌKEY,¨ú±o©Ò±oµ|­Ó¤H©ú²ÓLIST__©Ò±oµ|½s¿è
+	 * ä¾KEY,å–å¾—æ‰€å¾—ç¨…å€‹äººæ˜ç´°LIST__æ‰€å¾—ç¨…ç·¨è¼¯
 	 */
 	@RequestMapping(params="method=getTaxTaskList")
 	public void getTaxTaskList(HttpServletRequest request, HttpServletResponse response){
 		String me = getClass().getName() + ".getTaxTaskList()";		
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
-		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//¶Ç¤Jjson
+		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//å‚³å…¥json
 		String dataSourceNT="";
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
 		dataSourceNT=hospInfo.dataSourceNT;
@@ -580,15 +580,15 @@ public class SalController{
 		
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				jsonArrRtn=tDAO.getTaxTaskList(code_data,userid,hid,da);
-				// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+				// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 				jsonObj.element("taxTaskList", jsonArrRtn);  
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -597,7 +597,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -606,14 +606,14 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨ÌKEY,¨ú±o©Ò±oµ|¬d¬İLIST
+	 * ä¾KEY,å–å¾—æ‰€å¾—ç¨…æŸ¥çœ‹LIST
 	 */
 	@RequestMapping(params="method=getTaxViewList")
 	public void getTaxViewList(HttpServletRequest request, HttpServletResponse response){
 		String me = getClass().getName() + ".getTaxViewList()";		
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
-		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//¶Ç¤Jjson
+		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//å‚³å…¥json
 		String dataSourceNT="";
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
 		dataSourceNT=hospInfo.dataSourceNT;
@@ -628,15 +628,15 @@ public class SalController{
 //		
 //		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				jsonArrRtn=tDAO.getTaxViewList(code_data,userid,hid,da);
-				// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+				// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 				jsonObj.element("taxViewList", jsonArrRtn);  
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				jsonObj.element("taxViewList", e.toString());
 				e.printStackTrace();
 			}finally{
@@ -646,7 +646,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -655,14 +655,14 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨ÌKEY,¨ú±o©Ò±oµ|·JÁ`LIST
+	 * ä¾KEY,å–å¾—æ‰€å¾—ç¨…å½™ç¸½LIST
 	 */
 	@RequestMapping(params="method=getTaxSumList")
 	public void getTaxSumList(HttpServletRequest request, HttpServletResponse response){
 		String me = getClass().getName() + ".getTaxSumList()";		
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
-		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//¶Ç¤Jjson
+		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//å‚³å…¥json
 		
 		String dataSourceNT="";
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
@@ -671,15 +671,15 @@ public class SalController{
 		
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				jsonArrRtn=tDAO.getTaxSumList(code_data,userid,hid,da);
-				// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+				// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 				jsonObj.element("taxSumList", jsonArrRtn);  
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -688,7 +688,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -697,14 +697,14 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨ÌKEY,¨ú±o©Ò±oµ|·JÁ`LIST
+	 * ä¾KEY,å–å¾—æ‰€å¾—ç¨…å½™ç¸½LIST
 	 */
 	@RequestMapping(params="method=getTaxStatList")
 	public void getTaxStatList(HttpServletRequest request, HttpServletResponse response){
 		String me = getClass().getName() + ".getTaxStatList()";		
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
-		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//¶Ç¤Jjson
+		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//å‚³å…¥json
 		
 		String dataSourceNT="";
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
@@ -713,15 +713,15 @@ public class SalController{
 		
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				jsonArrRtn=tDAO.getTaxStatList(code_data,userid,hid,da);
-				// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+				// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 				jsonObj.element("taxStatList", jsonArrRtn);  
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -730,7 +730,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -739,14 +739,14 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨ÌKEY,¨ú±o¤ë¤ä­Ó¤H©ú²ÓLIST
+	 * ä¾KEY,å–å¾—æœˆæ”¯å€‹äººæ˜ç´°LIST
 	 */
 	@RequestMapping(params="method=getDatPsnList")
 	public void getDatPsnList(HttpServletRequest request, HttpServletResponse response){
 		String me = getClass().getName() + ".getDatPsnList()";		
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
-		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//¶Ç¤Jjson
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
 		
 		String dataSourceNT="";
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
@@ -755,15 +755,15 @@ public class SalController{
 		
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				jsonArrRtn=tDAO.getDatPsnList(in_data,userid,hid,da);
-				// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+				// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 				jsonObj.element("datPsnList", jsonArrRtn);  
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -772,7 +772,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -781,7 +781,7 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨ÌKEY,¨ú±o°ò¥»­Ó¤H©ú²ÓLIST item:1­Ó¤H©ú²Ó,2¿z¿ï
+	 * ä¾KEY,å–å¾—åŸºæœ¬å€‹äººæ˜ç´°LIST item:1å€‹äººæ˜ç´°,2ç¯©é¸
 	 */
 	@RequestMapping(params="method=getBasPsnList")
 	public void getBasPsnList(HttpServletRequest request, HttpServletResponse response){
@@ -790,7 +790,7 @@ public class SalController{
 		//VGHDataAccess da=new VGHDataAccess(Globals.dataSource_NT);
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
-		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//¶Ç¤Jjson
+		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//å‚³å…¥json
 		String item = request.getParameter("item")==null?"":request.getParameter("item");
 		String dataSourceNT="";
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
@@ -798,19 +798,19 @@ public class SalController{
 		da=new VGHDataAccess(dataSourceNT);
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				jsonArrRtn=tDAO.getBasPsnList(code_data,item,userid,hid,da);
-				// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+				// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 				if ("1".equals(item)){
 					jsonObj.element("basPsnList", jsonArrRtn);
 				}else if ("2".equals(item)){
 					jsonObj.element("basPsnFilter", jsonArrRtn);
 				}
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -819,7 +819,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -828,7 +828,7 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨ÌKEY,¨ú±o²§°ÊÀÉ­Ó¤H©ú²ÓLIST item:1­Ó¤H©ú²Ó,2¿z¿ï
+	 * ä¾KEY,å–å¾—ç•°å‹•æª”å€‹äººæ˜ç´°LIST item:1å€‹äººæ˜ç´°,2ç¯©é¸
 	 */
 	@RequestMapping(params="method=getTranPsnList")
 	public void getTranPsnList(HttpServletRequest request, HttpServletResponse response){
@@ -837,7 +837,7 @@ public class SalController{
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		//VGHDataAccess da=new VGHDataAccess(Globals.dataSource_NT);
 
-		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//¶Ç¤Jjson
+		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//å‚³å…¥json
 		String item = request.getParameter("item")==null?"":request.getParameter("item");
 		String dataSourceNT="";
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
@@ -845,19 +845,19 @@ public class SalController{
 		da=new VGHDataAccess(dataSourceNT);
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				jsonArrRtn=tDAO.getTranPsnList(code_data,item,userid,hid,da);
-				// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+				// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 				if ("1".equals(item)){
 					jsonObj.element("traPsnList", jsonArrRtn);
 				}else if ("2".equals(item)){
 					jsonObj.element("traPsnFilter", jsonArrRtn);
 				}
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -866,7 +866,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -875,13 +875,13 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨Ì²§°Ê/§å¦¸,¨ú±o»è³æ½s¸¹²M³æ
+	 * ä¾ç•°å‹•/æ‰¹æ¬¡,å–å¾—é¤‰å–®ç·¨è™Ÿæ¸…å–®
 	 */
 	@RequestMapping(params="method=getSalnumList")
 	public void getSalnumList(HttpServletRequest request, HttpServletResponse response){
 		String me = getClass().getName() + ".getSalnumList()";		
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
-		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//¶Ç¤Jjson
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String dataSourceNT="";
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
@@ -890,15 +890,15 @@ public class SalController{
 		
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				jsonArrRtn=tDAO.getSalnumList(in_data,userid,hid,da);
-				// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+				// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 				jsonObj.element("salnumList", jsonArrRtn);  
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -907,7 +907,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -916,7 +916,7 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨ÌKEY,¨ú±o¤ë¤ä­Ó¤H©ú²Ó
+	 * ä¾KEY,å–å¾—æœˆæ”¯å€‹äººæ˜ç´°
 	 */
 	@RequestMapping(params="method=getDatPsnByKey")
 	public void getDatPsnByKey(HttpServletRequest request, HttpServletResponse response){
@@ -926,7 +926,7 @@ public class SalController{
 		Padatpsn psnitem=null;
 		HashMap datPayMap=new HashMap();
 		HashMap datPaySumMap=new HashMap();
-		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//¶Ç¤Jjson
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String dataSourceNT="";
@@ -935,22 +935,22 @@ public class SalController{
 		da=new VGHDataAccess(dataSourceNT);
 		
 		
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				jsonObj = new JSONObject();
-				//­Ó¤H©ú²Ó
+				//å€‹äººæ˜ç´°
 				psnitem=tDAO.getDatPsnBykey(in_data,userid,hid,da);
 				jsonObj.element("datPsnItem", psnitem,cfg);
-				//­Ó¤H¤ä¦©
+				//å€‹äººæ”¯æ‰£
 				datPayMap=tDAO.getDatPayList(in_data,psnitem,userid,hid,da);
 				jsonObj.element("datPayList", datPayMap.get("datpay_json"));
-				//²b©Ò±o,À³µ|©Ò±o
+				//æ·¨æ‰€å¾—,æ‡‰ç¨…æ‰€å¾—
 				datPaySumMap=(HashMap) datPayMap.get("datpaySum_map");
 				jsonObj.element("datPaySum", datPaySumMap);
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -959,7 +959,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -968,12 +968,12 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨Ì¥d¸¹¨úªº¤H¦W
-	 * 2026.5.27 ¥[HID,2A0,3A0­­¬d¦Û®a
+	 * ä¾å¡è™Ÿå–çš„äººå
+	 * 2026.5.27 åŠ HID,2A0,3A0é™æŸ¥è‡ªå®¶
 	 */
 	@RequestMapping(params="method=getNamebyID")
 	public void getNamebyID(HttpServletRequest request, HttpServletResponse response){
-		response.setCharacterEncoding("utf-8");//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		response.setCharacterEncoding("utf-8");//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 		String me = getClass().getName() + ".getNamebyID()";
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String cardno = request.getParameter("cardno")==null?"":request.getParameter("cardno");		
@@ -984,14 +984,14 @@ public class SalController{
 				jsonObj = tDAO.queryNamebyID(cardno,loginHid);
 				
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -1000,11 +1000,11 @@ public class SalController{
 		}
 	}
 	/**
-	 * ³]©w¥N²z¤H¥d¸¹¦ÜSession
+	 * è¨­å®šä»£ç†äººå¡è™Ÿè‡³Session
 	 */
 	@RequestMapping(params="method=setAgent")
 	public void setAgent(HttpServletRequest request, HttpServletResponse response)throws IOException{
-		response.setCharacterEncoding("utf-8");//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		response.setCharacterEncoding("utf-8");//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 		String me = getClass().getName() + ".setAgent()";
 		PrintWriter out = response.getWriter();
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
@@ -1024,9 +1024,9 @@ public class SalController{
 				request.getSession().removeAttribute("agentBones");
 				request.getSession().removeAttribute("agentTax");
 			}else{
-				request.getSession().setAttribute("agent", agent);//¥N²z¤H¥d¸¹
-				request.getSession().setAttribute("agentname", request.getParameter("agentname"));//©m¦W
-				request.getSession().setAttribute("agentcostid", request.getParameter("agentcostid"));//¦¨¥»¤¤¤ß
+				request.getSession().setAttribute("agent", agent);//ä»£ç†äººå¡è™Ÿ
+				request.getSession().setAttribute("agentname", request.getParameter("agentname"));//å§“å
+				request.getSession().setAttribute("agentcostid", request.getParameter("agentcostid"));//æˆæœ¬ä¸­å¿ƒ
 				request.getSession().setAttribute("agentdeptno", request.getParameter("agentdeptno"));	
 				request.getSession().setAttribute("agentdeptnm", request.getParameter("agentdeptnm"));
 				request.getSession().setAttribute("agenthid", request.getParameter("agenthid"));
@@ -1037,7 +1037,7 @@ public class SalController{
 				request.getSession().setAttribute("agentBones", request.getParameter("agentBones"));
 				request.getSession().setAttribute("agentTax", request.getParameter("agentTax"));
 			}
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -1046,19 +1046,19 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨ÌKEY,¨ú±o­Ó¤H©ú²Ó
+	 * ä¾KEY,å–å¾—å€‹äººæ˜ç´°
 	 */
 	@RequestMapping(params="method=getBasPsnByKey")
 	public void getBasPsnByKey(HttpServletRequest request, HttpServletResponse response){
 		String me = getClass().getName() + ".getBasPsnByKey()";
-		//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 		response.setCharacterEncoding("utf-8");
 		
 		AmJsonConfig cfg = new AmJsonConfig();
 		Pabaspsn psnitem=null;
 		HashMap basPayMap=new HashMap();
 		HashMap histListMap=new HashMap();
-		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//¶Ç¤Jjson
+		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//å‚³å…¥json
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String tracod = request.getParameter("tracod")==null?"0":request.getParameter("tracod");
@@ -1072,20 +1072,20 @@ public class SalController{
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				jsonObj = new JSONObject();
-				//­Ó¤H©ú²Ó
+				//å€‹äººæ˜ç´°
 				psnitem=tDAO.getBasPsnBykey(code_data,userid,da);
 				jsonObj.element("basPsnItem", psnitem,cfg);
-				//tracod>0¬O²§°ÊÀÉ,¤£¥ÎÅª¨ú­Ó¤H¤ä¦©:1·s¶i
+				//tracod>0æ˜¯ç•°å‹•æª”,ä¸ç”¨è®€å–å€‹äººæ”¯æ‰£:1æ–°é€²
 				if ( psnitem != null && !tracod.matches("1") ) {
-					//­Ó¤H¤ä¦©
+					//å€‹äººæ”¯æ‰£
 					basPayMap=tDAO.getBasPayList(psnitem.getPayidno(),tracod,userid,hid,da);
 					jsonObj.element("basPayList", basPayMap.get("baspay_json"));
-					//¾ú¥v¸ê®Æ
+					//æ­·å²è³‡æ–™
 					histListMap=tDAO.getHistList(psnitem.getPayidno(),userid,hid,da);
 					jsonObj.element("histList", histListMap.get("pahist_json"),cfg);
 				}
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -1094,7 +1094,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -1103,18 +1103,18 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨ÌID,¨ú±o¥D¾÷¤H¨Æ¸ê®Æ
+	 * ä¾ID,å–å¾—ä¸»æ©Ÿäººäº‹è³‡æ–™
 	 */
 	@RequestMapping(params="method=getPSBasicById")
 	public void getPSBasicById(HttpServletRequest request, HttpServletResponse response){
 		String me = getClass().getName() + ".getPSBasicById()";
-		//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 		response.setCharacterEncoding("utf-8");
 		
 		AmJsonConfig cfg = new AmJsonConfig();
 		Pabaspsn psnitem=null;
 		
-		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//¶Ç¤Jjson
+		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//å‚³å…¥json
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		
@@ -1129,12 +1129,12 @@ public class SalController{
 			tDAO = new SalNTDAO(da,daDSN,hid);
 			try{
 				jsonObj = new JSONObject();
-				//­Ó¤H©ú²Ó
+				//å€‹äººæ˜ç´°
 				psnitem=tDAO.getPSBasicById(code_data,userid,da,daDSN);
 				jsonObj.element("basPsnItem", psnitem,cfg);				
 				
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -1143,7 +1143,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -1152,16 +1152,16 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨Ì»è³æ½s¸¹/µoÁ~¤é´Á,¨ú±o¤ë¤ä¤ä¦©pa.padatpay_Sum
+	 * ä¾é¤‰å–®ç·¨è™Ÿ/ç™¼è–ªæ—¥æœŸ,å–å¾—æœˆæ”¯æ”¯æ‰£pa.padatpay_Sum
 	 */
 	@RequestMapping(params="method=getCheckPayList")
 	public void getCheckPayList(HttpServletRequest request, HttpServletResponse response){
 		String me = getClass().getName() + ".getCheckPayList()";
-		//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 		response.setCharacterEncoding("utf-8");		
 		AmJsonConfig cfg = new AmJsonConfig();		
 		jsonArrRtn=new JSONArray();		
-		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//¶Ç¤Jjson
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String dataSourceNT="";
@@ -1173,12 +1173,12 @@ public class SalController{
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				jsonObj = new JSONObject();
-				//¤ä¦©sum
+				//æ”¯æ‰£sum
 				jsonArrRtn=tDAO.getCheckPayBykey(in_data,userid,hid,da);
 				jsonObj.element("checkPayList", jsonArrRtn);
 				
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -1187,7 +1187,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -1196,16 +1196,16 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨Ì¤ä¦©¥N½X,¨ú±o¤é´Á½d³ò¦W³æ
+	 * ä¾æ”¯æ‰£ä»£ç¢¼,å–å¾—æ—¥æœŸç¯„åœåå–®
 	 */
 	@RequestMapping(params="method=getItmPayList")
 	public void getItmPayList(HttpServletRequest request, HttpServletResponse response){
 		String me = getClass().getName() + ".getItmPayList()";
-		//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 		response.setCharacterEncoding("utf-8");		
 		AmJsonConfig cfg = new AmJsonConfig();		
 		jsonArrRtn=new JSONArray();		
-		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//¶Ç¤Jjson
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String dataSourceNT="";
@@ -1221,7 +1221,7 @@ public class SalController{
 				jsonObj.element("itmPayList", jsonArrRtn);
 				
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -1230,7 +1230,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -1239,18 +1239,18 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¨Ìsalnum+paycode§äpa.padaypay²M³æ
+	 * ä¾salnum+paycodeæ‰¾pa.padaypayæ¸…å–®
 	 */
 	@RequestMapping(params="method=getDayPayByCode")
 	public void getDayPayByCode(HttpServletRequest request, HttpServletResponse response){
 		String me = getClass().getName() + ".getDayPayByCode()";
-		//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 		response.setCharacterEncoding("utf-8");
 		
 		AmJsonConfig cfg = new AmJsonConfig();
 		
 		jsonArrRtn=new JSONArray();		
-		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//¶Ç¤Jjson
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String dataSourceNT="";
@@ -1263,12 +1263,12 @@ public class SalController{
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				jsonObj = new JSONObject();
-				//¤ä¦©²M³æ
+				//æ”¯æ‰£æ¸…å–®
 				jsonArrRtn=tDAO.getDayPayByCode(in_data,userid,hid,da);
 				jsonObj.element("datPayBycodeList", jsonArrRtn);
 				
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -1277,7 +1277,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -1286,12 +1286,12 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¥N½XºûÅ@ ·s¼W¤@µ§/§ó§ï
+	 * ä»£ç¢¼ç¶­è­· æ–°å¢ä¸€ç­†/æ›´æ”¹
 	 */
 	@RequestMapping(params="method=updTblCode")
 	public void updTblCode(HttpServletRequest request, HttpServletResponse response)throws IOException{
 		String me = getClass().getName() + ".updTblCode()";
-		response.setCharacterEncoding("utf-8");//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		response.setCharacterEncoding("utf-8");//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 		PrintWriter out = response.getWriter();
 		hid = request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
@@ -1301,7 +1301,7 @@ public class SalController{
 		da=new VGHDataAccess(dataSourceNT);
 		
 		boolean blnFlag=false;
-		//³z¹LWPSAutoLogin¨ú±oµn¤JªÌ¸ê°T¡A¤w¸g¦s¦bsession¡A¥i¥H¦Û¦æ§PÂ_¬O§_»İ­n±a¤J­¶­±
+		//é€éWPSAutoLoginå–å¾—ç™»å…¥è€…è³‡è¨Šï¼Œå·²ç¶“å­˜åœ¨sessionï¼Œå¯ä»¥è‡ªè¡Œåˆ¤æ–·æ˜¯å¦éœ€è¦å¸¶å…¥é é¢
 		//WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		HashMap<String, String> OneMap=new HashMap<String, String>();
 		boolean success=false;
@@ -1311,30 +1311,30 @@ public class SalController{
 			userid = request.getParameter("userid");
 			tDAO = new SalNTDAO(da,hid);
 			blnFlag = tDAO.updSalCodeTbl(item,tabJson,userid,hid,da);
-			if (blnFlag){	//update success,­«·sreload
-				jsonObj.put("msg", item+"¦¨¥\");
+			if (blnFlag){	//update success,é‡æ–°reload
+				jsonObj.put("msg", item+"æˆåŠŸ");
 				
 			}else{
-				jsonObj.put("msg", item+"¥¢±Ñ");
+				jsonObj.put("msg", item+"å¤±æ•—");
 				jsonObj.put("status", item+"N");
 			}
 			
 		}catch(Exception e){
 			jsonObj.element("msg", e.toString());
-			log.info("¥N½XºûÅ@ [·s¼W¤@µ§/§ó§ï] ¥¢±Ñ=="+e.toString());
+			log.info("ä»£ç¢¼ç¶­è­· [æ–°å¢ä¸€ç­†/æ›´æ”¹] å¤±æ•—=="+e.toString());
 			e.printStackTrace();			
 		}finally{
 			tDAO=null;
 			da.close();
 			da = null;
 		}
-		// ¼g¥X¦ÜJSP­¶­±
+		// å¯«å‡ºè‡³JSPé é¢
 		out.print(jsonObj.toString());
 		out.flush();
 	}
 	
 	/**
-	 * ¿é¤J¥d¸¹,§ä¥X¹ïÀ³©m¦W
+	 * è¼¸å…¥å¡è™Ÿ,æ‰¾å‡ºå°æ‡‰å§“å
 	 */
 	@RequestMapping(params="method=searchNm")
 	public void searchNm(HttpServletRequest request, HttpServletResponse response){
@@ -1346,7 +1346,7 @@ public class SalController{
 		LDAPUtil ldapUtilObj = LDAPUtil.getInstance() ; 
 		String userName = "";
 		jsonObj = new JSONObject();
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			userName =ldapUtilObj.getUserNm(cardno);
 			String hostname =request.getServerName();				    
@@ -1355,11 +1355,11 @@ public class SalController{
 			map2.put("name", userName);
 			arrayList.add(map2);
 			JSONArray jsonArr = JSONArray.fromObject(arrayList);
-			// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+			// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 			jsonObj.element("namedata", jsonArr);
 								
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -1368,18 +1368,18 @@ public class SalController{
 		}
 	}
 	/**
-	 * [ÀÉ®×²£»s]¥D­p«Ç,ÁZ®Ä²Õ
-	 * 1:¥D­p«Ç_µo©ñ:BAS_1 selCode:selNm:selEn
+	 * [æª”æ¡ˆç”¢è£½]ä¸»è¨ˆå®¤,ç¸¾æ•ˆçµ„
+	 * 1:ä¸»è¨ˆå®¤_ç™¼æ”¾:BAS_1 selCode:selNm:selEn
 	 */
 	@RequestMapping(params="method=handelPrtFile")
 	public void handelPrtFile(HttpServletRequest request, HttpServletResponse response)throws IOException{
 		String me = getClass().getName() + ".handelPrtFile()";
-		//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 		response.setCharacterEncoding("utf-8");		
 		AmJsonConfig cfg = new AmJsonConfig();
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid=request.getParameter("userid");
-		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//¶Ç¤Jjson
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
 		JSONObject object_in_data =null;
 		String selNm = "";
 		int salnum = 0;
@@ -1398,18 +1398,18 @@ public class SalController{
 					object_in_data = JSONObject.fromObject(in_data);
 					selEn=(!object_in_data.has("selEn")) ? "" : object_in_data.getString("selEn");					
 				}
-				//¥D­p
+				//ä¸»è¨ˆ
 				if ( ! selEn.equals("") && selEn.matches("BAS_1|BAS_2") ){
 					jsonArrRtn=tDAO.getBASFileList(in_data,userid,hid,da);
 				}
-				//ÁZ®Ä
+				//ç¸¾æ•ˆ
 				else if ( ! selEn.equals("") && selEn.matches("Perf_1|Perf_2") ){
 					jsonArrRtn=tDAO.getPerfFileList(in_data,userid,hid,da);
 				}
-				// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+				// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 				jsonObj.element("fileData", jsonArrRtn);  
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -1418,7 +1418,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -1427,15 +1427,15 @@ public class SalController{
 		}
 	}
 	/**
-	 * [²£¥Í/¬d¸ß/PDF]³øªíÀÉ »È¦æ§@·~{´CÅé¶Ç¿é}
-	 * 1:¤ë³ø:Prt_M_1 selCode:selNm:selEn
+	 * [ç”¢ç”Ÿ/æŸ¥è©¢/PDF]å ±è¡¨æª” éŠ€è¡Œä½œæ¥­{åª’é«”å‚³è¼¸}
+	 * 1:æœˆå ±:Prt_M_1 selCode:selNm:selEn
 	 */
 	@RequestMapping(params="method=handelPrtSal")
 	public void handelPrtSal(HttpServletRequest request, HttpServletResponse response)throws IOException{
 		String me = getClass().getName() + ".handelPrtSal()";
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid=request.getParameter("userid");
-		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//¶Ç¤Jjson
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
 		JSONObject object_in_data =null;
 		String selNm = "";
 		int salnum = 0;
@@ -1444,7 +1444,7 @@ public class SalController{
 		String patradt="";
 		String selPs="";
 		String fun = request.getParameter("fun")==null?"":request.getParameter("fun");
-		String strDir ="";//¸ê®Æ§¨¸ô®|
+		String strDir ="";//è³‡æ–™å¤¾è·¯å¾‘
 		String strYM ="";
 		String strYMD ="";
 		String strMD ="";
@@ -1453,9 +1453,9 @@ public class SalController{
 		String pdfFileName ="";
 		String txtFileName ="";
 		Paprtdtl prtobj=null;
-		boolean blnSum=false;	//0-Á`­p 1,2,3...-¦U¶µªí¥U
-		boolean blnDirection=true;	//true¾î,falseª½
-		int intPrts=0;	//HID ¤£¦Pªí¥U¼Æ¶q
+		boolean blnSum=false;	//0-ç¸½è¨ˆ 1,2,3...-å„é …è¡¨å†Š
+		boolean blnDirection=true;	//trueæ©«,falseç›´
+		int intPrts=0;	//HID ä¸åŒè¡¨å†Šæ•¸é‡
 		String strmsg="";
 		boolean markPrtInfo =false;
 		long starttime =0;
@@ -1468,11 +1468,11 @@ public class SalController{
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		jsonObj = new JSONObject();
 		FileUtil fileUtil = new FileUtil();
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			cDAO = new CommDAO(da,hid);
-			//1:¤ë³ø:Prt_M_1 selCode:selNm:selEn
+			//1:æœˆå ±:Prt_M_1 selCode:selNm:selEn
 			if (in_data!=null && ! in_data.equals("")){
 				object_in_data = JSONObject.fromObject(in_data);
 				selEn=(!object_in_data.has("selEn")) ? "" : object_in_data.getString("selEn");
@@ -1484,36 +1484,36 @@ public class SalController{
 			}
 			
 			try{
-				//[²£¥Í]³øªíÀÉ
+				//[ç”¢ç”Ÿ]å ±è¡¨æª”
 				if (fun.equals("handelPrt") ){
 					strRtn=tDAO.prodPrtSal(in_data,userid,hid,da);
 					if ("".equals(strRtn)) {
-						strmsg=selNm+"¦¨¥\";
+						strmsg=selNm+"æˆåŠŸ";
 						jsonObj.put("status", "Y");
 					}else{
 						jsonObj.put("status", "N");
-						strmsg=selNm+"§ó·s¥¢±Ñ\n\r"+strRtn;
+						strmsg=selNm+"æ›´æ–°å¤±æ•—\n\r"+strRtn;
 					}
 				}	
-				//[¬d¸ß]³øªíÀÉ
+				//[æŸ¥è©¢]å ±è¡¨æª”
 				else if (fun.equals("inqPrt") ){
 					jsonArrRtn=tDAO.getRrtDtlList(in_data,userid,hid,da);
-					// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+					// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 					jsonObj.element("prtDtlList", jsonArrRtn);  
 				}
-				//³øªíÀÉ[PDF]
+				//å ±è¡¨æª”[PDF]
 				else if (fun.equals("printPrt") ){
-					//¸ê®Æ§¨¸ô®| 2026.7.29
+					//è³‡æ–™å¤¾è·¯å¾‘ 2026.7.29
 					strDir = hospInfo.fileSRV+"prt\\";
 					//strDir = hospInfo.fileSRV+"bak\\";
-					//¥U¤l³Ì¤j¼Æ
-					//Á~¬zªí(¸Éµo¦©)
+					//å†Šå­æœ€å¤§æ•¸
+					//è–ªæ´¥è¡¨(è£œç™¼æ‰£)
 					if ( selEn.matches("Prt_M_3") )
 						intPrts=2;
-					//Á~¬z²§°Ê©ú²ÓªíPrt_M_4 µoÁ~¨ü´ÚªÌ©ú²Óªí:Prt_M_5
+					//è–ªæ´¥ç•°å‹•æ˜ç´°è¡¨Prt_M_4 ç™¼è–ªå—æ¬¾è€…æ˜ç´°è¡¨:Prt_M_5
 					else if ( selEn.matches("Prt_M_4|Prt_M_5") )
 						intPrts=1;
-					//Á~¬z¥UPrt_M_1 ¦©´ÚªíPrt_M_2
+					//è–ªæ´¥å†ŠPrt_M_1 æ‰£æ¬¾è¡¨Prt_M_2
 					else if ( selEn.matches("Prt_M_1|Prt_M_2") ){
 						if (hid.equals("1A0"))
 							intPrts=18;
@@ -1522,7 +1522,7 @@ public class SalController{
 						else if (hid.equals("3A0"))
 							intPrts=4;
 					}
-					//»È¦æÂà±b©ú²Óªí:Prt_M_6
+					//éŠ€è¡Œè½‰å¸³æ˜ç´°è¡¨:Prt_M_6
 					else if ( selEn.matches("Prt_M_6") ){
 						if (hid.equals("1A0"))
 							intPrts=3;
@@ -1535,9 +1535,9 @@ public class SalController{
 					starttime = System.currentTimeMillis();
 					for (int i=0; i < intPrts ;i++){
 						blnSum=false;
-						//§ä¥X«İ¦L²M³æ
+						//æ‰¾å‡ºå¾…å°æ¸…å–®
 						paprtdtlAry=tDAO.getPrtdtlBykey(in_data,i,userid,hid,da);
-						//Á~¬zªí,¦©´Úªí,Á~¬zªí¸Éµo¦³Á`­pÄæ
+						//è–ªæ´¥è¡¨,æ‰£æ¬¾è¡¨,è–ªæ´¥è¡¨è£œç™¼æœ‰ç¸½è¨ˆæ¬„
 						if(i==0 && selEn.matches("Prt_M_1|Prt_M_2|Prt_M_3") ) blnSum=true;
 						
 						if(paprtdtlAry!=null && paprtdtlAry.size() != 0){
@@ -1547,16 +1547,16 @@ public class SalController{
 								strYM=dateString.substring(0,4)+dateString.substring(5, 7);
 								strDir+=strYM+"\\";
 							}
-							//¸ê®Æ§¨¸ô®|
+							//è³‡æ–™å¤¾è·¯å¾‘
 							if (selEn.matches("Prt_M_1|Prt_M_2|Prt_M_3|Prt_M_6"))
 								pdfFileName = "smb:" + (strDir+selNm+"_"+salnum+"_"+cDAO.getPrtNmBysal(selEn,i, hid)+".pdf").replace("\\", "/");
 							else
 								pdfFileName = "smb:" + (strDir+selNm+"_"+salnum+".pdf").replace("\\", "/");
 							System.out.println("size:"+paprtdtlAry.size()+" smb:"+pdfFileName);
 							
-							//Á~¬zªí
+							//è–ªæ´¥è¡¨
 							if ( selEn.matches("Prt_M_1") ) {
-								blnDirection=true;//¾î¦¡
+								blnDirection=true;//æ©«å¼
 								if (hid.equals("1A0"))
 									new Payslip_1A0(strDir,pdfFileName,blnSum,paprtdtlAry,hid);
 								else if (hid.equals("2A0"))
@@ -1564,9 +1564,9 @@ public class SalController{
 								else if (hid.equals("3A0"))
 									new Payslip_3A0(strDir,pdfFileName,blnSum,paprtdtlAry,hid);	
 							}
-							//¦©´Úªí
+							//æ‰£æ¬¾è¡¨
 							else if ( selEn.matches("Prt_M_2") ){
-								blnDirection=true;//¾î¦¡
+								blnDirection=true;//æ©«å¼
 								if (hid.equals("1A0"))
 									new Deduct_1A0(strDir,pdfFileName,blnSum,paprtdtlAry,hid);
 								else if (hid.equals("2A0"))
@@ -1574,24 +1574,24 @@ public class SalController{
 								else if (hid.equals("3A0"))
 									new Deduct_3A0(strDir,pdfFileName,blnSum,paprtdtlAry,hid);	
 							
-							}//Á~¬zªí(¸Éµo¦©)
+							}//è–ªæ´¥è¡¨(è£œç™¼æ‰£)
 							else if ( selEn.matches("Prt_M_3") ){
 								if (hid.equals("1A0")){
 									new Issue_1A0(strDir,pdfFileName,blnSum,paprtdtlAry,hid);
-									blnDirection=false;//ª½¦¡
+									blnDirection=false;//ç›´å¼
 								}	
 								else if (hid.equals("2A0")){
 									new Issue_2A0(strDir,pdfFileName,blnSum,paprtdtlAry,hid);
-									blnDirection=false;//ª½¦¡
+									blnDirection=false;//ç›´å¼
 								}	
 								else if (hid.equals("3A0")){
 									new Issue_3A0(strDir,pdfFileName,blnSum,paprtdtlAry,hid);
-									blnDirection=true;//¾î¦¡
+									blnDirection=true;//æ©«å¼
 								}	
 							}
-							//Á~¬z²§°Ê©ú²Óªí
+							//è–ªæ´¥ç•°å‹•æ˜ç´°è¡¨
 							else if ( selEn.matches("Prt_M_4") ){
-								blnDirection=true;//¾î¦¡
+								blnDirection=true;//æ©«å¼
 								if (hid.equals("1A0"))
 									new Chgdtl_1A0(strDir,pdfFileName,paprtdtlAry,hid);
 								else if (hid.equals("2A0"))
@@ -1599,9 +1599,9 @@ public class SalController{
 								else if (hid.equals("3A0"))
 									new Chgdtl_3A0(strDir,pdfFileName,paprtdtlAry,hid);
 							}
-							//µoÁ~¨ü´ÚªÌ©ú²Óªí:Prt_M_5
+							//ç™¼è–ªå—æ¬¾è€…æ˜ç´°è¡¨:Prt_M_5
 							else if ( selEn.matches("Prt_M_5") ){
-								blnDirection=false;//ª½¦¡
+								blnDirection=false;//ç›´å¼
 								if (hid.equals("1A0"))
 									new ItemSum_1A0(strDir,pdfFileName,paprtdtlAry,hid);
 								else if (hid.equals("2A0"))
@@ -1609,9 +1609,9 @@ public class SalController{
 								else if (hid.equals("3A0"))
 									new ItemSum_3A0(strDir,pdfFileName,paprtdtlAry,hid);
 							}
-							//»È¦æÂà±b©ú²Óªí:Prt_M_6
+							//éŠ€è¡Œè½‰å¸³æ˜ç´°è¡¨:Prt_M_6
 							else if ( selEn.matches("Prt_M_6") ){
-								blnDirection=false;//ª½¦¡
+								blnDirection=false;//ç›´å¼
 								if (hid.equals("1A0"))
 									new BankTran_1A0(strDir,pdfFileName,i,cDAO.getPrtNmBysal(selEn,i, hid),paprtdtlAry,hid);
 								else if (hid.equals("2A0")){
@@ -1620,7 +1620,7 @@ public class SalController{
 								else if (hid.equals("3A0"))
 									new BankTran_3A0(strDir,pdfFileName,i,cDAO.getPrtNmBysal(selEn,i, hid),paprtdtlAry,hid);
 							}
-							//­¶½X,Á`­p¤£³B²z 
+							//é ç¢¼,ç¸½è¨ˆä¸è™•ç† 
 							if (!blnSum ){
 								markPrtInfo = fileUtil.markPrtPg(user.getLoginId(), blnDirection,pdfFileName,hid);
 								
@@ -1628,21 +1628,21 @@ public class SalController{
 									System.out.println(pdfFileName);
 								}
 							}
-							strmsg+=i+"["+cDAO.getPrtNmBysal(selEn,i, hid)+"]²£»s\n";
+							strmsg+=i+"["+cDAO.getPrtNmBysal(selEn,i, hid)+"]ç”¢è£½\n";
 							
 						}
 						else{
-							strmsg+=i+"["+cDAO.getPrtNmBysal(selEn,i, hid)+"]µL¸ê®Æ\n";							
+							strmsg+=i+"["+cDAO.getPrtNmBysal(selEn,i, hid)+"]ç„¡è³‡æ–™\n";							
 						}
 					}
 					
-					strmsg += "½Ğ¦Ü"+strDir+"¬d¬İ, ¦@ªá¶O¡G"+(System.currentTimeMillis()-starttime)+"²@¬í";						
+					strmsg += "è«‹è‡³"+strDir+"æŸ¥çœ‹, å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-starttime)+"æ¯«ç§’";						
 				}
-				//»È¦æ§@·~{´CÅé¶Ç¿é}
+				//éŠ€è¡Œä½œæ¥­{åª’é«”å‚³è¼¸}
 				else if (fun.equals("bankMedia") ){
-					//¸ê®Æ§¨¸ô®|
+					//è³‡æ–™å¤¾è·¯å¾‘
 					strDir = hospInfo.fileSRV+"bank\\";
-					//¥U¤l³Ì¤j¼Æ
+					//å†Šå­æœ€å¤§æ•¸
 					if ( selEn.matches("Bank_T") ){
 						if (hid.equals("1A0"))
 							intPrts=3;
@@ -1652,7 +1652,7 @@ public class SalController{
 					starttime = System.currentTimeMillis();
 					for (int i=0; i < intPrts ;i++){
 					//for (int i=0; i < 1 ;i++){
-						//§ä¥X«İ¦L²M³æ
+						//æ‰¾å‡ºå¾…å°æ¸…å–®
 						paprtdtlAry=tDAO.getPrtdtlBykey(in_data,i,userid,hid,da);
 						
 						if(paprtdtlAry!=null && paprtdtlAry.size() != 0){
@@ -1660,12 +1660,12 @@ public class SalController{
 							dateString = prtobj.getPaybank().toString();
 							if (strYM.equals("")){
 								strYM=dateString.substring(0,4)+dateString.substring(5, 7);
-								strYMD=DateUtil.getHcDT(prtobj.getPaybank());	//¥Á°ê¦~¤ë¤é,¨S¤À¹j¸¹ 20250901
+								strYMD=DateUtil.getHcDT(prtobj.getPaybank());	//æ°‘åœ‹å¹´æœˆæ—¥,æ²’åˆ†éš”è™Ÿ 20250901
 								strMD=dateString.substring(5, 7)+dateString.substring(8, 10);
 								strDir+=strYM+"\\";
 							}
 							if (hid.equals("1A0")){
-								//¸ê®Æ§¨¸ô®|
+								//è³‡æ–™å¤¾è·¯å¾‘
 								txtFileName = (strDir+selNm+"_"+cDAO.getPrtNmBysal(selEn,i, hid)+strMD+".txt").replace("\\", "/");
 								
 								new BankMedia_1A0(strDir,txtFileName,paprtdtlAry,hid);
@@ -1682,22 +1682,22 @@ public class SalController{
 								new BankMedia_3A0(strDir,txtFileName,paprtdtlAry,hid);
 							}	
 							System.out.println("size:"+paprtdtlAry.size()+" txt:"+txtFileName);	
-							strmsg+=i+"["+cDAO.getPrtNmBysal(selEn,i, hid)+"]²£»s\n";
+							strmsg+=i+"["+cDAO.getPrtNmBysal(selEn,i, hid)+"]ç”¢è£½\n";
 							
 						}
 						else{
-							strmsg+=i+"["+cDAO.getPrtNmBysal(selEn,i, hid)+"]µL¸ê®Æ\n";							
+							strmsg+=i+"["+cDAO.getPrtNmBysal(selEn,i, hid)+"]ç„¡è³‡æ–™\n";							
 						}
 					}
 					
-					strmsg += "½Ğ¦Ü"+strDir+"¬d¬İ, ¦@ªá¶O¡G"+(System.currentTimeMillis()-starttime)+"²@¬í";  
+					strmsg += "è«‹è‡³"+strDir+"æŸ¥çœ‹, å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-starttime)+"æ¯«ç§’";  
 				}
 				
 			}
 			catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
-				strmsg="²£»s¥¢±Ñ " + e.toString();
+				strmsg="ç”¢è£½å¤±æ•— " + e.toString();
 			}finally{
 				jsonObj.put("msg", strmsg);
 				tDAO=null;
@@ -1706,7 +1706,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -1715,15 +1715,15 @@ public class SalController{
 		}
 	}
 	/**
-	 * µoÁ~©ú²Ó³B²z
+	 * ç™¼è–ªæ˜ç´°è™•ç†
 	 */
 	@RequestMapping(params="method=handelPayroll")
 	public void handelPayroll(HttpServletRequest request, HttpServletResponse response)throws IOException{
 		String me = getClass().getName() + ".handelPayroll()";
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
-		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//¶Ç¤Jjson
-		String tabJson = request.getParameter("tabJson")==null?"":request.getParameter("tabJson");//¶Ç¤Jjson
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
+		String tabJson = request.getParameter("tabJson")==null?"":request.getParameter("tabJson");//å‚³å…¥json
 		
 		String selNm = request.getParameter("selNm")==null?"":request.getParameter("selNm");
 		String strRtn = "";
@@ -1734,22 +1734,22 @@ public class SalController{
 		
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		jsonObj = new JSONObject();
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				
 				strRtn=tDAO.handelPayroll(in_data,tabJson,userid,hid,da);
 				if ("".equals(strRtn)) {
-					jsonObj.put("msg", selNm+"¦¨¥\");
+					jsonObj.put("msg", selNm+"æˆåŠŸ");
 					jsonObj.put("status", "Y");
 				}else{
 					jsonObj.put("status", "N");
-					jsonObj.put("msg", selNm+"§ó·s¥¢±Ñ\n\r"+strRtn);
+					jsonObj.put("msg", selNm+"æ›´æ–°å¤±æ•—\n\r"+strRtn);
 				}
 					
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -1758,7 +1758,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -1767,7 +1767,7 @@ public class SalController{
 		}
 	}
 	/**
-	 * °ò¥»ÀÉ³B²z
+	 * åŸºæœ¬æª”è™•ç†
 	 */
 	@RequestMapping(params="method=handelBas")
 	public void handelBas(HttpServletRequest request, HttpServletResponse response)throws IOException{
@@ -1779,8 +1779,8 @@ public class SalController{
 		String tabJson = request.getParameter("tabJson");
 		String tblname = request.getParameter("tblname");
 		String editMode = request.getParameter("editMode");
-		String pk_data = request.getParameter("pk_data")==null?"":request.getParameter("pk_data");//¶Ç¤Jjson
-		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//¶Ç¤Jjson
+		String pk_data = request.getParameter("pk_data")==null?"":request.getParameter("pk_data");//å‚³å…¥json
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
 		String fun = request.getParameter("fun")==null?"":request.getParameter("fun");
 		String selNm = request.getParameter("selNm")==null?"":request.getParameter("selNm");
 		String strRtn = "";
@@ -1798,23 +1798,23 @@ public class SalController{
 		HashMap traPayMap=new HashMap();
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		jsonObj = new JSONObject();
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
-				//§ó·s°ò¥»ÀÉ­Ó¤H©ú²Ó
+				//æ›´æ–°åŸºæœ¬æª”å€‹äººæ˜ç´°
 				if (fun.matches("updBasPsn")){
 					blnupd = tDAO.updPATblByKey(editMode,tblname,pk_data,tabJson,userid,hid,da);
 					
-					if (blnupd){	//update success,­«·sreload
-						jsonObj.put("msg", tblname+pk_data+" "+editMode+" ¦¨¥\");
+					if (blnupd){	//update success,é‡æ–°reload
+						jsonObj.put("msg", tblname+pk_data+" "+editMode+" æˆåŠŸ");
 					}else{
-						jsonObj.put("msg", tblname+pk_data+" "+editMode+" ¥¢±Ñ");
+						jsonObj.put("msg", tblname+pk_data+" "+editMode+" å¤±æ•—");
 					}
 					log.info(userid+user.getUserNm()+ tblname+pk_data+" "+editMode +" blnupd:"+blnupd);
 				}
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -1823,7 +1823,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -1832,7 +1832,7 @@ public class SalController{
 		}
 	}
 	/**
-	 * ²§°ÊÀÉ³B²z
+	 * ç•°å‹•æª”è™•ç†
 	 */
 	@RequestMapping(params="method=handelTran")
 	public void handelTran(HttpServletRequest request, HttpServletResponse response)throws IOException{
@@ -1844,8 +1844,8 @@ public class SalController{
 		String tabJson = request.getParameter("tabJson");
 		String tblname = request.getParameter("tblname");
 		String editMode = request.getParameter("editMode");
-		String pk_data = request.getParameter("pk_data")==null?"":request.getParameter("pk_data");//¶Ç¤Jjson
-		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//¶Ç¤Jjson
+		String pk_data = request.getParameter("pk_data")==null?"":request.getParameter("pk_data");//å‚³å…¥json
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
 		String fun = request.getParameter("fun")==null?"":request.getParameter("fun");
 		String selNm = request.getParameter("selNm")==null?"":request.getParameter("selNm");
 		String strRtn = "";
@@ -1865,43 +1865,43 @@ public class SalController{
 		HashMap traPayMap=new HashMap();
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		jsonObj = new JSONObject();
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,daDSN,hid);
 			try{
-				//§ó·s²§°ÊÀÉ­Ó¤H©ú²Ó
+				//æ›´æ–°ç•°å‹•æª”å€‹äººæ˜ç´°
 				if (fun.matches("updTraPsn")){
 					blnupd = tDAO.updPATblByKey(editMode,tblname,pk_data,tabJson,userid,hid,da);
 					
-					if (blnupd){	//update success,­«·sreload
-						jsonObj.put("msg", tblname+pk_data+" "+editMode+" ¦¨¥\");
+					if (blnupd){	//update success,é‡æ–°reload
+						jsonObj.put("msg", tblname+pk_data+" "+editMode+" æˆåŠŸ");
 					}else{
-						jsonObj.put("msg", tblname+pk_data+" "+editMode+" ¥¢±Ñ");
+						jsonObj.put("msg", tblname+pk_data+" "+editMode+" å¤±æ•—");
 					}
 					log.info(userid+user.getUserNm()+ tblname+pk_data+" "+editMode +" blnupd:"+blnupd);
 				}else if (fun.matches("getTraPsnByKey")){
-					//²§°Ê­Ó¤H©ú²Ó
+					//ç•°å‹•å€‹äººæ˜ç´°
 					psnitem=tDAO.getTraPsnBykey(in_data,userid,da);
 					jsonObj.element("traPsnItem", psnitem,cfg);
-					//²§°Ê­Ó¤H¤ä¦©
+					//ç•°å‹•å€‹äººæ”¯æ‰£
 					traPayMap=tDAO.getTraPayList(in_data,userid,da);
 					jsonObj.element("otraPayList", traPayMap.get("otrapay_json"));
 					jsonObj.element("ntraPayList", traPayMap.get("ntrapay_json"));
 				}
-				//²§°ÊÀÉ¦U¶µ¾Ş§@
+				//ç•°å‹•æª”å„é …æ“ä½œ
 				else if (fun.matches("execTra")){
 					strRtn=tDAO.handelTran(in_data,userid,hid,da,daDSN);
 					if ("".equals(strRtn)) {
-						jsonObj.put("msg", selNm+"¦¨¥\");
+						jsonObj.put("msg", selNm+"æˆåŠŸ");
 						jsonObj.put("status", "Y");																				
 					}else{							
 						jsonObj.put("status", "N");
-						jsonObj.put("msg", selNm+"  ¥¢±Ñ\n\r"+strRtn);			   
+						jsonObj.put("msg", selNm+"  å¤±æ•—\n\r"+strRtn);			   
 					}
 					
 				}
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -1910,7 +1910,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -1919,22 +1919,22 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¶Ç¦^ ÁZ®ÄÂI¼Æ
+	 * å‚³å› ç¸¾æ•ˆé»æ•¸
 	 */
 	@RequestMapping(params="method=getCsPfBykey")
 	public void getCsPfBykey(HttpServletRequest request, HttpServletResponse response)throws IOException{
 		String me = getClass().getName() + ".getCsPfBykey()";
-		//Â¾ºÙ
+		//è·ç¨±
 		String vJt=request.getParameter("jt")==null?"":request.getParameter("jt");
-		//Â¾µ¥
+		//è·ç­‰
 		String vRnk2n=request.getParameter("rnk2n")==null?"":request.getParameter("rnk2n");
-		//¶¥§O
+		//éšåˆ¥
 		String vRank=request.getParameter("rank")==null?"":request.getParameter("rank");
-		//¯Å§O
+		//ç´šåˆ¥
 		String vDegr2=request.getParameter("degr2")==null?"":request.getParameter("degr2");
-		//¥»¥\§O
+		//æœ¬åŠŸåˆ¥
 		String vRank3=request.getParameter("rank3")==null?"":request.getParameter("rank3");
-		//µoÁ~¤é
+		//ç™¼è–ªæ—¥
 		String vTradt=request.getParameter("tradt")==null?"":request.getParameter("tradt");
 		
 		HashMap rtnMap=new HashMap();
@@ -1944,7 +1944,7 @@ public class SalController{
 		da=new VGHDataAccess(dataSourceNT);
 		jsonObj = new JSONObject();
 		CommDAO cDAO = null;
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			cDAO = new CommDAO(da,hid);
 			try{
@@ -1955,7 +1955,7 @@ public class SalController{
 				jsonObj.element("cspfData", rtnMap);
 				
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -1964,7 +1964,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -1973,15 +1973,15 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¶Ç¦^ A­ÄÂI¹ïÀ³ B¨ú±o·s­ÄÂI C­pºâ¸Éµo¦©
+	 * å‚³å› Aä¿¸é»å°æ‡‰ Bå–å¾—æ–°ä¿¸é» Cè¨ˆç®—è£œç™¼æ‰£
 	 */
 	@RequestMapping(params="method=getDegreByRank")
 	public void getDegreByRank(HttpServletRequest request, HttpServletResponse response)throws IOException{
 		String me = getClass().getName() + ".getDegreByRank()";
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid=request.getParameter("userid");
-		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//¶Ç¤Jjson
-		String fun = request.getParameter("fun")==null?"":request.getParameter("fun");	//A­ÄÂI¹ïÀ³,B¤ä¦©©ú²Ó
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
+		String fun = request.getParameter("fun")==null?"":request.getParameter("fun");	//Aä¿¸é»å°æ‡‰,Bæ”¯æ‰£æ˜ç´°
 			
 		HashMap rtnMap=new HashMap();
 		Parank oneObj=null;
@@ -1997,7 +1997,7 @@ public class SalController{
 		
 		jsonObj = new JSONObject();
 		CommDAO cDAO = null;
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			cDAO = new CommDAO(da,daDSN,hid);
 			try{
@@ -2006,7 +2006,7 @@ public class SalController{
 				jsonObj.element("payItemList",rtnMap.get("payitm_json"));
 				jsonObj.element("insu_dpin",rtnMap.get("insu_dpin"));
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -2017,7 +2017,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -2026,7 +2026,7 @@ public class SalController{
 		}
 	}
 	/**
-	 * §å¦¸ÀÉ³B²z
+	 * æ‰¹æ¬¡æª”è™•ç†
 	 */
 	@RequestMapping(params="method=handelBatch")
 	public void handelBatch(HttpServletRequest request, HttpServletResponse response)throws IOException{
@@ -2037,8 +2037,8 @@ public class SalController{
 		String tabJson = request.getParameter("tabJson");
 		String tblname = request.getParameter("tblname");
 		String editMode = request.getParameter("editMode");
-		String pk_data = request.getParameter("pk_data")==null?"":request.getParameter("pk_data");//¶Ç¤Jjson
-		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//¶Ç¤Jjson
+		String pk_data = request.getParameter("pk_data")==null?"":request.getParameter("pk_data");//å‚³å…¥json
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
 		String fun = request.getParameter("fun")==null?"":request.getParameter("fun");
 		String selNm = request.getParameter("selNm")==null?"":request.getParameter("selNm");
 		String strRtn = "";
@@ -2054,38 +2054,38 @@ public class SalController{
 		Patrapay trapayobj=null;
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		jsonObj = new JSONObject();
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
-				//¬d¸ß
+				//æŸ¥è©¢
 				if (fun.equals("qryBatPay")){
 					rtnMap=tDAO.getBatPayList(in_data,userid,hid,da);
-					// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+					// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 					jsonObj.element("BatPayList", rtnMap.get("batpay_json"));
 				}
-				//¨ú±o°ò¥»ÀÉ_ID/CARD
+				//å–å¾—åŸºæœ¬æª”_ID/CARD
 				else if (fun.equals("getBasByKey")){
 					psnobj=tDAO.getBasPsnByKey(in_data,"1",hid,da);
 					jsonObj.element("basPsnItem", psnobj,cfg);					
 				}
 				else if (fun.equals("getDupByKey")){
-					//¨ú±o§å¦¸ÀÉ_µoÁ~¤é+ID+¤ä¦©¥N½X
+					//å–å¾—æ‰¹æ¬¡æª”_ç™¼è–ªæ—¥+ID+æ”¯æ‰£ä»£ç¢¼
 					batpayobj=tDAO.getBatpayByKey(in_data,hid,da);
 					jsonObj.element("batPayItem", batpayobj,cfg);
-					//¨ú±o²§°Ê¤ä¦©_µoÁ~¤é+ID+¤ä¦©¥N½X+¤ÀÃş=N
+					//å–å¾—ç•°å‹•æ”¯æ‰£_ç™¼è–ªæ—¥+ID+æ”¯æ‰£ä»£ç¢¼+åˆ†é¡=N
 					trapayobj=tDAO.getTrapayByKey(in_data,hid,da);
 					jsonObj.element("traPayItem", trapayobj,cfg);
 				}
 				else if (fun.matches("updBatPay")){
 					blnupd = tDAO.updPATblByKey(editMode,tblname,pk_data,tabJson,userid,hid,da);
 					
-					if (blnupd){	//update success,­«·sreload
-						jsonObj.put("msg", "[¼g¤J]"+selNm+"  ¦¨¥\");
+					if (blnupd){	//update success,é‡æ–°reload
+						jsonObj.put("msg", "[å¯«å…¥]"+selNm+"  æˆåŠŸ");
 					}else{
-						jsonObj.put("msg", "[¼g¤J]"+selNm+"  ¥¢±Ñ");
+						jsonObj.put("msg", "[å¯«å…¥]"+selNm+"  å¤±æ•—");
 					}
-					log.info(userid+user.getUserNm()+" [¼g¤J]"+selNm+" "+pk_data +" blnupd:"+blnupd);
+					log.info(userid+user.getUserNm()+" [å¯«å…¥]"+selNm+" "+pk_data +" blnupd:"+blnupd);
 				}
 				else if (fun.matches("prodBat")){
 					strRtn=tDAO.prodBat(in_data,tabJson,userid,hid,da);
@@ -2093,16 +2093,16 @@ public class SalController{
 				}
 				else if (fun.matches("qryleave")){
 					rtnMap=tDAO.getLeave(in_data,userid,hid,da);
-					// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+					// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 					jsonObj.element("PayLeaveList", rtnMap.get("leave_json"));
 				}
-				else if (fun.matches("qryteacheraw")){	//±ĞÂ¾¤Î½×¤å¼úÀy _¬d¸ß
+				else if (fun.matches("qryteacheraw")){	//æ•™è·åŠè«–æ–‡çå‹µ _æŸ¥è©¢
 					rtnMap=tDAO.getTeacheraw(in_data,userid,hid,da);
-					// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+					// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 					jsonObj.element("TeacherawList", rtnMap.get("teacheraw_json"));
 				}
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -2111,7 +2111,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -2120,7 +2120,7 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¸É¥R«OÀI¶O³B²z
+	 * è£œå……ä¿éšªè²»è™•ç†
 	 */
 	@RequestMapping(params="method=handelNhi")
 	public void handelNhi(HttpServletRequest request, HttpServletResponse response)throws IOException{
@@ -2131,15 +2131,15 @@ public class SalController{
 		String tabJson = request.getParameter("tabJson");
 		String tblname = request.getParameter("tblname");
 		String editMode = request.getParameter("editMode");
-		String pk_data = request.getParameter("pk_data")==null?"":request.getParameter("pk_data");//¶Ç¤Jjson
-		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//¶Ç¤Jjson
+		String pk_data = request.getParameter("pk_data")==null?"":request.getParameter("pk_data");//å‚³å…¥json
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
 		String fun = request.getParameter("fun")==null?"":request.getParameter("fun");
 		String selNm = request.getParameter("selNm")==null?"":request.getParameter("selNm");
 		String strRtn = "";
 		JSONObject object_in_data =null;
 		Pabaspsn psnitem=null;
-		int intjack=0;	//²Ö¿n¼úª÷
-		String yy="";	//·í¦~«×
+		int intjack=0;	//ç´¯ç©çé‡‘
+		String yy="";	//ç•¶å¹´åº¦
 		boolean blnupd=false;
 		HashMap nhiMap=new HashMap();
 		String dataSourceNT="";
@@ -2149,13 +2149,13 @@ public class SalController{
 		
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		jsonObj = new JSONObject();
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				if (fun.equals("NhiCal")){
 					nhiMap=tDAO.getNhiCalList(in_data,userid,hid,da);
-					// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+					// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 					jsonObj.element("NHICalList", nhiMap.get("nhical_json"));
 					jsonObj.element("PartPayAmt", nhiMap.get("PartPayAmt"));
 					jsonObj.element("PartNHIAmt", nhiMap.get("PartNHIAmt"));
@@ -2166,7 +2166,7 @@ public class SalController{
 				}
 				else if (fun.equals("NhiDet")){
 					nhiMap=tDAO.getNhiDetList(in_data,userid,hid,da);
-					// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+					// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 					jsonObj.element("NHIDetList", nhiMap.get("nhidet_json"));
 					jsonObj.element("PartPayDet", nhiMap.get("PartPayDet"));
 					jsonObj.element("PartNHIDet", nhiMap.get("PartNHIDet"));
@@ -2177,20 +2177,20 @@ public class SalController{
 				}
 				else if (fun.equals("NhiAccu")){
 					nhiMap=tDAO.getNhiAccuList(in_data,userid,hid,da);
-					// ¥Î¤@­Óroot tag±NJSONArray¥]¸Ë°_¨Ó
+					// ç”¨ä¸€å€‹root tagå°‡JSONArrayåŒ…è£èµ·ä¾†
 					jsonObj.element("NHIAccuList", nhiMap.get("nhidet_json"));
 				}
 				else if (fun.matches("updNhiCal|updNhiDet")){
 					blnupd = tDAO.updPATblByKey(editMode,tblname,pk_data,tabJson,userid,hid,da);
 					
-					if (blnupd){	//update success,­«·sreload
-						jsonObj.put("msg", "[¼g¤J]"+selNm+"  ¦¨¥\");
+					if (blnupd){	//update success,é‡æ–°reload
+						jsonObj.put("msg", "[å¯«å…¥]"+selNm+"  æˆåŠŸ");
 					}else{
-						jsonObj.put("msg", "[¼g¤J]"+selNm+"  ¥¢±Ñ");
+						jsonObj.put("msg", "[å¯«å…¥]"+selNm+"  å¤±æ•—");
 					}
-					log.info(userid+user.getUserNm()+" [¼g¤J]"+selNm+" "+pk_data +" blnupd:"+blnupd);
+					log.info(userid+user.getUserNm()+" [å¯«å…¥]"+selNm+" "+pk_data +" blnupd:"+blnupd);
 				}
-				//¨ú±o°ò¥»ÀÉ,¸É¥R¶O¸Ó¦~²Ö¿n¼úª÷
+				//å–å¾—åŸºæœ¬æª”,è£œå……è²»è©²å¹´ç´¯ç©çé‡‘
 				else if (fun.equals("getBasByKey")){
 					psnitem=tDAO.getBasPsnByKey(in_data,"0",hid,da);
 					jsonObj.element("basPsnItem", psnitem,cfg);
@@ -2198,14 +2198,14 @@ public class SalController{
 					intjack=tDAO.getJackpotByKey(psnitem.getPayidno(),yy,userid,hid,da);
 					jsonObj.element("intjack", intjack);
 				}
-				//[²£¥Í]­pºâ/¶×¥X_°õ¦æ
+				//[ç”¢ç”Ÿ]è¨ˆç®—/åŒ¯å‡º_åŸ·è¡Œ
 				else if (fun.equals("prodNhi")){
 					strRtn=tDAO.prodNhi(in_data,userid,hid,da);
 					jsonObj.put("msg", strRtn);
 				}					
 	
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -2214,7 +2214,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -2223,14 +2223,14 @@ public class SalController{
 		}
 	}
 	/**
-	 * À³µ|³B²z
+	 * æ‡‰ç¨…è™•ç†
 	 */
 	@RequestMapping(params="method=handelTax")
 	public void handelTax(HttpServletRequest request, HttpServletResponse response)throws IOException{
 		String me = getClass().getName() + ".handelTax()";
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
-		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//¶Ç¤Jjson
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
 		
 		String selNm = request.getParameter("selNm")==null?"":request.getParameter("selNm");
 		String strRtn = "";
@@ -2241,21 +2241,21 @@ public class SalController{
 		
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		jsonObj = new JSONObject();
-		try{			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+		try{			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
 				strRtn=tDAO.handelTax(in_data,userid,hid,da);
 				if ("".equals(strRtn)) {
-					jsonObj.put("msg", selNm+"¦¨¥\");
+					jsonObj.put("msg", selNm+"æˆåŠŸ");
 					jsonObj.put("status", "Y");
 				}else{
 					jsonObj.put("status", "N");
-					jsonObj.put("msg", selNm+"§ó·s¥¢±Ñ\n\r"+strRtn);
+					jsonObj.put("msg", selNm+"æ›´æ–°å¤±æ•—\n\r"+strRtn);
 				}
 					
 			}catch(Exception e){	
-				log.info(me+"¥¢±Ñ=="+e.toString());
+				log.info(me+"å¤±æ•—=="+e.toString());
 				e.printStackTrace();
 			}finally{
 				tDAO=null;
@@ -2264,7 +2264,7 @@ public class SalController{
 			}
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}catch (Exception e) {
@@ -2273,7 +2273,7 @@ public class SalController{
 		}
 	}
 	/**
-	 * ¤W¶ÇÀÉ®×
+	 * ä¸Šå‚³æª”æ¡ˆ
 	 * @return
 	 * @throws Exception
 	 */
@@ -2319,61 +2319,61 @@ public class SalController{
 			jsonObj = new JSONObject();
 			while (iter.hasNext()) {
 				FileItemStream fileItem = iter.next();
-				//¦h­ÓÀÉ®×
+				//å¤šå€‹æª”æ¡ˆ
 				if(!fileItem.isFormField()){
 					String filename = fileItem.getName();
 					filename = filename.substring(filename.lastIndexOf("\\")==-1?0:filename.lastIndexOf("\\"));
 					in = fileItem.openStream();
 					br = new BufferedReader(new InputStreamReader(in,"Big5"));
 					while( (strLine = br.readLine() ) != null) {
-						//§å¦¸©Ò±oµ|¤H¤u¤Jµ|
+						//æ‰¹æ¬¡æ‰€å¾—ç¨…äººå·¥å…¥ç¨…
 						if ("InBatCash".equals(selEn)){
 							if (!"".equals(strLine)){
-								//²Ä1¦æ¬O¼ĞÃD
-								if (!strLine.startsWith("¦~")){
+								//ç¬¬1è¡Œæ˜¯æ¨™é¡Œ
+								if (!strLine.startsWith("å¹´")){
 									pataximp=new Pataximp();
 									String[] fields = strLine.split(",");
-					    			//±Æ°£ªÅ¥Õ¦C
+					    			//æ’é™¤ç©ºç™½åˆ—
 					    			if (fields.length>0){
 					    				fieldslen=fields.length-1;
 						    			log.info("uploadFile:cnt:"+do_cnt++ +" selEn: "+selEn+" strLine:"+strLine+" length:"+fieldslen);
-						    			//¦~
+						    			//å¹´
 						    			pataximp.setPayear(Integer.parseInt(fields[0]));
-						    			//¥²­n¶Ç¤J°Ñ¼Æ
+						    			//å¿…è¦å‚³å…¥åƒæ•¸
 						    			if (intYear == 0)
 						    				intYear = Integer.parseInt(fields[0]);
-						    			//¤ë
+						    			//æœˆ
 						    			pataximp.setPaymonth(Integer.parseInt(fields[1]));
-						    			//¥d¸¹
+						    			//å¡è™Ÿ
 						    			if ("".equals(StringUtil.nullToString(fields[2])))
 						    				pataximp.setPaycard("");
 						    			else
 						    				pataximp.setPaycard(StringUtil.addZero(StringUtil.nullToString(fields[2]),4));
-						    			//¨­¤ÀÃÒ¸¹
+						    			//èº«åˆ†è­‰è™Ÿ
 						    			pataximp.setPayidno(StringUtil.nullToString(fields[3]));
-						    			//Âà±b¶µ¥Ø
+						    			//è½‰å¸³é …ç›®
 						    			pataximp.setCatgnm(StringUtil.nullToString(fields[4]));
-						    			//Âà±b¶µ¥Ø¥N½X
+						    			//è½‰å¸³é …ç›®ä»£ç¢¼
 						    			pataximp.setCatgcd(StringUtil.nullToString(fields[5]));
-						    			//©Ò±o®æ¦¡
+						    			//æ‰€å¾—æ ¼å¼
 						    			pataximp.setPayformat(StringUtil.nullToString(fields[6]));
-						    			//¶Ç²¼»s²¼¸¹
+						    			//å‚³ç¥¨è£½ç¥¨è™Ÿ
 						    			pataximp.setPaycitation(StringUtil.nullToString(fields[7]));
-						    			//À³µ|©Ò±o
+						    			//æ‡‰ç¨…æ‰€å¾—
 						    			pataximp.setPaytaxpay(Integer.parseInt(fields[8]));
-						    			//¤w¦©©Ò±oµ|
+						    			//å·²æ‰£æ‰€å¾—ç¨…
 						    			if (fieldslen >= 9 && !"".equals(fields[9]))
 							    			pataximp.setPaytaxdeduct(Integer.parseInt(fields[9]));
-						    			//©m¦W
+						    			//å§“å
 						    			if (fieldslen >= 10)
 						    				pataximp.setPaynamec(StringUtil.trimWideEmpty(StringUtil.nullToString(fields[10])));
-						    			//©Ò±o¶}©l¤é´Á
+						    			//æ‰€å¾—é–‹å§‹æ—¥æœŸ
 						    			if ( fieldslen >= 11 && !"".equals(fields[11]) )
 						    				pataximp.setPaybegin(StringUtil.nullToString(fields[11]));
-						    			//©Ò±oµ²§ô¤é´Á
+						    			//æ‰€å¾—çµæŸæ—¥æœŸ
 						    			if ( fieldslen >= 12 && !"".equals(fields[12]) )
 						    				pataximp.setPayend(StringUtil.nullToString(fields[12]));
-						    			//¤áÄy¦a§}
+						    			//æˆ¶ç±åœ°å€
 						    			if (fieldslen >= 13)
 						    				pataximp.setPayaddrs(StringUtil.trimWideEmpty(StringUtil.nullToString(fields[13])));
 						    			
@@ -2382,25 +2382,25 @@ public class SalController{
 								}	
 							}
 						}
-						//»È¦æ¦^³ø Bank_PayCÁ~¬z Bank_PayS¤½Àx
+						//éŠ€è¡Œå›å ± Bank_PayCè–ªæ´¥ Bank_PaySå…¬å„²
 						else if(selEn.matches("Bank_PayC|Bank_PayS")){
 							if (!"".equals(strLine)){
-								//²Ä1¦æ¤£³B²z
+								//ç¬¬1è¡Œä¸è™•ç†
 								if (StringUtil.trimWideEmpty(strLine).length()!=22){
 									paprtdtl=new Paprtdtl();
 									//ID
 									tmp=strLine.substring(32,42);
 									paprtdtl.setPayidno(tmp);
-									//±b¸¹
+									//å¸³è™Ÿ
 									tmp=strLine.substring(0,12);
 									if (selEn.equals("Bank_PayC"))
 										paprtdtl.setPayacno(tmp);
 									else
 										paprtdtl.setPaygedno(tmp);
-									//ª÷ÃB
+									//é‡‘é¡
 									inttmp=Integer.parseInt(strLine.substring(12,22));
 									paprtdtl.setPayamt(inttmp);
-									//¦^³øª¬ºA
+									//å›å ±ç‹€æ…‹
 									tmp=strLine.substring(44,45);
 									paprtdtl.setBankflag(tmp);
 									
@@ -2408,35 +2408,35 @@ public class SalController{
 								}	
 							}
 						}
-						//[¶×¤J]§å¦¸ÀÉ ImpPayInBat
+						//[åŒ¯å…¥]æ‰¹æ¬¡æª” ImpPayInBat
 						else if(selEn.matches("ImpPayInBat")){
 							if (!"".equals(strLine)){
-								//­Y¦³¼ĞÃD,¤£¶×¤J
-								if (!(strLine.contains("¦~") && intLine==0)){
+								//è‹¥æœ‰æ¨™é¡Œ,ä¸åŒ¯å…¥
+								if (!(strLine.contains("å¹´") && intLine==0)){
 									intLine++;
 									pabatpay=new Pabatpay();
-									//¤À¹j¸¹¥ı§PÂ_ , ¦A§PÂ_ ;									
+									//åˆ†éš”è™Ÿå…ˆåˆ¤æ–· , å†åˆ¤æ–· ;									
 									String[] fields = strLine.split(",");
 									if (fields.length == 1){
 										fields = strLine.split(";");
 									}
 									if (fields.length>0 && fields[2].matches("556"))
 										log.info(fields[2]);
-									//±Æ°£ªÅ¥Õ¦C 
+									//æ’é™¤ç©ºç™½åˆ— 
 					    			if (fields.length>0 && !"".equals(StringUtil.nullToString(fields[0])) ) {
 					    				fieldslen=fields.length-1;
 						    			log.info("uploadFile:cnt:"+do_cnt++ +" selEn: "+selEn+" strLine:"+strLine+" length:"+fieldslen);
-						    			//¦~
+						    			//å¹´
 						    			pabatpay.setYy(StringUtil.nullToString(fields[0]));
-						    			//¤ë
+						    			//æœˆ
 						    			pabatpay.setMm(StringUtil.nullToString(fields[1]));
-						    			//¥d¸¹
+						    			//å¡è™Ÿ
 						    			pabatpay.setPaycard( StringUtil.addZero(StringUtil.nullToString(fields[2]),4) );
-						    			//ª÷ÃB
+						    			//é‡‘é¡
 						    			pabatpay.setPayamt(Integer.parseInt(StringUtil.nullToString(fields[3])));
-						    			//Y§ó·s¦Ü¥DÀÉ N¨C¤ëÂk¹s
+						    			//Yæ›´æ–°è‡³ä¸»æª” Næ¯æœˆæ­¸é›¶
 						    			pabatpay.setPaupbas(paupbas);
-						    			//µoÁ~¤é
+						    			//ç™¼è–ªæ—¥
 						    			pabatpay.setPatradt(java.sql.Date.valueOf( patradt));
 						    			
 						    			alBatpay.add(pabatpay);
@@ -2448,18 +2448,18 @@ public class SalController{
 					}
 					
 					
-					//§å¦¸©Ò±oµ|¤H¤u¤Jµ|
+					//æ‰¹æ¬¡æ‰€å¾—ç¨…äººå·¥å…¥ç¨…
 					if ("InBatCash".equals(selEn)){
 						strRtn=tDAO.impTaxByBat(alTaxImp,intYear,filename,userid,hid,da);
-						log.info("¶×¤J§å¦¸©Ò±oµ|¤H¤u¤Jµ| "+strRtn);
-						jsonObj.put("msg", "¶×¤J§å¦¸©Ò±oµ|¤H¤u¤Jµ| "+strRtn);
+						log.info("åŒ¯å…¥æ‰¹æ¬¡æ‰€å¾—ç¨…äººå·¥å…¥ç¨… "+strRtn);
+						jsonObj.put("msg", "åŒ¯å…¥æ‰¹æ¬¡æ‰€å¾—ç¨…äººå·¥å…¥ç¨… "+strRtn);
 					}
-					//Bank_PayC:Á~¸ê¤ñ¹ï,Bank_PayS:¤½Àx¤ñ¹ï
+					//Bank_PayC:è–ªè³‡æ¯”å°,Bank_PayS:å…¬å„²æ¯”å°
 					else if (selEn.matches("Bank_PayC|Bank_PayS")){
 						strRtn=tDAO.impByBankC(alPrtDtl,patradt,salnum,selEn,filename,userid,hid,da);						
 						jsonObj.put("msg", strRtn);
 					}
-					//[¶×¤J]§å¦¸ÀÉ ImpPayInBat
+					//[åŒ¯å…¥]æ‰¹æ¬¡æª” ImpPayInBat
 					else if (selEn.matches("ImpPayInBat")){
 						strRtn=tDAO.ImpPayInBat(alBatpay,patradt,paycode,chkbas,selEn,filename,userid,hid,da);						
 						jsonObj.put("msg", strRtn);
@@ -2478,7 +2478,7 @@ public class SalController{
 			log.info(me + " fail, " + e);
 			StringWriter errors = new StringWriter();
 			e.printStackTrace(new PrintWriter(errors));
-			/*//ÀÉ®×¤j¤p¶W¹L­­¨î
+			/*//æª”æ¡ˆå¤§å°è¶…éé™åˆ¶
 			if(errors.toString().indexOf("FileSizeLimitExceededException") != -1){
 				if(fout != null)
 					fout.close();
@@ -2489,25 +2489,73 @@ public class SalController{
 			}*/
 		}finally{
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
+			// å¯«å‡ºè‡³JSPé é¢
 			out.print(jsonObj.toString());
 			out.flush();
 		}
 	}
 	/**
-	 * ´ú¸Õajax
+	 * ç³»çµ±ä½œæ¥­-æ›´æ–°å¡è™Ÿ,èº«ä»½è­‰
+	 */
+	@RequestMapping(params="method=updateIDCard")
+	public void updateIDCard(HttpServletRequest request, HttpServletResponse response)throws IOException{
+		String me = getClass().getName() + ".updateIDCard()";
+		
+		response.setCharacterEncoding("utf-8");//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
+		PrintWriter out = response.getWriter();
+		
+		jsonObj = new JSONObject();
+		String editMode = request.getParameter("editMode");
+		String editModeName = "1".equals(editMode) ? "å¡è™Ÿ" : "2".equals(editMode) ? "èº«ä»½è­‰" : editMode;
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//å‚³å…¥json
+		//é€éWPSAutoLoginå–å¾—ç™»å…¥è€…è³‡è¨Šï¼Œå·²ç¶“å­˜åœ¨sessionï¼Œå¯ä»¥è‡ªè¡Œåˆ¤æ–·æ˜¯å¦éœ€è¦å¸¶å…¥é é¢
+		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
+		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
+		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
+		
+		String dataSourceNT="";
+		Hospitals hospInfo = Hospitals.getOneHosp(hid);
+		dataSourceNT=hospInfo.dataSourceNT;
+		da=new VGHDataAccess(dataSourceNT);
+		boolean success=false;
+		String detailMsg ="";
+		
+		try{		
+			tDAO = new SalNTDAO(da,hid);
+			Map<String, Object> result=tDAO.updateTblID(editMode,in_data,userid,hid,da);
+		    success = (Boolean) result.get("success");
+		    detailMsg = (String) result.get("msg");
+			if (success)
+				jsonObj.element("msg", editModeName + " æ›´æ–°æˆåŠŸ\n" + detailMsg);	
+			else
+				jsonObj.element("msg", editModeName + " æ›´æ–°å¤±æ•—\n" + detailMsg);
+		}catch (Exception e) {
+			log.info(me + " fail, " + e);
+			jsonObj.element("msg", e.toString());
+			e.printStackTrace();
+		}finally{
+			tDAO=null;
+			da.close();
+			da = null;
+		}
+		// å¯«å‡ºè‡³JSPé é¢
+		out.print(jsonObj.toString());
+		out.flush();
+	}
+	/**
+	 * æ¸¬è©¦ajax
 	 */
 	@RequestMapping(params="method=testAjax")
 	public void testAjax(HttpServletRequest request, HttpServletResponse response){
 		String me = getClass().getName() + ".testAjax()";
 		
 		try{
-			//¦pªG¦³¤¤¤å¡AÁ×§K¶Ã½X
+			//å¦‚æœæœ‰ä¸­æ–‡ï¼Œé¿å…äº‚ç¢¼
 			response.setCharacterEncoding("utf-8");
 			
 			PrintWriter out = response.getWriter();
-			// ¼g¥X¦ÜJSP­¶­±
-			out.print("¦^¶Çµ²ªG");
+			// å¯«å‡ºè‡³JSPé é¢
+			out.print("å›å‚³çµæœ");
 			out.flush();
 		}catch (Exception e) {
 			log.info(me + " fail, " + e);
