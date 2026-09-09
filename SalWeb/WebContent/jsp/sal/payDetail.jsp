@@ -1996,7 +1996,7 @@ $(function(){
 			{ "sTitle":"補助_生日禮金"   ,	"mData": "paycplm1"},
 			{ "sTitle":"簽約留任金"  ,	"mData": "paycplm2" },
 			{ "sTitle":"加班費"    ,"mData": "paycplm3" },
-			{ "sTitle":" "    ,"mData": "payempfd" },
+			{ "sTitle":"科經營"    ,"mData": "payempfd" }, //2026-09-02新增科經營
 			{ "sTitle":"病歷罰扣"  ,	"mData": "paysars" },  //專勤醫師費--病歷罰扣 PAREPDETAIL 43但是屏榮月報表上寫的是paysars 65超盈餘獎金
 			{ "sTitle":"值班費"  ,"mData": "payextra" }, //屏榮月報表寫對應PAYEXTRA，但PAREPDETAIL 55寫的中文是顧問費
 			{ "sTitle":"公保費"  ,"mData": "paygeins" },
@@ -2005,7 +2005,7 @@ $(function(){
             { "sTitle":"退撫離職金"    ,"mData": "payretir" },
             { "sTitle":"所得稅","mData": "paytax" },
 			{ "sTitle":"公教儲金","mData": "paygedp" },
-			{ "sTitle":" "    ,"mData": "payvetd1" },  //這七格跟VB版產出的報表檔多一格 VB板只有六格 但是屏榮月報表有7格
+			{ "sTitle":"長照機構責任險"    ,"mData": "payvetd1" },  //2026-09-02新增長照機構責任險
 			{ "sTitle":" "    ,"mData": "payhloa1" },
 			{ "sTitle":" "    ,"mData": "payhloa2" },
 			{ "sTitle":" "    ,"mData": "payhloa3" },
