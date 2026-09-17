@@ -323,12 +323,12 @@ $(function(){
 		else if (selCode=="3" ){	//3:[匯入]待遇調整:ImpRemuInTra
 			$("#divfield_2").removeClass("d-none");
 			$("#explan_3").removeClass("d-none");
-			$("#handingB_monno_lbl,#handingB_monno").removeClass("d-none");
+			$("#handingB_monno_lbl,#handingB_monno,#handingB_effdt_lbl,#handingB_effdt").removeClass("d-none");
 		}
 		else if (selCode=="4"){		//4:[刪除]待遇調整:DelRemuInTra
 			$("#divfield_2").removeClass("d-none");
 			$("#explan_4").removeClass("d-none");
-			$("#handingB_monno_lbl,#handingB_monno").addClass("d-none");
+			$("#handingB_monno_lbl,#handingB_monno,#handingB_effdt_lbl,#handingB_effdt").addClass("d-none");
 		}	 
   	});
   	 	
@@ -432,10 +432,10 @@ $(function(){
 					if (typeof($("#handingB_range option:selected").val())=='undefined'){
 						msg += '請勾選[範圍]!!';
 					}	
-					if ($("#handingB_effdt").val()=='' ){
-		  				msg += '請勾選[生效日]!!';
-		  			}
 					if( selCode=='3' ){
+						if ($("#handingB_effdt").val()=='' ){
+			  				msg += '請勾選[生效日]!!';
+			  			}
 						if ($("#handingB_monno").val()=='' ){
 		  					msg += '[追補月數]空白!!';
 		  				}	
@@ -993,6 +993,7 @@ $(function(){
 						orank : $("#paorank").val(),
 						effdt : $("#paeffdt").val(),
 						pflag : $("#paypflag").val(),
+						taxno : $("#paytaxno").val(),
 		        	};
 		        //21..24退出,51年終獎金12考績獎金要算補發扣,	
 		        patracod=getInt($("#patracod option:selected").val());
@@ -3324,29 +3325,25 @@ $(function(){
 										<option value="${uitem.expfkey}">${uitem.expfname}</option>
 									</c:forEach>
 								</select>  --%>
-								<select id="filter_paret" class="selectpicker" data-width="fit"
-									title="專2">
+								<select id="filter_paret" class="selectpicker" data-width="fit" title="專2">
 									<option value=""></option>
 									<option value="Y">Y</option>
 									<option value="N">N</option>
-								</select> <select id="filter_inflg" class="selectpicker" data-width="fit"
-									title="保險補助">
+								</select> 
+								<select id="filter_inflg" class="selectpicker" data-width="fit" title="保險補助">
 									<option value=""></option>
 									<option value="Y">Y</option>
-								</select> <input type="text" id="filter_paeffdt_bng" size="10"
-									class="form-control-sm gclsCalTxt" placeholder="生效日_起">
-								<input type="text" id="filter_paeffdt_end" size="10"
-									class="form-control-sm gclsCalTxt" placeholder="生效日_訖">
+								</select> 
+								<input type="text" id="filter_paeffdt_bng" size="10" class="form-control-sm gclsCalTxt" placeholder="生效日_起">
+								<input type="text" id="filter_paeffdt_end" size="10" class="form-control-sm gclsCalTxt" placeholder="生效日_訖">
 							</div>
 						</div>
 					</div>
 					<div class="col-2">
-						<button id="btn_qry_filter_TranPsn" class="btn btn-success"
-							type="button">
+						<button id="btn_qry_filter_TranPsn" class="btn btn-success" type="button">
 							<i class="fa fa-search"></i>查詢
 						</button>
-						<button id="btn_cln_filter_TranPsn" class="btn btn-warning"
-							type="button">
+						<button id="btn_cln_filter_TranPsn" class="btn btn-warning" type="button">
 							<i class="fa fa-eraser"></i>清空
 						</button>
 					</div>
@@ -3391,7 +3388,7 @@ $(function(){
 					<div id="explan_1" class="text-danger">執行產生:請選擇[發薪日]</div>
 					<div id="explan_2" class="text-danger d-none">回復處理:依[發薪日]刪除</div>
 					<div id="explan_3" class="text-danger d-none">1.階級支扣數、職等支扣數要先設定。<br>2.執行產生:[範圍][發薪日][生效日][追補月日],4項欄位必填.</div>
-					<div id="explan_4" class="text-danger d-none">回復處理:[範圍][發薪日][生效日],3項欄位必填,依條件刪除</div>
+					<div id="explan_4" class="text-danger d-none">回復處理:[範圍][發薪日],2項欄位必填,依條件刪除</div>
 				</div>
 			</div>
 			
@@ -3423,7 +3420,7 @@ $(function(){
 								<select id="handingB_tradt" class="form-control w-auto" title="發薪日">
 									
 								</select>	
-								<label for="handingB_effdt" class="table-warning">生效日</label>
+								<label for="handingB_effdt" id="handingB_effdt_lbl" class="table-warning">生效日</label>
 								<input type="text" id="handingB_effdt" class="gclsCalTxt form-control w-auto" maxlength="10" size="10"/>
 								<label for="handingB_monno" id="handingB_monno_lbl" class="table-warning">追補月數</label> 
 								<input type="text" id="handingB_monno" class="form-control" maxlength="3" size="3" />		

@@ -25,6 +25,7 @@ import gov.vghks.sal.Hospitals;
 import gov.vghks.sal.dao.CommDAO;
 import gov.vghks.sal.dao.PsDSNDAO;
 import gov.vghks.sal.dao.SalNTDAO;
+import gov.vghks.sal.dao.TranPayDAO;
 import gov.vghks.sal.model.Pabaspsn;
 import gov.vghks.sal.model.Pabatpay;
 import gov.vghks.sal.model.Padatpsn;
@@ -95,6 +96,7 @@ public class SalController{
 	VGHDataAccess daDSN=null;
 	SalNTDAO tDAO = null;
 	PsDSNDAO psDAO = null;
+	TranPayDAO tranDAO=null;
 	String hid="";
 	String userid="";
 	
@@ -835,8 +837,7 @@ public class SalController{
 		String me = getClass().getName() + ".getTranPsnList()";
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
-		//VGHDataAccess da=new VGHDataAccess(Globals.dataSource_NT);
-
+		
 		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//傳入json
 		String item = request.getParameter("item")==null?"":request.getParameter("item");
 		String dataSourceNT="";
@@ -847,9 +848,11 @@ public class SalController{
 		
 		try{			//如果有中文，避免亂碼
 			response.setCharacterEncoding("utf-8");
-			tDAO = new SalNTDAO(da,hid);
+			//tDAO = new SalNTDAO(da,hid);
+			tranDAO= new TranPayDAO(da,hid);
 			try{
-				jsonArrRtn=tDAO.getTranPsnList(code_data,item,userid,hid,da);
+				//jsonArrRtn=tDAO.getTranPsnList(code_data,item,userid,hid,da);
+				jsonArrRtn=tranDAO.getTranPsnList(code_data,item,userid,hid,da);
 				// 用一個root tag將JSONArray包裝起來
 				if ("1".equals(item)){
 					jsonObj.element("traPsnList", jsonArrRtn);
@@ -1126,11 +1129,13 @@ public class SalController{
 		da=new VGHDataAccess(dataSourceNT);
 		
 		try{
-			tDAO = new SalNTDAO(da,daDSN,hid);
+			//tDAO = new SalNTDAO(da,daDSN,hid);
+			tranDAO = new TranPayDAO(da,daDSN,hid);
 			try{
 				jsonObj = new JSONObject();
 				//個人明細
-				psnitem=tDAO.getPSBasicById(code_data,userid,da,daDSN);
+				//psnitem=tDAO.getPSBasicById(code_data,userid,da,daDSN);
+				psnitem=tranDAO.getPSBasicById(code_data,userid,da,daDSN);
 				jsonObj.element("basPsnItem", psnitem,cfg);				
 				
 			}catch(Exception e){	
@@ -1865,9 +1870,12 @@ public class SalController{
 		HashMap traPayMap=new HashMap();
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		jsonObj = new JSONObject();
+		boolean success=false;
+		String detailMsg ="";
 		try{			//如果有中文，避免亂碼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,daDSN,hid);
+			tranDAO = new TranPayDAO(da,daDSN,hid);
 			try{
 				//更新異動檔個人明細
 				if (fun.matches("updTraPsn")){
@@ -1881,23 +1889,25 @@ public class SalController{
 					log.info(userid+user.getUserNm()+ tblname+pk_data+" "+editMode +" blnupd:"+blnupd);
 				}else if (fun.matches("getTraPsnByKey")){
 					//異動個人明細
-					psnitem=tDAO.getTraPsnBykey(in_data,userid,da);
+					//psnitem=tDAO.getTraPsnBykey(in_data,userid,da);
+					psnitem=tranDAO.getTraPsnBykey(in_data,userid,da);
 					jsonObj.element("traPsnItem", psnitem,cfg);
 					//異動個人支扣
-					traPayMap=tDAO.getTraPayList(in_data,userid,da);
+					//traPayMap=tDAO.getTraPayList(in_data,userid,da);
+					traPayMap=tranDAO.getTraPayList(in_data,userid,da);
 					jsonObj.element("otraPayList", traPayMap.get("otrapay_json"));
 					jsonObj.element("ntraPayList", traPayMap.get("ntrapay_json"));
 				}
 				//異動檔各項操作
 				else if (fun.matches("execTra")){
-					strRtn=tDAO.handelTran(in_data,userid,hid,da,daDSN);
-					if ("".equals(strRtn)) {
-						jsonObj.put("msg", selNm+"成功");
-						jsonObj.put("status", "Y");																				
-					}else{							
-						jsonObj.put("status", "N");
-						jsonObj.put("msg", selNm+"  失敗\n\r"+strRtn);			   
-					}
+					Map<String, Object> result = tranDAO.handelTran(in_data,userid,hid,da,daDSN);
+					success = (Boolean) result.get("success");
+				    detailMsg = (String) result.get("msg");
+				    
+				    if (success)
+						jsonObj.put("msg", selNm+"成功\n"+detailMsg);																		
+					else							
+						jsonObj.put("msg", selNm+"  失敗\n\r"+detailMsg);			   
 					
 				}
 			}catch(Exception e){	
