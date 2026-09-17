@@ -44,22 +44,23 @@ public class CommDAO {
 	private String sql="";
 	static ArrayList<Map<String, Object>> result = null;
 	static ArrayList<Object> params = new ArrayList<Object>();
-	static Logger log = Logger.getLogger(SalNTDAO.class);  //©I¥slog4j
+	static Logger log = Logger.getLogger(SalNTDAO.class);  //å‘¼å«log4j
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	private VGHDataAccess da = null;
 	private VGHDataAccess daDSN = null;
-	private static final int META_TYPE = 2; 			//¦^¶Çmap¤¤Äæ¦ì¦WºÙ¬O¤p¼g
+	private static final int META_TYPE = 2; 			//å›å‚³mapä¸­æ¬„ä½åç¨±æ˜¯å°å¯«
 	private static boolean connFlg = false;
 	static String g_dataSourceNT="";
 	private String hid="";
-	private String tCspfTbl  = "PA.PACSPF";				//¤u§@¼úª÷¤ä¦©
-	private String tDept 	 = "PA.PADEPT";				//³æ¦ì¥N½X
-	private String tTitle    = "PA.PATITLE";			//Â¾ºÙ
-	private String tPayitm   = "PA.PAPAYITM";			//¤ä¦©¶µ¥Ø
-	private String tPosiTbl  = "PA.PAPOSI";				//Â¾µ¥¤ä¦©--±M·~¥[µ¹¤Î¥DºŞ¥[µ¹ 
-	private String tRankTbl  = "PA.PARANK";				//¶¥¯Å¤ä¦©
-	private String tDpinTbl = "PA.PADPINTBL";			//¥ş¥Á°·±d«OÀI­t¾áª÷ÃBªí
-	private String tLbinTbl = "PA.PALBINTBL";			//³Ò«O§ë«Oª÷ÃB¹ï·Óªí 
+	private String tCspfTbl  = "PA.PACSPF";				//å·¥ä½œçé‡‘æ”¯æ‰£
+	private String tDept 	 = "PA.PADEPT";				//å–®ä½ä»£ç¢¼
+	private String tTitle    = "";			//è·ç¨±
+	private String tPayitm   = "";			//æ”¯æ‰£é …ç›®
+	private String tPosiTbl  = "";				//è·ç­‰æ”¯æ‰£--å°ˆæ¥­åŠ çµ¦åŠä¸»ç®¡åŠ çµ¦ 
+	private String tRankTbl  = "";				//éšç´šæ”¯æ‰£
+	private String tDpinTbl  = "";			//å…¨æ°‘å¥åº·ä¿éšªè² æ“”é‡‘é¡è¡¨
+	private String tLbinTbl  = "";			//å‹ä¿æŠ•ä¿é‡‘é¡å°ç…§è¡¨
+	private String tTaxTbl   = "";			//è–ªè³‡æ‰€å¾—æ‰£ç¹³ç¨…é¡è¡¨ 
 	
 	public CommDAO() {
 		super();
@@ -84,6 +85,7 @@ public class CommDAO {
 		tPosiTbl=tabInfo.tPosiTbl;
 		tDpinTbl=tabInfo.tDpinTbl;
 		tLbinTbl=tabInfo.tLbinTbl;
+		tTaxTbl =tabInfo.tTaxTbl;
 	}
 	
 	public CommDAO(VGHDataAccess da1,VGHDataAccess da2,String hid) {
@@ -101,13 +103,13 @@ public class CommDAO {
 		tDpinTbl=tabInfo.tDpinTbl;
 		tLbinTbl=tabInfo.tLbinTbl;
 	}
-	/**¶Ç¦^ A­ÄÂI¹ïÀ³ B¨ú±o·s­ÄÂI C­pºâ¸Éµo¦©
+	/**å‚³å› Aä¿¸é»å°æ‡‰ Bå–å¾—æ–°ä¿¸é» Cè¨ˆç®—è£œç™¼æ‰£
 	 * @param 
-	 * 		  RANK3:¥»¥\§O     Title:Â¾ºÙ                     RANK:¶¥§O  RNK2N:Â¾µ¥  DEGR2:¯Å§O RANK2:Åv²z
-'			  rankc:¥DºŞÅv²z  rank4:¾A¥Î±M·~¥[µ¹ªí inflg:«OÀI¸É§U¤ñ²v  idno:¨­¤ÀÃÒ tracod:²§°Ê½X
-'			  trapsnobj:²§°Ê­Ó¤H trapayMap:²§°Ê­ì¤ä¦©©ú²Ó tpreday:¥Í®Ä¤é«e¤@¬q¤é¼Æ
-'			  vhid : Âå°|§O		
-'             da(NT) daDSN(¥D¾÷)
+	 * 		  RANK3:æœ¬åŠŸåˆ¥     Title:è·ç¨±                     RANK:éšåˆ¥  RNK2N:è·ç­‰  DEGR2:ç´šåˆ¥ RANK2:æ¬Šç†
+'			  rankc:ä¸»ç®¡æ¬Šç†  rank4:é©ç”¨å°ˆæ¥­åŠ çµ¦è¡¨ inflg:ä¿éšªè£œåŠ©æ¯”ç‡  idno:èº«åˆ†è­‰ tracod:ç•°å‹•ç¢¼
+'			  trapsnobj:ç•°å‹•å€‹äºº trapayMap:ç•°å‹•åŸæ”¯æ‰£æ˜ç´° tpreday:ç”Ÿæ•ˆæ—¥å‰ä¸€æ®µæ—¥æ•¸
+'			  vhid : é†«é™¢åˆ¥		
+'             da(NT) daDSN(ä¸»æ©Ÿ)
 	 * @throws SQLException  
 	 */
 	
@@ -118,9 +120,10 @@ public class CommDAO {
 		Parank oneObj=null;
 		AmJsonConfig cfg = new AmJsonConfig();
 		HashMap rtnMap=new HashMap();
-		HashMap<String,Integer> itmMap=new HashMap();//¼g¤J·s¤ä¦©-¿ú ¶°¦X
-		HashMap<String,Papayitm> payitmMap= new HashMap();	//¤ä¦©¶µ¥Ømap
-		HashMap<String,Patitle> titleMap= new HashMap();	//Â¾ºÙmap
+		HashMap reissueMap=new HashMap();
+		HashMap<String,Integer> itmMap=new HashMap();//å¯«å…¥æ–°æ”¯æ‰£-éŒ¢ é›†åˆ
+		HashMap<String,Papayitm> payitmMap= new HashMap();	//æ”¯æ‰£é …ç›®map
+		HashMap<String,Patitle> titleMap= new HashMap();	//è·ç¨±map
 		ArrayList<Object> params = new ArrayList<Object>();
 		JSONObject jsonOne =null;
 		JSONArray jsonRtn = new JSONArray();
@@ -136,58 +139,64 @@ public class CommDAO {
 		int payamtd =0;
 		long starttime =0;
 		String strPaycode="";
-		String tNewServant="";//·s¨î¤½°È­û¤½«O¤Î°h¼¾·s¨î,ªì¥ô¤½Â¾¤é2023-7-1°_¬°·s¨îY
-		String tServant="";		//¤½°È­û
-		String tLabor="";		//³Ò¤u
-		String jt="";//Â¾ºÙ
-		String rnk2n="";//Â¾µ¥
-		String rank="";//¶¥§O
-		String rank2="";//Åv²z
-		String rank3="";//¥»¥\§O
-		String degr2="";//¯Å§O
-		String rank4="";//¾A¥Î±M¥Î¥[µ¹ªí
-		String rankc="";//¥DºŞÅv²z
-		String degre="";//­ÄÂI
-		String odegre="";//­ì­ÄÂI
-		String govdt="";//ªì¤J¤½Â¾¤é
-		String effdt="";//¥Í®Ä¤é
-		String inflg="";//«OÀI¸É§U¤ñ²v
-		String dpno="";//°·«O¤f¼Æ
-		int pflag=0;//¦ÒÁZ¼úª÷¤ë¼Æ ¦~²×¼úª÷¤ñ¨Ò
-		int tracod=0;//²§°Ê½X
-		int monno=0;//¸Éµo¤ë¼Æ
-		int dayno=0;//¸Éµo¤é¼Æ
-		String ojt="";//­ìÂ¾ºÙ
-		String orank="";//­ì¶¥§O		
-		String idno="";//¨­¤ÀÃÒ
-		JSONArray o_basPayAry=null;//­ì¤ä¤ä¦©©ú²Ó «eºİ¶Ç¨Ó
+		String tNewServant="";//æ–°åˆ¶å…¬å‹™å“¡å…¬ä¿åŠé€€æ’«æ–°åˆ¶,åˆä»»å…¬è·æ—¥2023-7-1èµ·ç‚ºæ–°åˆ¶Y
+		String tServant="";		//å…¬å‹™å“¡
+		String tLabor="";		//å‹å·¥
+		String jt="";//è·ç¨±
+		String rnk2n="";//è·ç­‰
+		String rank="";//éšåˆ¥
+		String rank2="";//æ¬Šç†
+		String rank3="";//æœ¬åŠŸåˆ¥
+		String degr2="";//ç´šåˆ¥
+		String rank4="";//é©ç”¨å°ˆç”¨åŠ çµ¦è¡¨
+		String rankc="";//ä¸»ç®¡æ¬Šç†
+		String degre="";//ä¿¸é»
+		String odegre="";//åŸä¿¸é»
+		String govdt="";//åˆå…¥å…¬è·æ—¥
+		String effdt="";//ç”Ÿæ•ˆæ—¥
+		String inflg="";//ä¿éšªè£œåŠ©æ¯”ç‡
+		String dpno="";//å¥ä¿å£æ•¸
+		int taxno=0;	//æ‰¶é¤Šäººæ•¸
+		int pflag=0;//è€ƒç¸¾çé‡‘æœˆæ•¸ å¹´çµ‚çé‡‘æ¯”ä¾‹
+		int tracod=0;//ç•°å‹•ç¢¼
+		int monno=0;//è£œç™¼æœˆæ•¸
+		int dayno=0;//è£œç™¼æ—¥æ•¸
+		String ojt="";//åŸè·ç¨±
+		String orank="";//åŸéšåˆ¥		
+		String idno="";//èº«åˆ†è­‰
+		JSONArray o_basPayAry=null;//åŸæ”¯æ”¯æ‰£æ˜ç´° å‰ç«¯å‚³ä¾†
 		JSONObject o_basPay=null;
-		String l_titSub="";//Â¾ºÙÂkÃş
-		String l_chief="";//Â¾ºÙ¬O§_¥DºŞ
-		boolean l_lbins=true;//³Ò«O¶O­pºâ
-		String l_posi="";//Â¾µ¥¤ä¦©--±M·~¥[µ¹¤Î¥DºŞ¥[µ¹ key
-		int l_degrlow=0;//Â¾µ¥¤ä¦©--±M·~¥[µ¹¤Î¥DºŞ¥[µ¹ key
-		int l_Insu=0;//¥»Á~+±M·~¥[µ¹+±M·~¥[µ¹®tÃB+¥DºŞ¥[µ¹,­pºâ°·«O¶O¨Ì¾Ú
-		int l_lbinig=0;//³Ò«O§ë«O¯Å¶Z
-		int n_FP000=0;//¥»Á~
-		int o_FP080=0;//±M·~¥[µ¹®tÃB
-		int o_FP090=0;//3A0³d¥ô¥[µ¹
-		int o_FP100=0;//3A0Â¾°È¥[µ¹ 2A0°|°Ï¥[µ¹
-		int n_FP010=0;//±M·~¥[µ¹
-		int l_insuDpin=0;//§ë«Oª÷ÃB--°·«O
-		int l_insuLBin=0;//§ë«Oª÷ÃB--³Ò«O		
-		HashMap<String,Integer> l_lbinMap=new HashMap();//¨ú±o³Ò«O°Ñ¦ÒÀÉ
-		HashMap<String,Integer> l_dpinMap=new HashMap();//¨ú±o°·«O°Ñ¦ÒÀÉ
-		Boolean l_jtFlg=false;//Â¾ºÙ(91:ª½±µ³]¤ä¦©½X,¤£Åªpayitm)
-		Boolean l_intern=false;//¹ê²ßÂå¾Ç¥Í
+		JSONObject n_basPay=null;
+		String l_titSub="";//è·ç¨±æ­¸é¡
+		String l_chief="";//è·ç¨±æ˜¯å¦ä¸»ç®¡
+		boolean l_lbins=true;//å‹ä¿è²»è¨ˆç®—
+		String l_posi="";//è·ç­‰æ”¯æ‰£--å°ˆæ¥­åŠ çµ¦åŠä¸»ç®¡åŠ çµ¦ key
+		int l_degrlow=0;//è·ç­‰æ”¯æ‰£--å°ˆæ¥­åŠ çµ¦åŠä¸»ç®¡åŠ çµ¦ key
+		int l_Insu=0;//æœ¬è–ª+å°ˆæ¥­åŠ çµ¦+å°ˆæ¥­åŠ çµ¦å·®é¡+ä¸»ç®¡åŠ çµ¦,è¨ˆç®—å¥ä¿è²»ä¾æ“š
+		int l_lbinig=0;//å‹ä¿æŠ•ä¿ç´šè·
+		int n_FP000=0;//æœ¬è–ª
+		int o_FP080=0;//åŸºæœ¬_å°ˆæ¥­åŠ çµ¦å·®é¡
+		int n_FP080=0;//æ–°_å°ˆæ¥­åŠ çµ¦å·®é¡
+		int o_FP090=0;//åŸºæœ¬_3A0è²¬ä»»åŠ çµ¦
+		int n_FP090=0;//æ–°_3A0è²¬ä»»åŠ çµ¦
+		int o_FP100=0;//åŸºæœ¬_3A0è·å‹™åŠ çµ¦ 2A0é™¢å€åŠ çµ¦
+		int n_FP100=0;//æ–°_3A0è·å‹™åŠ çµ¦ 2A0é™¢å€åŠ çµ¦
+		int n_FP010=0;//å°ˆæ¥­åŠ çµ¦
+		int l_insuDpin=0;//æŠ•ä¿é‡‘é¡--å¥ä¿
+		int l_insuLBin=0;//æŠ•ä¿é‡‘é¡--å‹ä¿		
+		HashMap<String,Integer> l_lbinMap=new HashMap();//å–å¾—å‹ä¿åƒè€ƒæª”
+		HashMap<String,Integer> l_dpinMap=new HashMap();//å–å¾—å¥ä¿åƒè€ƒæª”
+		HashMap<String,Integer> l_taxMap =new HashMap();//å–å¾—è–ªè³‡æ‰€å¾—æ‰£ç¹³ç¨…é¡è¡¨ 
+		Boolean l_jtFlg=false;//è·ç¨±(91:ç›´æ¥è¨­æ”¯æ‰£ç¢¼,ä¸è®€payitm)
+		Boolean l_intern=false;//å¯¦ç¿’é†«å­¸ç”Ÿ
 		Patitle titleObj=null;
 		Paposi posiObj=null;
-		PsInsu insuObj=null;//1A0³Ò«O¨­¤À«OÀIÀÉ	
+		PsInsu insuObj=null;//1A0å‹ä¿èº«åˆ†ä¿éšªæª”	
 		PsDSNDAO psDAO = null;
 		
 		starttime = System.currentTimeMillis();
 		
-		if (in_data!=null && !in_data.equals("")){	//²§°ÊÀÉ«eºİ¶Ç¨Ó
+		if (in_data!=null && !in_data.equals("")){	//ç•°å‹•æª”å‰ç«¯å‚³ä¾†
 			object_in_data = JSONObject.fromObject(in_data);
 			jt=(!object_in_data.has("jt")) ? "" : object_in_data.getString("jt");
 			rnk2n=(!object_in_data.has("rnk2n")) ? "" : object_in_data.getString("rnk2n");
@@ -204,6 +213,7 @@ public class CommDAO {
 			pflag=(!object_in_data.has("pflag")) ? 0  : ("").equals(StringUtil.nullToString(object_in_data.getString("pflag"))) ? 0 : object_in_data.getInt("pflag");
 			dpno=(!object_in_data.has("dpno")) ? ""  : object_in_data.getString("dpno");
 			tracod=(!object_in_data.has("tracod")) ? 0  : object_in_data.getInt("tracod");
+			taxno=(!object_in_data.has("taxno")) ? 0  : object_in_data.getInt("taxno");
 			idno=(!object_in_data.has("idno")) ? ""  : object_in_data.getString("idno");
 			o_basPayAry =(JSONArray) ((!object_in_data.has("o_basPay")) ? null  : ("").equals( StringUtil.nullToString(object_in_data.getString("o_basPay")) ) ? null : object_in_data.getJSONArray("o_basPay"));
 			monno=(!object_in_data.has("monno")) ? 0 : ("").equals(StringUtil.nullToString(object_in_data.getString("monno"))) ? 0 : object_in_data.getInt("monno");
@@ -212,7 +222,7 @@ public class CommDAO {
 			orank=(!object_in_data.has("orank")) ? "" : object_in_data.getString("orank");	
 			effdt=(!object_in_data.has("effdt")) ? ""  : object_in_data.getString("effdt");
 		}
-		else if(trapsnObj !=null) {	//®Ê¯Å
+		else if(trapsnObj !=null) {	//æ™‰ç´š
 			jt    = trapsnObj.getPaytitle();
 			rnk2n = trapsnObj.getPayrnk2n();
 			rank  = trapsnObj.getPayrank();
@@ -228,7 +238,8 @@ public class CommDAO {
 			pflag = Integer.parseInt(trapsnObj.getPaypflag());
 			dpno  = trapsnObj.getPaydpno();
 			tracod= trapsnObj.getPatracod();
-			idno  = trapsnObj.getPayidno();
+			taxno = trapsnObj.getPaytaxno();
+			idno  = trapsnObj.getPayidno();			
 			monno = trapsnObj.getPaymonno();
 			dayno = trapsnObj.getPaydayno();
 			ojt   = trapsnObj.getPaotitle();
@@ -238,10 +249,10 @@ public class CommDAO {
 		}
 		
 		try{
-			if (jt.matches("91"))//Â¾ºÙ(91:ª½±µ³]¤ä¦©½X,¤£Åªpayitm)
+			if (jt.matches("91"))//è·ç¨±(91:ç›´æ¥è¨­æ”¯æ‰£ç¢¼,ä¸è®€payitm)
 				l_jtFlg=true;
 			
-			if (jt.matches("BK|AD|AE|AI"))//Â¾ºÙ(BK:¶i­×Âå®v AD:¹ê²ßÂå®v AE¤úÂå¹ê²ßÂå¾Ç¥Í AI:¤¤Âå¹ê²ßÂå¾Ç¥Í Åªpayitm)
+			if (jt.matches("BK|AD|AE|AI"))//è·ç¨±(BK:é€²ä¿®é†«å¸« AD:å¯¦ç¿’é†«å¸« AEç‰™é†«å¯¦ç¿’é†«å­¸ç”Ÿ AI:ä¸­é†«å¯¦ç¿’é†«å­¸ç”Ÿ è®€payitm)
 				l_intern=true;
 			
 			intDegr2 = Integer.parseInt(degr2);
@@ -249,45 +260,45 @@ public class CommDAO {
 			if (degr2.equals("")){
 				vflag=false;
 			}
-			//0µLÂ¾µ¥--¹ê²ßÂå¾Ç¥Í
+			//0ç„¡è·ç­‰--å¯¦ç¿’é†«å­¸ç”Ÿ
 			if (rank.matches("0")){
 				vLEVEL1 = jt;
 			}
-			//7Á{
+			//7è‡¨
 			else if (rank.matches("7")){
 				vflag=false;	
 			}
-			//1Â²¥ô
+			//1ç°¡ä»»
 			else if ( rank.matches("1")) {
 				if (!rnk2n.matches("10|11|12|13") )
 					vflag=false;
 			}
-			//2ÂË¥ô
+			//2è–¦ä»»
 			else if ( rank.matches("2") ){
 				if ( !rnk2n.matches("6|7|8|9|06|07|08|09") )		
 					vflag=false;
 			}
-			//3©e¥ô HÄµ¹î¤H­û 
+			//3å§”ä»» Hè­¦å¯Ÿäººå“¡ 
 			else if ( rank.matches("3|H") ){
 				if (!rnk2n.matches("1|2|3|4|5|01|02|03|04|05") )
 					vflag=false;
 			}
-			//8®v 
+			//8å¸« 
 			else if ( rank.matches("8") ){
 				if ( !rnk2n.matches("P1|P2|P3") )
 					vflag=false;
 			}	
-			//9¤h 
+			//9å£« 
 			else if ( rank.matches("9") ) {
 				if ( !rnk2n.matches("T1") )
 					vflag=false;
 			}
-			//F«´¬ù
+			//Få¥‘ç´„
 			else if ( rank.matches("F") ){
 				if ( jt.equals("CG") && vHid.matches("1A0|2A0") ){
 					
 				}else if ( !jt.equals("") ){
-					//CH«´¬ù¦í°|Âå®v(ÃÒ®Ñ) CI«´¬ù¦í°|Âå®v CJ¤G¦~µLÃÒ¤£¤À¬ì¦í°|Âå®v CK¤G¦~¦³ÃÒ¤£¤À¬ì¦í°|Âå®v DS¥b¤é«´¬ùÅ@²z DW¥b¤é«´¬ùÃÄ®v
+					//CHå¥‘ç´„ä½é™¢é†«å¸«(è­‰æ›¸) CIå¥‘ç´„ä½é™¢é†«å¸« CJäºŒå¹´ç„¡è­‰ä¸åˆ†ç§‘ä½é™¢é†«å¸« CKäºŒå¹´æœ‰è­‰ä¸åˆ†ç§‘ä½é™¢é†«å¸« DSåŠæ—¥å¥‘ç´„è­·ç† DWåŠæ—¥å¥‘ç´„è—¥å¸«
 					if ( jt.matches("CH|CI|CJ|CK|DS|DW"))
 						vLEVEL1 = jt;
 					else if (vHid.matches("2A0") && intDegr2 <200)
@@ -319,9 +330,9 @@ public class CommDAO {
 					}	
 				}
 			}
-			//¤ä¦©¥N½Xmap
+			//æ”¯æ‰£ä»£ç¢¼map
 			payitmMap= this.getPayitmMap("N", vHid, da);
-			// A­ÄÂI¹ïÀ³ B¨ú±o·s­ÄÂI C­pºâ¸Éµo¦©
+			// Aä¿¸é»å°æ‡‰ Bå–å¾—æ–°ä¿¸é» Cè¨ˆç®—è£œç™¼æ‰£
 			if ( (!vLEVEL1.equals("") && fun.equals("A")) || (l_jtFlg || fun.equals("B")) ) {
 				if ( !vLEVEL1.equals("") ) {
 					sql = " select PAYLEV1V, PAYLEV2V, PAYDEGRV, PAYRANKV, PAYBASEV, PAYGEINF, PAYLBINF, PAYDPINV, PAYGEINN, PAYREBEF, PAYUSEID, PAYUPDAT, HID, PAYREBEN "+
@@ -339,15 +350,15 @@ public class CommDAO {
 						for (Map<String,Object> data :result){
 							oneObj = new Parank();
 							PropertyUtils.copyProperties(oneObj, data);
-							n_FP000 = oneObj.getPaybasev();//¥»Á~ ¥Î¦bÁpÂå¥»Á~<³Ì§C¤u¸ê¥Î
+							n_FP000 = oneObj.getPaybasev();//æœ¬è–ª ç”¨åœ¨è¯é†«æœ¬è–ª<æœ€ä½å·¥è³‡ç”¨
 						}
 					}
 					rtnMap.put("rankItem", oneObj);
 				}
 				
 				if (fun.equals("B")){
-					//BK¶i­×Âå®v,AD¹ê²ßÂå®v	FP070=9000-->§ïÅªparank
-					//91ÅU°İ				FP410=3000
+					//BKé€²ä¿®é†«å¸«,ADå¯¦ç¿’é†«å¸«	FP070=9000-->æ”¹è®€parank
+					//91é¡§å•				FP410=3000
 					if (l_jtFlg) {
 //						if (jt.matches("AD|BK")) {
 //							strPaycode = "FP070";
@@ -360,36 +371,36 @@ public class CommDAO {
 						itmMap.put(strPaycode, intvalue);
 					}
 					else {
-						//Â¾ºÙmap
+						//è·ç¨±map
 						titleMap= this.getTitleMap("A",vHid, da);
-						//¤½°È­û (H 3A0Äµ¹î¤H­û,¤£¬O¤½Â¾)
+						//å…¬å‹™å“¡ (H 3A0è­¦å¯Ÿäººå“¡,ä¸æ˜¯å…¬è·)
 						if (rank.matches("1|2|3|4|8|9|H") ){
 							tServant="Y";
 						}else {
 							tLabor="Y";
-							//1A0³Ò«O¨­¤À¨ú¤H¨Æ«OÀIÀÉpsinsu
+							//1A0å‹ä¿èº«åˆ†å–äººäº‹ä¿éšªæª”psinsu
 							if (vHid.equals("1A0")) {
 								psDAO = new PsDSNDAO(daDSN,vHid);
 								insuObj=psDAO.getInsuByidno(idno, vHid, daDSN);
 							}
 						}
 							
-						//·s¨î¤½°È­û
+						//æ–°åˆ¶å…¬å‹™å“¡
 						if (!govdt.equals("")) {
 							if (rank.matches("1|2|3|4|8|9") && !DateUtil.compareDate(govdt,Globals.gCivilServants) ){
 								tNewServant="Y";
 							}
 						}
-						//Â¾ºÙÂkÃş
+						//è·ç¨±æ­¸é¡
 						titleObj=titleMap.get(jt); 
 						if (titleObj !=null) {
 							l_titSub =titleObj.getPatitsub();
 							l_chief =titleObj.getPachief();
 						}
 						
-						//-------¾ú¹Mparank¦U¶µÄæ¦ì,§ä¥»Á~FP000,¤½«OFD010,·s¤½«OFD010,°h¼¾,·s¨î°h¼¾FD040
-						//³Ò«O--1.parank ((1)HÄµ¹î¤H­û (2)2A0 CG«´¥Dªv
-						//     2.1A0§ï¦¨§ì¤H¨Æpsinsu
+						//-------æ­·éparankå„é …æ¬„ä½,æ‰¾æœ¬è–ªFP000,å…¬ä¿FD010,æ–°å…¬ä¿FD010,é€€æ’«,æ–°åˆ¶é€€æ’«FD040
+						//å‹ä¿--1.parank ((1)Hè­¦å¯Ÿäººå“¡ (2)2A0 CGå¥‘ä¸»æ²»
+						//     2.1A0æ”¹æˆæŠ“äººäº‹psinsu
 						if (oneObj != null) {
 							Field[] fields=oneObj.getClass().getDeclaredFields();
 							for (Field field :fields){
@@ -398,30 +409,30 @@ public class CommDAO {
 									intvalue = (Integer) field.get(oneObj);
 								}	
 								fieldname= field.getName();
-								//¥»Á~­n§PÂ_¹ê²ßÂå®v,¨ä¥L¤£¥Î
+								//æœ¬è–ªè¦åˆ¤æ–·å¯¦ç¿’é†«å¸«,å…¶ä»–ä¸ç”¨
 								if ( (fieldname != "paybasev" && (!l_intern)) || (fieldname=="paybasev") ) {
 									jsonOne = new JSONObject();
 									payamtp=0;
 									payamtd=0;
 									strPaycode="";
-									if (fieldname.equals("paybasev")){	//¥»Á~
+									if (fieldname.equals("paybasev")){	//æœ¬è–ª
 										if (l_intern)
-											strPaycode="FP070";//¹ê²ß¶O
+											strPaycode="FP070";//å¯¦ç¿’è²»
 										else
-											strPaycode="FP000";//¥»Á~
-									}else if (fieldname.equals("paygeinf")){//¤½«O¶O
+											strPaycode="FP000";//æœ¬è–ª
+									}else if (fieldname.equals("paygeinf")){//å…¬ä¿è²»
 										if ( !tNewServant.equals("Y") )
 											strPaycode="FD010";
-									}else if (fieldname.equals("paygeinn")){//·s¨î¤½«O¶O
+									}else if (fieldname.equals("paygeinn")){//æ–°åˆ¶å…¬ä¿è²»
 										if (tNewServant.equals("Y") )
 											strPaycode="FD010";
-									}else if (fieldname.equals("payrebef")){//°h¼¾°òª÷PAYREBEF
+									}else if (fieldname.equals("payrebef")){//é€€æ’«åŸºé‡‘PAYREBEF
 										if ( !tNewServant.equals("Y") )
 											strPaycode="FD040";
-									}else if (fieldname.equals("payreben")){//·s¨î°h¼¾°òª÷PAYREBEN
+									}else if (fieldname.equals("payreben")){//æ–°åˆ¶é€€æ’«åŸºé‡‘PAYREBEN
 										if (tNewServant.equals("Y") )
 											strPaycode="FD040";
-									}else if (fieldname.equals("paylbinf")){//³Ò«O¶OPAYLBINF ((1)HÄµ¹î¤H­û (2)2A0 CG«´¥Dªv
+									}else if (fieldname.equals("paylbinf")){//å‹ä¿è²»PAYLBINF ((1)Hè­¦å¯Ÿäººå“¡ (2)2A0 CGå¥‘ä¸»æ²»
 										if ( (vHid.equals("3A0") && rank.matches("H")) || (vHid.equals("2A0") && jt.matches("CG")) ) {
 											strPaycode="FD030";
 											l_lbins=false;
@@ -430,25 +441,25 @@ public class CommDAO {
 								}
 								if (!"".equals(strPaycode) && intvalue >0 ){
 									itmMap.put(strPaycode, intvalue);
-									System.out.println("parank¦U¶µÄæ¦ì=>"+strPaycode+":"+intvalue);
+									System.out.println("parankå„é …æ¬„ä½=>"+strPaycode+":"+intvalue);
 								}
 							}	
 						}
 						
-						//--------±M·~¥[µ¹(«D¹ê²ßÂå®v),paposi Àu¥ı¶¶§Ç:Åv²zrank2 > Â¾µ¥RNK2N > ¶¥§ORANK
+						//--------å°ˆæ¥­åŠ çµ¦(éå¯¦ç¿’é†«å¸«),paposi å„ªå…ˆé †åº:æ¬Šç†rank2 > è·ç­‰RNK2N > éšåˆ¥RANK
 						if(!l_intern) {
 							if (!"".equals(rank2) )
 								l_posi = rank2 ;
 							else if (!"".equals(rnk2n) && !"00".equals(rnk2n))
 								l_posi = rnk2n ;
 							else if ("F".equals(rank) ) {
-								if ( "3A0".equals(vHid)) { //3A0«´¬ù payposik=NF,degrlow=¯Å§O
+								if ( "3A0".equals(vHid)) { //3A0å¥‘ç´„ payposik=NF,degrlow=ç´šåˆ¥
 									l_posi = "N"+rank ;
 									l_degrlow = intDegr2;
 								}	
-								else if ( "2A0".equals(vHid) && (intDegr2 >=201 && intDegr2 <=240) ) //2A0«´¬ù degrlow=¯Å§O201-240
+								else if ( "2A0".equals(vHid) && (intDegr2 >=201 && intDegr2 <=240) ) //2A0å¥‘ç´„ degrlow=ç´šåˆ¥201-240
 									l_posi = jt; 
-							}else if (rank.matches("5|6") ) //5§Ş¤u 6¤u¤Í
+							}else if (rank.matches("5|6") ) //5æŠ€å·¥ 6å·¥å‹
 								l_posi = "N"+rank;
 							
 							sql = " select PAYPSP1, PAYPSP2, PAYPSP3, PAYPSP4, PAYPSP5, PAYPSP6, PAYPSP7, PAYUPDAT, PAYPSP8 "+
@@ -472,7 +483,7 @@ public class CommDAO {
 								}
 							}
 						}
-						//¾ú¹Mpaposi±M·~¥[µ¹
+						//æ­·épaposiå°ˆæ¥­åŠ çµ¦
 						if (posiObj != null) {
 							Field[] fields=posiObj.getClass().getDeclaredFields();
 							for (Field field :fields){
@@ -484,44 +495,44 @@ public class CommDAO {
 								
 								strPaycode="";
 								if (fieldname.equals("paypsp1")){
-									//1.¾A¥Î±M·~¥[µ¹¹ï·Óªí=4(Âå¬ã(24-1)¤½Â¾) [5®v¥Í¯Å(24-2)³o²ÕÀ³¸Ó¤£¥Î] 
-									//2.Â¾ºÙÂkÃş=VÂå®v S¬ã¨s¤H­û [H¸u¥Î¦í°|Âå®v «İ½T»{}
+									//1.é©ç”¨å°ˆæ¥­åŠ çµ¦å°ç…§è¡¨=4(é†«ç ”(24-1)å…¬è·) [5å¸«ç”Ÿç´š(24-2)é€™çµ„æ‡‰è©²ä¸ç”¨] 
+									//2.è·ç¨±æ­¸é¡=Vé†«å¸« Sç ”ç©¶äººå“¡ [Hè˜ç”¨ä½é™¢é†«å¸« å¾…ç¢ºèª}
 									if (rank4.matches("4") || (rank4.matches("0|") && l_titSub.matches("V|S")))
 										strPaycode="FP010";
 								}else if (fieldname.equals("paypsp2")){
-									//1.¾A¥Î±M·~¥[µ¹¹ï·Óªí=5®v¥Í¯Å(24-2) 6Âå°È§Ş³N(26) 
-									//2.Â¾ºÙÂkÃş=NÅ@²z TÂå°È§Ş³ND ÃÄ®v
+									//1.é©ç”¨å°ˆæ¥­åŠ çµ¦å°ç…§è¡¨=5å¸«ç”Ÿç´š(24-2) 6é†«å‹™æŠ€è¡“(26) 
+									//2.è·ç¨±æ­¸é¡=Nè­·ç† Té†«å‹™æŠ€è¡“D è—¥å¸«
 									if (rank4.matches("5|6") || (rank4.matches("0|") && l_titSub.matches("T|D|N")))
 										strPaycode="FP010";
 								}else if (fieldname.equals("paypsp6")){
-									//1.¾A¥Î±M·~¥[µ¹¹ï·Óªí=2 Âå¾Ç¤uµ{(3)  
-									//2.Â¾ºÙÂkÃş=W Âå¾Ç¤uµ{
+									//1.é©ç”¨å°ˆæ¥­åŠ çµ¦å°ç…§è¡¨=2 é†«å­¸å·¥ç¨‹(3)  
+									//2.è·ç¨±æ­¸é¡=W é†«å­¸å·¥ç¨‹
 									if (rank4.matches("2") || (rank4.matches("0|") && l_titSub.matches("W")))
 										strPaycode="FP010";
 								}else if (fieldname.equals("paypsp4")){
-									//1.¾A¥Î±M·~¥[µ¹¹ï·Óªí=3¸ê°T(20) 
-									//2.Â¾ºÙÂkÃş=C ¸ê°T¤H­û
-									//3.Â¾ºÙÂkÃş=«Ìºa«´¬ùI «´¬ù¤H­û FP100°|°Ï¥[µ¹
+									//1.é©ç”¨å°ˆæ¥­åŠ çµ¦å°ç…§è¡¨=3è³‡è¨Š(20) 
+									//2.è·ç¨±æ­¸é¡=C è³‡è¨Šäººå“¡
+									//3.è·ç¨±æ­¸é¡=å±æ¦®å¥‘ç´„I å¥‘ç´„äººå“¡ FP100é™¢å€åŠ çµ¦
 									if ( rank4.matches("3") || 
 										( rank4.matches("0|") && l_titSub.matches("C"))  )
 										strPaycode="FP010";
 									else if ( vHid.equals("2A0") && l_titSub.matches("I") )
 										strPaycode="FP100";
 								}else if (fieldname.equals("paypsp7")){
-									//1.¾A¥Î±M·~¥[µ¹¹ï·Óªí=7 ¤uµ{(7)  
-									//2.Â¾ºÙÂkÃş=U ¤uµ{¤H­û
+									//1.é©ç”¨å°ˆæ¥­åŠ çµ¦å°ç…§è¡¨=7 å·¥ç¨‹(7)  
+									//2.è·ç¨±æ­¸é¡=U å·¥ç¨‹äººå“¡
 									if (rank4.matches("7") || (rank4.matches("0|") && l_titSub.matches("U")))
 										strPaycode="FP010";
 								}else if (fieldname.equals("paypsp8")){
-									//1.¾A¥Î±M·~¥[µ¹¹ï·Óªí=8 ªÀ¤u(2)  
-									//2.Â¾ºÙÂkÃş=B ªÀ¤u
+									//1.é©ç”¨å°ˆæ¥­åŠ çµ¦å°ç…§è¡¨=8 ç¤¾å·¥(2)  
+									//2.è·ç¨±æ­¸é¡=B ç¤¾å·¥
 									if (rank4.matches("8") || (rank4.matches("0|") && l_titSub.matches("B")))
 										strPaycode="FP010";
 								}
 								else if (fieldname.equals("paypsp3")){
-									//1.¾A¥Î±M·~¥[µ¹¹ï·Óªí=1 ¦æ¬F¤H­û(1)   
-									//2.Â¾ºÙÂkÃş=(1)G ¦æ¬F¤H­û (2)Y §Ş¤u¤Í (3)«Ìºa2A0 «´¬ùI «´¬ù¤H­û  (4)ÁpÂå3A0«´¬ùI «´¬ù¤H­û
-									//3.ÁpÂå3A0Äµ¹î,rank=H
+									//1.é©ç”¨å°ˆæ¥­åŠ çµ¦å°ç…§è¡¨=1 è¡Œæ”¿äººå“¡(1)   
+									//2.è·ç¨±æ­¸é¡=(1)G è¡Œæ”¿äººå“¡ (2)Y æŠ€å·¥å‹ (3)å±æ¦®2A0 å¥‘ç´„I å¥‘ç´„äººå“¡  (4)è¯é†«3A0å¥‘ç´„I å¥‘ç´„äººå“¡
+									//3.è¯é†«3A0è­¦å¯Ÿ,rank=H
 									if ( rank4.matches("1") || 
 										( rank4.matches("0|") && ( l_titSub.matches("G|Y") || 
 												                ( vHid.matches("2A0|3A0") && l_titSub.matches("I")) ) ) ||
@@ -530,19 +541,19 @@ public class CommDAO {
 								}
 								
 								if (!"".equals(strPaycode) && intvalue>0){
-									//ÁpÂå,¤p©ó³Ì§C¤u¸ê,¸É¦b±M·~¥[µ¹
+									//è¯é†«,å°æ–¼æœ€ä½å·¥è³‡,è£œåœ¨å°ˆæ¥­åŠ çµ¦
 									if ( vHid.matches("3A0") && l_titSub.matches("I") ) {
 										if ( n_FP000+ intvalue < Globals.gSalStandard3A0 )
 											intvalue = intvalue + ( Globals.gSalStandard3A0 - intvalue - n_FP000);
 		                            }
 									n_FP010=intvalue;
 									itmMap.put(strPaycode, intvalue);
-									System.out.println("paposi±M·~¥[µ¹=>"+strPaycode+":"+intvalue);
+									System.out.println("paposiå°ˆæ¥­åŠ çµ¦=>"+strPaycode+":"+intvalue);
 								}
 								
 							}	
 						}
-						//-----¥DºŞ¥[µ¹FP030 ¥»Â¾¬O¥DºŞ ©Î ¥DºŞÅv²z
+						//-----ä¸»ç®¡åŠ çµ¦FP030 æœ¬è·æ˜¯ä¸»ç®¡ æˆ– ä¸»ç®¡æ¬Šç†
  						if ( (l_chief.equals("Y") || !rankc.equals("") ) ) {
  							params.clear();
 							sql = " select PAYPSP5 "+
@@ -571,47 +582,48 @@ public class CommDAO {
 								
 							if (!"".equals(strPaycode)){
 								itmMap.put(strPaycode, intvalue);
-								System.out.println("¥DºŞ¥[µ¹=>"+strPaycode+":"+intvalue);
+								System.out.println("ä¸»ç®¡åŠ çµ¦=>"+strPaycode+":"+intvalue);
 							}
 						}
  						
- 						//--³Ò«O¨­¤À--³Ò«O¶OFD030°·«OFD020
- 						//1.1A0°ªºaÂ^¨ú¤H¨Æ«OÀI¯Å¶Z 
- 						//2.2A0/3A0 [·s¶i]­pºâ
+ 						
+ 						//--å‹ä¿èº«åˆ†--å‹ä¿è²»FD030å¥ä¿FD020
+ 						//1.1A0é«˜æ¦®æ“·å–äººäº‹ä¿éšªç´šè· 
+ 						//2.2A0/3A0 [æ–°é€²]è¨ˆç®—
  						if (tLabor.equals("Y") && !l_intern ) {
  							if (vHid.equals("1A0")) {
- 								//³Ò«O¶OFD030
+ 								//å‹ä¿è²»FD030
  								if (insuObj != null) {
-	 								l_insuLBin = insuObj.getLbinig();//§ë«Oª÷ÃB--³Ò«O
-	 								l_lbinMap  = GetLaborInsuByPay(inflg, l_insuLBin, da);	//³Ò«O¶O
+	 								l_insuLBin = insuObj.getLbinig();//æŠ•ä¿é‡‘é¡--å‹ä¿
+	 								l_lbinMap  = GetLaborInsuByPay(inflg, l_insuLBin, da);	//å‹ä¿è²»
 	 								if ( l_lbinMap!=null ) {
 	 									strPaycode= "FD030";
 	 									intvalue  = l_lbinMap.get("lbinamt");
 	 									l_lbinig  = l_lbinMap.get("lbinig");
 	 									if (intvalue > 0) {
 	 	 									itmMap.put(strPaycode, intvalue);
-	 	 									System.out.println("³Ò«O¶O=>"+strPaycode+":"+intvalue);
+	 	 									System.out.println("å‹ä¿è²»=>"+strPaycode+":"+intvalue);
 	 	 								}
 	 								}
-	 								//°·«O¶OFD020
-	 								l_insuDpin = insuObj.getDpinig();//§ë«Oª÷ÃB--°·«O 
+	 								//å¥ä¿è²»FD020
+	 								l_insuDpin = insuObj.getDpinig();//æŠ•ä¿é‡‘é¡--å¥ä¿ 
 	 								if (dpno=="")
 	 									dpno="1";
-	 								//°·«O¸É§U¼Ğ·Ç¤Î¤f¼Æ,­pºâ¥X«O¶O 
+	 								//å¥ä¿è£œåŠ©æ¨™æº–åŠå£æ•¸,è¨ˆç®—å‡ºä¿è²» 
 	 								l_dpinMap  = GetHealthInsuRelief(inflg, dpno,l_insuDpin, da);	
 	 								if ( l_dpinMap!=null ) {
 	 									strPaycode="FD020";
 	 									intvalue = l_dpinMap.get("dpinamt");
 	 									if (intvalue > 0) {
 	 	 									itmMap.put(strPaycode, intvalue);
-	 	 									System.out.println("°·«O¶O=>"+strPaycode+":"+intvalue);
+	 	 									System.out.println("å¥ä¿è²»=>"+strPaycode+":"+intvalue);
 	 	 								}
-	 									rtnMap.put("insu_dpin", l_dpinMap.get("dpinig"));	//¦s©ñ§ë«O¯Å¶Z
+	 									rtnMap.put("insu_dpin", l_dpinMap.get("dpinig"));	//å­˜æ”¾æŠ•ä¿ç´šè·
 	 								}
  								}
  							}else if (vHid.matches("2A0|3A0")) {
- 								if (tracod == 1) {
- 									//³Ò«O
+ 								if (tracod == 1 || tracod == 35) {
+ 									//å‹ä¿
 	 								strPaycode= "FD030";
 									l_lbinMap  = GetLaborInsuByPay(inflg, n_FP000 + n_FP010 + o_FP090 + o_FP100, da);	
 	 								if ( l_lbinMap!=null ) {
@@ -619,75 +631,76 @@ public class CommDAO {
 	 									intvalue  = l_lbinMap.get("lbinamt");
 	 									l_lbinig  = l_lbinMap.get("lbinig");
 	 									itmMap.put(strPaycode, intvalue);
-	 									System.out.println("³Ò«O¶O=>"+strPaycode+":"+intvalue);
+	 									System.out.println("å‹ä¿è²»=>"+strPaycode+":"+intvalue);
 	 								}
-	 								//°·«O
+	 								//å¥ä¿
 	 								l_dpinMap  = GetHealthInsuRelief(inflg, dpno,n_FP000 + n_FP010 + o_FP090 + o_FP100, da);	
 	 								if ( l_dpinMap!=null ) {
 	 									strPaycode="FD020";
 	 									intvalue = l_dpinMap.get("dpinamt");
 	 									if (intvalue > 0) {
 	 	 									itmMap.put(strPaycode, intvalue);
-	 	 									System.out.println("°·«O¶O=>"+strPaycode+":"+intvalue);
+	 	 									System.out.println("å¥ä¿è²»=>"+strPaycode+":"+intvalue);
 	 	 								}
-	 									rtnMap.put("insu_dpin", l_dpinMap.get("dpinig"));	//¦s©ñ§ë«O¯Å¶Z
+	 									rtnMap.put("insu_dpin", l_dpinMap.get("dpinig"));	//å­˜æ”¾æŠ•ä¿ç´šè·
 	 								}
  								}	
  							}
  						}
- 						//------ÂåÀø¤¬§Uª÷FD210
+ 						//------é†«ç™‚äº’åŠ©é‡‘FD210
  						strPaycode="";
  						intvalue=0;
  						if (vHid.matches("1A0|2A0") && !l_intern ) {
  							if (vHid.equals("1A0")) {
  								if (l_titSub.matches("V")) {
- 									if (jt.equals("16"))	//'16¦í°|Âå®v$200 ¥DªvÂå®v¥H¤W$400   2004-1-1¥Í®Ä
+ 									if (jt.equals("16"))	//'16ä½é™¢é†«å¸«$200 ä¸»æ²»é†«å¸«ä»¥ä¸Š$400   2004-1-1ç”Ÿæ•ˆ
  										intvalue=200;
  									else
  										intvalue=400;
  								}
- 								else if (l_titSub.matches("H")) {//AL¤@¦~¦³ÃÒ¤£¤À¬ì¦í°|Âå®v AM	¸u¥Î¹ê²ßÂå®v AN¤@¦~µLÃÒ¤£¤À¬ì¦í°|Âå®v BK¶i­×Âå®v CB¸u¥Î¦í°|Âå®v          
+ 								else if (l_titSub.matches("H")) {//ALä¸€å¹´æœ‰è­‰ä¸åˆ†ç§‘ä½é™¢é†«å¸« AM	è˜ç”¨å¯¦ç¿’é†«å¸« ANä¸€å¹´ç„¡è­‰ä¸åˆ†ç§‘ä½é™¢é†«å¸« BKé€²ä¿®é†«å¸« CBè˜ç”¨ä½é™¢é†«å¸«          
  									intvalue=200;
  								}
- 								else if (l_titSub.matches("N|D")) {//NÅ@²z DÃÄ®v          
+ 								else if (l_titSub.matches("N|D")) {//Nè­·ç† Dè—¥å¸«          
  									intvalue=100;
  								}
  								else if (l_titSub.matches("I")) {
- 									if (jt.matches("CH|CI|CJ|CK"))	//'CH«´¬ù¦í°|Âå®v(ÃÒ®Ñ) CI«´¬ù¦í°|Âå®v CK 2¦~¦³ÃÒ¤£¤À¬ì¦í°|Âå®v CJ¤G¦~µLÃÒ¤£¤À¬ì¦í°|Âå®v
+ 									if (jt.matches("CH|CI|CJ|CK"))	//'CHå¥‘ç´„ä½é™¢é†«å¸«(è­‰æ›¸) CIå¥‘ç´„ä½é™¢é†«å¸« CK 2å¹´æœ‰è­‰ä¸åˆ†ç§‘ä½é™¢é†«å¸« CJäºŒå¹´ç„¡è­‰ä¸åˆ†ç§‘ä½é™¢é†«å¸«
  										intvalue=200;
- 									else if (jt.matches("DM|DN|EJ|DS|DW|E9"))	//'DM«´¬ùÅ@²z DN«´¬ùÃÄ®v EJ«´¬ù³Â¾KÅ@²z DS¥b¤é«´¬ùÅ@²zDW¥b¤é«´¬ùÃÄ®v(2026.8.12 E9«´¬ù¹ê²ßÅ@²z)
+ 									else if (jt.matches("DM|DN|EJ|DS|DW|E9"))	//'DMå¥‘ç´„è­·ç† DNå¥‘ç´„è—¥å¸« EJå¥‘ç´„éº»é†‰è­·ç† DSåŠæ—¥å¥‘ç´„è­·ç†DWåŠæ—¥å¥‘ç´„è—¥å¸«(2026.8.12 E9å¥‘ç´„å¯¦ç¿’è­·ç†)
  										intvalue=100;
- 									else if (jt.matches("CG"))	//'CG«´¬ù¥DªvÂå®v
+ 									else if (jt.matches("CG"))	//'CGå¥‘ç´„ä¸»æ²»é†«å¸«
  										intvalue=400;
  								}
  							}else if (vHid.equals("2A0")) {
- 								if (l_titSub.matches("V")) {	//Âå®v
+ 								if (l_titSub.matches("V")) {	//é†«å¸«
  									intvalue=1500;
  								}
- 								else if (l_titSub.matches("N|D|T")) {//NÅ@²z DÃÄ®v T Âå°È§Ş³N          
+ 								else if (l_titSub.matches("N|D|T")) {//Nè­·ç† Dè—¥å¸« T é†«å‹™æŠ€è¡“          
  									intvalue=150;
  								}
  								else if (l_titSub.matches("I")) {
- 									if (jt.matches("DN|E0|E1|E3|E4|E5|E6|E7|EI|EJ|EK|EL|EN|ES|EU|EY|DM"))	//«´¬ùªºÅ@²z®v¡B©ñ®g¡BÀËÅç¡B´_°·¡B¤ß²z¡BÃÄ®vµ¥
+ 									if (jt.matches("DN|E0|E1|E3|E4|E5|E6|E7|EI|EJ|EK|EL|EN|ES|EU|EY|DM"))	//å¥‘ç´„çš„è­·ç†å¸«ã€æ”¾å°„ã€æª¢é©—ã€å¾©å¥ã€å¿ƒç†ã€è—¥å¸«ç­‰
  										intvalue=200;
- 									else if (jt.matches("CG"))	//'CG«´¬ù¥DªvÂå®v
+ 									else if (jt.matches("CG"))	//'CGå¥‘ç´„ä¸»æ²»é†«å¸«
  										intvalue=1500;
  								}
  							}
  							if (intvalue != 0) {
  								strPaycode="FD210";
  								itmMap.put(strPaycode, intvalue);
- 								System.out.println("ÂåÀø¤¬§Uª÷=>"+strPaycode+":"+intvalue);
+ 								System.out.println("é†«ç™‚äº’åŠ©é‡‘=>"+strPaycode+":"+intvalue);
  							}
  						}
 
- 						//§ä¥X­ì¤ä¤ä¦©¥¼¦b·s¤ä¦©,­n¼g¤J,ex.FP080±M·~¥[µ¹®tÃB FD050©T©w©Ò±oµ|...
- 						//¤£¦C¤J---1.³Ò«O¨­¤À,[·s¶i]FD020°·«O FD030³Ò«O
- 						//		 2.¤½«O¨­¤À,FD020°·«O
- 						//		 3.itmMap¤v¦³,¤£¦A­«½Æ
+ 						//æ‰¾å‡ºåŸæ”¯æ”¯æ‰£æœªåœ¨æ–°æ”¯æ‰£,è¦å¯«å…¥,ex.FP080å°ˆæ¥­åŠ çµ¦å·®é¡ FD050å›ºå®šæ‰€å¾—ç¨…...
+ 						//ä¸åˆ—å…¥---1.å‹ä¿èº«åˆ†,[æ–°é€²]FD020å¥ä¿ FD030å‹ä¿
+ 						//		 2.å…¬ä¿èº«åˆ†,FD020å¥ä¿
+ 						//		 3.itmMapå·±æœ‰,ä¸å†é‡è¤‡
  						if (o_basPayAry != null) {
 							for (int i = 0; i < o_basPayAry.size(); i++) {
 							    o_basPay = o_basPayAry.getJSONObject(i);
+							    n_basPay = JSONObject.fromObject(o_basPay.toString());	//æ·±å±¤copy,å› å¾…é‡èª¿æ•´,FP080,FP090,FP100è¦æ‰‹å‹•ä¿®æ”¹é‡‘é¡,å¤šåŠ ä¸€å€‹è®Šæ•¸é‹ç”¨
 							    strPaycode=o_basPay.getString("paycode");							    
 							    if (strPaycode != "") {
 							    	if ( tLabor.equals("Y") && tracod == 1 && strPaycode.matches("FD020|FD030")){
@@ -695,18 +708,45 @@ public class CommDAO {
 							    	}else if ( tServant.equals("Y") && strPaycode.matches("FD020")){
 							    		
 							    	}else {
-								    	if (itmMap.get(strPaycode)==null) {//§ä·s¤ä¦©map¬O§_¦³¦b¤º,¦pªG¦³,´N¤£¥Î¼g¤J								    		
-								    		if (strPaycode.equals("FP080") )
-								    			o_FP080=o_basPay.getInt("payamt");//±M·~¥[µ¹®tÃB,
+								    	if (itmMap.get(strPaycode)==null) {//æ‰¾æ–°æ”¯æ‰£mapæ˜¯å¦æœ‰åœ¨å…§,å¦‚æœæœ‰,å°±ä¸ç”¨å¯«å…¥								    		
+								    		if (strPaycode.equals("FP080") ) {
+								    			o_FP080=o_basPay.getInt("payamt");//åŸºæœ¬_å°ˆæ¥­åŠ çµ¦å·®é¡,
+								    			if ( tracod==35 ) {	//å¾…é‡èª¿æ•´,éœ€æ‰‹å‹•èª¿æ•´,
+								    				if ( o_FP080==2180)
+								    					n_FP080 =2500;								    					
+								    				else if ( o_FP080==3160)
+								    					n_FP080 =3200;
+								    				n_basPay.put("payamt",n_FP080);
+								    				o_FP080=n_FP080;//å°ˆæ¥­åŠ çµ¦å·®é¡, è¨ˆç®—å…¬ä¿èº«åˆ†æŠ•ä¿é¡
+								    			}
+								    			
+								    		}	
 								    		if ( vHid.matches("3A0")) {
-								    			if (strPaycode.equals("FP090") )
-								    				o_FP090=o_basPay.getInt("payamt");//3A0³d¥ô¥[µ¹FP090
+								    			if (strPaycode.equals("FP090") ) {
+								    				o_FP090=o_basPay.getInt("payamt");//3A0è²¬ä»»åŠ çµ¦FP090
+								    				if ( tracod==35 ) {	//å¾…é‡èª¿æ•´,éœ€æ‰‹å‹•èª¿æ•´,
+								    					if ( o_FP090==4293)
+									    					n_FP090 =4393;
+								    					n_basPay.put("payamt",n_FP090);
+								    					o_FP090=n_FP090;//å°ˆæ¥­åŠ çµ¦å·®é¡, è¨ˆç®—å‹ä¿èº«åˆ†æŠ•ä¿é¡
+								    				}
+								    			}	
 								    			if (strPaycode.equals("FP100") )
-								    				o_FP100=o_basPay.getInt("payamt");//3A0Â¾°È¥[µ¹FP100
+								    				o_FP100=o_basPay.getInt("payamt");//3A0è·å‹™åŠ çµ¦FP100
+								    				if ( tracod==35 ) {	//å¾…é‡èª¿æ•´,éœ€æ‰‹å‹•èª¿æ•´,
+										    			if ( o_FP100==1391)
+									    					n_FP100 =1500;								    					
+										    			else if ( o_FP100==2781)
+									    					n_FP100 =2800;
+										    			else if ( o_FP100==4172)
+									    					n_FP100 =4200;
+									    				n_basPay.put("payamt",n_FP100);								    				
+									    				o_FP100=n_FP100;//å°ˆæ¥­åŠ çµ¦å·®é¡, è¨ˆç®—å‹ä¿èº«åˆ†æŠ•ä¿é¡
+								    				}	
 								    		}
 								    			
-									    	jsonRtn.add(o_basPay);
-									    	System.out.println("­ì¤ä=>"+strPaycode+":"+o_basPay.getString("payamt"));
+									    	jsonRtn.add(n_basPay);
+									    	System.out.println("åŸæ”¯=>"+strPaycode+":"+o_basPay.getString("payamt"));
 									    }
 						    		}	
 							    }
@@ -714,7 +754,7 @@ public class CommDAO {
  						}
 					}
 					
-					// ¨Ï¥Î foreach °j°é¹M¾ú itmMap
+					// ä½¿ç”¨ foreach è¿´åœˆéæ­· itmMap
 					l_Insu=0;
 					for (Map.Entry<String, Integer> entry : itmMap.entrySet()) {
 					    System.out.println("itmMap=>"+entry.getKey() + " : " + entry.getValue());
@@ -722,17 +762,17 @@ public class CommDAO {
 					    intvalue  =  entry.getValue();
 					    //
 					    if (strPaycode.matches("FP000|FP010|FP030|FP080") && tServant.equals("Y")) {
-					    	//¦³¤½°È¤H­û¨­¤Àªº°·«O,(¥»Á~+±M·~¥[µ¹+¥DºŞ¥[µ¹)*¤½°È­û¨­¥÷ªº°·«O¥şÁ~¤ñ¨Ò ,¦A®Ú¾ÚPADPINTBL§ä¥X°·«O¶O
+					    	//æœ‰å…¬å‹™äººå“¡èº«åˆ†çš„å¥ä¿,(æœ¬è–ª+å°ˆæ¥­åŠ çµ¦+ä¸»ç®¡åŠ çµ¦)*å…¬å‹™å“¡èº«ä»½çš„å¥ä¿å…¨è–ªæ¯”ä¾‹ ,å†æ ¹æ“šPADPINTBLæ‰¾å‡ºå¥ä¿è²»
 					    	l_Insu += intvalue;
 					    }
-					    //¤½«O		
+					    //å…¬ä¿		
 					    if (strPaycode.equals("FD010")) {
 					    	/*'105.5.16
-			                '¨­¤ß»ÙÃª¤H­ûÀ³Ãº¦Û¥I³¡¤À«OÀI¶O®Öºâ¤è¦¡(¤½)¡G
-			                '1¡B¨Ì¤W¶}­pºâ¤½¦¡¥ı¦æ®Öºâ¤@¯ë¨­¤ÀÀ³Ãº¦Û¥I³¡¤À«OÀI¶O
-			                '2¡BÀ³Ãº¦Û¥I³¡¤À«OÀI¶O¡¯¡]1¡Ğ¸É§U¤ñ¨Ò¡^¡×¨­¤ß»ÙÃª¤H­ûÀ³Ãº¦Û¥I³¡¤À«OÀI¶O¡]À³¥|±Ë¤­¤J¡^
-			                1-1/4 2-1/2 3-¥şÃB 4-¥şÃB¦³¤W­­ 5-¤½³Ò1/4¡B°·§K  6-¤½³Ò1/2¡B°·§K  7-¤½³Ò¦³¡B°·§K 8-¤½³Ò¦³¡B°·1/4 9-¤½³Ò¦³¡B°·1/2
-							10-¤£¾A¥Î´N·~«OÀI 11-¤£¾A¥Î´N·~«OÀI¥B¦Ñ¦~Â¾¨a¥[«O¤H­û
+			                'èº«å¿ƒéšœç¤™äººå“¡æ‡‰ç¹³è‡ªä»˜éƒ¨åˆ†ä¿éšªè²»æ ¸ç®—æ–¹å¼(å…¬)ï¼š
+			                '1ã€ä¾ä¸Šé–‹è¨ˆç®—å…¬å¼å…ˆè¡Œæ ¸ç®—ä¸€èˆ¬èº«åˆ†æ‡‰ç¹³è‡ªä»˜éƒ¨åˆ†ä¿éšªè²»
+			                '2ã€æ‡‰ç¹³è‡ªä»˜éƒ¨åˆ†ä¿éšªè²»ï¼Šï¼ˆ1ï¼è£œåŠ©æ¯”ä¾‹ï¼‰ï¼èº«å¿ƒéšœç¤™äººå“¡æ‡‰ç¹³è‡ªä»˜éƒ¨åˆ†ä¿éšªè²»ï¼ˆæ‡‰å››æ¨äº”å…¥ï¼‰
+			                1-1/4 2-1/2 3-å…¨é¡ 4-å…¨é¡æœ‰ä¸Šé™ 5-å…¬å‹1/4ã€å¥å…  6-å…¬å‹1/2ã€å¥å…  7-å…¬å‹æœ‰ã€å¥å… 8-å…¬å‹æœ‰ã€å¥1/4 9-å…¬å‹æœ‰ã€å¥1/2
+							10-ä¸é©ç”¨å°±æ¥­ä¿éšª 11-ä¸é©ç”¨å°±æ¥­ä¿éšªä¸”è€å¹´è·ç½åŠ ä¿äººå“¡
 					    	*/
 					    	if (tServant.equals("Y")) {
 					    		if (inflg.matches("1|5"))
@@ -743,42 +783,72 @@ public class CommDAO {
 					    			intvalue = 0;
 					    	}
 					    }
-					    //¨ú±o¤ä¦©¥N½X
+					    //å–å¾—æ”¯æ‰£ä»£ç¢¼
 					    jsonOne = new JSONObject();
 					    jsonOne=getPayitemBycode(strPaycode,intvalue,payitmMap);
 						jsonRtn.add(jsonOne);
 					}
 					
-					//¤½«O¨­¤À°·«OFD020,¥B¬°1·s¶i 2´_Â¾ 11¦ÒÁZ®Ê¯Å 33¯Ç¹ê 34¦ÒÁZ¤Éµ¥ 35«İ¹J½Õ¾ã 36®Ê¯Å37Â¾°È½Õ¾ã 38­°¯Å
+					//å…¬ä¿èº«åˆ†å¥ä¿FD020,ä¸”ç‚º1æ–°é€² 2å¾©è· 11è€ƒç¸¾æ™‰ç´š 33ç´å¯¦ 34è€ƒç¸¾å‡ç­‰ 35å¾…é‡èª¿æ•´ 36æ™‰ç´š37è·å‹™èª¿æ•´ 38é™ç´š
 					if ( (l_Insu+o_FP080 >0) && tServant.equals("Y") && (tracod == 1 ||tracod == 2 || tracod == 11 || (tracod >=33 && tracod <=38)) ){
 						l_dpinMap  = GetHealthInsuRelief(inflg, dpno,l_Insu+o_FP080, da);	
 						if ( l_dpinMap!=null ) {
 							strPaycode="FD020";
 							intvalue = l_dpinMap.get("dpinamt");
 							if (intvalue > 0) {
-								//¨ú±o¤ä¦©¥N½X
+								//å–å¾—æ”¯æ‰£ä»£ç¢¼
 							    jsonOne = new JSONObject();
 							    jsonOne=getPayitemBycode(strPaycode,intvalue,payitmMap);
 								jsonRtn.add(jsonOne);
 							}
-							rtnMap.put("insu_dpin", l_dpinMap.get("dpinig"));	//¦s©ñ§ë«O¯Å¶Z
+							rtnMap.put("insu_dpin", l_dpinMap.get("dpinig"));	//å­˜æ”¾æŠ•ä¿ç´šè·
 						}
 					}
+					//å›ºå®šæ‰€å¾—ç¨…--å…¬å‹™å“¡,ä¸”ç‚º1æ–°é€² 2å¾©è· 11è€ƒç¸¾æ™‰ç´š 33ç´å¯¦ 34è€ƒç¸¾å‡ç­‰ 35å¾…é‡èª¿æ•´ 36æ™‰ç´š37è·å‹™èª¿æ•´ 38é™ç´š
+					if (tServant.equals("Y") && (tracod == 1 ||tracod == 2 || tracod == 11 || (tracod >=33 && tracod <=38)) ){
+						l_taxMap = GetFixTax(taxno,l_Insu,da);
+						if ( l_taxMap!=null ) {
+							strPaycode="";
+							intvalue=l_taxMap.get("taxamt");
+							if (intvalue > 0) {
+								//æ‰¾åŸæ”¯FD050,æ‰¾åˆ°update,æ²’æ‰¾åˆ°ç”¨add
+								for (int i = 0; i < jsonRtn.size(); i++) {
+									o_basPay = jsonRtn.getJSONObject(i);
+								    if ( o_basPay.getString("paycode").equals("FD050") ){
+								    	strPaycode="FD050";
+								    	o_basPay.put("payamt",intvalue);
+								    	break;
+								    }
+							    }
+								//æ‰¾ä¸åˆ°,add
+								if ( strPaycode.equals("") ) {
+									strPaycode="FD050";
+									//å–å¾—æ”¯æ‰£ä»£ç¢¼
+								    jsonOne = new JSONObject();
+								    jsonOne=getPayitemBycode(strPaycode,intvalue,payitmMap);
+									jsonRtn.add(jsonOne);
+								}
+							}
+						}	
+					}
 					
-					//--­pºâ¸Éµo¦© 
+					//--è¨ˆç®—è£œç™¼æ‰£ 
 					if (monno != 0 || dayno != 0) {
-						getReissue(jsonRtn,o_basPayAry,tracod,effdt,monno,dayno,l_lbinig,orank,rank,ojt,jt,odegre,pflag,payitmMap,tpreday,vHid);
+						reissueMap=getReissue(jsonRtn,o_basPayAry,tracod,effdt,monno,dayno,l_lbinig,orank,rank,ojt,jt,odegre,pflag,payitmMap,tpreday,vHid);
+						jsonRtn=(JSONArray) reissueMap.get("nPay");
 					}	
 					//sort
 					jsonRtn = jsonArySort(jsonRtn);
 					
-					rtnMap.put("payitm_json", jsonRtn);
+					rtnMap.put("payitm_json", jsonRtn);					//ç•°å‹•æ”¯æ‰£æ˜ç´°
+					rtnMap.put("bat_json", reissueMap.get("batPay"));	//æ‰¹æ¬¡æª”
 				}
 			}
-			else if(fun.equals("C")){	//­pºâ¸Éµo¦©
-				//--­pºâ·í¤ë¹ê»Ú¤é¼Æ 
+			else if(fun.equals("C")){	//è¨ˆç®—è£œç™¼æ‰£
+				//--è¨ˆç®—ç•¶æœˆå¯¦éš›æ—¥æ•¸ 
 				if (monno != 0 || dayno != 0 || tracod==12) {
-					getReissue(jsonRtn,o_basPayAry,tracod,effdt,monno,dayno,l_lbinig,orank,rank,ojt,jt,odegre,pflag,payitmMap,tpreday,vHid);
+					reissueMap=getReissue(jsonRtn,o_basPayAry,tracod,effdt,monno,dayno,l_lbinig,orank,rank,ojt,jt,odegre,pflag,payitmMap,tpreday,vHid);
+					jsonRtn=(JSONArray) reissueMap.get("nPay");
 				}	
 				//sort
 				jsonRtn = jsonArySort(jsonRtn);
@@ -787,7 +857,7 @@ public class CommDAO {
 			}
 			
 			Date end = new Date();
-			log.info(me+", ¦@ªá¶O¡G"+(System.currentTimeMillis()-starttime)+"²@¬í");
+			log.info(me+", å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-starttime)+"æ¯«ç§’");
 		}catch(Exception e){
 			log.info(me + " fail, " + e);
 			throw new SQLException(me + ", fail!!." + e);
@@ -796,56 +866,58 @@ public class CommDAO {
 		}
 		return rtnMap;
 	}
-	//jsonArray±Æ§Ç
+	//jsonArrayæ’åº
 	private JSONArray jsonArySort(JSONArray jsonTmp) {
 		JSONArray jsonRtn = new JSONArray();
-		// ¡i¤É§Ç±Æ§Ç¡j (A -> Z) µ§¼Æ>0,¤~±Æ§Ç
+		// ã€å‡åºæ’åºã€‘ (A -> Z) ç­†æ•¸>0,æ‰æ’åº
 		if (jsonTmp.size()>0) {
 			jsonTmp.sort((o1, o2) -> {
 	            String s1 = ((JSONObject) o1).getString("paycode");
 	            String s2 = ((JSONObject) o2).getString("paycode");
 	            return s1.compareTo(s2); 
 	        });
-	        //System.out.println("¦r¥À¤É§Ç: " + jsonTmp);
+	        //System.out.println("å­—æ¯å‡åº: " + jsonTmp);
 		}
         jsonRtn = jsonTmp;
 		return jsonRtn;
 	}
 	
-	//­pºâ¸Éµo¦© 
-	//nPay·s¤ä¦©,oPay­ì¤ä¦©,tracod²§°Ê§O,effdt¥Í®Ä¤é,monno¤ë¼Æ,dayno¤é¼Æ,lbig³Ò«O¯Å¶Z,orank­ì¶¥§O,rank·s¶¥§O,ojt­ìÂ¾ºÙ,jtÂ¾ºÙ,odegre­ì­ÄÂI,pflag¦ÒÁZ¼úª÷¤ë¼Æ/¦~²×¼úª÷¤ñ¨Ò,payitmMap¤ä¦©½X¶°¦X,tpreday¯}¤ë«e¤@¬q¤é¼Æ,hid
-	//2007-4-1 ¤½«O¯}¤ë­pºâ­×¥¿,¥H¹ê»Ú¥[«O¤é¼Æ­pºâ 
-	//2024.12.13 ¯}¤ë·s¶i µL±ø¥ó¶i¦ì,Â÷Â¾ µL±ø¥ó±Ë¥h
-	private JSONArray getReissue(JSONArray nPay,JSONArray oPay,int tracod,String effdt,int monno,int dayno,int lbig,String orank,String rank,String ojt,String jt,String odegre,int pflag,HashMap<String,Papayitm> payitmMap,int tpreday,String hid) {
+	//è¨ˆç®—è£œç™¼æ‰£ 
+	//nPayæ–°æ”¯æ‰£,oPayåŸæ”¯æ‰£,batPayæ‰¹æ¬¡æª”,tracodç•°å‹•åˆ¥,effdtç”Ÿæ•ˆæ—¥,monnoæœˆæ•¸,daynoæ—¥æ•¸,lbigå‹ä¿ç´šè·,orankåŸéšåˆ¥,rankæ–°éšåˆ¥,ojtåŸè·ç¨±,jtè·ç¨±,odegreåŸä¿¸é»,pflagè€ƒç¸¾çé‡‘æœˆæ•¸/å¹´çµ‚çé‡‘æ¯”ä¾‹,payitmMapæ”¯æ‰£ç¢¼é›†åˆ,tpredayç ´æœˆå‰ä¸€æ®µæ—¥æ•¸,hid
+	//2007-4-1 å…¬ä¿ç ´æœˆè¨ˆç®—ä¿®æ­£,ä»¥å¯¦éš›åŠ ä¿æ—¥æ•¸è¨ˆç®— 
+	//2024.12.13 ç ´æœˆæ–°é€² ç„¡æ¢ä»¶é€²ä½,é›¢è· ç„¡æ¢ä»¶æ¨å»
+	private HashMap getReissue(JSONArray nPay,JSONArray oPay,int tracod,String effdt,int monno,int dayno,int lbig,String orank,String rank,String ojt,String jt,String odegre,int pflag,HashMap<String,Papayitm> payitmMap,int tpreday,String hid) {
 		String me = ".getReissue()";
 		log.info(me + " tracod:"+tracod+" effdt = " + effdt+ " monno = " + monno+ " dayno = " + dayno+ " lbig = " + lbig+ " orank = " + orank+ " rank = " + rank+ " ojt = " + ojt+ " jt = " + jt+ " odegre = " + odegre+ " pflag = " + pflag+ " tpreday = " + tpreday+ " hid = " + hid);
+		HashMap rtn = new HashMap();
 		JSONArray jsonRtn = new JSONArray();
 		JSONArray l_Pay = new JSONArray();
+		JSONArray batPay = new JSONArray();
 		String jsonString ="";
 		JSONObject l_payObj=null;
 		JSONObject o_payObj=null;
 		JSONObject jsonOne=null;	
 		String l_paycode="";
 		String o_paycode="";
-		int l_degre=0;	//­ì­ÄÂI
-		double l_pflag=0;//¦ÒÁZ¼úª÷¤ñ¨Ò
-		int l_prof=0;	//±M·~¥[µ¹+±M·~¥[µ¹®tÃB
+		int l_degre=0;	//åŸä¿¸é»
+		double l_pflag=0;//è€ƒç¸¾çé‡‘æ¯”ä¾‹
+		int l_prof=0;	//å°ˆæ¥­åŠ çµ¦+å°ˆæ¥­åŠ çµ¦å·®é¡
 		int l_payamt=0;
 		int o_payamt=0;
-		int real_payamt=0;//¹ê»Ú¸Éµoª÷ÃB
-		int r_payamt=0;//¸Éµoª÷ÃB
-		String r_paycode="";//¸Éµo¤ä¦©½X
+		int real_payamt=0;//å¯¦éš›è£œç™¼é‡‘é¡
+		int r_payamt=0;//è£œç™¼é‡‘é¡
+		String r_paycode="";//è£œç™¼æ”¯æ‰£ç¢¼
 		int l_effdt=30;
 		String l_Deed="N";
 		double l_breakFD00=0;
-		//¦³®Ä¤é´Áªº·í¤ë¹ê»Ú¤é¼Æ
+		//æœ‰æ•ˆæ—¥æœŸçš„ç•¶æœˆå¯¦éš›æ—¥æ•¸
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.YEAR, Integer.parseInt(effdt.substring(0,	4)));
 		calendar.set(Calendar.MONTH, Integer.parseInt(effdt.substring(5, 7))- 1);
 		int l_caldt = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-		System.out.println("¦³®Ä¤é´Áªº·í¤ë¹ê»Ú¤é¼Æ:"+l_caldt);
+		System.out.println("æœ‰æ•ˆæ—¥æœŸçš„ç•¶æœˆå¯¦éš›æ—¥æ•¸:"+l_caldt);
 		
-		//2A0:«Ìºa,¤@«ß¥Î30¤é 3A0:«´¬ù30¤é,¨ä¥L¥Î¹ê»Ú¤é¼Æ 1A0:°ªºa,«´¬ù¤£§tÂå®v,30¤é­pºâ ,¨ä¥L¥Î¹ê»Ú¤é¼Æ
+		//2A0:å±æ¦®,ä¸€å¾‹ç”¨30æ—¥ 3A0:å¥‘ç´„30æ—¥,å…¶ä»–ç”¨å¯¦éš›æ—¥æ•¸ 1A0:é«˜æ¦®,å¥‘ç´„ä¸å«é†«å¸«,30æ—¥è¨ˆç®— ,å…¶ä»–ç”¨å¯¦éš›æ—¥æ•¸
 		if (hid.matches("2A0")) {
 			if (orank.equals("F") || rank.equals("F"))
 				l_Deed="Y";
@@ -856,62 +928,62 @@ public class CommDAO {
 			else
 				l_effdt=l_caldt;
 		}
-		else if (hid.matches("1A0")) {	//CG«´¬ù¥DªvÂå®v CI«´¬ù¦í°|Âå®v  CH«´¬ù¦í°|Âå®v(ÃÒ®Ñ) CK¤G¦~¦³ÃÒ¤£¤À¬ì¦í°|Âå®v 
+		else if (hid.matches("1A0")) {	//CGå¥‘ç´„ä¸»æ²»é†«å¸« CIå¥‘ç´„ä½é™¢é†«å¸«  CHå¥‘ç´„ä½é™¢é†«å¸«(è­‰æ›¸) CKäºŒå¹´æœ‰è­‰ä¸åˆ†ç§‘ä½é™¢é†«å¸« 
 			if ( ( orank.equals("F") || rank.equals("F") ) && 
 				 !( ojt.matches("CG|CJ|CH|CK") || jt.matches("CG|CJ|CH|CK")) )
 				l_Deed="Y";
 			else
 				l_effdt=l_caldt;
 		}
-		System.out.println("¨Ì¨­¥÷ªº¦³®Ä¤é¼Æ:"+l_effdt);
-		//­ì­ÄÂI
+		System.out.println("ä¾èº«ä»½çš„æœ‰æ•ˆæ—¥æ•¸:"+l_effdt);
+		//åŸä¿¸é»
 		if (odegre.equals(""))
 			l_degre=0;
 		else
 			l_degre=Integer.parseInt(odegre);
 		
-		//¥ı³]©wªğ¦^­È=·s¤ä¦© ¦@¥Î¦P¤@­Ó°O¾ĞÅé¦ì¸m
+		//å…ˆè¨­å®šè¿”å›å€¼=æ–°æ”¯æ‰£ å…±ç”¨åŒä¸€å€‹è¨˜æ†¶é«”ä½ç½®
 		jsonRtn= nPay;
 		
-		//1·s¶i2´_Â¾
+		//1æ–°é€²2å¾©è·
 		if (tracod==1 ||tracod==2) {
 			if (nPay != null) {
-				// ¡]«Ø¥ß¥ş·s¥B¿W¥ßªº°}¦C¡A¤¬¤£¼vÅT¡^
+				// ï¼ˆå»ºç«‹å…¨æ–°ä¸”ç¨ç«‹çš„é™£åˆ—ï¼Œäº’ä¸å½±éŸ¿ï¼‰
 				jsonString = nPay.toString();
 				l_Pay= JSONArray.fromObject(jsonString);
 				
 				for (int i = 0; i < l_Pay.size(); i++) {
-				    // ®Ú¾Ú¹ê»Ú«¬§O¨Ï¥Î getJSONObject, getString ©Î getInt
+				    // æ ¹æ“šå¯¦éš›å‹åˆ¥ä½¿ç”¨ getJSONObject, getString æˆ– getInt
 				    l_payObj = l_Pay.getJSONObject(i);
 				    l_paycode= l_payObj.getString("paycode");
 				    l_payamt = l_payObj.getInt("payamt");
 				    r_payamt=0;
 				    r_paycode=l_paycode.substring(0,4)+"9";
-				    if (l_paycode.equals("FD020") ) {	//FD020°·«O ¯}¤ë¦©¤@­Ó¤ë,2024.12.16­t­È¤£¦C
+				    if (l_paycode.equals("FD020") ) {	//FD020å¥ä¿ ç ´æœˆæ‰£ä¸€å€‹æœˆ,2024.12.16è² å€¼ä¸åˆ—
 				    	if (dayno > 0)
 				    		r_payamt = l_payamt * (monno+1);
 				    	if (dayno < 0 || monno > 0)
 				    		r_payamt = l_payamt * monno;
 				    }
-				    else if (l_paycode.equals("FD210") ) {	//FD210ÂåÀø¤¬§Uª÷ ¯}¤ë¤£¦©
+				    else if (l_paycode.equals("FD210") ) {	//FD210é†«ç™‚äº’åŠ©é‡‘ ç ´æœˆä¸æ‰£
 				    	if (monno != 0)
 				    		r_payamt = l_payamt * monno;
 				    }
-				    else if (l_paycode.equals("FD030") ) {	//FD030³Ò«O¶O ¤é¼Æ¬O­t¼Æ,­n¦A¬ã¨s
+				    else if (l_paycode.equals("FD030") ) {	//FD030å‹ä¿è²» æ—¥æ•¸æ˜¯è² æ•¸,è¦å†ç ”ç©¶
 				    	if (lbig >0) {
-				    		//¯}¤ë
+				    		//ç ´æœˆ
 				    		l_breakFD00=Math.round((double)lbig * dayno / 30 * Globals.gAccident * 20 / 100) + Math.round((double)lbig * dayno / 30 * Globals.gEmploy * 20 / 100);
 				    		r_payamt = (int) (l_payamt * monno + l_breakFD00);
 				    	}
 				    }
-				    else if (l_paycode.matches("FP000|FP010|FP090|FP100|FP110|FP120") ) {	//FP000¥»Á~ FP010±M·~¥[µ¹ FP090ÃÒ·Ó¥[µ¹/³d¥ô¥[µ¹ FP100 °|°Ï¥[µ¹/Â¾°È¥[µ¹ FP110¨­¤ß»ÙÃª¥[µ¹ FP120¯S§O¬z¶K
-				    	//'2024-12-13 µL±ø¥ó¶i¦ì
+				    else if (l_paycode.matches("FP000|FP010|FP090|FP100|FP110|FP120") ) {	//FP000æœ¬è–ª FP010å°ˆæ¥­åŠ çµ¦ FP090è­‰ç…§åŠ çµ¦/è²¬ä»»åŠ çµ¦ FP100 é™¢å€åŠ çµ¦/è·å‹™åŠ çµ¦ FP110èº«å¿ƒéšœç¤™åŠ çµ¦ FP120ç‰¹åˆ¥æ´¥è²¼
+				    	//'2024-12-13 ç„¡æ¢ä»¶é€²ä½
 				    	r_payamt = (int) ((l_payamt * monno) + Math.ceil((double) l_payamt * dayno / l_effdt ));
-				    }else	//'«ö·í¤ë¤é¼Æ 
+				    }else	//'æŒ‰ç•¶æœˆæ—¥æ•¸ 
 				    	r_payamt = (int) ((l_payamt * monno) + Math.round((double) l_payamt * dayno / l_effdt ));
 				    
 				    if (r_payamt != 0) {
-				    	//¨ú±o¤ä¦©¥N½X
+				    	//å–å¾—æ”¯æ‰£ä»£ç¢¼
 					    jsonOne = new JSONObject();
 					    jsonOne=getPayitemBycode(r_paycode,r_payamt,payitmMap);
 						jsonRtn.add(jsonOne);
@@ -919,55 +991,55 @@ public class CommDAO {
 				}
 			}
 		}
-		//°h¥X 21Â÷Â¾ 22°h¥ğ 23¯dÂ¾°±Á~ 24¹O´Á½Ğ°²
+		//é€€å‡º 21é›¢è· 22é€€ä¼‘ 23ç•™è·åœè–ª 24é€¾æœŸè«‹å‡
 		else if (tracod >=21 && tracod <=24) {
 			if (oPay != null) {
 				jsonString = oPay.toString();
 				l_Pay= JSONArray.fromObject(jsonString);
 				for (int i = 0; i < l_Pay.size(); i++) {
-					 // ®Ú¾Ú¹ê»Ú«¬§O¨Ï¥Î getJSONObject, getString ©Î getInt
+					 // æ ¹æ“šå¯¦éš›å‹åˆ¥ä½¿ç”¨ getJSONObject, getString æˆ– getInt
 				    l_payObj = l_Pay.getJSONObject(i);
 				    l_paycode= l_payObj.getString("paycode");
 				    l_payamt = l_payObj.getInt("payamt");
 				    r_payamt=0;
 				    r_paycode=l_paycode.substring(0,4)+"9";
-				    if (l_paycode.equals("FD210") ) {	//FD210ÂåÀø¤¬§Uª÷ ¯}¤ë¦©¤@­Ó¤ë
+				    if (l_paycode.equals("FD210") ) {	//FD210é†«ç™‚äº’åŠ©é‡‘ ç ´æœˆæ‰£ä¸€å€‹æœˆ
 				    	if (dayno > 0)
 				    		r_payamt = l_payamt * (monno+1);
 				    	else
 				    		r_payamt = l_payamt * monno;
-				    }else if (l_paycode.equals("FD020") ) {	//FD020°·«O ¯}¤ë¤£¦©
+				    }else if (l_paycode.equals("FD020") ) {	//FD020å¥ä¿ ç ´æœˆä¸æ‰£
 				    	if (dayno != 0 && monno>0) 
 				    		r_payamt = l_payamt * (monno-1);
 				    	else
 				    		r_payamt = l_payamt * monno;
-				    }else if (l_paycode.equals("FD030") ) {	//FD030³Ò«O 
+				    }else if (l_paycode.equals("FD030") ) {	//FD030å‹ä¿ 
 				    	if (lbig >0) {
-				    		//¯}¤ë
+				    		//ç ´æœˆ
 				    		l_breakFD00=Math.round((double)lbig * dayno / 30 * Globals.gAccident * 20 / 100) + Math.round((double)lbig * dayno / 30 * Globals.gEmploy * 20 / 100);
 				    		r_payamt = (int) (l_payamt * monno + l_breakFD00);
 				    	}else {
 				    		r_payamt = (int) ((l_payamt * monno) + (Math.round( (double)l_payamt * dayno / 30 )));
 				    	}
 				    }else if (l_paycode.matches("FP000|FP010|FP030|FP080|FP090|FP100|FP110|FP120") ) {	
-				    	//FP000¥»Á~ FP010±M·~¥[µ¹ FP030¥DºŞ¥[µ¹ FP080±M·~¥[µ¹®tÃB FP090ÃÒ·Ó¥[µ¹/³d¥ô¥[µ¹ FP100 °|°Ï¥[µ¹/Â¾°È¥[µ¹ FP110¨­¤ß»ÙÃª¥[µ¹ FP120¯S§O¬z¶K
-				    	//2024.12.13 ¯}¤ë·s¶i µL±ø¥ó¶i¦ì,Â÷Â¾ µL±ø¥ó±Ë¥h
+				    	//FP000æœ¬è–ª FP010å°ˆæ¥­åŠ çµ¦ FP030ä¸»ç®¡åŠ çµ¦ FP080å°ˆæ¥­åŠ çµ¦å·®é¡ FP090è­‰ç…§åŠ çµ¦/è²¬ä»»åŠ çµ¦ FP100 é™¢å€åŠ çµ¦/è·å‹™åŠ çµ¦ FP110èº«å¿ƒéšœç¤™åŠ çµ¦ FP120ç‰¹åˆ¥æ´¥è²¼
+				    	//2024.12.13 ç ´æœˆæ–°é€² ç„¡æ¢ä»¶é€²ä½,é›¢è· ç„¡æ¢ä»¶æ¨å»
 			    		r_payamt = (int) ((l_payamt * monno) + Math.ceil((double) l_payamt * dayno / l_effdt ) -l_payamt) ;
 				    }else {
-				    	r_payamt = (int) ((l_payamt * monno) + (Math.round( (double)l_payamt * dayno / l_effdt )));//'«ö·í¤ë¤é¼Æ
+				    	r_payamt = (int) ((l_payamt * monno) + (Math.round( (double)l_payamt * dayno / l_effdt )));//'æŒ‰ç•¶æœˆæ—¥æ•¸
 				    }
 				    
 				    if (r_payamt != 0) {
-				    	//¨ú±o¤ä¦©¥N½X
+				    	//å–å¾—æ”¯æ‰£ä»£ç¢¼
 					    jsonOne = new JSONObject();
 					    jsonOne=getPayitemBycode(r_paycode,r_payamt,payitmMap);
 					    if (jsonOne !=null) {
 					    	jsonRtn.add(jsonOne);
 					    }	
 				    }
-				    //¥»Á~...­n¼g¤@µ§­ì¤ä¶i·s¤ä
+				    //æœ¬è–ª...è¦å¯«ä¸€ç­†åŸæ”¯é€²æ–°æ”¯
 				    if (l_paycode.matches("FP000|FP010|FP030|FP080|FP090|FP100|FP110|FP120") ) {
-				    	//¨ú±o¤ä¦©¥N½X
+				    	//å–å¾—æ”¯æ‰£ä»£ç¢¼
 					    jsonOne = new JSONObject();
 					    jsonOne=getPayitemBycode(l_paycode,l_payamt,payitmMap);
 					    if (jsonOne !=null) {
@@ -977,17 +1049,17 @@ public class CommDAO {
 				}
 			}
 		}	
-		//11¦ÒÁZ®Ê¯Å 31®Ê¯Å½ÕÁ~ 32§ï¥ô´«±Ô 33¯Ç¹ê 34¦ÒÁZ¤Éµ¥ 35«İ¹J½Õ¾ã 36®Ê¯Å 37Â¾°È½Õ¾ã 38­°¯Å   
-		//°£¤F ¦ÒÁZ¤Î¦ÒÁZ¤Éµ¥,«İ¹J½Õ¾ã ­n°l·¹¦Ü¥Í®Ä¤é´Á,¨ä¥L²§°Ê¶µ°£¤F°h¼¾Â÷Â¾ª÷¤ÎÁ~¬z¥~,¦Ü¦h¦©1­Ó¤ë
-        //2005-2-2 ·s¼W«İ¹J½Õ¾ã,­n°l·¹¦Ü¥Í®Ä¤é´Á 2024.2.7 «´¬ù,³Ò,°·«O,¤£ÅÜ
-		//FD010¤½«O¨Ì¾Ú·í¤ë¹ê»Ú¥[«O¤é¼Æ¦û·í¤ë¹ê»Ú¤Ñ¼Æªº¤ñ¨Ò¨Ó«ö¤é­pºâ¡A¥B¨C¦¸­pºâ¨BÆJ¬Ò¶·¿W¥ß°õ¦æ¥|±Ë¤­¤J
-		//FD040¡u¥ş¤ë°òª÷¶O¥Î´£¼·Á`ÃB ¡Ñ ¹ê»Ú¥[¤J¤é¼Æ ¡Ò ·í¤ë¹ê»Ú¤Ñ¼Æ¡]¥|±Ë¤­¤J¡^¡v
+		//11è€ƒç¸¾æ™‰ç´š 31æ™‰ç´šèª¿è–ª 32æ”¹ä»»æ›æ•˜ 33ç´å¯¦ 34è€ƒç¸¾å‡ç­‰ 35å¾…é‡èª¿æ•´ 36æ™‰ç´š 37è·å‹™èª¿æ•´ 38é™ç´š   
+		//é™¤äº† è€ƒç¸¾åŠè€ƒç¸¾å‡ç­‰,å¾…é‡èª¿æ•´ è¦è¿½æº¯è‡³ç”Ÿæ•ˆæ—¥æœŸ,å…¶ä»–ç•°å‹•é …é™¤äº†é€€æ’«é›¢è·é‡‘åŠè–ªæ´¥å¤–,è‡³å¤šæ‰£1å€‹æœˆ
+        //2005-2-2 æ–°å¢å¾…é‡èª¿æ•´,è¦è¿½æº¯è‡³ç”Ÿæ•ˆæ—¥æœŸ 2024.2.7 å¥‘ç´„,å‹,å¥ä¿,ä¸è®Š
+		//FD010å…¬ä¿ä¾æ“šç•¶æœˆå¯¦éš›åŠ ä¿æ—¥æ•¸ä½”ç•¶æœˆå¯¦éš›å¤©æ•¸çš„æ¯”ä¾‹ä¾†æŒ‰æ—¥è¨ˆç®—ï¼Œä¸”æ¯æ¬¡è¨ˆç®—æ­¥é©Ÿçš†é ˆç¨ç«‹åŸ·è¡Œå››æ¨äº”å…¥
+		//FD040ã€Œå…¨æœˆåŸºé‡‘è²»ç”¨ææ’¥ç¸½é¡ Ã— å¯¦éš›åŠ å…¥æ—¥æ•¸ Ã· ç•¶æœˆå¯¦éš›å¤©æ•¸ï¼ˆå››æ¨äº”å…¥ï¼‰ã€
 		else if ( (tracod >=32 && tracod <=38) || tracod ==11 ) {
 			if (nPay != null) {
 				jsonString = nPay.toString();
 				l_Pay= JSONArray.fromObject(jsonString);
 				for (int i = 0; i < l_Pay.size(); i++) {
-				    // ®Ú¾Ú¹ê»Ú«¬§O¨Ï¥Î getJSONObject, getString ©Î getInt
+				    // æ ¹æ“šå¯¦éš›å‹åˆ¥ä½¿ç”¨ getJSONObject, getString æˆ– getInt
 				    l_payObj = l_Pay.getJSONObject(i);
 				    l_paycode= l_payObj.getString("paycode");
 				    l_payamt = l_payObj.getInt("payamt");
@@ -996,7 +1068,7 @@ public class CommDAO {
 				    o_payamt=0;
 				    for (int j = 0; j < oPay.size(); j++) {
 				        o_payObj = oPay.getJSONObject(j);
-				        // ½T»{ key ¬O§_¦s¦b¥HÁ×§K¿ù»~
+				        // ç¢ºèª key æ˜¯å¦å­˜åœ¨ä»¥é¿å…éŒ¯èª¤
 				        if (o_payObj.has( "paycode" )) {
 				        	o_paycode = o_payObj.getString("paycode");
 				        	if ( o_paycode.equals(l_paycode) ) {
@@ -1006,52 +1078,57 @@ public class CommDAO {
 				    }
 				    if (o_payamt > 0 && o_payamt != l_payamt) {
 				    	if ( tracod ==11 || tracod ==34 || tracod ==35 ) {
-				    		if (l_paycode.matches("FD020")) {	//¯}¤ë¦©¤@­Ó¤ë FD020°·«O¤£°µ¸Éµo¦©
+				    		if (l_paycode.matches("FD020")) {	//ç ´æœˆæ‰£ä¸€å€‹æœˆ FD020å¥ä¿ä¸åšè£œç™¼æ‰£
 				    		
-				    		}else if (l_paycode.matches("FD210")) {	//FD210ÂåÀø¤¬§Uª÷,¯}¤ë¦©¤@­Ó¤ë FD020°·«O¤£°µ¸Éµo¦©
+				    		}else if (l_paycode.matches("FD210")) {	//FD210é†«ç™‚äº’åŠ©é‡‘,ç ´æœˆæ‰£ä¸€å€‹æœˆ FD020å¥ä¿ä¸åšè£œç™¼æ‰£
 				    			if(dayno !=0)
 				    				r_payamt=(l_payamt-o_payamt) * (monno+1);
 				    			else
 				    				r_payamt=(l_payamt-o_payamt) * monno;
 				    		}
-				    		else if (l_paycode.matches("FD030")) 	//FD030³Ò«O «ö30¤é
+				    		else if (l_paycode.matches("FD030")) 	//FD030å‹ä¿ æŒ‰30æ—¥
 				    			r_payamt=(int) ((l_payamt-o_payamt) * monno+ Math.round((double)(l_payamt-o_payamt) * dayno / 30));
 				    		else 
 				    			r_payamt=(int) ((l_payamt-o_payamt) * monno+ Math.round( (double) (l_payamt-o_payamt) * dayno / l_effdt)) ;
 				    		
 				    	}else {
-				    		if (l_paycode.matches("FD040") ) 	//FD040°h¼¾ 
+				    		if (l_paycode.matches("FD040") ) 	//FD040é€€æ’« 
 				    			r_payamt=(int) ((l_payamt-o_payamt) * monno+ Math.round( (double)(l_payamt-o_payamt) * dayno / l_effdt)) ;
 				    		else if (l_paycode.substring(1,2).equals("P") ) 	
 				    			r_payamt=(int) ((l_payamt-o_payamt) * monno+ Math.ceil( (double)(l_payamt-o_payamt) * dayno / l_effdt )) ;
 				    		else if ((l_Deed.equals("N") || hid.equals("3A0") ) &&  !l_paycode.matches("FD020")){	
-				    			//2024.2.7«´¬ù¤£¥Î®tÃB°l¸É 2025.5.20 3A0±Æ¥~,FD020¤£°µ°l¸É  
+				    			//2024.2.7å¥‘ç´„ä¸ç”¨å·®é¡è¿½è£œ 2025.5.20 3A0æ’å¤–,FD020ä¸åšè¿½è£œ  
 				    			r_payamt=(int) ((l_payamt-o_payamt) * monno+ Math.round((double)(l_payamt-o_payamt) * dayno / l_effdt));				    			
 				    		}	
 				    	}
 				    }
 				    
 				    if (r_payamt != 0) {
-				    	System.out.println("¸Éµo¦©:"+l_paycode+" "+ o_payamt+" l_payamt:"+l_payamt+" r_payamt:"+r_payamt);
-				    	//¨ú±o¤ä¦©¥N½X
+				    	System.out.println("è£œç™¼æ‰£:"+l_paycode+" "+ o_payamt+" l_payamt:"+l_payamt+" r_payamt:"+r_payamt);
+				    	//å–å¾—æ”¯æ‰£ä»£ç¢¼
 					    jsonOne = new JSONObject();
 					    jsonOne=getPayitemBycode(r_paycode,r_payamt,payitmMap);
 					    if (jsonOne !=null) {
-					    	jsonRtn.add(jsonOne);
+					    	if (tracod == 35) {	//å¾…é‡èª¿æ•´,å·®é¡ä¾æƒ…æ³å¯«å…¥ç•°å‹•æ”¯æ‰£æˆ–æ‰¹æ¬¡æª”
+						    	//jsonRtn.add(jsonOne);
+						    	batPay.add(jsonOne);
+					    	}else {
+					    		jsonRtn.add(jsonOne);
+					    	}
 					    }	
 				    }
 				} 
 			}
 		}
-		//31®Ê¯Å½ÕÁ~,FP000¥»Á~,FD040°h¼¾,­n¨Ì«e¤@¬q,«á¤@¬q­pºâ¹ê»Úª÷ÃB
+		//31æ™‰ç´šèª¿è–ª,FP000æœ¬è–ª,FD040é€€æ’«,è¦ä¾å‰ä¸€æ®µ,å¾Œä¸€æ®µè¨ˆç®—å¯¦éš›é‡‘é¡
 		else if ( tracod ==31 ) {
-			l_effdt=l_caldt;	//¨Ì¹ê»Ú¤é¼Æ
-			System.out.println("§ó§ï«á.¦³®Ä¤é´Áªº·í¤ë¹ê»Ú¤é¼Æ:"+l_effdt);
+			l_effdt=l_caldt;	//ä¾å¯¦éš›æ—¥æ•¸
+			System.out.println("æ›´æ”¹å¾Œ.æœ‰æ•ˆæ—¥æœŸçš„ç•¶æœˆå¯¦éš›æ—¥æ•¸:"+l_effdt);
 			if (nPay != null) {
 				jsonString = nPay.toString();
 				l_Pay= JSONArray.fromObject(jsonString);
 				for (int i = 0; i < l_Pay.size(); i++) {
-				    // ®Ú¾Ú¹ê»Ú«¬§O¨Ï¥Î getJSONObject, getString ©Î getInt
+				    // æ ¹æ“šå¯¦éš›å‹åˆ¥ä½¿ç”¨ getJSONObject, getString æˆ– getInt
 				    l_payObj = l_Pay.getJSONObject(i);
 				    l_paycode= l_payObj.getString("paycode");
 				    l_payamt = l_payObj.getInt("payamt");
@@ -1060,7 +1137,7 @@ public class CommDAO {
 				    o_payamt=0;
 				    for (int j = 0; j < oPay.size(); j++) {
 				        o_payObj = oPay.getJSONObject(j);
-				        // ½T»{ key ¬O§_¦s¦b¥HÁ×§K¿ù»~
+				        // ç¢ºèª key æ˜¯å¦å­˜åœ¨ä»¥é¿å…éŒ¯èª¤
 				        if (o_payObj.has( "paycode" )) {
 				        	o_paycode = o_payObj.getString("paycode");
 				        	if ( o_paycode.equals(l_paycode) ) {
@@ -1070,17 +1147,17 @@ public class CommDAO {
 				    }
 				    if (o_payamt > 0 && o_payamt != l_payamt && l_paycode.matches("FP000|FD040")) {				    	
 			    		if (l_paycode.matches("FP000|FD040") ) {
-			    			//«e¤@¬q
+			    			//å‰ä¸€æ®µ
 			    			real_payamt=(int) (Math.round( (double)((double)o_payamt * (double)tpreday / (double)l_effdt )));
-			    			//«e¤@¬q+«á¤@¬q
+			    			//å‰ä¸€æ®µ+å¾Œä¸€æ®µ
 			    			real_payamt+=(int) (Math.round( (double)((double)l_payamt * (double)dayno / (double)l_effdt )));			    			
 			    		}
 			    		r_payamt=real_payamt-l_payamt;	
 				    }
 				    
 				    if (r_payamt != 0) {
-				    	System.out.println("¸Éµo¦©:"+l_paycode+" "+ o_payamt+" l_payamt:"+l_payamt+" r_payamt:"+r_payamt);
-				    	//¨ú±o¤ä¦©¥N½X
+				    	System.out.println("è£œç™¼æ‰£:"+l_paycode+" "+ o_payamt+" l_payamt:"+l_payamt+" r_payamt:"+r_payamt);
+				    	//å–å¾—æ”¯æ‰£ä»£ç¢¼
 					    jsonOne = new JSONObject();
 					    jsonOne=getPayitemBycode(r_paycode,r_payamt,payitmMap);
 					    if (jsonOne !=null) {
@@ -1090,9 +1167,9 @@ public class CommDAO {
 				} 
 			}
 		}
-		//51¦~²×¼úª÷,¨Ì®Öµo¤ë¼Æ,µo©ñ¦~²×¼úª÷¤ñ¨Ò,­pºâ¦Ü¤¸¦ì¡A½Ğ¿í´`¡uµL±ø¥ó±Ë¥h¦Ü­Ó¦ì¼Æ¡vªº­ì«h
-		//¦~²×¼úª÷­pºâ¦Ü¤¸¦ì¡A½Ğ¿í´`¡uµL±ø¥ó±Ë¥h¦Ü­Ó¦ì¼Æ¡vªº­ì«h¡C
-		//2026.7.13 ¥X¯Ç¸ß°İ¤H¨Æ,§é¦X²v¤£¦A¨Ï¥Î,¥Î¥»Á~(CB¸u¥Î¦í°|Âå®v CH«´¬ù¦í°|Âå®v AL¤@¦~¦³ÃÒ¤£¤À¬ì¦í°|Âå®v AN¤@¦~µLÃÒ¤£¤À¬ì¦í°|Âå®v)==>¤ë¤ä³ø¹S = ³ø¹SÁ~ÂI ¡Ñ Á~ÂI§é¦X²v¡]­pºâ¦Ü¤¸¬°¤î¡A¥¼¹F¾ã¼ÆªÌ¡A¤p¼ÆÂI¥H¤UµL±ø¥ó±Ë¥h¡^
+		//51å¹´çµ‚çé‡‘,ä¾æ ¸ç™¼æœˆæ•¸,ç™¼æ”¾å¹´çµ‚çé‡‘æ¯”ä¾‹,è¨ˆç®—è‡³å…ƒä½ï¼Œè«‹éµå¾ªã€Œç„¡æ¢ä»¶æ¨å»è‡³å€‹ä½æ•¸ã€çš„åŸå‰‡
+		//å¹´çµ‚çé‡‘è¨ˆç®—è‡³å…ƒä½ï¼Œè«‹éµå¾ªã€Œç„¡æ¢ä»¶æ¨å»è‡³å€‹ä½æ•¸ã€çš„åŸå‰‡ã€‚
+		//2026.7.13 å‡ºç´è©¢å•äººäº‹,æŠ˜åˆç‡ä¸å†ä½¿ç”¨,ç”¨æœ¬è–ª(CBè˜ç”¨ä½é™¢é†«å¸« CHå¥‘ç´„ä½é™¢é†«å¸« ALä¸€å¹´æœ‰è­‰ä¸åˆ†ç§‘ä½é™¢é†«å¸« ANä¸€å¹´ç„¡è­‰ä¸åˆ†ç§‘ä½é™¢é†«å¸«)==>æœˆæ”¯å ±é…¬ = å ±é…¬è–ªé» Ã— è–ªé»æŠ˜åˆç‡ï¼ˆè¨ˆç®—è‡³å…ƒç‚ºæ­¢ï¼Œæœªé”æ•´æ•¸è€…ï¼Œå°æ•¸é»ä»¥ä¸‹ç„¡æ¢ä»¶æ¨å»ï¼‰
 		else if ( tracod ==51 ) {
 			if (oPay != null) {
 				jsonString = oPay.toString();
@@ -1107,40 +1184,40 @@ public class CommDAO {
 				    }else
 				    	l_payamt = l_payObj.getInt("payamt");*/
 				    
-				    if (l_paycode.equals("FP000") ) {	//FP000¥»Á~
+				    if (l_paycode.equals("FP000") ) {	//FP000æœ¬è–ª
 				    	r_paycode="VP121";
-				    }else if (l_paycode.matches("FP010|FP080") ) {	//FP010±M·~¥[µ¹ FP080±M·~¥[µ¹®tÃB
+				    }else if (l_paycode.matches("FP010|FP080") ) {	//FP010å°ˆæ¥­åŠ çµ¦ FP080å°ˆæ¥­åŠ çµ¦å·®é¡
 				    	r_paycode="VP122";
-				    }else if (l_paycode.equals("FP030") ) {	//FP030¥DºŞ¥[µ¹
+				    }else if (l_paycode.equals("FP030") ) {	//FP030ä¸»ç®¡åŠ çµ¦
 				    	r_paycode="VP124";	
-				    }else if (l_paycode.equals("FP090") ) {	//FP090³d¥ô¥[µ¹
+				    }else if (l_paycode.equals("FP090") ) {	//FP090è²¬ä»»åŠ çµ¦
 				    	r_paycode="VP126";	
-				    }else if (l_paycode.equals("FP100") ) {	//FP100Â¾°È¥[µ¹
+				    }else if (l_paycode.equals("FP100") ) {	//FP100è·å‹™åŠ çµ¦
 				    	r_paycode="VP125";	
 				    }
 				    //1.5
 				    l_payamt = (int) Math.floor(l_payamt * 1.5 );
-				    //¤ë¼Æ¤ñ¨Ò	
+				    //æœˆæ•¸æ¯”ä¾‹	
 				    if (monno != 12 )	
 				    	l_payamt = (int) Math.floor(l_payamt * monno /12 );
 				    
-			    	//µo©ñ¤ñ¨Ò
-			    	if (pflag == 1)	//µo©ñ1/3
+			    	//ç™¼æ”¾æ¯”ä¾‹
+			    	if (pflag == 1)	//ç™¼æ”¾1/3
 			    		r_payamt = (int) Math.floor(l_payamt  / 3 );
-			    	else if (pflag == 2)	//µo©ñ2/3
+			    	else if (pflag == 2)	//ç™¼æ”¾2/3
 			    		r_payamt = (int) Math.floor(l_payamt *2 / 3 );
-			    	else if (pflag == 3)	//µo©ñ¥ş³¡
+			    	else if (pflag == 3)	//ç™¼æ”¾å…¨éƒ¨
 			    		r_payamt = l_payamt ;
-			    	else if (pflag == 4)	//µo©ñ3/4 ¥Ó»|
+			    	else if (pflag == 4)	//ç™¼æ”¾3/4 ç”³èª¡
 			    		r_payamt = (int) Math.floor(l_payamt *3 / 4 );
-			    	//FP010±M·~¥[µ¹ FP080±M·~¥[µ¹®tÃB
+			    	//FP010å°ˆæ¥­åŠ çµ¦ FP080å°ˆæ¥­åŠ çµ¦å·®é¡
 			    	if (l_paycode.matches("FP010|FP080") ) {	
 			    		l_prof +=r_payamt;
 			    		r_payamt=0;
 			    	}
 			    	
 				    if (r_payamt != 0 ) {
-				    	//¨ú±o¤ä¦©¥N½X,¦]±M·~¥[µ¹FP020+±M·~¥[µ¹®tÃBFP080,­n¼g¤J¤@µ§VP122
+				    	//å–å¾—æ”¯æ‰£ä»£ç¢¼,å› å°ˆæ¥­åŠ çµ¦FP020+å°ˆæ¥­åŠ çµ¦å·®é¡FP080,è¦å¯«å…¥ä¸€ç­†VP122
 					    jsonOne = new JSONObject();
 					    jsonOne=getPayitemBycode(r_paycode,r_payamt,payitmMap);
 					    if (jsonOne !=null) {
@@ -1150,7 +1227,7 @@ public class CommDAO {
 				    }
 				}
 				if (l_prof != 0 ) {
-			    	//¨ú±o¤ä¦©¥N½X,¦]±M·~¥[µ¹FP020+±M·~¥[µ¹®tÃBFP080,­n¼g¤J¤@µ§VP122
+			    	//å–å¾—æ”¯æ‰£ä»£ç¢¼,å› å°ˆæ¥­åŠ çµ¦FP020+å°ˆæ¥­åŠ çµ¦å·®é¡FP080,è¦å¯«å…¥ä¸€ç­†VP122
 				    jsonOne = new JSONObject();
 				    jsonOne=getPayitemBycode("VP122",l_prof,payitmMap);
 				    if (jsonOne !=null) {
@@ -1159,7 +1236,7 @@ public class CommDAO {
 			    }
 			}
 		}	
-		//12¦ÒÁZ¼úª÷ ª÷ÃB¶·­pºâ¦Ü¤¸¦ì¡A¤p¼ÆÂI«áµL±ø¥ó¥|±Ë¤­¤J¡]¥|±Ë¤­¤J¦Ü­Ó¦ì¼Æ¡^¡C
+		//12è€ƒç¸¾çé‡‘ é‡‘é¡é ˆè¨ˆç®—è‡³å…ƒä½ï¼Œå°æ•¸é»å¾Œç„¡æ¢ä»¶å››æ¨äº”å…¥ï¼ˆå››æ¨äº”å…¥è‡³å€‹ä½æ•¸ï¼‰ã€‚
 		else if ( tracod ==12 ) {
 			if (oPay != null) {
 				jsonString = oPay.toString();
@@ -1169,34 +1246,34 @@ public class CommDAO {
 				    l_paycode= l_payObj.getString("paycode");
 				    l_payamt = l_payObj.getInt("payamt");
 				    
-				    if (l_paycode.equals("FP000") ) 	//FP000¥»Á~
+				    if (l_paycode.equals("FP000") ) 	//FP000æœ¬è–ª
 				    	r_paycode="VP131";
-				    else if (l_paycode.matches("FP010|FP080") ) 	//FP010±M·~¥[µ¹ FP080±M·~¥[µ¹®tÃB
+				    else if (l_paycode.matches("FP010|FP080") ) 	//FP010å°ˆæ¥­åŠ çµ¦ FP080å°ˆæ¥­åŠ çµ¦å·®é¡
 				    	r_paycode="VP132";
-				    else if (l_paycode.equals("FP030") ) 	//FP030¥DºŞ¥[µ¹
+				    else if (l_paycode.equals("FP030") ) 	//FP030ä¸»ç®¡åŠ çµ¦
 				    	r_paycode="VP134";	
-				    else if (l_paycode.equals("FP090") ) 	//FP090³d¥ô¥[µ¹
+				    else if (l_paycode.equals("FP090") ) 	//FP090è²¬ä»»åŠ çµ¦
 				    	r_paycode="VP136";	
-				    else if (l_paycode.equals("FP100") ) 	//FP100Â¾°È¥[µ¹
+				    else if (l_paycode.equals("FP100") ) 	//FP100è·å‹™åŠ çµ¦
 				    	r_paycode="VP135";					    
 				    
-			    	//µo©ñ¤ñ¨Ò
-			    	if (pflag == 1)	//µo©ñ0.5¤ë
+			    	//ç™¼æ”¾æ¯”ä¾‹
+			    	if (pflag == 1)	//ç™¼æ”¾0.5æœˆ
 			    		l_pflag=0.5;
-			    	else if (pflag == 2)	//µo©ñ1­Ó¤ë
+			    	else if (pflag == 2)	//ç™¼æ”¾1å€‹æœˆ
 			    		l_pflag=1;
-			    	else if (pflag == 3)	//µo©ñ1.5­Ó¤ë
+			    	else if (pflag == 3)	//ç™¼æ”¾1.5å€‹æœˆ
 			    		l_pflag=1.5;
-			    	else if (pflag == 4)	//µo©ñ2­Ó¤ë
+			    	else if (pflag == 4)	//ç™¼æ”¾2å€‹æœˆ
 			    		l_pflag=2;
 			    	
 			    	r_payamt = (int) Math.round(l_payamt * l_pflag );
-			    	//FP010±M·~¥[µ¹ FP080±M·~¥[µ¹®tÃB
+			    	//FP010å°ˆæ¥­åŠ çµ¦ FP080å°ˆæ¥­åŠ çµ¦å·®é¡
 			    	if (l_paycode.matches("FP010|FP080") ) {	
 			    		l_prof +=r_payamt;
 			    		r_payamt=0;
 			    	}
-			    	//¨ú±o¤ä¦©¥N½X,¦]±M·~¥[µ¹FP020+±M·~¥[µ¹®tÃBFP080,­n¼g¤J¤@µ§VP132
+			    	//å–å¾—æ”¯æ‰£ä»£ç¢¼,å› å°ˆæ¥­åŠ çµ¦FP020+å°ˆæ¥­åŠ çµ¦å·®é¡FP080,è¦å¯«å…¥ä¸€ç­†VP132
 				    if (r_payamt != 0 ) {				    	
 					    jsonOne = new JSONObject();
 					    jsonOne=getPayitemBycode(r_paycode,r_payamt,payitmMap);
@@ -1207,7 +1284,7 @@ public class CommDAO {
 				    }
 				}
 				if (l_prof != 0 ) {
-			    	//¨ú±o¤ä¦©¥N½X,¦]±M·~¥[µ¹FP020+±M·~¥[µ¹®tÃBFP080,­n¼g¤J¤@µ§VP132
+			    	//å–å¾—æ”¯æ‰£ä»£ç¢¼,å› å°ˆæ¥­åŠ çµ¦FP020+å°ˆæ¥­åŠ çµ¦å·®é¡FP080,è¦å¯«å…¥ä¸€ç­†VP132
 				    jsonOne = new JSONObject();
 				    jsonOne=getPayitemBycode("VP132",l_prof,payitmMap);
 				    if (jsonOne !=null) {
@@ -1216,12 +1293,13 @@ public class CommDAO {
 			    }
 			}
 		}
-		
-		return jsonRtn;
+		rtn.put("nPay", jsonRtn);
+		rtn.put("batPay", batPay);
+		return rtn;
 	}
 	
 	
-	//¨Ìpaycode,¨ú±opayitem,¦s©ñjsonOne
+	//ä¾paycode,å–å¾—payitem,å­˜æ”¾jsonOne
 	private JSONObject getPayitemBycode(String strPaycode,int intvalue,HashMap<String,Papayitm> payitmMap) {
 		String me = ".getPayitemBycode()";
 		JSONObject jsonOne = null;
@@ -1243,19 +1321,59 @@ public class CommDAO {
 			jsonOne.put("payauth", StringUtil.nullToString(payitmObj.getPayauth()));
 			jsonOne.put("payiftax", StringUtil.nullToString(payitmObj.getPayiftax())); 
 			jsonOne.put("hid", StringUtil.nullToString(payitmObj.getHid()));
-			jsonOne.put("pacodnmc", StringUtil.nullToString(payitmObj.getPacodnmc()));
+			jsonOne.put("paupbas", StringUtil.nullToString(payitmObj.getPaupbas()));
 			jsonOne.put("pacoddel", StringUtil.nullToString(payitmObj.getPacoddel()));
 			jsonOne.put("payreward", StringUtil.nullToString(payitmObj.getPayreward()));
 		}
 		return jsonOne;
 	}
-	
-	//°·«O¸É§U¼Ğ·Ç¤Î¤f¼Æ,­pºâ¥X«O¶O 
-	//---°·«O¶O­Y¦³¸É§U¤G¤À¤§¤@¡]¦p¤¤«×¨­¤ß»ÙÃªªÌ¤§¦Û¥I«O¶O¸É§U¡^¡A¨äª÷ÃB­Y²£¥Í¤p¼ÆÂI¡A³B²z­ì«h¬°µL±ø¥ó¶i¦ì¡A§Y¤p¼ÆÂI¥H¤UµL½×¦h¤Ö¤@«ß¶i¦ì¬°¾ã¼Æ¡C
-	//¦Ó¤@¯ë°·«O¶OÃº¯Ç¡A¥H¤¸¬°³æ¦ì¡A¨¤¥H¤U«h¬O±Ä¡u¥|±Ë¤­¤J¡vªk¡C
-	//Inflg«OÀI¸É§U¤ñ²v  DPNO°·«O¤f¼Æ ¦³±a¤p¼ÆÂI dpniamt°·«O¶O
-	// 1-1/4 2-1/2 3-¥şÃB 4-¥şÃB¦³¤W­­ 5-¤½³Ò1/4¡B°·§K  6-¤½³Ò1/2¡B°·§K  7-¤½³Ò¦³¡B°·§K 8-¤½³Ò¦³¡B°·1/4 9-¤½³Ò¦³¡B°·1/2
-	//10-¤£¾A¥Î´N·~«OÀI 11-¤£¾A¥Î´N·~«OÀI¥B¦Ñ¦~Â¾¨a¥[«O¤H­û
+	//å›ºå®šæ‰€å¾—ç¨… l_deps:æ‰¶é¤Šäººæ•¸ l_payæ‰€å¾—
+	public HashMap GetFixTax(int l_deps,int l_pay,VGHDataAccess da)throws SQLException{
+		String me = getClass().getName() + ".GetFixTax()";
+		log.info(me +  " l_deps = " + l_deps+ " l_pay = " + l_pay);
+		
+		HashMap rtnMap=new HashMap();
+		int tmpamt=0;
+		
+		params.clear();
+		Hospitals hospInfo = Hospitals.getOneHosp(hid);
+		
+		sql = " select TAXAMT "+
+				 "from "+this.tTaxTbl + 
+			   " where ? between SALLOW and SALHIGH and KINDRED=? with ur ";
+		params.add(l_pay);
+		params.add(l_deps);
+		
+		log.info(me+"  " + sql+"...params:"+ params.toString());
+		try{
+			if(da==null){
+				connFlg = false;
+				//æ”¹ç”¨åˆ—èˆ‰
+				g_dataSourceNT=hospInfo.dataSourceNT;
+				da=new VGHDataAccess(g_dataSourceNT);
+			}
+			result = da.arraylistbyQuery(sql,params,META_TYPE);
+			log.info(me+"  ...size:"+result.size());
+			
+			for (Map<String,Object> data :result){
+				tmpamt   = (Integer) data.get("taxamt");
+			}
+			
+		    rtnMap.put("taxamt", tmpamt);		//æ‰£ç¹³ç¨…é¡
+		}
+		catch(Throwable e){
+			throw new SQLException(me+" "+e.toString());
+		}finally{
+		
+		}
+		return rtnMap;
+	}
+	//å¥ä¿è£œåŠ©æ¨™æº–åŠå£æ•¸,è¨ˆç®—å‡ºä¿è²» 
+	//---å¥ä¿è²»è‹¥æœ‰è£œåŠ©äºŒåˆ†ä¹‹ä¸€ï¼ˆå¦‚ä¸­åº¦èº«å¿ƒéšœç¤™è€…ä¹‹è‡ªä»˜ä¿è²»è£œåŠ©ï¼‰ï¼Œå…¶é‡‘é¡è‹¥ç”¢ç”Ÿå°æ•¸é»ï¼Œè™•ç†åŸå‰‡ç‚ºç„¡æ¢ä»¶é€²ä½ï¼Œå³å°æ•¸é»ä»¥ä¸‹ç„¡è«–å¤šå°‘ä¸€å¾‹é€²ä½ç‚ºæ•´æ•¸ã€‚
+	//è€Œä¸€èˆ¬å¥ä¿è²»ç¹³ç´ï¼Œä»¥å…ƒç‚ºå–®ä½ï¼Œè§’ä»¥ä¸‹å‰‡æ˜¯æ¡ã€Œå››æ¨äº”å…¥ã€æ³•ã€‚
+	//Inflgä¿éšªè£œåŠ©æ¯”ç‡  DPNOå¥ä¿å£æ•¸ æœ‰å¸¶å°æ•¸é» dpniamtå¥ä¿è²»
+	// 1-1/4 2-1/2 3-å…¨é¡ 4-å…¨é¡æœ‰ä¸Šé™ 5-å…¬å‹1/4ã€å¥å…  6-å…¬å‹1/2ã€å¥å…  7-å…¬å‹æœ‰ã€å¥å… 8-å…¬å‹æœ‰ã€å¥1/4 9-å…¬å‹æœ‰ã€å¥1/2
+	//10-ä¸é©ç”¨å°±æ¥­ä¿éšª 11-ä¸é©ç”¨å°±æ¥­ä¿éšªä¸”è€å¹´è·ç½åŠ ä¿äººå“¡
 	public HashMap GetHealthInsuRelief(String inflg,String DPNO,int l_pay,VGHDataAccess da)throws SQLException{
 		String me = getClass().getName() + ".GetHealthInsuRelief()";
 		log.info(me +  " inflg = " + inflg+ " DPNO = " + DPNO+ " l_pay = " + l_pay);
@@ -1263,7 +1381,7 @@ public class CommDAO {
 		HashMap rtnMap=new HashMap();
 		int tmpamt=0;
 		int l_dpinamt=0;
-		int l_dpinig=0;	//§ë«O¯Å¶Z
+		int l_dpinig=0;	//æŠ•ä¿ç´šè·
 		double l_dpno = Double.parseDouble(DPNO);
 		
 		params.clear();
@@ -1278,7 +1396,7 @@ public class CommDAO {
 		try{
 			if(da==null){
 				connFlg = false;
-				//§ï¥Î¦CÁ|
+				//æ”¹ç”¨åˆ—èˆ‰
 				g_dataSourceNT=hospInfo.dataSourceNT;
 				da=new VGHDataAccess(g_dataSourceNT);
 			}
@@ -1304,16 +1422,16 @@ public class CommDAO {
 			}else
 				l_dpinamt =  tmpamt;
 			
-			//­pºâ°·«O¤H¼Æ(0-1ºâ1¤H¤£¥Î­pºâ²²Äİ,¶W¹L1¤H,ªí¥Ü¦³²²Äİ)
+			//è¨ˆç®—å¥ä¿äººæ•¸(0-1ç®—1äººä¸ç”¨è¨ˆç®—çœ·å±¬,è¶…é1äºº,è¡¨ç¤ºæœ‰çœ·å±¬)
 		    if (l_dpno > 1) {
-		        //²²Äİ°·«O¤H¼Æ¤W­­3¤f 2004-1-20
+		        //çœ·å±¬å¥ä¿äººæ•¸ä¸Šé™3å£ 2004-1-20
 		        if (l_dpno > 4)
 		        	l_dpinamt = l_dpinamt + (3 * tmpamt);
 		        else
 		        	l_dpinamt = l_dpinamt + (int) Math.round( (double)(l_dpno - 1) * tmpamt);
 		    }
-		    rtnMap.put("dpinig", l_dpinig);	//°·«O¯Å¶Z
-			rtnMap.put("dpinamt", l_dpinamt);	//°·«O¶O
+		    rtnMap.put("dpinig", l_dpinig);	//å¥ä¿ç´šè·
+			rtnMap.put("dpinamt", l_dpinamt);	//å¥ä¿è²»
 		}
 		catch(Throwable e){
 			throw new SQLException(me+" "+e.toString());
@@ -1323,14 +1441,14 @@ public class CommDAO {
 		return rtnMap;
 	}
 		
-	//³Ò«O¶O 
-	//---³Ò«O§½­pºâ«OÀI¶O¤@«ß¥H·s¥x¹ô¡u¤¸¡v¬°³æ¦ì¡A¤p¼ÆÂI«á¡]¨¤¥H¤U¡^¤@«ß±Ä¥|±Ë¤­¤J
-	//¥H³Ò«O¶O 1,145 ¤¸¡B¸É§U 1/4¡]§Y¸É§U 286.25 ¤¸¡^¬°¨Ò¡G ­pºâ¸É§Uª÷ÃB¡G(1145 *1/4= 286.25) ¤¸
-	//±Ä¥|±Ë¤­¤J«á¡G¸É§Uª÷ÃB¬° 286 ¤¸ ­Ó¤H¹ê»Ú­t¾á¡G1145 - 286 = 859 ¤¸
-	//¦Ó¤@¯ë°·«O¶OÃº¯Ç¡A¥H¤¸¬°³æ¦ì¡A¨¤¥H¤U«h¬O±Ä¡u¥|±Ë¤­¤J¡vªk¡C
-	//Inflg«OÀI¸É§U¤ñ²v   vpay
-	// 1-1/4 2-1/2 3-¥şÃB 4-¥şÃB¦³¤W­­ 5-¤½³Ò1/4¡B°·§K  6-¤½³Ò1/2¡B°·§K  7-¤½³Ò¦³¡B°·§K 8-¤½³Ò¦³¡B°·1/4 9-¤½³Ò¦³¡B°·1/2
-	//10-¤£¾A¥Î´N·~«OÀI 11-¤£¾A¥Î´N·~«OÀI¥B¦Ñ¦~Â¾¨a¥[«O¤H­û
+	//å‹ä¿è²» 
+	//---å‹ä¿å±€è¨ˆç®—ä¿éšªè²»ä¸€å¾‹ä»¥æ–°å°å¹£ã€Œå…ƒã€ç‚ºå–®ä½ï¼Œå°æ•¸é»å¾Œï¼ˆè§’ä»¥ä¸‹ï¼‰ä¸€å¾‹æ¡å››æ¨äº”å…¥
+	//ä»¥å‹ä¿è²» 1,145 å…ƒã€è£œåŠ© 1/4ï¼ˆå³è£œåŠ© 286.25 å…ƒï¼‰ç‚ºä¾‹ï¼š è¨ˆç®—è£œåŠ©é‡‘é¡ï¼š(1145 *1/4= 286.25) å…ƒ
+	//æ¡å››æ¨äº”å…¥å¾Œï¼šè£œåŠ©é‡‘é¡ç‚º 286 å…ƒ å€‹äººå¯¦éš›è² æ“”ï¼š1145 - 286 = 859 å…ƒ
+	//è€Œä¸€èˆ¬å¥ä¿è²»ç¹³ç´ï¼Œä»¥å…ƒç‚ºå–®ä½ï¼Œè§’ä»¥ä¸‹å‰‡æ˜¯æ¡ã€Œå››æ¨äº”å…¥ã€æ³•ã€‚
+	//Inflgä¿éšªè£œåŠ©æ¯”ç‡   vpay
+	// 1-1/4 2-1/2 3-å…¨é¡ 4-å…¨é¡æœ‰ä¸Šé™ 5-å…¬å‹1/4ã€å¥å…  6-å…¬å‹1/2ã€å¥å…  7-å…¬å‹æœ‰ã€å¥å… 8-å…¬å‹æœ‰ã€å¥1/4 9-å…¬å‹æœ‰ã€å¥1/2
+	//10-ä¸é©ç”¨å°±æ¥­ä¿éšª 11-ä¸é©ç”¨å°±æ¥­ä¿éšªä¸”è€å¹´è·ç½åŠ ä¿äººå“¡
 	public HashMap GetLaborInsuByPay(String inflg,int l_pay,VGHDataAccess da) throws SQLException{
 		String me = getClass().getName() + ".GetLaborInsuByPay()";
 		log.info(me +  " inflg = " + inflg+  " l_pay = " + l_pay);
@@ -1338,7 +1456,7 @@ public class CommDAO {
 		HashMap rtnMap=new HashMap();
 		int tmpamt=0;	
 		int lbinamt=0;  
-		int lbinig=0;	//§ë«O¯Å¶Z
+		int lbinig=0;	//æŠ•ä¿ç´šè·
 		params.clear();
 		Hospitals hospInfo = Hospitals.getOneHosp(hid);
 		
@@ -1351,7 +1469,7 @@ public class CommDAO {
 		try{
 			if(da==null){
 				connFlg = false;
-				//§ï¥Î¦CÁ|
+				//æ”¹ç”¨åˆ—èˆ‰
 				g_dataSourceNT=hospInfo.dataSourceNT;
 				da=new VGHDataAccess(g_dataSourceNT);
 			}
@@ -1373,8 +1491,8 @@ public class CommDAO {
 			else
 				lbinamt =  tmpamt;
 			
-			rtnMap.put("lbinig", lbinig);	//³Ò«O¯Å¶Z
-			rtnMap.put("lbinamt", lbinamt);	//³Ò«O¶O
+			rtnMap.put("lbinig", lbinig);	//å‹ä¿ç´šè·
+			rtnMap.put("lbinamt", lbinamt);	//å‹ä¿è²»
 		}catch(Throwable e){
 			throw new SQLException(me+" "+e.toString());
 		}finally{
@@ -1383,18 +1501,18 @@ public class CommDAO {
 		return rtnMap;
 	}
 		
-	/**¶Ç¦^ ÁZ®ÄÂI¼Æ
+	/**å‚³å› ç¸¾æ•ˆé»æ•¸
 	 * @param 
-	 * 		  vRANK3  : ¥»¥\§O
-'             vTitle  : Â¾ºÙ
-'			  vRANK   : ¶¥§O
-'             vRNK2N  : Â¾µ¥
-'             vDEGR2  : ¯Å§O
-'  			  vBANKDT : µoÁ~¤é
-'			  hid    : Âå°|§O		
-'   @return   vPFKEY  : ¹ê»Ú¤ä»âKEY
-'             vPFBAS  : °ò¥»ÂI¼Æ
-'             vPFDAT  : Â¾µ¥ÂI¼Æ
+	 * 		  vRANK3  : æœ¬åŠŸåˆ¥
+'             vTitle  : è·ç¨±
+'			  vRANK   : éšåˆ¥
+'             vRNK2N  : è·ç­‰
+'             vDEGR2  : ç´šåˆ¥
+'  			  vBANKDT : ç™¼è–ªæ—¥
+'			  hid    : é†«é™¢åˆ¥		
+'   @return   vPFKEY  : å¯¦éš›æ”¯é ˜KEY
+'             vPFBAS  : åŸºæœ¬é»æ•¸
+'             vPFDAT  : è·ç­‰é»æ•¸
 	 * @throws SQLException 
 	 */
 	
@@ -1408,22 +1526,22 @@ public class CommDAO {
 		String vPFBAS="";
 		String vPFDAT="";
 		String vDEGR2="";
-		//Â¾ºÙ
+		//è·ç¨±
 		vTitle=StringUtil.nullToString(vTitle);
-		//Â¾µ¥
+		//è·ç­‰
 		vRNK2N=StringUtil.nullToString(vRNK2N);
-		//¶¥§O
+		//éšåˆ¥
 		vRANK=StringUtil.nullToString(vRANK);
-		//¯Å§O
+		//ç´šåˆ¥
 		vDEGR2=String.valueOf(intDEGR2);
 		vDEGR2=StringUtil.fillChar(StringUtil.nullToString(vDEGR2),2,"0",false);
-		//¹ê»Ú¤ä»âKEY ¥»¥\§O=0,ªí¥Üpfkey²Õ¦¨¬°Â¾ºÙ+"00000"
+		//å¯¦éš›æ”¯é ˜KEY æœ¬åŠŸåˆ¥=0,è¡¨ç¤ºpfkeyçµ„æˆç‚ºè·ç¨±+"00000"
 		if (vRANK.equals("F") && !vTitle.matches("CG|CH|CK")){
-			if (hid.equals("1A0")){ // >2024-9-1 ¥[¯Å¼Æ
+			if (hid.equals("1A0")){ // >2024-9-1 åŠ ç´šæ•¸
 				if ( DateUtil.compareDate( Globals.gPFNew , vBANKDT ) ){
 					vPFKEY=vTitle+"000"+StringUtil.fillChar(vDEGR2,2,"0",false);
 				}else{
-					if (vTitle.matches("DX|DY"))	//DX«´¬ù¸ê°T§U²z¤uµ{®v  DY«´¬ù¸ê°T°Æ¤uµ{®v
+					if (vTitle.matches("DX|DY"))	//DXå¥‘ç´„è³‡è¨ŠåŠ©ç†å·¥ç¨‹å¸«  DYå¥‘ç´„è³‡è¨Šå‰¯å·¥ç¨‹å¸«
 						vPFKEY=vTitle+"000"+StringUtil.fillChar(vDEGR2,2,"0",false);
 					else
 						vPFKEY=vTitle+"00000";
@@ -1462,19 +1580,19 @@ public class CommDAO {
 	
 		return rtnMap;
 	}
-	/**¶Ç¦^ ÁZ®ÄÂI¼Æ
+	/**å‚³å› ç¸¾æ•ˆé»æ•¸
 	 * @param 
-	 * 		  vRANK3  : ¥»¥\§O
-'             vTitle  : Â¾ºÙ
-'			  vRANK   : ¶¥§O
-'             vRNK2N  : Â¾µ¥
-'             vDEGR2  : ¯Å§O
-'  			  vBANKDT : µoÁ~¤é
+	 * 		  vRANK3  : æœ¬åŠŸåˆ¥
+'             vTitle  : è·ç¨±
+'			  vRANK   : éšåˆ¥
+'             vRNK2N  : è·ç­‰
+'             vDEGR2  : ç´šåˆ¥
+'  			  vBANKDT : ç™¼è–ªæ—¥
 '			  vCSPF   : map	
-'			  vhid    : Âå°|§O		
-'   @return   vPFKEY  : ¹ê»Ú¤ä»âKEY
-'             vPFBAS  : °ò¥»ÂI¼Æ
-'             vPFDAT  : Â¾µ¥ÂI¼Æ
+'			  vhid    : é†«é™¢åˆ¥		
+'   @return   vPFKEY  : å¯¦éš›æ”¯é ˜KEY
+'             vPFBAS  : åŸºæœ¬é»æ•¸
+'             vPFDAT  : è·ç­‰é»æ•¸
 	 * @throws SQLException 
 	 */
 	
@@ -1487,22 +1605,22 @@ public class CommDAO {
 		int vpfdat=0;
 		String vDEGR2="";
 		Pacspf cspfObj=null;
-		//Â¾ºÙ
+		//è·ç¨±
 		vTitle=StringUtil.nullToString(vTitle);
-		//Â¾µ¥
+		//è·ç­‰
 		vRNK2N=StringUtil.nullToString(vRNK2N);
-		//¶¥§O
+		//éšåˆ¥
 		vRANK=StringUtil.nullToString(vRANK);
-		//¯Å§O
+		//ç´šåˆ¥
 		vDEGR2=String.valueOf(intDEGR2);
 		vDEGR2=StringUtil.fillChar(StringUtil.nullToString(vDEGR2),2,"0",false);
-		//¹ê»Ú¤ä»âKEY ¥»¥\§O=0,ªí¥Üpfkey²Õ¦¨¬°Â¾ºÙ+"00000"
+		//å¯¦éš›æ”¯é ˜KEY æœ¬åŠŸåˆ¥=0,è¡¨ç¤ºpfkeyçµ„æˆç‚ºè·ç¨±+"00000"
 		if (vRANK.equals("F") && !vTitle.matches("CG|CH|CK")){
-			if (vHid.equals("1A0")){ // >2024-9-1 ¥[¯Å¼Æ
+			if (vHid.equals("1A0")){ // >2024-9-1 åŠ ç´šæ•¸
 				if ( DateUtil.compareDate( Globals.gPFNew , vBANKDT ) ){
 					vPFKEY=vTitle+"000"+StringUtil.fillChar(vDEGR2,2,"0",false);
 				}else{
-					if (vTitle.matches("DX|DY"))	//DX«´¬ù¸ê°T§U²z¤uµ{®v  DY«´¬ù¸ê°T°Æ¤uµ{®v
+					if (vTitle.matches("DX|DY"))	//DXå¥‘ç´„è³‡è¨ŠåŠ©ç†å·¥ç¨‹å¸«  DYå¥‘ç´„è³‡è¨Šå‰¯å·¥ç¨‹å¸«
 						vPFKEY=vTitle+"000"+StringUtil.fillChar(vDEGR2,2,"0",false);
 					else
 						vPFKEY=vTitle+"00000";
@@ -1529,10 +1647,10 @@ public class CommDAO {
 		
 		return rtnMap;
 	}
-	/**¨ú±o¤ä¦©¶µ¥Ømap	
+	/**å–å¾—æ”¯æ‰£é …ç›®map	
 	 * @param 
-	 * 		  vcoddel : §R°£§_(Y¤w§R°£/N¨Ï¥Î¤¤),ªÅ¥Õ(¥ş¨ú)
-'             vhid    : Âå°|§O		
+	 * 		  vcoddel : åˆªé™¤å¦(Yå·²åˆªé™¤/Nä½¿ç”¨ä¸­),ç©ºç™½(å…¨å–)
+'             vhid    : é†«é™¢åˆ¥		
 '   @return   papayitm : map
 	 * @throws SQLException 
 	 */
@@ -1564,7 +1682,7 @@ public class CommDAO {
 					rtnMap.put(oneKey, oneObj);
 				}
 			}
-			log.info(me+"(size):" + result.size()+" ¦@ªá¶O¡G"+(System.currentTimeMillis()-starttime)+"²@¬í");
+			log.info(me+"(size):" + result.size()+" å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-starttime)+"æ¯«ç§’");
 		}
 		catch(Exception e){
 			log.info(me + " fail, " + e);
@@ -1576,7 +1694,7 @@ public class CommDAO {
 		
 		return rtnMap;
 	}
-	/**¨ú±o Â¾µ¥¤ä¦©--±M·~¥[µ¹¤Î¥DºŞ¥[µ¹ map	
+	/**å–å¾— è·ç­‰æ”¯æ‰£--å°ˆæ¥­åŠ çµ¦åŠä¸»ç®¡åŠ çµ¦ map	
 	 * key=PAYPOSIK+DEGRLOW
 	 * 		  
 '   @return   paposi : map
@@ -1604,7 +1722,7 @@ public class CommDAO {
 					rtnMap.put(oneKey, oneObj);
 				}
 			}
-			log.info(me+"(size):" + result.size()+" ¦@ªá¶O¡G"+(System.currentTimeMillis()-starttime)+"²@¬í");
+			log.info(me+"(size):" + result.size()+" å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-starttime)+"æ¯«ç§’");
 		}
 		catch(Exception e){
 			log.info(me + " fail, " + e);
@@ -1616,9 +1734,9 @@ public class CommDAO {
 		
 		return rtnMap;
 	}
-	/**¨ú±oÂ¾ºÙmap	
-	 * @param item:A(Â¾ºÙ¥N½X) B(¤H¨ÆÂ¾ºÙ¥N½X)
-	 * 		  vhid    : Âå°|§O		
+	/**å–å¾—è·ç¨±map	
+	 * @param item:A(è·ç¨±ä»£ç¢¼) B(äººäº‹è·ç¨±ä»£ç¢¼)
+	 * 		  vhid    : é†«é™¢åˆ¥		
 '   @return   Patitle : map
 	 * @throws SQLException 
 	 */
@@ -1642,7 +1760,7 @@ public class CommDAO {
 				for (Map<String,Object> data :result){
 					oneObj=new Patitle();
 					PropertyUtils.copyProperties(oneObj, data);
-					//A(Â¾ºÙ¥N½X) B(¤H¨ÆÂ¾ºÙ¥N½X)
+					//A(è·ç¨±ä»£ç¢¼) B(äººäº‹è·ç¨±ä»£ç¢¼)
 					oneKey="";
 					if (item.equals("A"))
 						oneKey=StringUtil.nullToString(oneObj.getPaytitlk());
@@ -1652,7 +1770,7 @@ public class CommDAO {
 						rtnMap.put(oneKey, oneObj);
 				}
 			}
-			log.info(me+"(size):" + result.size()+" ¦@ªá¶O¡G"+(System.currentTimeMillis()-starttime)+"²@¬í");
+			log.info(me+"(size):" + result.size()+" å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-starttime)+"æ¯«ç§’");
 		}
 		catch(Exception e){
 			log.info(me + " fail, " + e);
@@ -1664,9 +1782,9 @@ public class CommDAO {
 		
 		return rtnMap;
 	}
-	/**¨ú±o³æ¦ìmap	
-	 * @param item:A(³æ¦ì¥N½X) B(¤H¨Æ³æ¦ì¥N½X)
-	 * 		  vhid    : Âå°|§O		
+	/**å–å¾—å–®ä½map	
+	 * @param item:A(å–®ä½ä»£ç¢¼) B(äººäº‹å–®ä½ä»£ç¢¼)
+	 * 		  vhid    : é†«é™¢åˆ¥		
 '   @return   Padept : map
 	 * @throws SQLException 
 	 */
@@ -1690,7 +1808,7 @@ public class CommDAO {
 				for (Map<String,Object> data :result){
 					oneObj=new Padept();
 					PropertyUtils.copyProperties(oneObj, data);
-					//A(³æ¦ì¥N½X) B(¤H¨Æ³æ¦ì¥N½X)
+					//A(å–®ä½ä»£ç¢¼) B(äººäº‹å–®ä½ä»£ç¢¼)
 					oneKey="";
 					if (item.equals("A"))
 						oneKey=StringUtil.nullToString(oneObj.getPadepcod());
@@ -1700,7 +1818,7 @@ public class CommDAO {
 						rtnMap.put(oneKey, oneObj);
 				}
 			}
-			log.info(me+"(size):" + result.size()+" ¦@ªá¶O¡G"+(System.currentTimeMillis()-starttime)+"²@¬í");
+			log.info(me+"(size):" + result.size()+" å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-starttime)+"æ¯«ç§’");
 		}
 		catch(Exception e){
 			log.info(me + " fail, " + e);
@@ -1712,7 +1830,7 @@ public class CommDAO {
 		
 		return rtnMap;
 	}
-	//¨ú±oÁZ®ÄÂI¼Æmap	
+	//å–å¾—ç¸¾æ•ˆé»æ•¸map	
 	public HashMap getCsPfByAll(VGHDataAccess da,String hid) throws SQLException{
 		String me = getClass().getName() + ".getCsPfByAll()";
 		ArrayList<Object> params = new ArrayList<Object>();
@@ -1752,63 +1870,63 @@ public class CommDAO {
 		}
 		return rtnMap;
 	}
-	/**¶Ç¦^­pºâÁ`©Ò±o,À³µ|©Ò±o(Á`¦¬¤J-©Ğ¯²-¹êª«¥Nª÷-¥DºŞ¥[µ¹-¤£¥ğ°²¼úª÷-¥æ³q¶O-ºÖ§Q¤¬§Uª÷),²b©Ò±o,Á`¦©°£ÃB
-	 * '°Æµ{¦¡¦WºÙ¡G Sum_Pay_Deduct
-'¥Ø    ªº¡G ­pºâÁ`©Ò±o,À³µ|©Ò±o(Á`¦¬¤J-©Ğ¯²-¹êª«¥Nª÷-¥DºŞ¥[µ¹-¤£¥ğ°²¼úª÷-¥æ³q¶O-ºÖ§Q¤¬§Uª÷),²b©Ò±o,Á`¦©°£ÃB
-'           92.8.26ºÖ§Q¤¬§Uª÷VP400¤£¦C¤JÀ³µ|©Ò±o
-'           94.7.1¦ÛÃº°h¥ğª÷VD060 VD069À³µ|©Ò±o­n¦©°£
-'           94.7.1©Ğ¯² ¹êª«¥Nª÷¤£¯à¦C¤J,©Ğ¯²¥Í®Ä¤é¬°78.7.1 ¹êª«¥Nª÷¥Í®Ä¤é79.7.1
-'           94.8.29 ©Ğ¯²¥Í®Ä¤é¤Î¹êª«¥Nª÷¥Í®Ä¤é¬Ò¬°84.7.1 ¤§«e­n¦©°£ ¤§«á¤£¦©
-'           97.6.23 ¥»Á~--¨Æ¯fÁ~µ¥°±µoVD070À³µ|©Ò±o­n¦©°£?? ==>¨ú®ø102.1.3
-'           97.9.10 Á`©Ò±o,²b©Ò±o:¤£¦C©Ò±o­n¥[¤W,¦p:¯f¾ú»@¦©¤£±o¦C¤J©Ò±o (2008-8-19VP017¬İ¶E¹O®É»@¦© VP016¶W¥X°·«OÁ`ÃB) ==>¨ú®ø102.1.3
-'           101.2.6 VP016§ï¦¨°·«O¼úÀy»@¦©(±q99.10¶}©l¦³¥¿¶µ),
-'           103.4.22 2014.4¥Í®Ä VP200¥[¯Z¶O VP437¶WÃB¼úª÷--½×¤å¸É§U<==¤£¦C©Ò±o
-'           109.1.21 Åª¨úPA.PAYITM.PAYIFTAX='Y',¦]¦³·s¼W¬ì¥Ø,¥¼¦P¨B¥[¤J
-'           111.1.19 ¤½Â¾°h¼¾°òª÷·¹¦Û110¦~1¤ë1¤é§K¯Ç¤J©Ò±oµ|
-'           111.5.2 «´¬ù¥Dªv¤£¦©¹êª«¥Nª÷¤Î©Ğ¯²
-'           111.11.10 «ÌºaFD060 FD069¦ÛÃº°h¥ğª÷ À³µ|©Ò±o­n¦©°£
-'°Ñ¼Æ»¡©ú¡G
-'           vRank        :¶¥§O	
-'           vRnk2N       :Â¾µ¥
-'           vRank2       :Åv²z
-'           vDegre       :­ÄÂI              92.8.15 ©Ğ¯²¬z¶KT1 385¥H¤W=>600 T1 385¥H¤W=>500
-'           vGovDt       :ªì¥ô¤½Â¾¤é
-'           vSalDt       :µoÁ~¤é
-'return:	vpay   	     :Á`©Ò±o
-'           vtaxpay   	 :À³µ|©Ò±o
-'           vnetPay      :²b©Ò±o
-'			vduduct      :À³¤ä¥X
-'			vtax         :©Ò±oµ|
+	/**å‚³å›è¨ˆç®—ç¸½æ‰€å¾—,æ‡‰ç¨…æ‰€å¾—(ç¸½æ”¶å…¥-æˆ¿ç§Ÿ-å¯¦ç‰©ä»£é‡‘-ä¸»ç®¡åŠ çµ¦-ä¸ä¼‘å‡çé‡‘-äº¤é€šè²»-ç¦åˆ©äº’åŠ©é‡‘),æ·¨æ‰€å¾—,ç¸½æ‰£é™¤é¡
+	 * 'å‰¯ç¨‹å¼åç¨±ï¼š Sum_Pay_Deduct
+'ç›®    çš„ï¼š è¨ˆç®—ç¸½æ‰€å¾—,æ‡‰ç¨…æ‰€å¾—(ç¸½æ”¶å…¥-æˆ¿ç§Ÿ-å¯¦ç‰©ä»£é‡‘-ä¸»ç®¡åŠ çµ¦-ä¸ä¼‘å‡çé‡‘-äº¤é€šè²»-ç¦åˆ©äº’åŠ©é‡‘),æ·¨æ‰€å¾—,ç¸½æ‰£é™¤é¡
+'           92.8.26ç¦åˆ©äº’åŠ©é‡‘VP400ä¸åˆ—å…¥æ‡‰ç¨…æ‰€å¾—
+'           94.7.1è‡ªç¹³é€€ä¼‘é‡‘VD060 VD069æ‡‰ç¨…æ‰€å¾—è¦æ‰£é™¤
+'           94.7.1æˆ¿ç§Ÿ å¯¦ç‰©ä»£é‡‘ä¸èƒ½åˆ—å…¥,æˆ¿ç§Ÿç”Ÿæ•ˆæ—¥ç‚º78.7.1 å¯¦ç‰©ä»£é‡‘ç”Ÿæ•ˆæ—¥79.7.1
+'           94.8.29 æˆ¿ç§Ÿç”Ÿæ•ˆæ—¥åŠå¯¦ç‰©ä»£é‡‘ç”Ÿæ•ˆæ—¥çš†ç‚º84.7.1 ä¹‹å‰è¦æ‰£é™¤ ä¹‹å¾Œä¸æ‰£
+'           97.6.23 æœ¬è–ª--äº‹ç—…è–ªç­‰åœç™¼VD070æ‡‰ç¨…æ‰€å¾—è¦æ‰£é™¤?? ==>å–æ¶ˆ102.1.3
+'           97.9.10 ç¸½æ‰€å¾—,æ·¨æ‰€å¾—:ä¸åˆ—æ‰€å¾—è¦åŠ ä¸Š,å¦‚:ç—…æ­·ç½°æ‰£ä¸å¾—åˆ—å…¥æ‰€å¾— (2008-8-19VP017çœ‹è¨ºé€¾æ™‚ç½°æ‰£ VP016è¶…å‡ºå¥ä¿ç¸½é¡) ==>å–æ¶ˆ102.1.3
+'           101.2.6 VP016æ”¹æˆå¥ä¿çå‹µç½°æ‰£(å¾99.10é–‹å§‹æœ‰æ­£é …),
+'           103.4.22 2014.4ç”Ÿæ•ˆ VP200åŠ ç­è²» VP437è¶…é¡çé‡‘--è«–æ–‡è£œåŠ©<==ä¸åˆ—æ‰€å¾—
+'           109.1.21 è®€å–PA.PAYITM.PAYIFTAX='Y',å› æœ‰æ–°å¢ç§‘ç›®,æœªåŒæ­¥åŠ å…¥
+'           111.1.19 å…¬è·é€€æ’«åŸºé‡‘æº¯è‡ª110å¹´1æœˆ1æ—¥å…ç´å…¥æ‰€å¾—ç¨…
+'           111.5.2 å¥‘ç´„ä¸»æ²»ä¸æ‰£å¯¦ç‰©ä»£é‡‘åŠæˆ¿ç§Ÿ
+'           111.11.10 å±æ¦®FD060 FD069è‡ªç¹³é€€ä¼‘é‡‘ æ‡‰ç¨…æ‰€å¾—è¦æ‰£é™¤
+'åƒæ•¸èªªæ˜ï¼š
+'           vRank        :éšåˆ¥	
+'           vRnk2N       :è·ç­‰
+'           vRank2       :æ¬Šç†
+'           vDegre       :ä¿¸é»              92.8.15 æˆ¿ç§Ÿæ´¥è²¼T1 385ä»¥ä¸Š=>600 T1 385ä»¥ä¸Š=>500
+'           vGovDt       :åˆä»»å…¬è·æ—¥
+'           vSalDt       :ç™¼è–ªæ—¥
+'return:	vpay   	     :ç¸½æ‰€å¾—
+'           vtaxpay   	 :æ‡‰ç¨…æ‰€å¾—
+'           vnetPay      :æ·¨æ‰€å¾—
+'			vduduct      :æ‡‰æ”¯å‡º
+'			vtax         :æ‰€å¾—ç¨…
 '*******************************************************************/
 	public HashMap Sum_Pay_Deduct(ArrayList<Padatpay> datpayAry,String vRank,String vRANK2,String vRNK2N,int vDegre,String vGovDt,String vSalDt)throws Exception {
 		String me = getClass().getName() + ".Sum_Pay_Deduct()";
 		//log.info(me+"  vRank:" + vRank+" vRANK2:"+ vRANK2+" vRNK2N:"+ vRNK2N+" vDegre:"+ vDegre+" vGovDt:"+ vGovDt+" vSalDt:"+ vSalDt);
 		ArrayList<Object> params = new ArrayList<Object>();
 		HashMap rtnMap=new HashMap();	
-		int vrent_house =0;  //©Ğ¯²
-		int vthing_money =0; //¹êª«¥Nª÷
-		int vpay =0;        //Á`¦¬¤J
-		int vduduct =0;     //Á`¤ä¥X
-		int vnetpay=0;		//²b©Ò±o
-		int vtaxPay_Y =0;   //À³µ|©Ò±o,¦CY³¡¤À
-		int vtaxpay=0;		//À³µ|©Ò±o,¦©°£¹êª«¥Nª÷¤Î©Ğ¯²
-		int vPension = 0;	//°h¼¾°òª÷
+		int vrent_house =0;  //æˆ¿ç§Ÿ
+		int vthing_money =0; //å¯¦ç‰©ä»£é‡‘
+		int vpay =0;        //ç¸½æ”¶å…¥
+		int vduduct =0;     //ç¸½æ”¯å‡º
+		int vnetpay=0;		//æ·¨æ‰€å¾—
+		int vtaxPay_Y =0;   //æ‡‰ç¨…æ‰€å¾—,åˆ—Yéƒ¨åˆ†
+		int vtaxpay=0;		//æ‡‰ç¨…æ‰€å¾—,æ‰£é™¤å¯¦ç‰©ä»£é‡‘åŠæˆ¿ç§Ÿ
+		int vPension = 0;	//é€€æ’«åŸºé‡‘
 				
-		int vchief =0;      //¥DºŞ¥[µ¹
-		int vnon_rest =0;   //¤£¥ğ°²¼úª÷
-		int vtraffic =0;    //¥æ³q¶O
-		int vWelfare =0;    //ºÖ§Q¤¬§Uª÷
-		int vPapers =0;         //VP437¶WÃB¼úª÷_½×¤å¸É§U 2014.4.1¥Í®Ä 2014.4.22§ï
-		int vOvertime =0;       //VP200¥[¯Z¶O2014.4.1¥Í®Ä 2014.4.22§ï
-		int vDuty =0;           //VP455Á`­È¤é­È¯Z¶O
-		int vSelfRetire =0; 	//VD06|FD06³Ò¤u¦ÛÃº°h¥ğª÷
-		int vtax=0;				//FD050 VD030©Ò±oµ|
-		String vRank_P ="";     //Â¾µ¥
+		int vchief =0;      //ä¸»ç®¡åŠ çµ¦
+		int vnon_rest =0;   //ä¸ä¼‘å‡çé‡‘
+		int vtraffic =0;    //äº¤é€šè²»
+		int vWelfare =0;    //ç¦åˆ©äº’åŠ©é‡‘
+		int vPapers =0;         //VP437è¶…é¡çé‡‘_è«–æ–‡è£œåŠ© 2014.4.1ç”Ÿæ•ˆ 2014.4.22æ”¹
+		int vOvertime =0;       //VP200åŠ ç­è²»2014.4.1ç”Ÿæ•ˆ 2014.4.22æ”¹
+		int vDuty =0;           //VP455ç¸½å€¼æ—¥å€¼ç­è²»
+		int vSelfRetire =0; 	//VD06|FD06å‹å·¥è‡ªç¹³é€€ä¼‘é‡‘
+		int vtax=0;				//FD050 VD030æ‰€å¾—ç¨…
+		String vRank_P ="";     //è·ç­‰
 		
-		Boolean vflag =false;    //¦³¥»Á~¤~­pºâÀ³µ|©Ò±o
-		String vHourseDt ="1995-7-1";   //©Ğ¯²¥Í®Ä¤é 1989-7-1
-		String vThingDt ="1995-7-1";    //¹êª«¥Nª÷¥Í®Ä¤é 1990-7-1
-		String vSalBgdt ="2005-7-1";      //¶}©l¤£¦©©Ğ¯²¬z¶K¤Î¹êª«¥Nª÷¤é´Á
+		Boolean vflag =false;    //æœ‰æœ¬è–ªæ‰è¨ˆç®—æ‡‰ç¨…æ‰€å¾—
+		String vHourseDt ="1995-7-1";   //æˆ¿ç§Ÿç”Ÿæ•ˆæ—¥ 1989-7-1
+		String vThingDt ="1995-7-1";    //å¯¦ç‰©ä»£é‡‘ç”Ÿæ•ˆæ—¥ 1990-7-1
+		String vSalBgdt ="2005-7-1";      //é–‹å§‹ä¸æ‰£æˆ¿ç§Ÿæ´¥è²¼åŠå¯¦ç‰©ä»£é‡‘æ—¥æœŸ
 		
 		Padatpay datpayObj=null;
 		if (datpayAry != null && !datpayAry.isEmpty()) {
@@ -1818,7 +1936,7 @@ public class CommDAO {
 				if ("FP00".equals(datpayObj.getPaycode().substring(0, 4))){
 					vflag = true;
 				}
-				//Á`¦¬¤J,À³µ|¦¬¤J,Á`¤ä¥X
+				//ç¸½æ”¶å…¥,æ‡‰ç¨…æ”¶å…¥,ç¸½æ”¯å‡º
 				if ("P".equals(datpayObj.getPaycode().substring(1, 2))){
 					vpay +=	datpayObj.getPayamt();
 					if ("Y".equals(datpayObj.getPayiftax())){
@@ -1827,52 +1945,52 @@ public class CommDAO {
 				}else if ("D".equals(datpayObj.getPaycode().substring(1, 2))){
 					vduduct+=datpayObj.getPayamt();
 				}
-				//¥DºŞ¥[µ¹ ¦~²×¼úª÷--¥DºŞ¯S¤ä  ¦ÒÁZ¼úª÷--¥DºŞ¯S¤ä
+				//ä¸»ç®¡åŠ çµ¦ å¹´çµ‚çé‡‘--ä¸»ç®¡ç‰¹æ”¯  è€ƒç¸¾çé‡‘--ä¸»ç®¡ç‰¹æ”¯
 		        if ("FP03".equals(datpayObj.getPaycode().substring(0, 4)) || datpayObj.getPaycode().substring(0, 4).matches("VP124|VP134")){
 		        	vchief += datpayObj.getPayamt();
 		        }
-		        //¤½Â¾°h¼¾°òª÷·¹¦Û110¦~1¤ë1¤é§K¯Ç¤J©Ò±oµ| 2023.7.1 FD07°h¼¾Â÷Â¾ª÷¦ÛÄ@´£¼·,§K¯Ç¤J©Ò±oµ|
+		        //å…¬è·é€€æ’«åŸºé‡‘æº¯è‡ª110å¹´1æœˆ1æ—¥å…ç´å…¥æ‰€å¾—ç¨… 2023.7.1 FD07é€€æ’«é›¢è·é‡‘è‡ªé¡˜ææ’¥,å…ç´å…¥æ‰€å¾—ç¨…
 		        else if (datpayObj.getPaycode().substring(0, 4).matches("FD04|FD07") ){
 		        	if ( vRank.matches("1|2|3|8|9") && !DateUtil.compareDate(vSalDt,Globals.gPensionFund) ) {
 		        		vPension += datpayObj.getPayamt();
 		        	}	
 		        }
 		        
-		        //¤£¥ğ°²¼úª÷
+		        //ä¸ä¼‘å‡çé‡‘
 		        else if("VP11".equals(datpayObj.getPaycode().substring(0, 4))){
 		        	vnon_rest += datpayObj.getPayamt();
 		        }
-		        //¥æ³q¶O,¤v¼o°£    
+		        //äº¤é€šè²»,å·±å»¢é™¤    
 	//	        else if(datpayObj.getPaycode().substring(0, 4).matches("FP06|VP19")){
 	//	        	vtraffic += datpayObj.getPayamt();
 	//	        }
-		        //ºÖ§Q¤¬§Uª÷   
+		        //ç¦åˆ©äº’åŠ©é‡‘   
 		        else if("VP400".equals(datpayObj.getPaycode())){
 		        	vWelfare += datpayObj.getPayamt();
 		        }
-		        //¦ÛÃº°h¥ğª÷  ,2022.11.10 «ÌºaFD06
+		        //è‡ªç¹³é€€ä¼‘é‡‘  ,2022.11.10 å±æ¦®FD06
 		        else if(datpayObj.getPaycode().substring(0, 4).matches("VD06|FD06")){
 		        	vSelfRetire += datpayObj.getPayamt();
 		        }
-		        //¶WÃB¼úª÷_½×¤å¸É§U   
+		        //è¶…é¡çé‡‘_è«–æ–‡è£œåŠ©   
 		        else if("VP437".equals(datpayObj.getPaycode())){
 		        	vPapers += datpayObj.getPayamt();
 		        }
-		        //¥[¯Z¶O
+		        //åŠ ç­è²»
 		        else if("VP200".equals(datpayObj.getPaycode())){
 		        	vOvertime += datpayObj.getPayamt();
 		        }
-		        //Á`­È¤é­È¯Z¶O
+		        //ç¸½å€¼æ—¥å€¼ç­è²»
 		        else if("VP455".equals(datpayObj.getPaycode())){
 		        	vDuty += datpayObj.getPayamt();
 		        }
-		        //©Ò±oµ|
+		        //æ‰€å¾—ç¨…
 		        else if(datpayObj.getPaycode().substring(0, 4).matches("FD05|VD03")){
 		        	vtax += datpayObj.getPayamt();
 		        }
 			}
 			
-		    //©Ğ¯²,¹êª«¥Nª÷
+		    //æˆ¿ç§Ÿ,å¯¦ç‰©ä»£é‡‘
 			if (("".equals(StringUtil.nullToString(vRANK2))) && ("".equals(StringUtil.nullToString(vRNK2N)))){
 				vRank_P ="";
 			}else{
@@ -1882,12 +2000,12 @@ public class CommDAO {
 					vRank_P = StringUtil.nullToString(vRNK2N);
 			}
 		    
-		    if (vflag){	//¦³¥»Á~¤~¦³¹êª«¥Nª÷ ©Ğ¯²
-			    if ( DateUtil.compareDate(vSalDt, vSalBgdt) ){	//vSaldt < vSalBgdt '2005-7-20§ï 2005-7-1¶}©l¤£­pºâ©Ğ¯²¤Î¹êª«¥Nª÷
+		    if (vflag){	//æœ‰æœ¬è–ªæ‰æœ‰å¯¦ç‰©ä»£é‡‘ æˆ¿ç§Ÿ
+			    if ( DateUtil.compareDate(vSalDt, vSalBgdt) ){	//vSaldt < vSalBgdt '2005-7-20æ”¹ 2005-7-1é–‹å§‹ä¸è¨ˆç®—æˆ¿ç§ŸåŠå¯¦ç‰©ä»£é‡‘
 			    	if (vRank.matches("5|6")){
 			    		vrent_house = 400;
 			    	    vthing_money = 930;
-			    	}//2022.5.2«´¬ù¥Dªv¨S¦³©Ğ¯²¤Î¹êª«¥Nª÷
+			    	}//2022.5.2å¥‘ç´„ä¸»æ²»æ²’æœ‰æˆ¿ç§ŸåŠå¯¦ç‰©ä»£é‡‘
 			    	else if (!vRank.matches("F")){
 			    		if (vRank_P.matches("01|02|03") || (vRank_P.equals("T1") && vDegre<385 ) || "4".equals(vRank)){
 				    		vrent_house = 500;
@@ -1901,7 +2019,7 @@ public class CommDAO {
 				    	}
 			    	} 
 			    }	
-			    else	//2005-8-29§ï ¥H84.7.1¬°°ò·Ç­pºâ ¤§«e­n¦© ¤§«á¤£¦© (ªì¥ô¤½Â¾¤é<°ò·Ç¤é,¦³©Ğ¯²¤Î¹êª«¥Nª÷)
+			    else	//2005-8-29æ”¹ ä»¥84.7.1ç‚ºåŸºæº–è¨ˆç®— ä¹‹å‰è¦æ‰£ ä¹‹å¾Œä¸æ‰£ (åˆä»»å…¬è·æ—¥<åŸºæº–æ—¥,æœ‰æˆ¿ç§ŸåŠå¯¦ç‰©ä»£é‡‘)
 			    {
 			    	if (vRank.matches("5|6")){
 			    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
@@ -1909,7 +2027,7 @@ public class CommDAO {
 			    		if ( DateUtil.compareDate(vGovDt, vThingDt) )
 			    			vthing_money = 930;
 			    	}
-			    	//2022.5.2«´¬ù¥Dªv¨S¦³©Ğ¯²¤Î¹êª«¥Nª÷
+			    	//2022.5.2å¥‘ç´„ä¸»æ²»æ²’æœ‰æˆ¿ç§ŸåŠå¯¦ç‰©ä»£é‡‘
 			    	else if (!vRank.matches("F")){
 			    		if (vRank_P.matches("01|02|03") || (vRank_P.equals("T1") && vDegre<385 ) || "4".equals(vRank)){
 				    		if ( DateUtil.compareDate(vGovDt, vHourseDt) )
@@ -1930,10 +2048,10 @@ public class CommDAO {
 			    	} 
 			    }
 		    }
-		    //²b©Ò±o=Á`©Ò±o-Á`¤ä¥X
+		    //æ·¨æ‰€å¾—=ç¸½æ‰€å¾—-ç¸½æ”¯å‡º
 		    vnetpay = vpay - vduduct;
 		    if (vflag){
-				//À³µ|©Ò±o=datpay.getPayiftax()="Y"-¹êª«¥Nª÷-©Ğ¯²-¦ÛÃº°h¥ğª÷-¤½Â¾°h¼¾°òª÷
+				//æ‡‰ç¨…æ‰€å¾—=datpay.getPayiftax()="Y"-å¯¦ç‰©ä»£é‡‘-æˆ¿ç§Ÿ-è‡ªç¹³é€€ä¼‘é‡‘-å…¬è·é€€æ’«åŸºé‡‘
 			    vtaxpay = vtaxPay_Y - vrent_house - vthing_money - vSelfRetire -vPension;
 			    if (vtaxpay<0) vtaxpay=0;
 		    }else{
@@ -1944,14 +2062,14 @@ public class CommDAO {
 	    rtnMap.put("pay", vpay);
 		rtnMap.put("duduct", vduduct); 
 		rtnMap.put("netpay", vnetpay);
-		rtnMap.put("taxpay", vtaxpay); //À³µ|©Ò±o,¦©°£¹êª«¥Nª÷¤Î©Ğ¯²
+		rtnMap.put("taxpay", vtaxpay); //æ‡‰ç¨…æ‰€å¾—,æ‰£é™¤å¯¦ç‰©ä»£é‡‘åŠæˆ¿ç§Ÿ
 		rtnMap.put("thing_money", vthing_money); 
 		rtnMap.put("rent_house", vrent_house);
 		rtnMap.put("retire", vPension+vSelfRetire);
 		return rtnMap;
 	}
 	
-	//¨­¤ÀÃÒ¦r¸¹»P©~¯dÃÒ(²Î¤@ÃÒ)½s¸¹ÀË®Öµ{¦¡½X http://experimentrecord.blogspot.tw
+	//èº«åˆ†è­‰å­—è™Ÿèˆ‡å±…ç•™è­‰(çµ±ä¸€è­‰)ç·¨è™Ÿæª¢æ ¸ç¨‹å¼ç¢¼ http://experimentrecord.blogspot.tw
 	public static boolean isValidIDorRCNumber(String str) {
 
 	    if (str == null || "".equals(str)) {
@@ -1960,60 +2078,60 @@ public class CommDAO {
 
 	    final char[] pidCharArray = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
-	    // ­ì¨­¤ÀÃÒ­^¤å¦rÀ³Âà´«¬°10~33¡A³o¸Ìª½±µ§@­Ó¦ì¼Æ*9+10
+	    // åŸèº«åˆ†è­‰è‹±æ–‡å­—æ‡‰è½‰æ›ç‚º10~33ï¼Œé€™è£¡ç›´æ¥ä½œå€‹ä½æ•¸*9+10
 	    final int[] pidIDInt = { 1, 10, 19, 28, 37, 46, 55, 64, 39, 73, 82, 2, 11, 20, 48, 29, 38, 47, 56, 65, 74, 83, 21, 3, 12, 30 };
 
-	    // ­ì©~¯dÃÒ²Ä¤@½X­^¤å¦rÀ³Âà´«¬°10~33¡A¤Q¦ì¼Æ*1¡A­Ó¦ì¼Æ*9¡A³o¸Ìª½±µ§@[(¤Q¦ì¼Æ*1) mod 10] + [(­Ó¦ì¼Æ*9) mod 10]
+	    // åŸå±…ç•™è­‰ç¬¬ä¸€ç¢¼è‹±æ–‡å­—æ‡‰è½‰æ›ç‚º10~33ï¼Œåä½æ•¸*1ï¼Œå€‹ä½æ•¸*9ï¼Œé€™è£¡ç›´æ¥ä½œ[(åä½æ•¸*1) mod 10] + [(å€‹ä½æ•¸*9) mod 10]
 	    final int[] pidResidentFirstInt = { 1, 10, 9, 8, 7, 6, 5, 4, 9, 3, 2, 2, 11, 10, 8, 9, 8, 7, 6, 5, 4, 3, 11, 3, 12, 10 };
 
-	    // ­ì©~¯dÃÒ²Ä¤G½X­^¤å¦rÀ³Âà´«¬°10~33¡A¨Ã¶È¨ú­Ó¦ì¼Æ*8¡A³o¸Ìª½±µ¨ú[(­Ó¦ì¼Æ*8) mod 10]
+	    // åŸå±…ç•™è­‰ç¬¬äºŒç¢¼è‹±æ–‡å­—æ‡‰è½‰æ›ç‚º10~33ï¼Œä¸¦åƒ…å–å€‹ä½æ•¸*8ï¼Œé€™è£¡ç›´æ¥å–[(å€‹ä½æ•¸*8) mod 10]
 	    final int[] pidResidentSecondInt = {0, 8, 6, 4, 2, 0, 8, 6, 2, 4, 2, 0, 8, 6, 0, 4, 2, 0, 8, 6, 4, 2, 6, 0, 8, 4};
 
-	    str = str.toUpperCase();// Âà´«¤j¼g
-	    final char[] strArr = str.toCharArray();// ¦r¦êÂà¦¨char°}¦C
+	    str = str.toUpperCase();// è½‰æ›å¤§å¯«
+	    final char[] strArr = str.toCharArray();// å­—ä¸²è½‰æˆcharé™£åˆ—
 	    int verifyNum = 0;
 
-	    /* ÀË¬d¨­¤ÀÃÒ¦r¸¹ */
+	    /* æª¢æŸ¥èº«åˆ†è­‰å­—è™Ÿ */
 	    if (str.matches("[A-Z]{1}[1-2]{1}[0-9]{8}")) {
-	        // ²Ä¤@½X
+	        // ç¬¬ä¸€ç¢¼
 	        verifyNum = verifyNum + pidIDInt[Arrays.binarySearch(pidCharArray, strArr[0])];
-	        // ²Ä¤G~¤E½X
+	        // ç¬¬äºŒ~ä¹ç¢¼
 	        for (int i = 1, j = 8; i < 9; i++, j--) {
 	            verifyNum += Character.digit(strArr[i], 10) * j;
 	        }
-	        // ÀË¬d½X
+	        // æª¢æŸ¥ç¢¼
 	        verifyNum = (10 - (verifyNum % 10)) % 10;
 
 	        return verifyNum == Character.digit(strArr[9], 10);
 	    }
 
-	    /* ÀË¬d²Î¤@ÃÒ(©~¯dÃÒ)½s¸¹ (2031/1/1°±¥Î) 
+	    /* æª¢æŸ¥çµ±ä¸€è­‰(å±…ç•™è­‰)ç·¨è™Ÿ (2031/1/1åœç”¨) 
 	    verifyNum = 0;
 	    if (str.matches("[A-Z]{1}[A-D]{1}[0-9]{8}")) {
-	        // ²Ä¤@½X
+	        // ç¬¬ä¸€ç¢¼
 	        verifyNum += pidResidentFirstInt[Arrays.binarySearch(pidCharArray, strArr[0])];
-	        // ²Ä¤G½X
+	        // ç¬¬äºŒç¢¼
 	        verifyNum += pidResidentSecondInt[Arrays.binarySearch(pidCharArray, strArr[1])];
-	        // ²Ä¤T~¤K½X
+	        // ç¬¬ä¸‰~å…«ç¢¼
 	        for (int i = 2, j = 7; i < 9; i++, j--) {
 	            verifyNum += Character.digit(strArr[i], 10) * j;
 	        }
-	        // ÀË¬d½X
+	        // æª¢æŸ¥ç¢¼
 	        verifyNum = (10 - (verifyNum % 10)) % 10;
 
 	        return verifyNum == Character.digit(strArr[9], 10);
 	    }
 
-	     ÀË¬d²Î¤@ÃÒ(©~¯dÃÒ)½s¸¹ (2021/1/2¹ê¬I) 
+	     æª¢æŸ¥çµ±ä¸€è­‰(å±…ç•™è­‰)ç·¨è™Ÿ (2021/1/2å¯¦æ–½) 
 	    verifyNum = 0;
 	    if (str.matches("[A-Z]{1}[89]{1}[0-9]{8}")) {
-	        // ²Ä¤@½X
+	        // ç¬¬ä¸€ç¢¼
 	        verifyNum += pidResidentFirstInt[Arrays.binarySearch(pidCharArray, strArr[0])];
-	        // ²Ä¤G~¤K½X
+	        // ç¬¬äºŒ~å…«ç¢¼
 	        for (int i = 1, j = 8; i < 9; i++, j--) {
 	            verifyNum += Character.digit(strArr[i], 10) * j;
 	        }
-	        // ÀË¬d½X
+	        // æª¢æŸ¥ç¢¼
 	        verifyNum = (10 - (verifyNum % 10)) % 10;
 
 	        return verifyNum == Character.digit(strArr[9], 10);
@@ -2021,170 +2139,170 @@ public class CommDAO {
 	    
 	    return false;
 	}
-	/**¶Ç¦^ Á~¬zªí/¦©´Úªí/Á~¬zªí(¸Éµo¦©) ¹ïÀ³
-	 * @param selEn ªí¥U Prt_M_1Á~¬zªí Prt_M_2¦©´Úªí Prt_M_3Á~¬zªí(¸Éµo¦©) Bank_T»È¦æ´CÅé¶Ç¿é
-	 * @param itm ¶µ¥Ø
-	 * @return ³øªí¤¤¤å¦WºÙ
-	 * Ex: getPrtNmBysal("Prt_M_1",1,"1A0") return Å@²z_®v¯Å 
+	/**å‚³å› è–ªæ´¥è¡¨/æ‰£æ¬¾è¡¨/è–ªæ´¥è¡¨(è£œç™¼æ‰£) å°æ‡‰
+	 * @param selEn è¡¨å†Š Prt_M_1è–ªæ´¥è¡¨ Prt_M_2æ‰£æ¬¾è¡¨ Prt_M_3è–ªæ´¥è¡¨(è£œç™¼æ‰£) Bank_TéŠ€è¡Œåª’é«”å‚³è¼¸
+	 * @param itm é …ç›®
+	 * @return å ±è¡¨ä¸­æ–‡åç¨±
+	 * Ex: getPrtNmBysal("Prt_M_1",1,"1A0") return è­·ç†_å¸«ç´š 
 	 */
 	public static String getPrtNmBysal(String selEn,int itm,String hid){		
 		String itmCd = " ";
 		if (hid.equals("1A0")){
-			//Á~¬zªí/¦©´Úªí
+			//è–ªæ´¥è¡¨/æ‰£æ¬¾è¡¨
 			if (selEn.matches("Prt_M_1|Prt_M_2")){
-				if (itm==0) return "Á`­p";
-				if (itm==1) return "Å@²z_®v¯Å";
-				if (itm==2) return "Å@²z_«´¬ù";
-				if (itm==3) return "Â¾­û_¤½Â¾";
-				if (itm==4) return "Âå¨Æ_«´¬ù";
-				if (itm==5) return "Âå¨Æ_®v¯Å";
-				if (itm==6) return "Âå®v_¶i­×,¹ê²ß";
-				if (itm==7) return "Âå®v_¤½Â¾";
-				if (itm==8) return "Âå®v_®v¯Å";
-				if (itm==9) return "Âå®v_¸u¥Î";
-				if (itm==10) return "Âå®v_«´¬ù";
-				if (itm==11) return "¤£¤À¬ì";
-				if (itm==12) return "¤jªZ";
-				if (itm==13) return "­İÂ¾";
-				if (itm==14) return "§Ş¤u¤Í";
-				if (itm==15) return "­pµe";
-				if (itm==16) return "¾n½ÃÄµ";
-				if (itm==17) return "¥~Äy·ÓªA­û";
+				if (itm==0) return "ç¸½è¨ˆ";
+				if (itm==1) return "è­·ç†_å¸«ç´š";
+				if (itm==2) return "è­·ç†_å¥‘ç´„";
+				if (itm==3) return "è·å“¡_å…¬è·";
+				if (itm==4) return "é†«äº‹_å¥‘ç´„";
+				if (itm==5) return "é†«äº‹_å¸«ç´š";
+				if (itm==6) return "é†«å¸«_é€²ä¿®,å¯¦ç¿’";
+				if (itm==7) return "é†«å¸«_å…¬è·";
+				if (itm==8) return "é†«å¸«_å¸«ç´š";
+				if (itm==9) return "é†«å¸«_è˜ç”¨";
+				if (itm==10) return "é†«å¸«_å¥‘ç´„";
+				if (itm==11) return "ä¸åˆ†ç§‘";
+				if (itm==12) return "å¤§æ­¦";
+				if (itm==13) return "å…¼è·";
+				if (itm==14) return "æŠ€å·¥å‹";
+				if (itm==15) return "è¨ˆç•«";
+				if (itm==16) return "é§è¡›è­¦";
+				if (itm==17) return "å¤–ç±ç…§æœå“¡";
 			}	
-			//Á~¬zªí(¸Éµo¦©) 
+			//è–ªæ´¥è¡¨(è£œç™¼æ‰£) 
 			else if (selEn.matches("Prt_M_3")){
-				if (itm==0) return "Á`­p";
-				if (itm==1) return "©ú²Ó";
+				if (itm==0) return "ç¸½è¨ˆ";
+				if (itm==1) return "æ˜ç´°";
 			}
-			//Prt_M_6»È¦æÂà±b©ú²Óªí Bank_T»È¦æÂà±b©ú²Óªí
+			//Prt_M_6éŠ€è¡Œè½‰å¸³æ˜ç´°è¡¨ Bank_TéŠ€è¡Œè½‰å¸³æ˜ç´°è¡¨
 			else if (selEn.matches("Prt_M_6|Bank_T")){
-				if (itm==0) return "Á~¬z";
-				if (itm==1) return "¤½Àx";
-				if (itm==2) return "°±Á~";
+				if (itm==0) return "è–ªæ´¥";
+				if (itm==1) return "å…¬å„²";
+				if (itm==2) return "åœè–ª";
 			}
 			
 		}
 		else if (hid.equals("2A0")){
-			//Á~¬zªí/¦©´Úªí
+			//è–ªæ´¥è¡¨/æ‰£æ¬¾è¡¨
 			if (selEn.matches("Prt_M_1|Prt_M_2")){
-				if (itm==0) return "Á`­p";
-				if (itm==1) return "Å@²z_®v¯Å";
-				if (itm==2) return "Å@²z_¬ù¥Î";
-				if (itm==3) return "Â¾­û_¤½Â¾";
-				if (itm==4) return "Âå¨Æ_¬ù¥Î";
-				if (itm==5) return "Âå¨Æ_®v¯Å";
-				if (itm==6) return "Âå®v_®v¯Å+¸u¥Î";
-				if (itm==7) return "Âå®v_¬ù¥Î";
-				if (itm==8) return "§Ş¤u¤Í";
+				if (itm==0) return "ç¸½è¨ˆ";
+				if (itm==1) return "è­·ç†_å¸«ç´š";
+				if (itm==2) return "è­·ç†_ç´„ç”¨";
+				if (itm==3) return "è·å“¡_å…¬è·";
+				if (itm==4) return "é†«äº‹_ç´„ç”¨";
+				if (itm==5) return "é†«äº‹_å¸«ç´š";
+				if (itm==6) return "é†«å¸«_å¸«ç´š+è˜ç”¨";
+				if (itm==7) return "é†«å¸«_ç´„ç”¨";
+				if (itm==8) return "æŠ€å·¥å‹";
 			}	
-			//Á~¬zªí(¸Éµo¦©)
+			//è–ªæ´¥è¡¨(è£œç™¼æ‰£)
 			else if (selEn.matches("Prt_M_3")){
-				if (itm==0) return "Á`­p";
-				if (itm==1) return "©ú²Ó";
+				if (itm==0) return "ç¸½è¨ˆ";
+				if (itm==1) return "æ˜ç´°";
 			}
-			//Prt_M_6»È¦æÂà±b©ú²Óªí Bank_T»È¦æÂà±b©ú²Óªí
+			//Prt_M_6éŠ€è¡Œè½‰å¸³æ˜ç´°è¡¨ Bank_TéŠ€è¡Œè½‰å¸³æ˜ç´°è¡¨
 			else if (selEn.matches("Prt_M_6|Bank_T")){
-				if (itm==0) return "Á~¬z";
-				if (itm==1) return "¤½Àx";
+				if (itm==0) return "è–ªæ´¥";
+				if (itm==1) return "å…¬å„²";
 			}
 		}
 		else if (hid.equals("3A0")){
-			//Á~¬zªí/¦©´Úªí
+			//è–ªæ´¥è¡¨/æ‰£æ¬¾è¡¨
 			if (selEn.matches("Prt_M_1|Prt_M_2")){
-				if (itm==0) return "Á`­p";
-				if (itm==1) return "¤½Â¾";
-				if (itm==2) return "¤u¯Å";
-				if (itm==3) return "«´¬ù";
+				if (itm==0) return "ç¸½è¨ˆ";
+				if (itm==1) return "å…¬è·";
+				if (itm==2) return "å·¥ç´š";
+				if (itm==3) return "å¥‘ç´„";
 			}
-			//Á~¬zªí(¸Éµo¦©)
+			//è–ªæ´¥è¡¨(è£œç™¼æ‰£)
 			else if (selEn.matches("Prt_M_3")){
-				if (itm==0) return "Á`­p";
-				if (itm==1) return "©ú²Ó";
+				if (itm==0) return "ç¸½è¨ˆ";
+				if (itm==1) return "æ˜ç´°";
 			}
-			//Prt_M_6»È¦æÂà±b©ú²Óªí Bank_T»È¦æÂà±b©ú²Óªí
+			//Prt_M_6éŠ€è¡Œè½‰å¸³æ˜ç´°è¡¨ Bank_TéŠ€è¡Œè½‰å¸³æ˜ç´°è¡¨
 			else if (selEn.matches("Prt_M_6|Bank_T")){
-				if (itm==0) return "Á~¬z";
-				if (itm==1) return "Àu´f¦s´Ú";
+				if (itm==0) return "è–ªæ´¥";
+				if (itm==1) return "å„ªæƒ å­˜æ¬¾";
 			}
 		}
 		return itmCd;
 	}
-	/**¶Ç¦^ 9A 9B °õ¦æ·~°ÈªÌ·~§O¥N¸¹¹ï·Óªí
-	 * @param itm Âà±b¶µ¥Ø
-	 * @return °õ¦æ·~°ÈªÌ·~§O¥N¸¹
+	/**å‚³å› 9A 9B åŸ·è¡Œæ¥­å‹™è€…æ¥­åˆ¥ä»£è™Ÿå°ç…§è¡¨
+	 * @param itm è½‰å¸³é …ç›®
+	 * @return åŸ·è¡Œæ¥­å‹™è€…æ¥­åˆ¥ä»£è™Ÿ
 	 * Ex: getCatgCd(16) return 10 
 	 */
 	public static String getCatgCd(int itm){		
 		String itmCd = " ";
-		if (itm==16) return "10";	//«ß®v
-		if (itm==17) return "20";	//§Ş®v
-		if (itm==18) return "21";	//«Ø¿v®v
-		if (itm==19) return "98";	//½Z¶O ºtÁ¿¶O
-		if (itm==28) return "93";	//±M§Q¥N²z¤H 2011.1.14
-		if (itm==29) return "70";	//ªíºt¤H 2011.1.17
-		if (itm==34) return "56";	//¤úÅé§Ş³N®v 2013.1.31
-		if (itm==38) return "76";	//¤@¯ë¸g¬ö¤H 2013.7.24
-		if (itm==50) return "42";	//Âå¨ÆÀËÅç®v 2015.1.20
-		if (itm==49) return "42";	//Âå¨ÆÀËÅç®v 2025.10.3
-		if (itm==51) return "13";	//¦a¬F¤h 2017.1.11
-		if (itm==53) return "17";	//¤£°Ê²£¦ô»ù®v 2018.1.22
-		if (itm==54) return "50";	//¤¤Âå®v 2019.1.22
-		if (itm==55) return "30";	//¤º¬ìÂå®v 2020.1.20
-		if (itm==56) return "36";	//¤ú¬ìÂå®v 2020.1.20
-		if (itm==61) return "91";	//¤ú¬ìÂå®v 2020.1.20
-		if (itm==62) return "18";	//¯²¸î 2024.1.4
-		if (itm==63) return "46";	//¤ä´©Âå®v--Âå®v¸g®Ö­ã¦Ü¸Ó¥LÂåÀø¾÷ºcªA°È¦ı»P¸Ó¥LÂåÀø¾÷ºc¤£¨ã¹µ¶ÄÃö«YªÌ 2024.1.4
-		if (itm==71) return "61";	//®Ñµe®a¡Bª©µe®a 2024.1.27
-		if (itm==72) return "16";	//¥Á¶¡¤½ÃÒ¤H 2024.1.27
+		if (itm==16) return "10";	//å¾‹å¸«
+		if (itm==17) return "20";	//æŠ€å¸«
+		if (itm==18) return "21";	//å»ºç¯‰å¸«
+		if (itm==19) return "98";	//ç¨¿è²» æ¼”è¬›è²»
+		if (itm==28) return "93";	//å°ˆåˆ©ä»£ç†äºº 2011.1.14
+		if (itm==29) return "70";	//è¡¨æ¼”äºº 2011.1.17
+		if (itm==34) return "56";	//ç‰™é«”æŠ€è¡“å¸« 2013.1.31
+		if (itm==38) return "76";	//ä¸€èˆ¬ç¶“ç´€äºº 2013.7.24
+		if (itm==50) return "42";	//é†«äº‹æª¢é©—å¸« 2015.1.20
+		if (itm==49) return "42";	//é†«äº‹æª¢é©—å¸« 2025.10.3
+		if (itm==51) return "13";	//åœ°æ”¿å£« 2017.1.11
+		if (itm==53) return "17";	//ä¸å‹•ç”¢ä¼°åƒ¹å¸« 2018.1.22
+		if (itm==54) return "50";	//ä¸­é†«å¸« 2019.1.22
+		if (itm==55) return "30";	//å…§ç§‘é†«å¸« 2020.1.20
+		if (itm==56) return "36";	//ç‰™ç§‘é†«å¸« 2020.1.20
+		if (itm==61) return "91";	//ç‰™ç§‘é†«å¸« 2020.1.20
+		if (itm==62) return "18";	//ç§Ÿè³ƒ 2024.1.4
+		if (itm==63) return "46";	//æ”¯æ´é†«å¸«--é†«å¸«ç¶“æ ¸å‡†è‡³è©²ä»–é†«ç™‚æ©Ÿæ§‹æœå‹™ä½†èˆ‡è©²ä»–é†«ç™‚æ©Ÿæ§‹ä¸å…·åƒ±å‚­é—œä¿‚è€… 2024.1.4
+		if (itm==71) return "61";	//æ›¸ç•«å®¶ã€ç‰ˆç•«å®¶ 2024.1.27
+		if (itm==72) return "16";	//æ°‘é–“å…¬è­‰äºº 2024.1.27
 		return itmCd;
 	}
-	/**¶Ç¦^ ¸É¥R«O¶O«OÀI§O
-	 * @param itm ¥N½X
-	 * @return «OÀI¤¤¤å¦WºÙ
-	 * Ex: getInsuident(1) return ¤½«O 
+	/**å‚³å› è£œå……ä¿è²»ä¿éšªåˆ¥
+	 * @param itm ä»£ç¢¼
+	 * @return ä¿éšªä¸­æ–‡åç¨±
+	 * Ex: getInsuident(1) return å…¬ä¿ 
 	 */
 	public static String getInsuident(int itm){		
 		String itmCd = " ";
-		if (itm==0) return "µL";	
-		if (itm==1) return "¤½«O";
-		if (itm==2) return "³Ò«O";
+		if (itm==0) return "ç„¡";	
+		if (itm==1) return "å…¬ä¿";
+		if (itm==2) return "å‹ä¿";
 		return itmCd;
 	}
-	/**¶Ç¦^ ¦Ò¶Ô_°²§O¤¤¤å
-	 * @param itm °²ªp
-	 * @return ¤¤¤å»¡©ú
-	 * Ex: getOfftypNm(01) return ¨Æ 
+	/**å‚³å› è€ƒå‹¤_å‡åˆ¥ä¸­æ–‡
+	 * @param itm å‡æ³
+	 * @return ä¸­æ–‡èªªæ˜
+	 * Ex: getOfftypNm(01) return äº‹ 
 	 */
 	public static String getOfftypNm(String itm){		
 		String itmCd = " ";
-		if (itm.equals("01")) return "¨Æ°²";	
-		if (itm.equals("02")) return "¯f°²";
-		if (itm.equals("34")) return "®a®x·ÓÅU°²";
-		if (itm.equals("35")) return "¥Í²z°²";
-		if (itm.equals("53")) return "¤½°²-©~®a·ÓÅ@";
+		if (itm.equals("01")) return "äº‹å‡";	
+		if (itm.equals("02")) return "ç—…å‡";
+		if (itm.equals("34")) return "å®¶åº­ç…§é¡§å‡";
+		if (itm.equals("35")) return "ç”Ÿç†å‡";
+		if (itm.equals("53")) return "å…¬å‡-å±…å®¶ç…§è­·";
 		return itmCd;
 	}
-	/**¶Ç¦^ ¦Ò¶Ô_Â¾¸¹²Ä2½X¤¤¤å
-	 * @param itm Â¾¸¹²Ä2½X
-	 * @return ¤¤¤å»¡©ú
-	 * Ex: getPosNm('K') return '«´¬ù' 
+	/**å‚³å› è€ƒå‹¤_è·è™Ÿç¬¬2ç¢¼ä¸­æ–‡
+	 * @param itm è·è™Ÿç¬¬2ç¢¼
+	 * @return ä¸­æ–‡èªªæ˜
+	 * Ex: getPosNm('K') return 'å¥‘ç´„' 
 	 */
 	public static String getPosNm(String itm){		
 		String itmCd = " ";
-		if (itm.equals("K")) return "«´¬ù";	
-		if (itm.equals("F")) return "¥b¤é«´¬ù";
-		if (itm.equals("P")) return "¤£¤À¬ì";
-		if (itm.equals("T")) return "¬ã¨s§U²z";
-		if (itm.equals("E")) return "«´¬ù¦í°|Âå®v";
-		if (itm.equals("C")) return "¸u¥Î¦í°|Âå®v";
-		if (itm.equals("G")) return "§Ş¤u";
-		if (itm.equals("H")) return "¤u¤Í";
-		if (itm.equals("J")) return "«´¬ù¥DªvÂå®v";		
+		if (itm.equals("K")) return "å¥‘ç´„";	
+		if (itm.equals("F")) return "åŠæ—¥å¥‘ç´„";
+		if (itm.equals("P")) return "ä¸åˆ†ç§‘";
+		if (itm.equals("T")) return "ç ”ç©¶åŠ©ç†";
+		if (itm.equals("E")) return "å¥‘ç´„ä½é™¢é†«å¸«";
+		if (itm.equals("C")) return "è˜ç”¨ä½é™¢é†«å¸«";
+		if (itm.equals("G")) return "æŠ€å·¥";
+		if (itm.equals("H")) return "å·¥å‹";
+		if (itm.equals("J")) return "å¥‘ç´„ä¸»æ²»é†«å¸«";		
 		return itmCd;
 	}
-	/**¶Ç¦^ ¦Ò¶Ô_¨C¤ë¦³®Ä¤Ñ¼Æ,¥ş¤é=30,¥b¤é=15
-	 * @param itm Â¾¸¹²Ä2½X
-	 * @return ¤Ñ¼Æ
+	/**å‚³å› è€ƒå‹¤_æ¯æœˆæœ‰æ•ˆå¤©æ•¸,å…¨æ—¥=30,åŠæ—¥=15
+	 * @param itm è·è™Ÿç¬¬2ç¢¼
+	 * @return å¤©æ•¸
 	 * Ex: getDayLimByPos('K') return 30 
 	 */
 	public int getDayLimByPos(String itm){		
@@ -2193,17 +2311,17 @@ public class CommDAO {
 		if (itm.equals("F")) return 15;
 		return itmDay;
 	}
-	/**¶Ç¦^ ¤£¶}·~¼úª÷(±M¤G/¤u¤G)
-	 * tracod=33(Â¾°È½Õ¾ã)¤É¥DºŞ,Â¾µ¥¦³½Õ¾ã,­n§ì­ì¥ı,2­Ó¤ë 2026/5/1 A152 3/30§ó´«,5¤ë
-	4650(4/2) 3633(4/1),5¤ë¤Î6¤ë
-	 * @param jtÂ¾ºÙ,jtsubÂ¾ºÙ¤ÀÃş,rnk2nÂ¾µ¥,degr2¯Å¼Æ,pfdoc±M¶ÔÃB«×,reten(±M¤@=0,±M¤GYN) csflag(¤u¼úYN)
+	/**å‚³å› ä¸é–‹æ¥­çé‡‘(å°ˆäºŒ/å·¥äºŒ)
+	 * tracod=33(è·å‹™èª¿æ•´)å‡ä¸»ç®¡,è·ç­‰æœ‰èª¿æ•´,è¦æŠ“åŸå…ˆ,2å€‹æœˆ 2026/5/1 A152 3/30æ›´æ›,5æœˆ
+	4650(4/2) 3633(4/1),5æœˆåŠ6æœˆ
+	 * @param jtè·ç¨±,jtsubè·ç¨±åˆ†é¡,rnk2nè·ç­‰,degr2ç´šæ•¸,pfdocå°ˆå‹¤é¡åº¦,reten(å°ˆä¸€=0,å°ˆäºŒYN) csflag(å·¥çYN)
 	 * @return 
 	 * Ex: getOpenBonus('CB','H','',6,0,'','Y') return 20000 
 	 * @throws Exception 
 	 */
 	public int getOpenBonus(String jt,String jtsub,String rnk2n,int degr2,int pfdoc,String reten,String csfg) throws Exception{		
 		int rtnAmt = 0;
-		if (jt.matches("AL|CB|CH|CK")){//AL¤£¤À¬ì¦í°|Âå®v(ÃÒ®Ñ) CB¸u¥Î¦í°|Âå®v CH«´¬ù¦í°|Âå®v(ÃÒ®Ñ) CK PGY
+		if (jt.matches("AL|CB|CH|CK")){//ALä¸åˆ†ç§‘ä½é™¢é†«å¸«(è­‰æ›¸) CBè˜ç”¨ä½é™¢é†«å¸« CHå¥‘ç´„ä½é™¢é†«å¸«(è­‰æ›¸) CK PGY
 			if (degr2==1 ||degr2==2)
 				rtnAmt=20000;
 			else if (degr2==3 ||degr2==4)
@@ -2211,7 +2329,7 @@ public class CommDAO {
 			else if (degr2==5 ||degr2==6)
 				rtnAmt=30000;
 		}
-		else if (jt.matches("CG") || jtsub.matches("V|A")){//CG«´¥Dªv Â¾ºÙ¤ÀÃş=VÂå®v/A­İÂ¾
+		else if (jt.matches("CG") || jtsub.matches("V|A")){//CGå¥‘ä¸»æ²» è·ç¨±åˆ†é¡=Vé†«å¸«/Aå…¼è·
 			if ( pfdoc == 0 && !reten.equals("Y") && csfg.equals("N") )
 				rtnAmt=0;
 			else{
@@ -2219,7 +2337,7 @@ public class CommDAO {
 					rtnAmt=36000;
 				else if (rnk2n.equals("P2"))
 					rtnAmt=33000;
-				else if (rnk2n.matches("P3|07"))	//16¤½Â¾¦í°|Âå®vÂ¾µ¥=07
+				else if (rnk2n.matches("P3|07"))	//16å…¬è·ä½é™¢é†«å¸«è·ç­‰=07
 					rtnAmt=25000;
 			}
 		}
@@ -2227,20 +2345,20 @@ public class CommDAO {
 		return rtnAmt;
 	}
 	
-	/**¶Ç¦^ ¶¥§O/Â¾µ¥/¥»¥\/¯Å¼Æ
-	 * @param porank©xÂ¾µ¥ pagrad¤H¨Æ­Ä¯Å jtÂ¾ºÙ empÂ¾¸¹­º2½X
-	 * @return Á~¸ê¶¥§O/Â¾µ¥/¥»¥\/¯Å¼Æ
+	/**å‚³å› éšåˆ¥/è·ç­‰/æœ¬åŠŸ/ç´šæ•¸
+	 * @param porankå®˜è·ç­‰ pagradäººäº‹ä¿¸ç´š jtè·ç¨± empè·è™Ÿé¦–2ç¢¼
+	 * @return è–ªè³‡éšåˆ¥/è·ç­‰/æœ¬åŠŸ/ç´šæ•¸
 	 * Ex: getDegrBygrade('BW13','01','A246','DJ','1A0') return rank='2' rnk2n='09' rank3=2 degr2=9
 	 */
 	public HashMap getDegrBygrade(String porank,String pagrad,String jt,String emp,String hid){
 		HashMap rtnMap=null;
-		int degr2=0;//¯Å§O
-		int rank3=0;//¥»¥\
-		String rnk2n="";//Â¾µ¥
-		String rank="";//¶¥§O
+		int degr2=0;//ç´šåˆ¥
+		int rank3=0;//æœ¬åŠŸ
+		String rnk2n="";//è·ç­‰
+		String rank="";//éšåˆ¥
 		String tcode2 ="";
 		String strTmp=StringUtil.nullToString(pagrad);
-		if (!strTmp.equals("H") && !"".equals(strTmp)){//ÁpÂå®ÉÁ~H=0 ¯Å¼ÆªÅ¥Õ
+		if (!strTmp.equals("H") && !"".equals(strTmp)){//è¯é†«æ™‚è–ªH=0 ç´šæ•¸ç©ºç™½
 			if (strTmp.length()==2){
 				if( strTmp.substring(0,1).matches("B|F")){
 					if (strTmp.substring(0,1).equals("B"))
@@ -2259,43 +2377,43 @@ public class CommDAO {
 			}else
 				degr2=Integer.parseInt(strTmp);
 			
-			if (emp.matches("DK")) {	//«´¬ù
+			if (emp.matches("DK")) {	//å¥‘ç´„
 				rank ="F";
-			}else if (porank.matches("BP01|BP02|BP03|BP04|BP05|BQ05")) {	//©e
+			}else if (porank.matches("BP01|BP02|BP03|BP04|BP05|BQ05")) {	//å§”
 				rank ="3";
 				rnk2n=porank.substring(2,4);
-			}else if (porank.matches("BP06|BP07|BP08|BP09")) {	//ÂË
+			}else if (porank.matches("BP06|BP07|BP08|BP09")) {	//è–¦
 				rank="2";
 				rnk2n=porank.substring(2,4);
-			}else if (porank.matches("BP10|BP11|BP12|BP13|BP14")) {	//Â²
+			}else if (porank.matches("BP10|BP11|BP12|BP13|BP14")) {	//ç°¡
 				rank="1";
 				rnk2n=porank.substring(2,4);
-			}else if (porank.matches("BW11|BW12|BW13")) {	//®v¤@
+			}else if (porank.matches("BW11|BW12|BW13")) {	//å¸«ä¸€
 				rnk2n="P1";
-				if (emp.equals("DJ")) //«´¥Dªv 
+				if (emp.equals("DJ")) //å¥‘ä¸»æ²» 
 					rank="F";
 				else
 					rank="8";
-			}else if (porank.matches("BW20|BW21")) {	//®v¤G
+			}else if (porank.matches("BW20|BW21")) {	//å¸«äºŒ
 				rnk2n="P2";
 				if (emp.equals("DJ")) 
 					rank="F";
 				else
 					rank="8";
-			}else if (porank.matches("BW30|BW31")) {	//®v¤T
+			}else if (porank.matches("BW30|BW31")) {	//å¸«ä¸‰
 				rnk2n="P3";
 				if (emp.equals("DJ"))
 					rank="F";
 				else
 					rank="8";
-			}else if (porank.matches("BW40")) {	//¤h
+			}else if (porank.matches("BW40")) {	//å£«
 				rank="9";
 				rnk2n="T1";
-			}else if (porank.matches("BJ50")) {	//¤ñ·Ó¸u¥Î¦í°|Âå®v
+			}else if (porank.matches("BJ50")) {	//æ¯”ç…§è˜ç”¨ä½é™¢é†«å¸«
 				rnk2n="";
-				if (jt.matches("A246|A232")) {	//A246«´¬ù¦í°|Âå®v A232¤£¤À¬ì¦í°|Âå®v
+				if (jt.matches("A246|A232")) {	//A246å¥‘ç´„ä½é™¢é†«å¸« A232ä¸åˆ†ç§‘ä½é™¢é†«å¸«
 					rank="F";							
-				}else if (jt.equals("A235")) {	//A235¤£¤À¬ì¦í°|Âå®v­x¶O¥Í
+				}else if (jt.equals("A235")) {	//A235ä¸åˆ†ç§‘ä½é™¢é†«å¸«è»è²»ç”Ÿ
 					rank="0";
 				}
 			}
@@ -2310,7 +2428,7 @@ public class CommDAO {
 	}
 	
 	/**
-	 * Ãö³¬VGHDataAccess»PResultSet
+	 * é—œé–‰VGHDataAccessèˆ‡ResultSet
 	 * 
 	 * @param da
 	 * @param rs
