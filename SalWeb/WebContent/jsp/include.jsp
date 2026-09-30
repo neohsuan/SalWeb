@@ -62,6 +62,7 @@
 
 <!-- Utility JS -->
 <script type="text/javascript" src="<c:url value="/resources/components/js/MEBEUtil.js" />"></script>
+<script type="text/javascript" src="<c:url value="/resources/components/js/Common.js" />"></script>
 
 <!-- bootstrap -->
 
@@ -86,6 +87,18 @@
 
 
 <style>
+/*上傳檔案*/
+.custom-file-upload {
+    transition: border-color 0.15s ease-in-out;
+}
+.custom-file-upload:hover {
+    border-color: #28a745 !important;
+}
+.custom-file-upload input[type="file"] {
+    border: none;
+    background: transparent;
+    padding-left: 0;
+}				
 /* 專門處理這種「多組 label+input 並排」且希望間距一致的情況 */
 .basother-panel .form-row--equal {
   display: flex;

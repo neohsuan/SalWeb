@@ -1985,13 +1985,23 @@ $(function(){
 		$(this).val( $(this).val().toUpperCase() ) ;
 		var tmp = $(this).val();
 		if (tmp !=""){
-			//國民身分證：第一碼英文字母，第二碼為 1 或 2，總長 10 碼 ^[A-Z][12]\d{8}$
-			//新式居留證:1碼英文 + 8或9 + 8碼數字                               ^[A-Z][ABCD]\d{8}$
+			//用正規表達式判斷身分證 舊式居留證 --格式檢查（Regex）
+			//國民身分證：第一碼英文字母，第二碼為 1 或 2，總長 10 碼  /^[A-Z][12]\d{8}$/
+			//新式居留證:1碼英文 + 8或9 + 8碼數字                                /^[A-Z][89]\d{8}$/
+			//舊式居留證:1碼英文 + A-D + 8碼數字 			   /^[A-Z][A-D]\d{8}$/
 			//複合型 (全部)                               ^[A-Z][1289ABCD]\d{8}$
+			//第 1 碼：必定為大寫英文字母 [A-Z]
+			//第 2 碼：本國人/新式居留證為數字 [1-28-9]舊式居留證為字母 [A-D]合併後寫法：[A-D1-28-9]後 8 碼：必定為數字 \d{8}
 			reCheckCase = /^[A-Z][1289ABCD]\d{8}$/ ;
+			
 			if(!reCheckCase.test(tmp)){
 				alert('輸入的身分證字號格式有誤，請重新輸入');
 				return;
+			}
+			//檢查碼演算法（Mod 10）
+			checkId = isIdNo($(this).val());
+			if (checkId == false){
+				return false;
 			}
 		}
 	});
@@ -2143,6 +2153,7 @@ $(function(){
 			patracod=getInt($("#patracod option:selected").val());
 			$("#paymonno_lbl").html("追補扣日數");
 			$("#div_paypflag").addClass("d-none");
+			$("#paymonno,#paydayno").val("0");//追補扣日數
 			//新進
 			if (patracod == 1){
 				$("#paytaxno").val("0");//扶養人數
@@ -2161,7 +2172,7 @@ $(function(){
 				});
 				select.selectpicker('refresh');
 				$("#paypflag").selectpicker('val','3');
-				$("#paymonno").val(12);
+				$("#paymonno").val("12");
 			}
 			//考績獎金
 			else if (patracod==11 || patracod==12){			
@@ -2901,13 +2912,11 @@ $(function(){
 															</tr>
 															<tr class="table-warning">
 																<td>
-																	<div class="form-inline d-none" id="div_authority">
+																	<div class="form-inline" id="div_authority">
 																		<div class="form-group">
 																			<label for="payrank2" class="table-warning">權理:</label>
 																			<select id="payrank2" name="payrank2"
 																				class="form-control " data-width="fit" title="權理"></select>
-																			<input type="text" id="payrank2" class="form-control"
-																				maxlength="2" size="2" />
 																		</div>
 																		<div class="form-group">
 																			<label for="payrankc" class="table-warning">主管(權理):</label>

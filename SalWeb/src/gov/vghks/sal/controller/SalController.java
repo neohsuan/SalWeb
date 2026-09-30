@@ -23,9 +23,11 @@ import gov.vghks.common.util.VGHDataAccess;
 import gov.vghks.sal.Globals;
 import gov.vghks.sal.Hospitals;
 import gov.vghks.sal.dao.CommDAO;
+import gov.vghks.sal.dao.WkRetirDAO;
 import gov.vghks.sal.dao.PsDSNDAO;
 import gov.vghks.sal.dao.SalNTDAO;
 import gov.vghks.sal.dao.TranPayDAO;
+import gov.vghks.sal.dao.SYSSettingDAO;
 import gov.vghks.sal.model.Pabaspsn;
 import gov.vghks.sal.model.Pabatpay;
 import gov.vghks.sal.model.Padatpsn;
@@ -78,6 +80,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ibm.mq.headers.Charsets;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Cell;					
 /**
  *
  */
@@ -95,8 +107,9 @@ public class SalController{
 	VGHDataAccess da=null;
 	VGHDataAccess daDSN=null;
 	SalNTDAO tDAO = null;
-	PsDSNDAO psDAO = null;
 	TranPayDAO tranDAO=null;
+	WkRetirDAO wkDAO=null;
+	SYSSettingDAO sysDAO = null;
 	String hid="";
 	String userid="";
 	
@@ -292,6 +305,7 @@ public class SalController{
 		ArrayList alTaxTranYrTbl=null;//已轉帳所得稅年月
 		ArrayList alPayDtTbl=null;//補充費給付日期
 		ArrayList alPayYrTbl=null;//補充費給付年度
+		ArrayList alLbrpTbl=null;//勞工退休金月提繳工資分級表
 		
 		//讀取pspm.pccosttbl,放至session,只需讀一次
 		alRankCodeTbl= (ArrayList) request.getSession().getAttribute("alRankCodeTbl");
@@ -320,6 +334,9 @@ public class SalController{
 		else if("payNhi".equals(item)){
 			alPayDtTbl= (ArrayList) request.getSession().getAttribute("alPayDtTbl");
 			alPayYrTbl= (ArrayList) request.getSession().getAttribute("alPayYrTbl");
+		}
+		else if("wkRetir".equals(item)){
+			alLbrpTbl= (ArrayList) request.getSession().getAttribute("alLbrpTbl");
 		}
 		try{			//如果有中文，避免亂碼
 			response.setCharacterEncoding("utf-8");
@@ -423,7 +440,14 @@ public class SalController{
 						alPayYrTbl=tDAO.getLoadCodeTbl("NHIPAYYR",userid,hid,da);
 						request.getSession().setAttribute("alPayYrTbl", alPayYrTbl);  
 					}
-				}	
+				}
+				System.out.println("11.wkRetir:");
+				if (item.matches("wkRetir")){	
+					if (alLbrpTbl==null || alLbrpTbl.size()==0 || flag.equals("Y")){	
+						alLbrpTbl=tDAO.getLoadCodeTbl("WKRETIR",userid,hid,da);
+						request.getSession().setAttribute("alLbrpTbl", alLbrpTbl);  
+					}
+				}
 				jsonObj.element("alRankCodeTbl", alRankCodeTbl);
 				jsonObj.element("alTitleCodeTbl", alTitleCodeTbl);
 				jsonObj.element("alBankDtTbl", alBankDtTbl,cfg);
@@ -447,6 +471,9 @@ public class SalController{
 				if (item.matches("payNhi")){
 					jsonObj.element("alPayYrTbl", alPayYrTbl);
 					jsonObj.element("alPayDtTbl", alPayDtTbl);					
+				}
+				if (item.matches("wkRetir")){
+					jsonObj.element("alLbrpTbl", alLbrpTbl);					
 				}
 			}catch(Exception e){	
 				log.info(me+"失敗=="+e.toString());
@@ -863,7 +890,7 @@ public class SalController{
 				log.info(me+"失敗=="+e.toString());
 				e.printStackTrace();
 			}finally{
-				tDAO=null;
+				tranDAO=null;
 				da.close();
 				da = null;
 			}
@@ -1142,7 +1169,7 @@ public class SalController{
 				log.info(me+"失敗=="+e.toString());
 				e.printStackTrace();
 			}finally{
-				tDAO=null;
+				tranDAO=null;
 				da.close();
 				da = null;
 			}
@@ -1837,6 +1864,96 @@ public class SalController{
 		}
 	}
 	/**
+	 * 勞工退休金處理
+	 */
+	@RequestMapping(params="method=handelWkRetir")
+	public void handelWkRetir(HttpServletRequest request, HttpServletResponse response)throws IOException{
+		
+		String me = getClass().getName() + ".handelWkRetir()";
+		AmJsonConfig cfg = new AmJsonConfig();
+		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
+		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
+		String tabJson = request.getParameter("tabJson");
+		String tblname = request.getParameter("tblname");
+		String editMode = request.getParameter("editMode");
+		String pk_data = request.getParameter("pk_data")==null?"":request.getParameter("pk_data");//傳入json
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//傳入json
+		String fun = request.getParameter("fun")==null?"":request.getParameter("fun");
+		String selNm = request.getParameter("selNm")==null?"":request.getParameter("selNm");
+		String strRtn = "";
+		JSONObject object_in_data =null;
+		boolean blnupd=false;
+		HashMap rtnMap=new HashMap();
+		String dataSourceNT="";
+		Hospitals hospInfo = Hospitals.getOneHosp(hid);
+		dataSourceNT=hospInfo.dataSourceNT;
+		da=new VGHDataAccess(dataSourceNT);
+		String dataSourceDSN=hospInfo.dataSourceDSN;
+		daDSN=new VGHDataAccess(dataSourceDSN);
+		Pabaspsn psnitem=null;
+		HashMap traPayMap=new HashMap();
+		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
+		jsonObj = new JSONObject();
+		boolean success=false;
+		String detailMsg ="";
+		HashMap wkretirMap=new HashMap();
+		try{			//如果有中文，避免亂碼
+			response.setCharacterEncoding("utf-8");
+			wkDAO = new WkRetirDAO(da,daDSN,hid);
+			tDAO = new SalNTDAO(da,hid);
+			try{
+				if (fun.equals("WkRetirQry")){
+					wkretirMap=wkDAO.getWkRetirList(in_data,userid,hid,da);
+					// 用一個root tag將JSONArray包裝起來
+					jsonObj.element("WkRetirList", wkretirMap.get("wkretir_json"));					
+				}
+				else if (fun.matches("execWk")){
+					Map<String, Object> result = wkDAO.handelWkRetir(in_data,userid,hid,da,daDSN);
+					success = (Boolean) result.get("success");
+				    detailMsg = (String) result.get("msg");
+				    
+				    if (success)
+						jsonObj.put("msg", selNm+"成功\n"+detailMsg);																		
+					else							
+						jsonObj.put("msg", selNm+"  失敗\n\r"+detailMsg);			   
+					
+				}else if (fun.matches("updWkretir")){
+					blnupd = tDAO.updPATblByKey(editMode,tblname,pk_data,tabJson,userid,hid,da);
+					
+					if (blnupd){	//update success,重新reload
+						jsonObj.put("msg", "[寫入]"+selNm+"  成功");
+						jsonObj.put("status", "Y");
+					}else{
+						jsonObj.put("msg", "[寫入]"+selNm+"  失敗");
+						jsonObj.put("status", "N");
+					}
+					log.info(userid+user.getUserNm()+" [寫入]"+selNm+" "+pk_data +" blnupd:"+blnupd);
+				}
+				//取得基本檔
+				else if (fun.equals("getBasByKey")){
+					psnitem=tDAO.getBasPsnByKey(in_data,"0",hid,da);
+					jsonObj.element("basPsnItem", psnitem,cfg);					
+				}
+			}catch(Exception e){	
+				log.info(me+"失敗=="+e.toString());
+				e.printStackTrace();
+			}finally{
+				tDAO=null;
+				wkDAO=null;
+				da.close();
+				da = null;
+			}
+			
+			PrintWriter out = response.getWriter();
+			// 寫出至JSP頁面
+			out.print(jsonObj.toString());
+			out.flush();
+		}catch (Exception e) {
+			log.info(me + " fail, " + e);
+			e.printStackTrace();
+		}
+	}
+	/**
 	 * 異動檔處理
 	 */
 	@RequestMapping(params="method=handelTran")
@@ -1914,6 +2031,7 @@ public class SalController{
 				log.info(me+"失敗=="+e.toString());
 				e.printStackTrace();
 			}finally{
+				tranDAO=null;
 				tDAO=null;
 				da.close();
 				da = null;
@@ -2251,19 +2369,24 @@ public class SalController{
 		
 		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
 		jsonObj = new JSONObject();
+		boolean success=false;
+		String detailMsg ="";
 		try{			//如果有中文，避免亂碼
 			response.setCharacterEncoding("utf-8");
 			tDAO = new SalNTDAO(da,hid);
 			try{
-				strRtn=tDAO.handelTax(in_data,userid,hid,da);
-				if ("".equals(strRtn)) {
-					jsonObj.put("msg", selNm+"成功");
-					jsonObj.put("status", "Y");
-				}else{
+				Map<String, Object> result=tDAO.handelTax(in_data,userid,hid,da);
+				success = (Boolean) result.get("success");
+			    detailMsg = (String) result.get("msg");
+			    if (success) {
+			    	jsonObj.put("status", "Y");
+					jsonObj.element("msg", selNm + " 成功\n" + detailMsg);
+			    }	
+				else {
+					jsonObj.element("msg", selNm + " 失敗\n" + detailMsg);
 					jsonObj.put("status", "N");
-					jsonObj.put("msg", selNm+"更新失敗\n\r"+strRtn);
 				}
-					
+			    	
 			}catch(Exception e){	
 				log.info(me+"失敗=="+e.toString());
 				e.printStackTrace();
@@ -2375,8 +2498,10 @@ public class SalController{
 						    			if (fieldslen >= 9 && !"".equals(fields[9]))
 							    			pataximp.setPaytaxdeduct(Integer.parseInt(fields[9]));
 						    			//姓名
-						    			if (fieldslen >= 10)
+						    			if (fieldslen >= 10) {
 						    				pataximp.setPaynamec(StringUtil.trimWideEmpty(StringUtil.nullToString(fields[10])));
+						    			}else
+						    				pataximp.setPaynamec("");	//載入預設值
 						    			//所得開始日期
 						    			if ( fieldslen >= 11 && !"".equals(fields[11]) )
 						    				pataximp.setPaybegin(StringUtil.nullToString(fields[11]));
@@ -2505,6 +2630,196 @@ public class SalController{
 		}
 	}
 	/**
+/**
+	 * 上傳Excel檔案
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(params="method=uploadExcelFile")
+	public void uploadExcelFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String me = getClass().getName() + ".uploadExcelFile()";
+		String strRtn = "";
+		ArrayList<Parank> alPaRank = new ArrayList<Parank>();  //
+
+		try {
+			response.setCharacterEncoding("utf-8");
+ 
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+			ServletFileUpload upload = new ServletFileUpload (factory);
+			upload.setFileSizeMax(1024*1024*10);
+			upload.setHeaderEncoding("UTF-8");
+			FileItemIterator iter =  upload.getItemIterator(request);
+			
+			hid = request.getParameter("hid")==null?"":request.getParameter("hid");
+			userid = request.getParameter("userid")==null?"":request.getParameter("userid");
+			String selCode = request.getParameter("selCode")==null?"":request.getParameter("selCode");
+
+			sysDAO = new SYSSettingDAO(da,hid);
+			InputStream in = null;
+			Workbook wb = null;
+			int do_cnt = 0;
+			jsonObj = new JSONObject();
+			
+			while (iter.hasNext()) {
+				FileItemStream fileItem = iter.next();
+				//多個檔案
+				if(!fileItem.isFormField()){
+					String filename = fileItem.getName();
+					filename = filename.substring(filename.lastIndexOf("\\")==-1?0:filename.lastIndexOf("\\"));
+					in = fileItem.openStream();
+					
+					try {
+	                    wb = WorkbookFactory.create(in);
+	                    Sheet sheet = wb.getSheetAt(0);
+
+	                    // i=2 跳過第二列標題（階級、級別、俸級...）
+	                    for (int i = 2; i <= sheet.getLastRowNum(); i++) {
+	                        Row row = sheet.getRow(i);
+	                        if (row == null) continue;
+
+	                        String parankv = getCellString(row.getCell(0));
+	                        parankv = parankv.substring(0,1);
+	                        if ("".equals(parankv)) continue; // 排除空白列
+
+	                        Parank o = new Parank();   // 階級支扣
+	                        //A 階級
+	                        o.setPayrankv(parankv);
+	                        //B 級別(限填2碼數字)
+	                        o.setPaylev1v(getCellString(row.getCell(1)));
+	                        //C 俸級(限填3碼數字)
+	                        o.setPay2ev1v(getCellString(row.getCell(2)));
+	                        //D 俸點
+	                        o.setPaydegrv(getCellInt(row.getCell(3)));
+	                        //E 本薪
+	                        o.setPaybasev(getCellInt(row.getCell(4)));
+	                        //F 公保費
+	                        o.setPaygeinf(getCellInt(row.getCell(5)));
+	                        //G 新_公保費
+	                        o.setPaygeinn(getCellInt(row.getCell(6)));
+	                        //H 勞保費
+	                        o.setPaylbinf(getCellInt(row.getCell(7)));
+	                        //I 健保費
+	                        o.setPaydpinv(getCellInt(row.getCell(8)));
+	                        //J 退撫
+	                        o.setPayrebef(getCellInt(row.getCell(9)));
+	                        //K 新_退撫
+	                        o.setPayreben(getCellInt(row.getCell(10)));
+
+	                        alPaRank.add(o);
+	                        log.info("uploadExcelFile:cnt:" + do_cnt++ + " row:" + i + " parankv:" + parankv);
+	                    }
+	                } finally {
+	                    if (wb != null) wb.close();
+	                    in.close();
+	                }
+					
+					//批次匯入:1階級支扣數
+					if ("1".equals(selCode)){
+						strRtn=sysDAO.ImpPaRank(alPaRank, selCode, userid, hid, da);
+						log.info("匯入批次：1階級支扣數 "+strRtn);
+						jsonObj.put("msg", "匯入批次：1階級支扣數 "+strRtn);
+					}
+					
+				}
+			}
+		}catch(Throwable e){
+			jsonObj.element("msg", e.toString());
+			log.info(me + " fail, " + e);
+		}finally{
+			PrintWriter out = response.getWriter();
+			// 寫出至JSP頁面
+			out.print(jsonObj.toString());
+			out.flush();
+		}
+	}
+	
+	private String getCellString(Cell cell) {
+	    if (cell == null) return "";
+	    switch (cell.getCellType()) {
+	        case NUMERIC:
+	            double d = cell.getNumericCellValue();
+	            if (d == Math.floor(d)) {
+	                return String.valueOf((long) d);
+	            }
+	            return String.valueOf(d);
+	        case STRING:
+	            return cell.getStringCellValue().trim();
+	        default:
+	            return "";
+	    }
+	}
+	
+	private int getCellInt(Cell cell) {
+	    String s = getCellString(cell);
+	    if ("".equals(s)) {
+	        return 0;
+	    }
+	    try {
+	        return Integer.parseInt(s);
+	    } catch (NumberFormatException e) {
+	        log.info("getCellInt: 無法解析數字，欄位值=" + s + "，改用預設值 0");
+	        return 0;
+	    }
+	}
+	
+	/**
+	 * 下載Excel範本
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(params="method=downloadSample")
+	public void downloadSample(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    String type = request.getParameter("type");
+	    String filePath = getSampleFilePath(type);
+
+	    if (filePath == null || "".equals(filePath)) {
+	        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "未知的範本類型");
+	        return;
+	    }
+
+	    File file = new File(filePath);
+	    if (!file.exists()) {
+	        response.sendError(HttpServletResponse.SC_NOT_FOUND, "範本檔案不存在");
+	        return;
+	    }
+
+	    response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+	    String encodedFileName = URLEncoder.encode(file.getName(), "UTF-8").replace("+", "%20");
+	    response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + encodedFileName);
+	    response.setContentLength((int) file.length());
+
+	    FileInputStream in = null;
+	    OutputStream out = null;
+	    try {
+	        in = new FileInputStream(file);
+	        out = response.getOutputStream();
+	        byte[] buffer = new byte[4096];
+	        int bytesRead;
+	        while ((bytesRead = in.read(buffer)) != -1) {
+	            out.write(buffer, 0, bytesRead);
+	        }
+	        out.flush();
+	    } finally {
+	        if (in != null) {
+	            in.close();
+	        }
+	        if (out != null) {
+	            out.close();
+	        }
+	    }
+	}
+
+	// 切換範本下載
+	private String getSampleFilePath(String type) {
+	    if ("1".equals(type)) {
+	        return Globals.gSampleFile+"階級支扣_匯入範本.xls";
+	    } else if ("2".equals(type)) {
+	        return Globals.gSampleFile+"公務員健保_匯入範本.xls"; // 路徑待確認
+	    } else {
+	        return "";
+	    }
+	}
+	/**
 	 * 系統作業-更新卡號,身份證
 	 */
 	@RequestMapping(params="method=updateIDCard")
@@ -2531,8 +2846,8 @@ public class SalController{
 		String detailMsg ="";
 		
 		try{		
-			tDAO = new SalNTDAO(da,hid);
-			Map<String, Object> result=tDAO.updateTblID(editMode,in_data,userid,hid,da);
+			sysDAO = new SYSSettingDAO(da,hid);
+			Map<String, Object> result=sysDAO.updateTblID(editMode,in_data,userid,hid,da);
 		    success = (Boolean) result.get("success");
 		    detailMsg = (String) result.get("msg");
 			if (success)

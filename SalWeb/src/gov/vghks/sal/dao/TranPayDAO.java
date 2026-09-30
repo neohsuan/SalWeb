@@ -2050,6 +2050,15 @@ public class TranPayDAO {
 						params.add(param);
 						//log.info(" param:" + param);
 						
+						if (++write_cnt % limitcnt == 0) {
+							log.info(batch_sql + " 寫入:" + batch_sql + " params:" + params);
+							da.batchupdatenocommit(batch_sql, params);
+							da.commit();
+
+							batch_sql.clear();
+							params.clear();
+						}
+						
 						if (trapayMap != null) {
 							oneAry = trapayMap.get(strKey);
 							if (oneAry != null) {
@@ -2063,7 +2072,6 @@ public class TranPayDAO {
 									// PAYAUTH, PAYIFTAX, PAYFLAG,PAYUPDTM, "+tmpZtrapay+", PAYCODE, HID, PAYIDNO,
 									// PATRADT, PAYSORT)" +
 									// " values(?,?,?,?,'',current timestamp,current timestamp,?,?,?,?,?) ";
-	
 									param.add(pdata.getTranum());
 									param.add(pdata.getPayamt());
 									param.add(StringUtil.nullToString(pdata.getPayauth()));
@@ -2075,6 +2083,14 @@ public class TranPayDAO {
 									param.add(StringUtil.nullToString(pdata.getPaysort()));
 									//log.info(" param:" + param);
 									params.add(param);
+								}
+								if (++write_cnt % limitcnt == 0) {
+									log.info(batch_sql + " 寫入:" + batch_sql + " params:" + params);
+									da.batchupdatenocommit(batch_sql, params);
+									da.commit();
+
+									batch_sql.clear();
+									params.clear();
 								}
 							}	
 						}
@@ -2102,19 +2118,19 @@ public class TranPayDAO {
 									param.add(batData.getSalnum());
 									param.add(StringUtil.nullToString(batData.getPaycode()));
 									param.add(StringUtil.nullToString(batData.getHid()));
-									log.info(" param:" + param);
+									//log.info(" param:" + param);
 									params.add(param);
+									
+									if (++write_cnt % limitcnt == 0) {
+										log.info(batch_sql + " 寫入:" + batch_sql + " params:" + params);
+										da.batchupdatenocommit(batch_sql, params);
+										da.commit();
+
+										batch_sql.clear();
+										params.clear();
+									}
 								}
 							}	
-						}
-
-						if (++write_cnt % limitcnt == 0) {
-							log.info(batch_sql + " 寫入:" + batch_sql + " params:" + params);
-							da.batchupdatenocommit(batch_sql, params);
-							da.commit();
-
-							batch_sql.clear();
-							params.clear();
 						}
 					}
 				}

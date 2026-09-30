@@ -59,18 +59,18 @@ body {
 }
 </style>
 <script>
-var agent = "${sessionScope.agent}";	//代理人卡號
-var paUserid = ("" != agent) ? agent : userid;            //使用者卡號
-var paUsername = ("" != agent) ? "${sessionScope.agentname}" : username;            //使用者姓名
-var pahid = ("" != agent) ? "${sessionScope.agenthid}" : hid;            //醫院別
-var pacostid = ("" != agent) ? "${sessionScope.agentcostid}" : costid;            //使用者成本中心
-var padeptnm = ("" != agent) ? "${sessionScope.agentdeptnm}" : deptnm;            //使用者單位名稱
-var padeptno = ("" != agent) ? "${sessionScope.agentdeptno}" : deptno;            //使用者單位名稱 英文
-var pa_admin = ("" != agent) ? "${sessionScope.agentAdmin}" : "${sessionScope.user.getPa_adm()}";  
-var pa_edit  = ("" != agent) ? "${sessionScope.agentEdit}" : "${sessionScope.user.getPa_edit()}";          
-var pa_view = ("" != agent) ? "${sessionScope.agentView}" : "${sessionScope.user.getPa_view()}";
-var pa_tax = ("" != agent) ? "${sessionScope.agentTax}" : "${sessionScope.user.getPa_tax()}";
-var pa_bones = ("" != agent) ? "${sessionScope.agentBones}" : "${sessionScope.user.getPa_bones()}";
+var agent      = "${sessionScope.agent}";	//代理人卡號
+var paUserid   = ("" != agent) ? agent : userid;            //使用者卡號
+var paUsername = ("" != agent) ? "${sessionScope.agentname}"   : username;          //使用者姓名
+var pahid      = ("" != agent) ? "${sessionScope.agenthid}"    : hid;            	//醫院別
+var pacostid   = ("" != agent) ? "${sessionScope.agentcostid}" : costid;            //使用者成本中心
+var padeptnm   = ("" != agent) ? "${sessionScope.agentdeptnm}" : deptnm;            //使用者單位名稱
+var padeptno   = ("" != agent) ? "${sessionScope.agentdeptno}" : deptno;            //使用者單位名稱 英文
+var pa_admin   = ("" != agent) ? "${sessionScope.agentAdmin}"  : "${sessionScope.user.getPa_adm()}";  
+var pa_edit    = ("" != agent) ? "${sessionScope.agentEdit}"   : "${sessionScope.user.getPa_edit()}";          
+var pa_view    = ("" != agent) ? "${sessionScope.agentView}"   : "${sessionScope.user.getPa_view()}";
+var pa_tax     = ("" != agent) ? "${sessionScope.agentTax}"    : "${sessionScope.user.getPa_tax()}";
+var pa_bones   = ("" != agent) ? "${sessionScope.agentBones}"  : "${sessionScope.user.getPa_bones()}";
 
 console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone:"+pa_bones);
 	
@@ -81,11 +81,11 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 <div class='container-fluid'>
 	<div class="card-deck">
 		<!-- 例行作業 -->
-		<c:choose>
+		<%-- 1.本人(adm,編輯角色,查詢角色)
+		     2.代理(adm,編輯角色,查詢角色) --%>
+		<c:choose>			
 			<c:when	test="${sessionScope.agent eq null or empty sessionScope.agent}">
-				<c:if test="${ sessionScope.user.getPa_adm()=='Y' or (sessionScope.user.getPa_edit()=='Y') or 
-		                     (sessionScope.user.getPa_view()=='Y') }">
-				
+				<c:if test="${ sessionScope.user.getPa_adm()=='Y' or (sessionScope.user.getPa_edit()=='Y') or (sessionScope.user.getPa_view()=='Y') }">
 					<div class="card">
 						<div class="card-header">
 							<img border="0" src="<c:url value="/resources/images/plan.png"/>" width="45" height="45" style="display:inline;">		 		
@@ -98,13 +98,16 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 					      		<a class="list-group-item list-group-item-action" id="batchPay" href="<c:url value="/jsp/sal/batchPay.jsp"/>"><span class="big-size">批次作業</span></a>
 					      		<a class="list-group-item list-group-item-action" id="denailPay" href="<c:url value="/jsp/sal/payDetail.jsp"/>"><span class="big-size">發薪明細/檢驗</span></a>
 					      		<a class="list-group-item list-group-item-action" id="paynhi" href="<c:url value="/jsp/sal/paynhi.jsp"/>"><span class="big-size">補充保險費</span></a>
-<%-- 					      		<a class="list-group-item list-group-item-action" id="labretir" href="<c:url value="/jsp/sal/labretir.jsp"/>"><span class="big-size">x勞工退休金</span></a> --%>
+					      		<c:if test="${ sessionScope.user.getHid()=='1A0' }">
+					      			<a class="list-group-item list-group-item-action" id="wkretir" href="<c:url value="/jsp/sal/wkRetir.jsp"/>"><span class="big-size">勞工退休金</span></a>
+					      		</c:if>
 <%-- 					      		<a class="list-group-item list-group-item-action" id="paydebt" href="<c:url value="/jsp/sal/paydebt.jsp"/>"><span class="big-size">x清償債款</span></a>					      									  	 --%>
 							</div>
 				    	</div>
 					</div>
 				</c:if>					
 			</c:when>
+			
 			<c:otherwise>
 				<c:if test="${ sessionScope.agentAdmin=='Y' or (sessionScope.agentEdit=='Y') or (sessionScope.agentView=='Y')  }"><!--代理 -->
 					<div class="card">
@@ -119,7 +122,9 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 					      		<a class="list-group-item list-group-item-action" id="batchPay" href="<c:url value="/jsp/sal/batchPay.jsp"/>"><span class="big-size">批次作業</span></a>
 					      		<a class="list-group-item list-group-item-action" id="detailPay" href="<c:url value="/jsp/sal/payDetail.jsp"/>"><span class="big-size">發薪明細/檢驗</span></a>
 					      		<a class="list-group-item list-group-item-action" id="paynhi" href="<c:url value="/jsp/sal/paynhi.jsp"/>"><span class="big-size">補充保險費</span></a>
-<%-- 					      		<a class="list-group-item list-group-item-action" id="labretir" href="<c:url value="/jsp/sal/labretir.jsp"/>"><span class="big-size">x勞工退休金</span></a> --%>
+					      		<c:if test="${ sessionScope.agenthid=='1A0' }">
+					      			<a class="list-group-item list-group-item-action" id="wkretir" href="<c:url value="/jsp/sal/wkRetir.jsp"/>"><span class="big-size">勞工退休金</span></a>
+					      		</c:if>	
 <%-- 					      		<a class="list-group-item list-group-item-action" id="paydebt" href="<c:url value="/jsp/sal/paydebt.jsp"/>"><span class="big-size">x清償債款</span></a> --%>
 							</div>
 				    	</div>
@@ -129,6 +134,8 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 		</c:choose>
 			
 		<!-- 所得稅 -->
+		<%-- 1.本人(adm,編輯角色,查詢角色,所得稅角色)
+		     2.代理(adm,編輯角色,查詢角色,所得稅角色) --%>
 		<c:choose>
 			<c:when	test="${sessionScope.agent eq null or empty sessionScope.agent}">
 				<c:if test="${ sessionScope.user.getPa_adm()=='Y' or (sessionScope.user.getPa_edit()=='Y') or 
@@ -164,7 +171,9 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 			</c:otherwise>
 		</c:choose>
 		
-		<!-- 員工績效 -->
+		<!-- 員工績效 3A0不列 -->
+		<%-- 1.本人(adm,績效角色)
+		     2.代理(adm,績效角色) --%>
 		<c:choose>
 			<c:when	test="${sessionScope.agent eq null or empty sessionScope.agent }">
 				<c:if test="${ sessionScope.user.getHid()!='3A0' && (sessionScope.user.getPa_adm()=='Y' or sessionScope.user.getPa_bones()=='Y')  }">				
@@ -203,6 +212,8 @@ console.log("pa_admin:"+pa_admin+" pa_edit:"+pa_edit+" pa_tax:"+pa_tax+" pa_bone
 		</c:choose>
 		
 		<!-- 相關功能 -->
+		<%-- 1.本人(adm,維護角色)
+		     2.代理(adm,維護角色) --%>
 		<c:choose>
 			<c:when	test="${sessionScope.agent eq null or empty sessionScope.agent}">
 				<c:if test="${ sessionScope.user.getPa_adm()=='Y' or (sessionScope.user.getPa_edit()=='Y') }">

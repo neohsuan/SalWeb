@@ -6,6 +6,34 @@
 <title>系統作業</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <jsp:include page="../include.jsp"></jsp:include>
+<style>
+/* 本頁專屬 loading 遮罩,ID 刻意跟共用的 modal_loading 區分 */
+#pageLoadingOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+#pageLoadingOverlay .loader {
+    /* 沿用 include.jsp 裡 .loader 的樣式,如果外部 CSS 已有 .loader 定義可以直接沿用 */
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: pageSpin 0.8s linear infinite;
+}
+@keyframes pageSpin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
 <script>
 //檢查使否有代理人，如有代理人則取代原資料
 var agent = "${sessionScope.agent}";	//代理人卡號
@@ -100,20 +128,6 @@ $(function(){
 		}
   	});
   	 	
-	
-  	//代碼選單切換
-	$("#qryType").change(function(){
-		$("#divfield_1,#divfield_2,#divfield_3").addClass("d-none");	//隱藏
-		cleanTable("rowBatHanding_1");
-  		selCode=(typeof($("#qryType option:selected").val().split(':')[0]) == "undefined" )? "1":$("#qryType option:selected").val().split(':')[0];
-  		console.log(selCode);
-  		if (selCode=="1"){			//1:[匯入]批次檔 
-			$("#divfield_1,#divfield_2,#divfield_3").removeClass("d-none");
-		}
-		else if (selCode=="2"){		//2:[刪除]批次檔 
-			$("#divfield_1").removeClass("d-none");			
-		}	 
-  	});
   	 	
 	//編輯欄位檢查
   	$.checkFields = function(btn){
@@ -133,12 +147,17 @@ $(function(){
 		  				msg = '請輸入身份證字號(長度不足10碼)!!';
 		  			}
 			}
+  		}else if (btn == 'btn_loadBat'){ //執行 2.批次匯入
+  			var file = $("#fileInput").val();			
+			if (file.length == 0) {
+				msg ='請確認是否有選擇檔案';				
+			}
   		}
   		return msg;	
 	};
 
 	//jQuery按紐圖示
-	$(".btn").button().click(
+	$(".btn").not("#lnkSampleFile").button().click(
 		function(event) {event.preventDefault();}
 	);
 	$(".btn").click(function(){
@@ -154,10 +173,10 @@ $(function(){
 				selCode=(typeof($("#qryType1 option:selected").val().split(':')[0]) == "undefined" )? "1":$("#qryType1 option:selected").val().split(':')[0];
 	  	  		console.log("執行："+selCode);
 	  	  		
-	  	  		cardno=$("#qry_pabatpay_cardno").val().toUpperCase();
-	  	  		cardno_new=$("#qry_pabatpay_cardno1").val().toUpperCase();
-	  	  		idtno=$("#qry_pabatpay_idtno").val().toUpperCase();
-	  	  		idtno_new=$("#qry_pabatpay_idtno1").val().toUpperCase();	  	  	
+	  	  		cardno=$("#qry_pabatpay_cardno").val();
+	  	  		cardno_new=$("#qry_pabatpay_cardno1").val();
+	  	  		idtno=$("#qry_pabatpay_idtno").val();
+	  	  		idtno_new=$("#qry_pabatpay_idtno1").val();	  	  	
 	  	  		console.log("卡號old："+cardno+" 卡號new："+cardno_new+" 身份證old:"+idtno+" 身份證new:"+idtno_new);
 	  	  						
 				in_data={
@@ -193,7 +212,40 @@ $(function(){
 			else{
 				alert(msg);
 			}		
-		}				
+		}else if (id == 'btn_loadBat'){ //批次匯入
+			msg = $.checkFields(id);
+			if(msg == ''){
+				selCode=(typeof($("#qryType option:selected").val().split(':')[0]) == "undefined" )? "1":$("#qryType option:selected").val().split(':')[0];
+	  	  		console.log("執行："+selCode);
+				
+	  	  		var url="${pageContext.request.contextPath}/salController.do";
+	  	  		var param = '?method=uploadExcelFile' +
+							'&selCode=' + selCode +
+							'&userid=' + userid +
+							'&hid=' + pahid;
+	    		console.log(" 選項:"+selCode+" url:"+url+param);
+	    		
+	    		showPageLoading(); //顯示loading(本頁專屬)
+			 	$("#uploadfileForm").ajaxSubmit({
+					type: "post", //提交方式 
+					dataType:"json", //資料型別 
+					url: url + param, //請求url 
+					success: function (data) { //提交成功的回撥函式 
+						alert(data.msg);
+						hidePageLoading();
+					},
+					error: function(xhr){
+						alert("檔案上傳過程中，程式發生錯誤!!!\nerror code:"+ xhr.status);
+						hidePageLoading();
+					},
+					complete: function(data) {
+						hidePageLoading(); //隱藏loading
+					}
+				});
+			}else{
+				alert(msg);
+			}
+		}
 	});
 	
 
@@ -228,6 +280,15 @@ $(function(){
      
 });
 
+//開啟loading dialog
+function showPageLoading(){
+	$("#pageLoadingOverlay").css("display", "flex");
+}
+
+//關閉loading dialog
+function hidePageLoading(){
+	$("#pageLoadingOverlay").css("display", "none");
+}
 </script>
 </head>
 <body>
@@ -290,55 +351,58 @@ $(function(){
 	<!--批次匯入-->
   	<div class="tab-pane fade show" id="byBatHandingMain" role="tabpanel" aria-labelledby="pills-bathanding-tab">
   		<div class="row p-1 mb-1 bg-secondary">
-			<div class="col-md-10">
+			<div class="col-md-4">
 				<div class="form-inline">
 					<div class="input-group">
 						<span class="input-group-text">選單</span>
 		  	
 						<select id="qryType" class="form-control">
-							<option value="1:[匯入]階級支扣數:ImpPayInBat">1[匯入]階級支扣數</option>
-							<option value="2:[匯入]公務員健保:DelPayInBat">2[匯入]公務員健保</option>     					
+							<option value="1:[匯入]階級支扣數:ImpPayInBat">1[匯入] 階級支扣數</option>
+							<option value="2:[匯入]公務員健保:DelPayInBat">2[匯入] 公務員健保</option>     					
 						</select>
 					</div>
+					&emsp;
+					<a id="lnkSampleFile" href="${pageContext.request.contextPath}/salController.do?method=downloadSample&type=1" class="btn btn-outline-light">
+						<i class="fa fa-download"></i>下載範例檔案
+                	</a>
+                	&emsp;
+                	<button id="btn_loadBat" class="btn btn-success" type="button" >
+						<i class="fa fa-cog"></i>執行
+					</button>
 				</div>
-			</div>
-			<div class="col-md-2">
-				<button id="btn_handelBat" class="btn btn-info roleQry" type="button" ><i class="fa fa-cog"></i>執行</button>					
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
 				<div class="form-inline" id="rowBatHanding_1">
 					<div class="input-group">
-						<div class="input-group" id="divfield_1">
-							<label for="handing_Datyr" >發薪日</label>
-							<input type="text" id="handing_Datyr" class="form-control dateBat" maxlength="10" size="10"/>
-							<label for="handing_paycode" >支扣項目</label>
-							<select id="handing_paycode" class="selectpicker" data-width="fit" data-live-search="true" title="支扣項目">
-								
-							</select>
-						</div>
-						<div class="input-group" id="divfield_2">
-							<label for="handing_chkbas" >檢核基本檔</label>
-							<select id="handing_chkbas" class="form-control" title="檢核基本檔">
-								<option value="Y">Y</option>
-								<option value="N">N</option>
-							</select>								
-						</div>
-						<div class="input-group" id="divfield_3" >
-							<form id="uploadfileForm">檔案 	
-<!-- 								    <label class="sr-only" for="fileInput">來源</label> -->
-							    <input type="file" accept=".csv,text/plain"  id="fileInput" name="fileInput">								   
-						    </form> 
-					   	 </div>
-					   	
+											
+						<div class="col-md-12 " id="divfield_1">							
+							<label class="form-label mb-1 d-block">匯入檔案（Excel），僅支援 .xlsx / .xls 格式</label>
+							<form id="uploadfileForm" class="mb-0">
+								<div class="custom-file-upload d-flex align-items-center border rounded p-2 bg-light">
+                        			<i class="fa fa-file-excel-o text-success mr-2" style="font-size:1.3rem;"></i>
+                        			<input type="file" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" id="fileInput" name="fileInput" class="form-control-file flex-grow-1">
+                               	</div>
+                               
+                            </form>
+                        </div>
+					   	<!-- 訊息提示框 -->
+						<div class="alert alert-info" id="msgHint" style="display:inline-block; vertical-align:middle; background-color:#d9edf7; border-color:#bce8f1; color:#31708f; padding:6px 12px; margin-bottom:0; font-size:14px; line-height:1.6;">
+            				<i class="fa fa-bullhorn"></i><span id="msgHintText">請先[下載範例檔案]置於硬碟,可更名,修正後,再選擇檔案上傳匯入.</span>
+        				</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		<!--  -->
   	</div>
 
 
+</div>
+
+<div id="pageLoadingOverlay">
+    <div class="loader"></div>
 </div>
 
 </body>

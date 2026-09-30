@@ -5,48 +5,51 @@ import java.io.Serializable;
 public class Globals implements Serializable{
 	private static final long serialVersionUID = -2859744183434430985L;
 	//DATA_SOURCE========================================================================================================
-	public static final String dataSource_DSNP ="salDSNds";	//³s±µ¥D¾÷ °ªºa
-	//public static final String dataSource_NT =	"salNTds";	//³s±µNT mgtdb °ªºa
-	public static final String dataSource_NT =	"salds";	//³s±µNT mgtdb °ªºa
-	public static final String dataSource_DSNP_PT ="salDSNds_pt";	//³s±µ¥D¾÷ «Ìºa
-	public static final String dataSource_NT_PT =	"salds_pt";		//³s±µNT mgtdb «Ìºa
-	public static final String dataSource_DSNP_LH ="salDSNds_lh";	//³s±µ¥D¾÷ ÁpÂå
-	public static final String dataSource_NT_LH =	"salds_lh";		//³s±µNT mgtdb ÁpÂå
+	public static final String dataSource_DSNP ="salDSNds";	//é€£æ¥ä¸»æ©Ÿ é«˜æ¦®
+	//public static final String dataSource_NT =	"salNTds";	//é€£æ¥NT mgtdb é«˜æ¦®
+	public static final String dataSource_NT =	"salds";	//é€£æ¥NT mgtdb é«˜æ¦®
+	public static final String dataSource_DSNP_PT ="salDSNds_pt";	//é€£æ¥ä¸»æ©Ÿ å±æ¦®
+	public static final String dataSource_NT_PT =	"salds_pt";		//é€£æ¥NT mgtdb å±æ¦®
+	public static final String dataSource_DSNP_LH ="salDSNds_lh";	//é€£æ¥ä¸»æ©Ÿ è¯é†«
+	public static final String dataSource_NT_LH =	"salds_lh";		//é€£æ¥NT mgtdb è¯é†«
 	
-	public static final String gNcontract =	"2015-1-1";	//·s¨î«´¬ù¥Í®Ä¤é´Á
-	public static final String gNcontract_2A0 =	"2023-1-1";	//·s¨î«´¬ù¥Í®Ä¤é´Á_«Ìºa
-	public static final String gPFNew =	"2024-8-1";		//«´¬ùÁZ®Ä²Õ¦¨KEY,§t¦¹¤é´Á«e,Â¾ºÙ+00000
-	public static final String gPensionFund =	"2021-1-1";	//°h¼¾°òª÷·¹¦Û110¦~1¤ë1¤é§K¯Ç¤J©Ò±oµ|
-	public static final String gCivilServants =	"2023-7-1";	//112¦~7¤ë¤½«O¤Î°h¼¾·s¨î¤W¸ô
+	public static final String gNcontract =	"2015-1-1";	//æ–°åˆ¶å¥‘ç´„ç”Ÿæ•ˆæ—¥æœŸ
+	public static final String gNcontract_2A0 =	"2023-1-1";	//æ–°åˆ¶å¥‘ç´„ç”Ÿæ•ˆæ—¥æœŸ_å±æ¦®
+	public static final String gPFNew =	"2024-8-1";		//å¥‘ç´„ç¸¾æ•ˆçµ„æˆKEY,å«æ­¤æ—¥æœŸå‰,è·ç¨±+00000
+	public static final String gPensionFund =	"2021-1-1";	//é€€æ’«åŸºé‡‘æº¯è‡ª110å¹´1æœˆ1æ—¥å…ç´å…¥æ‰€å¾—ç¨…
+	public static final String gCivilServants =	"2023-7-1";	//112å¹´7æœˆå…¬ä¿åŠé€€æ’«æ–°åˆ¶ä¸Šè·¯
 	
-	public static final String SESSION_SYS_ADMIN = "PA_ADM";	//Á~¸ê¨t²Î­t³d¤H	
-	public static final String SESSION_SYS_EDIT = "PA_EDIT";	//Á~¸ê¨t²Î_ºûÅ@¨¤¦â
-	public static final String SESSION_SYS_VIEW = "PA_VIEW";	//Á~¸ê¨t²Î_¬d¸ß¨¤¦â
-	public static final String SESSION_SYS_BONES = "PA_BONES";	//Á~¸ê¨t²Î_­û¤u¼úª÷¨¤¦â
-	public static final String SESSION_SYS_TAX = "PA_TAX";		//Á~¸ê¨t²Î_©Ò±oµ|¨¤¦â
+	public static final String SESSION_SYS_ADMIN = "PA_ADM";	//è–ªè³‡ç³»çµ±è² è²¬äºº	
+	public static final String SESSION_SYS_EDIT = "PA_EDIT";	//è–ªè³‡ç³»çµ±_ç¶­è­·è§’è‰²
+	public static final String SESSION_SYS_VIEW = "PA_VIEW";	//è–ªè³‡ç³»çµ±_æŸ¥è©¢è§’è‰²
+	public static final String SESSION_SYS_BONES = "PA_BONES";	//è–ªè³‡ç³»çµ±_å“¡å·¥çé‡‘è§’è‰²
+	public static final String SESSION_SYS_TAX = "PA_TAX";		//è–ªè³‡ç³»çµ±_æ‰€å¾—ç¨…è§’è‰²
+	public static final String gSampleFile = "\\\\ap_pd1.vghks.gov.tw\\Apps_Exe\\SalProd\\SampleFile\\";			//åˆ‡æ›ç¯„æœ¬ä¸‹è¼‰
 	
 
-	//---------------------§ë«O¯Å¶Z¤W­­
-	public static final int gDpinMax = 313000;	//°·«O(2025.1.1 219500->313000)
-	public static final int gLbInMax = 45800;	//³Ò«O
-	public static final int gOccInMax = 72800;	//Â¾¨a
-	//---------------------³Ì§C°ò¥»¤u¸ê (2024.1.1 26400->27470)(2025.1.1 27470->28590)(2026.1.1 28590->29500)
+	//---------------------æŠ•ä¿ç´šè·ä¸Šé™
+	public static final int gDpinMax = 313000;	//å¥ä¿(2025.1.1 219500->313000)
+	public static final int gLbInMax = 45800;	//å‹ä¿
+	public static final int gOccInMax = 72800;	//è·ç½
+	//---------------------'å‹å·¥é€€ä¼‘é‡‘--å…¬æé€€ä¼‘é‡‘æ¯”ç‡
+	public static final double gMWorkRetirRate = 0.06;      
+	//---------------------æœ€ä½åŸºæœ¬å·¥è³‡ (2024.1.1 26400->27470)(2025.1.1 27470->28590)(2026.1.1 28590->29500)
 	public static final int gBasSalMin = 29500;
-	//---------------------2025.1.1 ÁpÂå³Ì§C¤u¸ê
+	//---------------------2025.1.1 è¯é†«æœ€ä½å·¥è³‡
 	public static final int gSalStandard3A0 = 31500;  
-	//---------------------©Ò±o²bÃB°_¦©¼Ğ·Ç2024.1.5 88501 2025.12.29 90501
+	//---------------------æ‰€å¾—æ·¨é¡èµ·æ‰£æ¨™æº–2024.1.5 88501 2025.12.29 90501
 	public static final int gSTaxAmt =90501;	
-	//---------------------©Ò±o¦©Ãº2015.5.4
+	//---------------------æ‰€å¾—æ‰£ç¹³2015.5.4
 	public static final double gTaxTate=0.05;
-	//---------------------¸É¥R¶O¶O°ò
+	//---------------------è£œå……è²»è²»åŸº
 	public static final double gNHIRate=0.0211;
-	//---------------------°·«O¸É§U¤W­­ (2007-8-1 604§ï659) (2010-7-1§ï749)(2023-2-14 826)
+	//---------------------å¥ä¿è£œåŠ©ä¸Šé™ (2007-8-1 604æ”¹659) (2010-7-1æ”¹749)(2023-2-14 826)
 	public static final int gInsuLimit = 826;
-	//---------------------´¶³q¨Æ¬G¶O²v
+	//---------------------æ™®é€šäº‹æ•…è²»ç‡
 	public static final double gAccident =0.115;
-	//---------------------´N·~«OÀI¶O²v
+	//---------------------å°±æ¥­ä¿éšªè²»ç‡
 	public static final double gEmploy = 0.01;
-	//---------------------¸u¥Î¦í°|Âå®v§é¦X²v
+	//---------------------è˜ç”¨ä½é™¢é†«å¸«æŠ˜åˆç‡
 	public static final double gRPRemu = 159.2;
 }
 

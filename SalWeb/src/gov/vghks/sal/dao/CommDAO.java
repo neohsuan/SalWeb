@@ -9,12 +9,14 @@ import gov.vghks.sal.Tables;
 import gov.vghks.sal.model.Pacspf;
 import gov.vghks.sal.model.Padatpay;
 import gov.vghks.sal.model.Padept;
+import gov.vghks.sal.model.Palbrptbl;
 import gov.vghks.sal.model.Papayitm;
 import gov.vghks.sal.model.Paposi;
 import gov.vghks.sal.model.Parank;
 import gov.vghks.sal.model.Patitle;
 import gov.vghks.sal.model.Patrapay;
 import gov.vghks.sal.model.Patrapsn;
+import gov.vghks.sal.model.Pawkretir;
 import gov.vghks.sal.model.PsInsu;
 import gov.vghks.sal.util.AmJsonConfig;
 
@@ -52,15 +54,18 @@ public class CommDAO {
 	private static boolean connFlg = false;
 	static String g_dataSourceNT="";
 	private String hid="";
-	private String tCspfTbl  = "PA.PACSPF";				//工作獎金支扣
-	private String tDept 	 = "PA.PADEPT";				//單位代碼
-	private String tTitle    = "";			//職稱
-	private String tPayitm   = "";			//支扣項目
-	private String tPosiTbl  = "";				//職等支扣--專業加給及主管加給 
-	private String tRankTbl  = "";				//階級支扣
-	private String tDpinTbl  = "";			//全民健康保險負擔金額表
-	private String tLbinTbl  = "";			//勞保投保金額對照表
-	private String tTaxTbl   = "";			//薪資所得扣繳稅額表 
+	private String tDept 	 = "";				//8單位代碼
+	private String tTitle    = "";				//9職稱
+	private String tTaxTbl   = "";				//15薪資所得扣繳稅額表
+	private String tDpinTbl  = "";				//17全民健康保險負擔金額表
+	private String tLbinTbl  = "";				//18勞保投保金額對照表
+	private String tLbrpTbl  = "";				//18勞工退休金月提繳工資分級表
+	private String tPosiTbl  = "";				//20職等支扣--專業加給及主管加給
+	private String tRankTbl  = "";				//21階級支扣
+	private String tCspfTbl  = "";				//22工作獎金支扣	
+	private String tPayitm   = "";				//27支扣項目 
+	private String tWkretir  = "";				//40勞工退休金檔
+	
 	
 	public CommDAO() {
 		super();
@@ -85,7 +90,9 @@ public class CommDAO {
 		tPosiTbl=tabInfo.tPosiTbl;
 		tDpinTbl=tabInfo.tDpinTbl;
 		tLbinTbl=tabInfo.tLbinTbl;
+		tLbrpTbl=tabInfo.tLbrpTbl;
 		tTaxTbl =tabInfo.tTaxTbl;
+		tWkretir  = tabInfo.tWKRETIR;
 	}
 	
 	public CommDAO(VGHDataAccess da1,VGHDataAccess da2,String hid) {
@@ -102,6 +109,9 @@ public class CommDAO {
 		tPosiTbl=tabInfo.tPosiTbl;
 		tDpinTbl=tabInfo.tDpinTbl;
 		tLbinTbl=tabInfo.tLbinTbl;
+		tLbrpTbl=tabInfo.tLbrpTbl;
+		tTaxTbl =tabInfo.tTaxTbl;
+		tWkretir  = tabInfo.tWKRETIR;
 	}
 	/**傳回 A俸點對應 B取得新俸點 C計算補發扣
 	 * @param 
@@ -680,7 +690,7 @@ public class CommDAO {
  									intvalue=150;
  								}
  								else if (l_titSub.matches("I")) {
- 									if (jt.matches("DN|E0|E1|E3|E4|E5|E6|E7|EI|EJ|EK|EL|EN|ES|EU|EY|DM"))	//契約的護理師、放射、檢驗、復健、心理、藥師等
+ 									if (jt.matches("DN|E0|E1|E3|E4|E5|E6|E7|EI|EJ|EK|EL|EN|ES|EU|EY|DM|E9"))	//契約的護理師、放射、檢驗、復健、心理、藥師等 (2026.9.22加E9約用實習護理師) 
  										intvalue=200;
  									else if (jt.matches("CG"))	//'CG契約主治醫師
  										intvalue=1500;
@@ -1500,7 +1510,91 @@ public class CommDAO {
 		}
 		return rtnMap;
 	}
+	/**取得 勞工退休金 map	
+	 * key=LBRPHIGH
+	 * 		  
+'   @return   Pawkretir : map
+	 * @throws SQLException 
+	 */
+	public HashMap<Integer, Palbrptbl> getLbretirMap(VGHDataAccess da) throws SQLException{
+		String me = getClass().getName() + ".getLbretirMap()";
+		ArrayList<Object> params = new ArrayList<Object>();
+		HashMap<Integer, Palbrptbl> rtnMap=new HashMap();
+		Palbrptbl oneObj=null; 
+		int oneKey=0;
+		long starttime =0;
+		sql = "select LBRPLOW,LBRPHIGH,LBRPAMT,MASTERAMT,ASSOCC from "+this.tLbrpTbl +" with ur ";
+		try{
+			starttime = System.currentTimeMillis();
+			result = da.arraylistbyQuery(sql,META_TYPE);
+			log.info(me+"  " + sql+"  ...size:"+result.size());			
+			if(result.size()>0){
+				for (Map<String,Object> data :result){
+					oneObj=new Palbrptbl();
+					PropertyUtils.copyProperties(oneObj, data);					
+					oneKey=oneObj.getLbrphigh();					
+					rtnMap.put(oneKey, oneObj);
+				}
+			}
+			log.info(me+"(size):" + result.size()+" 共花費："+(System.currentTimeMillis()-starttime)+"毫秒");
+		}
+		catch(Exception e){
+			log.info(me + " fail, " + e);
+			throw new SQLException(me + ", fail!!." + e);
+		}
+		finally{
 		
+		}
+		
+		return rtnMap;
+	}
+	//勞工退休金 ,找出月退繳金額,自提
+	//勞退自願提繳（自繳）退休金金額以「元」為單位，計算到角以下採四捨五入
+	//假設月提繳工資為 36,300 元，自願提繳率為 3.5%。計算過程：36,300 × 3.5% = 1,270.5 元。實際金額：四捨五入後為 1,271 元。
+	public HashMap GetLbRetireByPay(int l_pay,String l_rate,VGHDataAccess da) throws SQLException{
+		String me = getClass().getName() + ".GetLbRetireByPay()";
+		log.info(me +  " l_pay = " + l_pay);
+		
+		HashMap rtnMap=new HashMap();
+		int masteramt=0;  
+		int wrinig=0;	//投保級距
+		int selfamt=0;	//自繳退休金
+		double d_rate=0;	
+		params.clear();
+		Hospitals hospInfo = Hospitals.getOneHosp(hid);
+		
+		sql = " select LBRPLOW,LBRPHIGH,LBRPAMT,MASTERAMT,ASSOCC "+
+				 "from "+this.tLbrpTbl + 
+			   " where ? between LBRPLOW and LBRPHIGH  with ur ";
+		params.add(l_pay);
+		
+		log.info(me+"  " + sql+"...params:"+ params.toString());
+		try{
+			if(da==null){
+				connFlg = false;
+				//改用列舉
+				g_dataSourceNT=hospInfo.dataSourceNT;
+				da=new VGHDataAccess(g_dataSourceNT);
+			}
+			result = da.arraylistbyQuery(sql,params,META_TYPE);
+			log.info(me+"  ...size:"+result.size());
+			d_rate = Double.parseDouble(l_rate);
+			for (Map<String,Object> data :result){
+				wrinig   = (Integer) data.get("lbrpamt");
+				masteramt = (Integer) data.get("masteramt");
+				selfamt =  (int) Math.round( (double)wrinig * d_rate /100) ;
+			}
+			
+			rtnMap.put("wrinig", wrinig);	//級距
+			rtnMap.put("masteramt", masteramt);	//公提退休金=月提繳工資*6%
+			rtnMap.put("selfamt", selfamt);	//自繳退休金
+		}catch(Throwable e){
+			throw new SQLException(me+" "+e.toString());
+		}finally{
+		
+		}
+		return rtnMap;
+	}	
 	/**傳回 績效點數
 	 * @param 
 	 * 		  vRANK3  : 本功別
