@@ -1463,7 +1463,7 @@ $(function(){
 		                    		  i.replace(/[\$,]/g, '')*1 :
 		                    		  typeof i === 'number' ? i : 0;
 		            };
-		 
+		         	
 		            // 總所得:Total over this page
 		            pTotal = api
 		                .column( 3	, { page: 'current'} )
@@ -1545,7 +1545,15 @@ $(function(){
 						't'+
 						'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
 				buttons: [
-		           'excelHtml5' ,'print'
+					{
+		                extend: 'excelHtml5',
+		                footer: true, // 關鍵設定：讓匯出的 Excel 檔案包含 footer 合計
+		                title: '資料匯出總表'
+		            },
+		            {
+		                extend: 'print',
+		                footer: true
+		            }					
 		        ],
 	  			 "fnDrawCallback": function () {
 						var api = this.api();
@@ -1714,7 +1722,15 @@ $(function(){
 				't'+
 				'<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
 		buttons: [
-           'excelHtml5' 
+			{
+                extend: 'excelHtml5',
+                footer: true, // 關鍵設定：讓匯出的 Excel 檔案包含 footer 合計
+                title: '資料匯出總表'
+            },
+            {
+                extend: 'print',
+                footer: true
+            }
         ]
 	});
 	objCopyD.aoColumnDefs= [
@@ -2729,9 +2745,12 @@ $(function(){
 									</thead>
 									<tfoot>
 										<tr>
-											<th colspan=3 style="text-align:right">小計</th>
 											<th style="text-align:right"></th>
-											<th style="text-align:right"></th>											
+											<th style="text-align:right"></th>
+											<th style="text-align:right">小計</th>
+											<th style="text-align:right"></th>
+											<th style="text-align:right"></th>
+											<th></th>											
 										</tr>
 									</tfoot>
 								</table>
@@ -2748,7 +2767,7 @@ $(function(){
 	
   	<!--檢驗-->
 	<div class="tab-pane fade" id="byCheckMain" role="tabpanel" aria-labelledby="pills-check-tab">
-		<div class="container">
+		<div class="container w-80 mx-auto">
 			<div class="row">
 				<div class="col-12">
 					<a href="#explan_check" class="btn btn-danger" data-toggle="collapse">注意事項</a>
@@ -2794,8 +2813,11 @@ $(function(){
 						</thead>
 						<tfoot>
 				            <tr>
-				            	<th colspan=4 style="text-align:right"></th>
-				                <th style="text-align:right"></th>
+				            	<th style="text-align:right"></th>
+				            	<th style="text-align:right"></th>
+				            	<th style="text-align:right"></th>
+				            	<th style="text-align:right"></th>
+				            	<th style="text-align:right"></th>
 				                <th style="text-align:right"></th>
 				            </tr>
 				        </tfoot>
@@ -2822,8 +2844,19 @@ $(function(){
 							</thead>
 							<tfoot>
 					            <tr>
-					            	<th colspan=11 style="text-align:right"></th>
-				                	<th colspan=2 style="text-align:right"></th>				            	
+					            	<th></th>
+					            	<th></th>
+					            	<th></th>
+					            	<th></th>
+					            	<th></th>
+					            	<th></th>
+					            	<th></th>
+					            	<th></th>
+					            	<th></th>
+					            	<th></th>
+					            	<th></th>
+					            	<th></th>
+					            	<th style="text-align:right"></th>
 					            </tr>
 					        </tfoot>
 						</table>

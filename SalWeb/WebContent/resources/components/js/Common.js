@@ -1,15 +1,15 @@
-/*¶Ç¤J¤é´ÁvDate¡A¶Ç¦^¤¤°ê¦~¤éªº«¬¦¡¡C
-* ¦p¥Á°ê51¦~10¤ë24¤é
-* vSplitChar¡G¦~¤ë¤é¶¡ªº¤À¹j²Å¸¹¡A¦p '-' , '/'
+/*å‚³å…¥æ—¥æœŸvDateï¼Œå‚³å›ä¸­åœ‹å¹´æ—¥çš„å‹å¼ã€‚
+* å¦‚æ°‘åœ‹51å¹´10æœˆ24æ—¥
+* vSplitCharï¼šå¹´æœˆæ—¥é–“çš„åˆ†éš”ç¬¦è™Ÿï¼Œå¦‚ '-' , '/'
 */
 function getChineseDate(vDate, vSplitChar){
 	var arrDate=vDate.split(vSplitChar);
 	var chYear=parseInt(arrDate[0],10)-1911;
 	var mm=parseInt(arrDate[1],10);
 	var dd=parseInt(arrDate[2],10);
-	return "¥Á°ê " + chYear + " ¦~ " + mm + " ¤ë " + dd + " ¤é " ;
+	return "æ°‘åœ‹ " + chYear + " å¹´ " + mm + " æœˆ " + dd + " æ—¥ " ;
 } 
-//Åçµıµ²§ô®É¶¡¬O§_¤j©óµ²§ô¤é´Á, ¬O«h¶Ç¦^true
+//é©—è¨¼çµæŸæ™‚é–“æ˜¯å¦å¤§æ–¼çµæŸæ—¥æœŸ, æ˜¯å‰‡å‚³å›true
 function dayRange(fromDateId, toDateId){		
 		var objFromDate=eval(document.getElementById(fromDateId));
 		var objToDate=eval(document.getElementById(toDateId));
@@ -28,12 +28,12 @@ function dayRange(fromDateId, toDateId){
   		var difference=dtToDate.getTime() - dtFromDate.getTime();  		
   		difference=Math.floor(difference/(1000*60*60*24));
   		if (difference < 0 ) {
-  			alert("µ²§ô¤é´Á¤£¥i¤p©ó°_©l¤é´Á¡I");
+  			alert("çµæŸæ—¥æœŸä¸å¯å°æ–¼èµ·å§‹æ—¥æœŸï¼");
  			return false;
   		} return true;
 }
 
-//Åçµı¿é¤J¤é´Á¤£¥i¤j©ó¨t²Î¤é´Á
+//é©—è¨¼è¼¸å…¥æ—¥æœŸä¸å¯å¤§æ–¼ç³»çµ±æ—¥æœŸ
 function chkAfDate(objFromDate){	
 		var vFromDate = objFromDate.value;
 		var arrFromDate=vFromDate.split('-');		 		
@@ -45,17 +45,17 @@ function chkAfDate(objFromDate){
 		var difference=dtToDate.getTime() - dtFromDate.getTime();  		
 		difference=Math.floor(difference/(1000*60*60*24));
 		if (difference < 0 ) {
-			alert("¿é¤J¤é´Á¤£¥i¤j©ó¤µ¤é¡I");
+			alert("è¼¸å…¥æ—¥æœŸä¸å¯å¤§æ–¼ä»Šæ—¥ï¼");
 			return false;
 		} return true;
 }
 
-//Åçµı¿é¤J¤é´Á¡B®É¶¡¤£¥i¤j©ó¨t²Î®É¶¡
+//é©—è¨¼è¼¸å…¥æ—¥æœŸã€æ™‚é–“ä¸å¯å¤§æ–¼ç³»çµ±æ™‚é–“
 function chkAfTime(dateObj,timeObj){
 	//alert(chkTimeFormat(timeObj));
 	if (chkTimeFormat(timeObj)){
 		var vTime = timeObj.value;
-		var chkDate = new Date(); //«eºİ¶Ç¨Ó¤é´Á
+		var chkDate = new Date(); //å‰ç«¯å‚³ä¾†æ—¥æœŸ
 		var now = new Date();
 		var arrFromDate=dateObj.value.split('-');
 		chkDate.setFullYear(parseInt(arrFromDate[0],10));	
@@ -67,7 +67,7 @@ function chkAfTime(dateObj,timeObj){
   		difference=Math.floor(difference/(1000*60*60*24));
   		//alert(difference);
   		if (difference < 0 ) {
-  			alert("¤£¥i¤j©ó¥Ø«e®É¶¡¡I");
+  			alert("ä¸å¯å¤§æ–¼ç›®å‰æ™‚é–“ï¼");
   			timeObj.value = "";
   			timeObj.focus();
   			
@@ -76,10 +76,10 @@ function chkAfTime(dateObj,timeObj){
 }
 
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GAddDay(addD)
-//¥Ø        ªº¡G¤µ¤é¤é´Á¥[´î¤é¼Æ«áªº¤é´Á
-//¶Ç¤J°Ñ¼Æ¡G¶Ç¤JaddD(¥[´î¤Ñ¼Æ)
-//¶Ç  ¦^  ­È¡G¨Ò: AddDay(-10) ¤µ¤Ñ¬O2012-01-08 ¦^¶Ç2011-12-29
+//å‡½æ•¸åç¨±ï¼šAddDay(addD)
+//ç›®        çš„ï¼šä»Šæ—¥æ—¥æœŸåŠ æ¸›æ—¥æ•¸å¾Œçš„æ—¥æœŸ
+//å‚³å…¥åƒæ•¸ï¼šå‚³å…¥addD(åŠ æ¸›å¤©æ•¸)
+//å‚³  å›  å€¼ï¼šä¾‹: AddDay(-10) ä»Šå¤©æ˜¯2012-01-08 å›å‚³2011-12-29
 //*******************************************************************************
 function AddDay(addD){
 	var now = new Date();
@@ -99,13 +99,13 @@ function AddDay(addD){
 }
 
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GAddDay(theDate,addD)
-//¥Ø        ªº¡G¬Y¤é´Á¥[´î¤é¼Æ«áªº¤é´Á
-//¶Ç¤J°Ñ¼Æ¡G¶Ç¤JtheDate(¬Y¤é´Áyyyy-MM-ss)  addD(¥[´î¤Ñ¼Æ)
-//¶Ç  ¦^  ­È¡G¨Ò: AddDay(-10) ¤µ¤Ñ¬O2012-01-08 ¦^¶Ç2011-12-29
+//å‡½æ•¸åç¨±ï¼šAddDay(theDate,addD)
+//ç›®        çš„ï¼šæŸæ—¥æœŸåŠ æ¸›æ—¥æ•¸å¾Œçš„æ—¥æœŸ
+//å‚³å…¥åƒæ•¸ï¼šå‚³å…¥theDate(æŸæ—¥æœŸyyyy-MM-ss)  addD(åŠ æ¸›å¤©æ•¸)
+//å‚³  å›  å€¼ï¼šä¾‹: AddDay(-10) ä»Šå¤©æ˜¯2012-01-08 å›å‚³2011-12-29
 //*******************************************************************************
 function AddDay(theDate,addD){	
-	var a = new Date(theDate.split('-')[1]+"/"+theDate.split('-')[2]+"/"+theDate.split('-')[0]);// ¤ë/¤é/¦~	
+	var a = new Date(theDate.split('-')[1]+"/"+theDate.split('-')[2]+"/"+theDate.split('-')[0]);// æœˆ/æ—¥/å¹´	
 	a = a.valueOf();
 	a = a + addD * (24 * 60 * 60 * 1000);
 	a = new Date(a);
@@ -119,10 +119,10 @@ function AddDay(theDate,addD){
 
 
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GAddTime(addTime,addT)
-//¥Ø        ªº¡G¶Ç¤J®É¶¡¥[´î¤p®É
-//¶Ç¤J°Ñ¼Æ¡G¶Ç¤JaddTime,addT(¥[´î¤p®É)
-//¶Ç  ¦^  ­È¡G¨Ò: AddDay(16:22:12,2)  ¦^¶Ç18:22:12
+//å‡½æ•¸åç¨±ï¼šAddTime(addTime,addT)
+//ç›®        çš„ï¼šå‚³å…¥æ™‚é–“åŠ æ¸›å°æ™‚
+//å‚³å…¥åƒæ•¸ï¼šå‚³å…¥addTime,addT(åŠ æ¸›å°æ™‚)
+//å‚³  å›  å€¼ï¼šä¾‹: AddDay(16:22:12,2)  å›å‚³18:22:12
 //*******************************************************************************
 function AddTime(addTime,addMM){
 	var timeAry=addTime.split(':');
@@ -135,10 +135,10 @@ function AddTime(addTime,addMM){
 }
 
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GAddTimeHHMM(addTime,addT)
-//¥Ø        ªº¡G¶Ç¤J®É¶¡¥[¤W¤p®É¤À
-//¶Ç¤J°Ñ¼Æ¡G¶Ç¤JaddTime,addT(¥[´î¤p®É)
-//¶Ç  ¦^  ­È¡G¨Ò: AddDay(1622,0020)  ¦^¶Ç1610
+//å‡½æ•¸åç¨±ï¼šAddTimeHHMM(addTime,addT)
+//ç›®        çš„ï¼šå‚³å…¥æ™‚é–“åŠ ä¸Šå°æ™‚åˆ†
+//å‚³å…¥åƒæ•¸ï¼šå‚³å…¥addTime,addT(åŠ æ¸›å°æ™‚)
+//å‚³  å›  å€¼ï¼šä¾‹: AddDay(1622,0020)  å›å‚³1610
 //*******************************************************************************
 function AddTimeHHMM(addTime,addHHMM){
 	var intHH=parseInt(addTime.substring(0,2),10);
@@ -149,7 +149,7 @@ function AddTimeHHMM(addTime,addHHMM){
 	var timeHHTmp=intHH + intAddHH;	
 	var timeMM=timeMMTmp;
 	var timeHH=timeHHTmp;
-	if (timeMM>59) //¶W¹L¤@¤p®É
+	if (timeMM>59) //è¶…éä¸€å°æ™‚
 	{
 		timeMM=timeMMTmp-60;
 		timeHH=timeHHTmp + 1;		
@@ -165,14 +165,14 @@ function AddTimeHHMM(addTime,addHHMM){
 function chkAfTime1(timeObj){
 	if (chkTimeFormat(timeObj)){
 		var vTime = timeObj.value;
-		var chkDate = new Date(); //«eºİ¶Ç¨Ó¤é´Á
+		var chkDate = new Date(); //å‰ç«¯å‚³ä¾†æ—¥æœŸ
 		var now = new Date();
  		chkDate.setHours(vTime.substring(0,2));
  		chkDate.setMinutes(vTime.substring(3,5));
   		var difference=now.getTime() - chkDate.getTime();
   		difference=Math.floor(difference/(1000*60*60*24));
   		if (difference < 0 ) {
-  			alert("¤£¥i¤j©ó¥Ø«e®É¶¡¡I");
+  			alert("ä¸å¯å¤§æ–¼ç›®å‰æ™‚é–“ï¼");
   			timeObj.value = "";
   			timeObj.focus();
   		}
@@ -183,7 +183,7 @@ function chkAfTimeBln(dateObj,timeObj){
 	//alert(chkTimeFormat(timeObj));
 	if (chkTimeFormat(timeObj)){
 		var vTime = timeObj.value;
-		var chkDate = new Date(); //«eºİ¶Ç¨Ó¤é´Á
+		var chkDate = new Date(); //å‰ç«¯å‚³ä¾†æ—¥æœŸ
 		var now = new Date();
 		var arrFromDate=dateObj.value.split('-');
 		chkDate.setFullYear(parseInt(arrFromDate[0],10));	
@@ -195,7 +195,7 @@ function chkAfTimeBln(dateObj,timeObj){
   		difference=Math.floor(difference/(1000*60*60*24));
   		//alert(difference);
   		if (difference < 0 ) {
-  			alert("¤£¥i¤j©ó¨t²Î®É¶¡¡I");
+  			alert("ä¸å¯å¤§æ–¼ç³»çµ±æ™‚é–“ï¼");
   			timeObj.value = "";
   			timeObj.focus();
   			return false;
@@ -207,7 +207,7 @@ function chkAfTimeBln(dateObj,timeObj){
 function chkAfTimeBln2(dateObj,timeObj){
 	//alert(chkTimeFormat(timeObj));
 		var vTime = timeObj.value;
-		var chkDate = new Date(); //«eºİ¶Ç¨Ó¤é´Á
+		var chkDate = new Date(); //å‰ç«¯å‚³ä¾†æ—¥æœŸ
 		var now = new Date();
 		var arrFromDate=dateObj.split('-');
 		chkDate.setFullYear(parseInt(arrFromDate[0],10));	
@@ -219,7 +219,7 @@ function chkAfTimeBln2(dateObj,timeObj){
   		difference=Math.floor(difference/(1000*60*60*24));
   		//alert(difference);
   		if (difference < 0 ) {
-  			//alert("¤£¥i¤j©ó¨t²Î®É¶¡¡I");
+  			//alert("ä¸å¯å¤§æ–¼ç³»çµ±æ™‚é–“ï¼");
   			timeObj.value = "";
   			return false;
   		}  		
@@ -256,8 +256,8 @@ function getTime(timeType){
 }
 
 function getThisYear(yearType){
-	//yearType 1:ªí¥Ü¤¤°ê¦~
-	//yearType 2:¦è¬v¦~ 
+	//yearType 1:è¡¨ç¤ºä¸­åœ‹å¹´
+	//yearType 2:è¥¿æ´‹å¹´ 
 	var now = new Date();
 	if (yearType == 1) {
 		return now.getFullYear()-1911;
@@ -267,8 +267,8 @@ function getThisYear(yearType){
 }
 
 function getThisMonth(monthType){
-	//yearType 1:ªí¥Ü1,2,,3,~12¤ë¥÷
-	//yearType 2:ªí¥Ü0,1,2,3,~11¤ë¥÷
+	//yearType 1:è¡¨ç¤º1,2,,3,~12æœˆä»½
+	//yearType 2:è¡¨ç¤º0,1,2,3,~11æœˆä»½
 	var now = new Date();
 	if (monthType == 1) {
 		return now.getMonth() + 1;
@@ -278,15 +278,15 @@ function getThisMonth(monthType){
 }
 
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GcheckIsNum(inpField)
-//¥Ø        ªº¡GÀË¬d¬O§_¥ş¬°¼Æ¦r
-//¶Ç¤J°Ñ¼Æ¡G±ı¤ñ¹ï¦r¦ê
-//¶Ç  ¦^  ­È¡GµL
-//­­        ¨î¡GµL
-//³Æ        µù¡G
-//½d        ¨Ò¡G
-//ª©        ¥»¡G1.0  
-//§@¡@    ªÌ¡GYaHsueh,Chien(2005-01-24)
+//å‡½æ•¸åç¨±ï¼šcheckIsNum(inpField)
+//ç›®        çš„ï¼šæª¢æŸ¥æ˜¯å¦å…¨ç‚ºæ•¸å­—
+//å‚³å…¥åƒæ•¸ï¼šæ¬²æ¯”å°å­—ä¸²
+//å‚³  å›  å€¼ï¼šç„¡
+//é™        åˆ¶ï¼šç„¡
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼š
+//ç‰ˆ        æœ¬ï¼š1.0  
+//ä½œã€€    è€…ï¼šYaHsueh,Chien(2005-01-24)
 //*******************************************************************************
 function checkIsNum(inpField){
 var count=0;
@@ -306,22 +306,22 @@ var newstr="";
 			}
     }
     if(count>0){
-       alert("¥u¯à¿é¤J¼Æ¦r0~9¡I"); 
+       alert("åªèƒ½è¼¸å…¥æ•¸å­—0~9ï¼"); 
     }
      inpField.value=newstr; 
 	 inpField.focus();
 }
 
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GisNumber(strWord)
-//¥Ø        ªº¡GÀË¬d¦r¦ê¤¤¬O§_¥ş¬°¼Æ¦r
-//¶Ç¤J°Ñ¼Æ¡G±ıÀË¬d¦r¦ê
-//¶Ç  ¦^  ­È¡Gtrue¡G¥ş¬O¼Æ¦r/false¡G¤£¥ş¬O¼Æ¦r
-//°Æ  §@  ¥Î¡GµL
-//³Æ        µù¡G
-//½d        ¨Ò¡G
-//ª©        ¥»¡G1.0  
-//§@¡@¡@ªÌ¡G(2004-08-05)
+//å‡½æ•¸åç¨±ï¼šisNumber(strWord)
+//ç›®        çš„ï¼šæª¢æŸ¥å­—ä¸²ä¸­æ˜¯å¦å…¨ç‚ºæ•¸å­—
+//å‚³å…¥åƒæ•¸ï¼šæ¬²æª¢æŸ¥å­—ä¸²
+//å‚³  å›  å€¼ï¼štrueï¼šå…¨æ˜¯æ•¸å­—/falseï¼šä¸å…¨æ˜¯æ•¸å­—
+//å‰¯  ä½œ  ç”¨ï¼šç„¡
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼š
+//ç‰ˆ        æœ¬ï¼š1.0  
+//ä½œã€€ã€€è€…ï¼š(2004-08-05)
 //*******************************************************************************
 function isNumber(strWord)
 {
@@ -345,15 +345,15 @@ function isNumber(strWord)
 	      return true;
 }
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GisOnlyNumber(strWord)
-//¥Ø        ªº¡GÀË¬d¦r¦ê¤¤¬O§_¥ş¬°¼Æ¦r
-//¶Ç¤J°Ñ¼Æ¡G±ıÀË¬d¦r¦ê
-//¶Ç  ¦^  ­È¡Gtrue¡G¥ş¬O¼Æ¦r/false¡G¤£¥ş¬O¼Æ¦r
-//°Æ  §@  ¥Î¡GµL
-//³Æ        µù¡G
-//½d        ¨Ò¡G
-//ª©        ¥»¡G1.0  
-//§@¡@¡@ªÌ¡G(2011-05-30)
+//å‡½æ•¸åç¨±ï¼šisOnlyNumber(strWord)
+//ç›®        çš„ï¼šæª¢æŸ¥å­—ä¸²ä¸­æ˜¯å¦å…¨ç‚ºæ•¸å­—
+//å‚³å…¥åƒæ•¸ï¼šæ¬²æª¢æŸ¥å­—ä¸²
+//å‚³  å›  å€¼ï¼štrueï¼šå…¨æ˜¯æ•¸å­—/falseï¼šä¸å…¨æ˜¯æ•¸å­—
+//å‰¯  ä½œ  ç”¨ï¼šç„¡
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼š
+//ç‰ˆ        æœ¬ï¼š1.0  
+//ä½œã€€ã€€è€…ï¼š(2011-05-30)
 //*******************************************************************************
 function isOnlyNumber(strWord)
 {
@@ -377,36 +377,36 @@ function isOnlyNumber(strWord)
 	     return true;
 }
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GisTime(str)
-//¥Ø        ªº¡GÀË¬d¬O§_¥¿½T®É¶¡
-//¶Ç¤J°Ñ¼Æ¡G±ıÀË¬d¦r¦ê
-//¶Ç  ¦^  ­È¡Gtrue¡G¥¿½T/false¡G¤£¥¿½T
-//°Æ  §@  ¥Î¡GµL
-//³Æ        µù¡G
-//½d        ¨Ò¡G
-//ª©        ¥»¡G1.0  
-//§@¡@¡@ªÌ¡G(2011-05-31)
+//å‡½æ•¸åç¨±ï¼šisTime(str)
+//ç›®        çš„ï¼šæª¢æŸ¥æ˜¯å¦æ­£ç¢ºæ™‚é–“
+//å‚³å…¥åƒæ•¸ï¼šæ¬²æª¢æŸ¥å­—ä¸²
+//å‚³  å›  å€¼ï¼štrueï¼šæ­£ç¢º/falseï¼šä¸æ­£ç¢º
+//å‰¯  ä½œ  ç”¨ï¼šç„¡
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼š
+//ç‰ˆ        æœ¬ï¼š1.0  
+//ä½œã€€ã€€è€…ï¼š(2011-05-31)
 //*******************************************************************************
 function isTime(str){
 	var a = str.match(/^(\d{1,2})(:)?(\d{1,2})$/);
 		if(a==null){
-			return false;//not®É¶¡®æ¦¡ 
+			return false;//notæ™‚é–“æ ¼å¼ 
 		}else if(a[1]>24 || a[3]>60){
-			return false; //«D¥¿½T®É¶¡
+			return false; //éæ­£ç¢ºæ™‚é–“
 		}else{
 			return true;
 		}
 }
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GisDateNumber(strWord)
-//¥Ø        ªº¡GÀË¬d¤é´Á¦r¦ê¤¤¬O§_¬°¼Æ¦r©Î"-"
-//¶Ç¤J°Ñ¼Æ¡G±ıÀË¬d¦r¦ê
-//¶Ç  ¦^  ­È¡Gtrue¡G¥ş¬O¼Æ¦r/false¡G¤£¥ş¬O¼Æ¦r
-//°Æ  §@  ¥Î¡GµL
-//³Æ        µù¡G
-//½d        ¨Ò¡G
-//ª©        ¥»¡G1.0  
-//§@¡@¡@ªÌ¡G(2004-08-05)
+//å‡½æ•¸åç¨±ï¼šisDateNumber(strWord)
+//ç›®        çš„ï¼šæª¢æŸ¥æ—¥æœŸå­—ä¸²ä¸­æ˜¯å¦ç‚ºæ•¸å­—æˆ–"-"
+//å‚³å…¥åƒæ•¸ï¼šæ¬²æª¢æŸ¥å­—ä¸²
+//å‚³  å›  å€¼ï¼štrueï¼šå…¨æ˜¯æ•¸å­—/falseï¼šä¸å…¨æ˜¯æ•¸å­—
+//å‰¯  ä½œ  ç”¨ï¼šç„¡
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼š
+//ç‰ˆ        æœ¬ï¼š1.0  
+//ä½œã€€ã€€è€…ï¼š(2004-08-05)
 //*******************************************************************************
 function isDateNumber(strWord)
 {
@@ -432,15 +432,15 @@ function isDateNumber(strWord)
 }
 
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GchkIsDateNumber(strWord)
-//¥Ø        ªº¡GÀË¬d¤é´Á¦r¦ê¤¤¬O§_¬°¼Æ¦r©Î"-"
-//¶Ç¤J°Ñ¼Æ¡G±ıÀË¬d¦r¦ê
-//¶Ç  ¦^  ­È¡Gtrue¡G¥ş¬O¼Æ¦r/false¡G¤£¥ş¬O¼Æ¦r
-//°Æ  §@  ¥Î¡GµL
-//³Æ        µù¡G
-//½d        ¨Ò¡G
-//ª©        ¥»¡G1.0  
-//§@¡@¡@ªÌ¡G(2007-12-10)
+//å‡½æ•¸åç¨±ï¼šchkIsDateNumber(strWord)
+//ç›®        çš„ï¼šæª¢æŸ¥æ—¥æœŸå­—ä¸²ä¸­æ˜¯å¦ç‚ºæ•¸å­—æˆ–"-"
+//å‚³å…¥åƒæ•¸ï¼šæ¬²æª¢æŸ¥å­—ä¸²
+//å‚³  å›  å€¼ï¼štrueï¼šå…¨æ˜¯æ•¸å­—/falseï¼šä¸å…¨æ˜¯æ•¸å­—
+//å‰¯  ä½œ  ç”¨ï¼šç„¡
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼š
+//ç‰ˆ        æœ¬ï¼š1.0  
+//ä½œã€€ã€€è€…ï¼š(2007-12-10)
 //*******************************************************************************
 function chkIsDateNum(strWord)
 {
@@ -465,19 +465,19 @@ function chkIsDateNum(strWord)
     alert(newStr);
 	 if (!allValid) {
 	 	strWord.value=newStr;
-	    alert('¥u¯à¿é¤J0~9©Î-!!');
+	    alert('åªèƒ½è¼¸å…¥0~9æˆ–-!!');
 	 }
 }
 
  //*******************************************************************************
-// ¨ç¼Æ¦WºÙ¡GisNull(strTxt)
-// ¥Ø        ªº¡G§PÂ_¶Ç¤J¦r¦ê¬O§_¬°null¡A¨Ã±NnullÂà¦¨''
-// °Ñ¼Æ»¡©ú¡G[String] ±ı§PÂ_¦r¦ê
-// ¶Ç  ¦^  ­È¡G[String]  ¶Ç¤J¦r¦ê­Y¬°null¡A¶Ç¦^''¡A­Y¤£¬°null¡A¶Ç¦^­ì­È¡C
-// ³Æ        µù¡G
-// ½d        ¨Ò¡G isNull("abc") ==>>return abc;
-// ª©        ¥»¡G1.0
-// §@        ªÌ¡GYaHsueh,Chien(2004-08-12)
+// å‡½æ•¸åç¨±ï¼šisNull(strTxt)
+// ç›®        çš„ï¼šåˆ¤æ–·å‚³å…¥å­—ä¸²æ˜¯å¦ç‚ºnullï¼Œä¸¦å°‡nullè½‰æˆ''
+// åƒæ•¸èªªæ˜ï¼š[String] æ¬²åˆ¤æ–·å­—ä¸²
+// å‚³  å›  å€¼ï¼š[String]  å‚³å…¥å­—ä¸²è‹¥ç‚ºnullï¼Œå‚³å›''ï¼Œè‹¥ä¸ç‚ºnullï¼Œå‚³å›åŸå€¼ã€‚
+// å‚™        è¨»ï¼š
+// ç¯„        ä¾‹ï¼š isNull("abc") ==>>return abc;
+// ç‰ˆ        æœ¬ï¼š1.0
+// ä½œ        è€…ï¼šYaHsueh,Chien(2004-08-12)
 //*******************************************************************************
 
 function isNull(strTxt){
@@ -489,14 +489,14 @@ function isNull(strTxt){
 }
 
 //*******************************************************************************
-// ¨ç¼Æ¦WºÙ¡GisNullAry(aryTxt)
-// ¥Ø        ªº¡G§PÂ_¶Ç¤J°}¦C¬O§_¬°ªÅ°}¦C¡A­Y¬°null¡A¶Ç¦^¤@ªÅ°}¦C
-// °Ñ¼Æ»¡©ú¡G[Array]±ı§PÂ_°}¦C
-// ¶Ç  ¦^  ­È¡G[Array]¶Ç¤J°}¦C­Y¬°null¡A¶Ç¦^¤@·s°}¦C¡A­Y¤£¬°null¡A¶Ç¦^­ì°}¦C¡C
-// ³Æ        µù¡G
-// ½d        ¨Ò¡GisNull(null) ==>>return new Array();
-// ª©        ¥»¡G1.0
-// §@        ªÌ¡GYaHsueh,Chien(2004-08-12)
+// å‡½æ•¸åç¨±ï¼šisNullAry(aryTxt)
+// ç›®        çš„ï¼šåˆ¤æ–·å‚³å…¥é™£åˆ—æ˜¯å¦ç‚ºç©ºé™£åˆ—ï¼Œè‹¥ç‚ºnullï¼Œå‚³å›ä¸€ç©ºé™£åˆ—
+// åƒæ•¸èªªæ˜ï¼š[Array]æ¬²åˆ¤æ–·é™£åˆ—
+// å‚³  å›  å€¼ï¼š[Array]å‚³å…¥é™£åˆ—è‹¥ç‚ºnullï¼Œå‚³å›ä¸€æ–°é™£åˆ—ï¼Œè‹¥ä¸ç‚ºnullï¼Œå‚³å›åŸé™£åˆ—ã€‚
+// å‚™        è¨»ï¼š
+// ç¯„        ä¾‹ï¼šisNull(null) ==>>return new Array();
+// ç‰ˆ        æœ¬ï¼š1.0
+// ä½œ        è€…ï¼šYaHsueh,Chien(2004-08-12)
 //*******************************************************************************
 
 function isNullAry(aryTxt){
@@ -507,15 +507,15 @@ function isNullAry(aryTxt){
    }
 }
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GisExit(ary1,str1)
-//¥Ø        ªº¡GÀË¬d¬Y°}¦C¤¤¬O§_¥]§t¬Y¦r¦ê
-//¶Ç¤J°Ñ¼Æ¡G±ı¤ñ¹ï°}¦C¡A±ıÀË¬d¦r¦ê
-//¶Ç  ¦^  ­È¡Gboolean
-//­­        ¨î¡GµL
-//³Æ        µù¡G
-//½d        ¨Ò¡G
-//ª©        ¥»¡G1.0  
-//§@¡@¡@ªÌ¡GYaHsueh,Chien(2005-01-24)
+//å‡½æ•¸åç¨±ï¼šisExit(ary1,str1)
+//ç›®        çš„ï¼šæª¢æŸ¥æŸé™£åˆ—ä¸­æ˜¯å¦åŒ…å«æŸå­—ä¸²
+//å‚³å…¥åƒæ•¸ï¼šæ¬²æ¯”å°é™£åˆ—ï¼Œæ¬²æª¢æŸ¥å­—ä¸²
+//å‚³  å›  å€¼ï¼šboolean
+//é™        åˆ¶ï¼šç„¡
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼š
+//ç‰ˆ        æœ¬ï¼š1.0  
+//ä½œã€€ã€€è€…ï¼šYaHsueh,Chien(2005-01-24)
 //*******************************************************************************
 function isExit(ary1,str1){
     for(var i=0;i<ary1.length;i++){
@@ -527,13 +527,13 @@ function isExit(ary1,str1){
 }
 
 //***************************************************************************************************************************
-//*¨ç¼Æ¦WºÙ:isDataEmpty
-//*¥Ø    ªº:ÀË¬d¬O§_¦³¿é¤J©ÎªÌ¿ï¾Ü¸ê®Æ
-//*°Ñ¼Æ»¡©ú:strObjCol¡G ª«¥ó¦WºÙ¶°¦X¨Ï¥Î¡i, ?¡j§@¬°¤À¹j¦r¤¸
-//*¦^Âà­È:true/false
-//*½d¨Ò: isDataEmpty('document.frmDataAll.txtAP_ID?À³¥Î¨t²Î,document.frmDataAll.txtUSR_ID?¨Ï¥ÎªÌ¥N½X,document.frmDataAll.txtUSR_NAME?¨Ï¥ÎªÌ¦WºÙ')
-//¥Ñ©ó¦bJSPª½±µ¥N¤JisDataEmpty('document.getElementById('agentId')')·|¦³¿ù»~¡A¦]¦¹¥Hdocument.getElementById(#agentId#)¤§«á¦AÂà¦^­ì¨Óªº§Î¦¡
-//*ª©¥»ÅÜ§ó¡G	        					       
+//*å‡½æ•¸åç¨±:isDataEmpty
+//*ç›®    çš„:æª¢æŸ¥æ˜¯å¦æœ‰è¼¸å…¥æˆ–è€…é¸æ“‡è³‡æ–™
+//*åƒæ•¸èªªæ˜:strObjColï¼š ç‰©ä»¶åç¨±é›†åˆä½¿ç”¨ã€, ?ã€‘ä½œç‚ºåˆ†éš”å­—å…ƒ
+//*å›è½‰å€¼:true/false
+//*ç¯„ä¾‹: isDataEmpty('document.frmDataAll.txtAP_ID?æ‡‰ç”¨ç³»çµ±,document.frmDataAll.txtUSR_ID?ä½¿ç”¨è€…ä»£ç¢¼,document.frmDataAll.txtUSR_NAME?ä½¿ç”¨è€…åç¨±')
+//ç”±æ–¼åœ¨JSPç›´æ¥ä»£å…¥isDataEmpty('document.getElementById('agentId')')æœƒæœ‰éŒ¯èª¤ï¼Œå› æ­¤ä»¥document.getElementById(#agentId#)ä¹‹å¾Œå†è½‰å›åŸä¾†çš„å½¢å¼
+//*ç‰ˆæœ¬è®Šæ›´ï¼š	        					       
 //*  xx. YYYY/MM/DD   VER     AUTHOR      COMMENTS	
 //*    1. 2000/10/01      2.0       CRD              CREATE
 //      2.2005/7/13                     mhhsu
@@ -555,13 +555,13 @@ function isDataEmpty(strObjCol){
 			if (strTrim(obj.value)=='') blnRtn=false;
 		}	
 		if (!blnRtn){
-			alert(arrObj[1] + "¤£¥i¬°ªÅ­È¡I");
+			alert(arrObj[1] + "ä¸å¯ç‚ºç©ºå€¼ï¼");
 			obj.focus();
 			return false;}
 	}
 	return true;
 }   
-//JavaScript ¥»¨­¨S¦³¨ú¥Nªº¨ç¼Æ¡A©Ò¥H¥t¥~¼g¤@­Ó  
+//JavaScript æœ¬èº«æ²’æœ‰å–ä»£çš„å‡½æ•¸ï¼Œæ‰€ä»¥å¦å¤–å¯«ä¸€å€‹  
 function replace(string,text,by) {
 // Replaces text with by in string
     var strLength = string.length, txtLength = text.length;
@@ -589,17 +589,17 @@ function storeCaret (textEl) {
  }
  
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GchkMaxLen(varWord,intMaxLen,blnNeedFocus,strFieldName)
-//¥Ø        ªº¡GÀË¬d¿é¤JÄæ¦ìªø«×¬O§_¹Lªø
-//¶Ç¤J°Ñ¼Æ¡G±ıÀË¬d¦r¦ê(ª«¥ó)¡A³Ì¤jªø«×¡A»İ¤£»İ­nfocus¦^­ìÄæ¦ì¡AÄæ¦ì´y­z
-//¶Ç  ¦^  ­È¡Gint ³Ñ¾lªø«×
-//­­        ¨î¡GµL
-//³Æ        µù¡G
-//½d        ¨Ò¡G
-//ª©        ¥»¡G1.0  
-//§@¡@¡@ªÌ¡GYaHsueh,Chien¡@(2005-05-01)
+//å‡½æ•¸åç¨±ï¼šchkMaxLen(varWord,intMaxLen,blnNeedFocus,strFieldName)
+//ç›®        çš„ï¼šæª¢æŸ¥è¼¸å…¥æ¬„ä½é•·åº¦æ˜¯å¦éé•·
+//å‚³å…¥åƒæ•¸ï¼šæ¬²æª¢æŸ¥å­—ä¸²(ç‰©ä»¶)ï¼Œæœ€å¤§é•·åº¦ï¼Œéœ€ä¸éœ€è¦focuså›åŸæ¬„ä½ï¼Œæ¬„ä½æè¿°
+//å‚³  å›  å€¼ï¼šint å‰©é¤˜é•·åº¦
+//é™        åˆ¶ï¼šç„¡
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼š
+//ç‰ˆ        æœ¬ï¼š1.0  
+//ä½œã€€ã€€è€…ï¼šYaHsueh,Chienã€€(2005-05-01)
 //*******************************************************************************
-// ÀË¬d¦h¦æ¤å¦r¤è¶ôªø«×===================================================
+// æª¢æŸ¥å¤šè¡Œæ–‡å­—æ–¹å¡Šé•·åº¦===================================================
 function chkMaxLength(varWord,intMaxLen,blnNeedFocus,strFieldName){
    var intLen=0;
    var strWord;
@@ -614,7 +614,7 @@ function chkMaxLength(varWord,intMaxLen,blnNeedFocus,strFieldName){
     var oldLen=strWord.length;
     var flg=0;
     var intLen2=0; 
-    if(event!=null && event.type=="paste"){ // ¥[¤W¶K¤Wªº¤å¦r¤º®e
+    if(event!=null && event.type=="paste"){ // åŠ ä¸Šè²¼ä¸Šçš„æ–‡å­—å…§å®¹
    		 strWord=strWord+window.clipboardData.getData("Text");
     }
    for(var  i=0;i<strWord.length  ;i++){
@@ -625,18 +625,18 @@ function chkMaxLength(varWord,intMaxLen,blnNeedFocus,strFieldName){
            }else{            
                  addbig5+=2;
            }
-            if(addascii+addbig5<=intMaxLen){//¤p©ó³Ì¤jªø«×
+            if(addascii+addbig5<=intMaxLen){//å°æ–¼æœ€å¤§é•·åº¦
                 intLen=addascii+addbig5; 
            }
     }
-    if(addascii+addbig5>intMaxLen){// ¶W¥X³Ì¤jªø«×
-        alert(strFieldName+"¤º®eªø«×¤Óªø!");
-      	event.returnValue=false; // event¶Ç¦^false
+    if(addascii+addbig5>intMaxLen){// è¶…å‡ºæœ€å¤§é•·åº¦
+        alert(strFieldName+"å…§å®¹é•·åº¦å¤ªé•·!");
+      	event.returnValue=false; // eventå‚³å›false
     }else{
-        intLen2=intLen; // ªø«×¥¼¶W¥X
+        intLen2=intLen; // é•·åº¦æœªè¶…å‡º
     } 
     if(event!=null ){ 
-          if(event.type=="keydown"){//¸g¥Ñkey in
+          if(event.type=="keydown"){//ç¶“ç”±key in
 		       if( (event.keyCode==8 || event.keyCode==46) && strWord.length>1){
 		            if(strWord.charCodeAt(strWord.length-1)>=48 && strWord.charCodeAt(strWord.length-1)<=122){
 		               intLen2=intLen-1;
@@ -648,7 +648,7 @@ function chkMaxLength(varWord,intMaxLen,blnNeedFocus,strFieldName){
 		    	}else{
 		    	     intLen2=intLen+2;
 		    	}
-		        if(intLen2>intMaxLen ){// ¤W¤U¥ª¥kÁä¤ÎBackspace¡BDelÁä¥i¥Î
+		        if(intLen2>intMaxLen ){// ä¸Šä¸‹å·¦å³éµåŠBackspaceã€Deléµå¯ç”¨
 		              if( event.keyCode!=8 && event.keyCode!=46 &&  event.keyCode!=37 &&  event.keyCode!=38 &&  event.keyCode!=39 &&  event.keyCode!=40 ) event.returnValue=false;
 		        }
 		   }
@@ -656,17 +656,17 @@ function chkMaxLength(varWord,intMaxLen,blnNeedFocus,strFieldName){
      return (intMaxLen-intLen2);
 }
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GchkMaxLen(varWord,intMaxLen,blnNeedFocus,strFieldName)
-//¥Ø        ªº¡GÀË¬d¿é¤JÄæ¦ìªø«×¬O§_¹Lªø(¥]§t0e.0f)
-//¶Ç¤J°Ñ¼Æ¡G±ıÀË¬d¦r¦ê(ª«¥ó)¡A³Ì¤jªø«×¡A»İ¤£»İ­nfocus¦^­ìÄæ¦ì
-//¶Ç  ¦^  ­È¡Gint ³Ñ¾lªø«×
-//­­        ¨î¡GµL
-//³Æ        µù¡G
-//½d        ¨Ò¡G
-//ª©        ¥»¡G1.0  
-//§@¡@¡@ªÌ¡GYaHsueh,Chien¡@(2005-05-01)
+//å‡½æ•¸åç¨±ï¼šchkMaxLen(varWord,intMaxLen,blnNeedFocus,strFieldName)
+//ç›®        çš„ï¼šæª¢æŸ¥è¼¸å…¥æ¬„ä½é•·åº¦æ˜¯å¦éé•·(åŒ…å«0e.0f)
+//å‚³å…¥åƒæ•¸ï¼šæ¬²æª¢æŸ¥å­—ä¸²(ç‰©ä»¶)ï¼Œæœ€å¤§é•·åº¦ï¼Œéœ€ä¸éœ€è¦focuså›åŸæ¬„ä½
+//å‚³  å›  å€¼ï¼šint å‰©é¤˜é•·åº¦
+//é™        åˆ¶ï¼šç„¡
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼š
+//ç‰ˆ        æœ¬ï¼š1.0  
+//ä½œã€€ã€€è€…ï¼šYaHsueh,Chienã€€(2005-05-01)
 //*******************************************************************************
-// ÀË¬d¦h¦æ¤å¦r¤è¶ôªø«×===================================================
+// æª¢æŸ¥å¤šè¡Œæ–‡å­—æ–¹å¡Šé•·åº¦===================================================
 function chkMaxLen(varWord,intMaxLen,blnNeedFocus){
    var intLen=0;
    var strWord;
@@ -677,35 +677,35 @@ function chkMaxLen(varWord,intMaxLen,blnNeedFocus){
    } else{
    	    strWord=varWord;
    }
-    var chFlg=false;//¤¤¤åµù°O
+    var chFlg=false;//ä¸­æ–‡è¨»è¨˜
 
  
    for(var  i=0;i<strWord.length  ;i++){
           var  codes=strWord.charCodeAt(i);
-          if((codes>=33 && codes<=122) || !isNaN(strWord.charAt(i))){ // ­^¤å.¼Æ¦r 
+          if((codes>=33 && codes<=122) || !isNaN(strWord.charAt(i))){ // è‹±æ–‡.æ•¸å­— 
                  addascii++;
-                 if(chFlg) addascii+=1; // «e¤@­Ó¦r¬O¤¤¤å(0f)
+                 if(chFlg) addascii+=1; // å‰ä¸€å€‹å­—æ˜¯ä¸­æ–‡(0f)
                  chFlg = false;
-         }else{ //¤¤¤å           
+         }else{ //ä¸­æ–‡           
                  addbig5+=2;
-                 if(!chFlg) addbig5+=1;//«e¤@­Ó¦r¬O­^¤å or ¥Ø«e¬°²Ä¤@­Ó¦r¤¸¥B¬O¤¤¤å (0e)
+                 if(!chFlg) addbig5+=1;//å‰ä¸€å€‹å­—æ˜¯è‹±æ–‡ or ç›®å‰ç‚ºç¬¬ä¸€å€‹å­—å…ƒä¸”æ˜¯ä¸­æ–‡ (0e)
                  chFlg = true;
          }
     }
     intLen=addascii+addbig5; 
-    return (intMaxLen-intLen);//³Ñ¾lªø«×
+    return (intMaxLen-intLen);//å‰©é¤˜é•·åº¦
 }
 
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GcalLen(strWord,intMaxLen) ­pºâ¤w¿éªø«×¡A¦^¶Ç³Ñ¾lªø«×(¤£¥]§t0e.0f)
-//¥Ø        ªº¡G­pºâÄæ¦ìªø«×
-//¶Ç¤J°Ñ¼Æ¡G±ıÀË¬d¦r¦ê¡A³Ì¤jªø«×
-//¶Ç  ¦^  ­È¡Gint ³Ñ¾lªø«×
-//­­        ¨î¡GµL
-//³Æ        µù¡G
-//½d        ¨Ò¡G
-//ª©        ¥»¡G1.0  
-//§@¡@¡@ªÌ¡GYaHsueh,Chien¡@(2005-05-01)
+//å‡½æ•¸åç¨±ï¼šcalLen(strWord,intMaxLen) è¨ˆç®—å·²è¼¸é•·åº¦ï¼Œå›å‚³å‰©é¤˜é•·åº¦(ä¸åŒ…å«0e.0f)
+//ç›®        çš„ï¼šè¨ˆç®—æ¬„ä½é•·åº¦
+//å‚³å…¥åƒæ•¸ï¼šæ¬²æª¢æŸ¥å­—ä¸²ï¼Œæœ€å¤§é•·åº¦
+//å‚³  å›  å€¼ï¼šint å‰©é¤˜é•·åº¦
+//é™        åˆ¶ï¼šç„¡
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼š
+//ç‰ˆ        æœ¬ï¼š1.0  
+//ä½œã€€ã€€è€…ï¼šYaHsueh,Chienã€€(2005-05-01)
 //*******************************************************************************
 function calLen(strWord,intMaxLen){
     var addascii=0;
@@ -718,7 +718,7 @@ function calLen(strWord,intMaxLen){
            }else{            
                  addbig5+=2;
            }
-            if(addascii+addbig5<=intMaxLen){//¤p©ó³Ì¤jªø«×
+            if(addascii+addbig5<=intMaxLen){//å°æ–¼æœ€å¤§é•·åº¦
                 intLen=addascii+addbig5; 
            }
     }
@@ -726,14 +726,14 @@ function calLen(strWord,intMaxLen){
 }
 
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GchkOBJMaxLength(varWordID,intMaxLen,blnNeedFocus,strFieldName,strFieldName,toalID)
-//¥Ø        ªº¡GÀË¬d¿é¤JÄæ¦ìªø«×¬O§_¹Lªø
-//¶Ç¤J°Ñ¼Æ¡GvarWordID:±ıÀË¬d¦r¦ê(ª«¥óID)¡A
-//          intMaxLen:³Ì¤jªø«×¡A
-//          blnNeedFocus:»İ¤£»İ­nfocus¦^­ìÄæ¦ì(true/false)¡A
-//          strFieldName:Äæ¦ì´y­z¡A
-//          toalID:©ñ³Ñ¾l¦r¼Æªº¦ì¸m(ª«¥óID) ­Y¬°ªÅ«h§ïreturn
-//¶Ç  ¦^  ­È¡GtoalID­Y¬°ªÅ return int ³Ñ¾lªø«×
+//å‡½æ•¸åç¨±ï¼šchkOBJMaxLength(varWordID,intMaxLen,blnNeedFocus,strFieldName,strFieldName,toalID)
+//ç›®        çš„ï¼šæª¢æŸ¥è¼¸å…¥æ¬„ä½é•·åº¦æ˜¯å¦éé•·
+//å‚³å…¥åƒæ•¸ï¼švarWordID:æ¬²æª¢æŸ¥å­—ä¸²(ç‰©ä»¶ID)ï¼Œ
+//          intMaxLen:æœ€å¤§é•·åº¦ï¼Œ
+//          blnNeedFocus:éœ€ä¸éœ€è¦focuså›åŸæ¬„ä½(true/false)ï¼Œ
+//          strFieldName:æ¬„ä½æè¿°ï¼Œ
+//          toalID:æ”¾å‰©é¤˜å­—æ•¸çš„ä½ç½®(ç‰©ä»¶ID) è‹¥ç‚ºç©ºå‰‡æ”¹return
+//å‚³  å›  å€¼ï¼štoalIDè‹¥ç‚ºç©º return int å‰©é¤˜é•·åº¦
 //*******************************************************************************
 function chkOBJMaxLength(varWordID,intMaxLen,blnNeedFocus,strFieldName,toalID){  
      var intLen=0;
@@ -743,47 +743,47 @@ function chkOBJMaxLength(varWordID,intMaxLen,blnNeedFocus,strFieldName,toalID){
      var addbig5=0;
     
      strWord=document.getElementById(varWordID).value;      
-     strWord=strTrim(strWord);//¥hªÅ¥Õ
+     strWord=strTrim(strWord);//å»ç©ºç™½
      //alert(varWord.value+"___"+intMaxLen+"___"+blnNeedFocus+"___"+strFieldName);
       var oldLen=strWord.length;
       var flg=0;
       var intLen2=0; 
       var maxi = 0;
 
-     if(event.type=="paste"){ // ¥[¤W¶K¤Wªº¤å¦r¤º®e
+     if(event.type=="paste"){ // åŠ ä¸Šè²¼ä¸Šçš„æ–‡å­—å…§å®¹
          strWord=strWord+window.clipboardData.getData("Text");
      }
-     var chFlg=false;//¤¤¤åµù°O
+     var chFlg=false;//ä¸­æ–‡è¨»è¨˜
      
      for(var  i=0;i<strWord.length  ;i++){
           var  codes=strWord.charCodeAt(i);
           if(i==oldLen) intLen2=intLen;
           if((codes>=33 && codes<=122) || !isNaN(strWord.charAt(i))){
                addascii++;
-               if(chFlg) addascii+=1; // «e¤@­Ó¦r¬O¤¤¤å(0f)
+               if(chFlg) addascii+=1; // å‰ä¸€å€‹å­—æ˜¯ä¸­æ–‡(0f)
                chFlg = false;
           }else{            
                addbig5+=2;
-               if(!chFlg) addbig5+=1;//«e¤@­Ó¦r¬O­^¤å or ¥Ø«e¬°²Ä¤@­Ó¦r¤¸¥B¬O¤¤¤å (0e)
+               if(!chFlg) addbig5+=1;//å‰ä¸€å€‹å­—æ˜¯è‹±æ–‡ or ç›®å‰ç‚ºç¬¬ä¸€å€‹å­—å…ƒä¸”æ˜¯ä¸­æ–‡ (0e)
                chFlg = true;
           }
           
-          if(addascii+addbig5<=intMaxLen){//¤p©ó³Ì¤jªø«×
+          if(addascii+addbig5<=intMaxLen){//å°æ–¼æœ€å¤§é•·åº¦
               intLen=addascii+addbig5;
               maxi = i;
           }
       }
-      if(addascii+addbig5>intMaxLen){// ¶W¥X³Ì¤jªø«×
-          //alert(strFieldName+"ªº¦r¼Æ¤w¶W¹L"+intMaxLen+"¦r! ½Ğ´î¤Ö¦r¼Æ¡A·PÁÂ!");
+      if(addascii+addbig5>intMaxLen){// è¶…å‡ºæœ€å¤§é•·åº¦
+          //alert(strFieldName+"çš„å­—æ•¸å·²è¶…é"+intMaxLen+"å­—! è«‹æ¸›å°‘å­—æ•¸ï¼Œæ„Ÿè¬!");
           strWord.value = strWord.substr(0,maxi);
-          //if(event!=null )event.returnValue=false; // event¶Ç¦^false
+          //if(event!=null )event.returnValue=false; // eventå‚³å›false
           //intLen2=intLen;
           intLen2=addascii+addbig5;
       }else{
-          intLen2=intLen; // ªø«×¥¼¶W¥X
+          intLen2=intLen; // é•·åº¦æœªè¶…å‡º
       } 
       if(event!=null ){ 
-            if(event.type=="keydown"){//¸g¥Ñkey in
+            if(event.type=="keydown"){//ç¶“ç”±key in
                if( (event.keyCode==8 || event.keyCode==46) && strWord.length>1){//8:BackSpace ;46:del
                     if(strWord.charCodeAt(strWord.length-1)>=48 && strWord.charCodeAt(strWord.length-1)<=122){
                        intLen2=intLen-1;
@@ -795,7 +795,7 @@ function chkOBJMaxLength(varWordID,intMaxLen,blnNeedFocus,strFieldName,toalID){
                 }else{
                      intLen2=intLen+2;
                 }
-                if(intLen2>intMaxLen ){// ¤W¤U¥ª¥kÁä¤ÎBackspace¡BDelÁä¥i¥Î
+                if(intLen2>intMaxLen ){// ä¸Šä¸‹å·¦å³éµåŠBackspaceã€Deléµå¯ç”¨
                       if( event.keyCode!=8 && event.keyCode!=46 &&  event.keyCode!=37 &&  event.keyCode!=38 &&  event.keyCode!=39 &&  event.keyCode!=40 ) event.returnValue=false;
                 }
            }          
@@ -808,45 +808,45 @@ function chkOBJMaxLength(varWordID,intMaxLen,blnNeedFocus,strFieldName,toalID){
 }
 
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GstrLtrim
-//¥Ø        ªº¡G¥h°£¦r¦ê¥ªÃäªºªÅ¥Õµê®æ
-//°Ñ¼Æ»¡©ú¡G±ı¥h°£ªÅ¥Õ¤§¦r¦ê
-//¶Ç  ¦^  ­È¡G¤w¥h°£¥ªÃäªÅ¥Õ¤§¦r¦ê
-//°Æ  §@  ¥Î¡GµL
-//³Æ        µù¡G
-//½d        ¨Ò¡GstrLtrim("   test")  ==>>¶Ç¦^¡itest¡j
-//ª©        ¥»¡G1.0  
-//§@¡@¡@ªÌ¡GYaHsueh,Chien  (2004-08-05)
+//å‡½æ•¸åç¨±ï¼šstrLtrim
+//ç›®        çš„ï¼šå»é™¤å­—ä¸²å·¦é‚Šçš„ç©ºç™½è™›æ ¼
+//åƒæ•¸èªªæ˜ï¼šæ¬²å»é™¤ç©ºç™½ä¹‹å­—ä¸²
+//å‚³  å›  å€¼ï¼šå·²å»é™¤å·¦é‚Šç©ºç™½ä¹‹å­—ä¸²
+//å‰¯  ä½œ  ç”¨ï¼šç„¡
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼šstrLtrim("   test")  ==>>å‚³å›ã€testã€‘
+//ç‰ˆ        æœ¬ï¼š1.0  
+//ä½œã€€ã€€è€…ï¼šYaHsueh,Chien  (2004-08-05)
 //*******************************************************************************
 function strLtrim(instr){
   return instr.replace(/^[\s]*/gi,"");
 }
 
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GstrRtrim
-//¥Ø        ªº¡G¥h°£¦r¦ê¥kÃäªºªÅ¥Õµê®æ
-//°Ñ¼Æ»¡©ú¡G±ı¥h°£ªÅ¥Õ¤§¦r¦ê
-//¶Ç  ¦^  ­È¡G¤w¥h°£¥kÃäªÅ¥Õ¤§¦r¦ê
-//°Æ  §@  ¥Î¡GµL
-//³Æ        µù¡G
-//½d        ¨Ò¡GstrRtrim("test   ")  ==>>¶Ç¦^¡itest¡j
-//ª©        ¥»¡G1.0  
-//§@¡@¡@ªÌ¡GYaHsueh,Chien  (2004-08-05)
+//å‡½æ•¸åç¨±ï¼šstrRtrim
+//ç›®        çš„ï¼šå»é™¤å­—ä¸²å³é‚Šçš„ç©ºç™½è™›æ ¼
+//åƒæ•¸èªªæ˜ï¼šæ¬²å»é™¤ç©ºç™½ä¹‹å­—ä¸²
+//å‚³  å›  å€¼ï¼šå·²å»é™¤å³é‚Šç©ºç™½ä¹‹å­—ä¸²
+//å‰¯  ä½œ  ç”¨ï¼šç„¡
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼šstrRtrim("test   ")  ==>>å‚³å›ã€testã€‘
+//ç‰ˆ        æœ¬ï¼š1.0  
+//ä½œã€€ã€€è€…ï¼šYaHsueh,Chien  (2004-08-05)
 //*******************************************************************************
 function strRtrim(instr){
   return instr.replace(/[\s]*$/gi,"");
 }
 
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GstrTrim
-//¥Ø        ªº¡G¥h°£¦r¦ê«e«áªºªÅ¥Õµê®æ
-//°Ñ¼Æ»¡©ú¡G±ı¥h°£ªÅ¥Õ¤§¦r¦ê
-//¶Ç  ¦^  ­È¡G¤w¥h°£ªÅ¥Õ¤§¦r¦ê
-//°Æ  §@  ¥Î¡GµL
-//³Æ        µù¡G
-//½d        ¨Ò¡GstrTrim("    test   ")  ==>>¶Ç¦^¡itest¡j
-//ª©        ¥»¡G1.0  
-//§@¡@¡@ªÌ¡GYaHsueh,Chien  (2004-08-05)
+//å‡½æ•¸åç¨±ï¼šstrTrim
+//ç›®        çš„ï¼šå»é™¤å­—ä¸²å‰å¾Œçš„ç©ºç™½è™›æ ¼
+//åƒæ•¸èªªæ˜ï¼šæ¬²å»é™¤ç©ºç™½ä¹‹å­—ä¸²
+//å‚³  å›  å€¼ï¼šå·²å»é™¤ç©ºç™½ä¹‹å­—ä¸²
+//å‰¯  ä½œ  ç”¨ï¼šç„¡
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼šstrTrim("    test   ")  ==>>å‚³å›ã€testã€‘
+//ç‰ˆ        æœ¬ï¼š1.0  
+//ä½œã€€ã€€è€…ï¼šYaHsueh,Chien  (2004-08-05)
 //*******************************************************************************
 function strTrim(instr){
   instr = strLtrim(instr);
@@ -855,15 +855,15 @@ function strTrim(instr){
 }
 
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GCalendar_get_daysofmonth(monthNo, p_year)
-//¥Ø        ªº¡G§ä¥X¸Ó¤ë³Ì«á¤@¤Ñ¬O´X¸¹
-//¶Ç¤J°Ñ¼Æ¡G¤ë¡A¦~
-//¶Ç  ¦^  ­È¡Gint ¤é¡]®æ¦¡¬°¡G¢°¡D¢±¡D.......¡^
-//­­        ¨î¡GµL
-//³Æ        µù¡G
-//½d        ¨Ò¡G
-//ª©        ¥»¡G1.0  
-//§@¡@¡@ªÌ¡GYaHsueh,Chien¡@(2005-01-24)
+//å‡½æ•¸åç¨±ï¼šCalendar_get_daysofmonth(monthNo, p_year)
+//ç›®        çš„ï¼šæ‰¾å‡ºè©²æœˆæœ€å¾Œä¸€å¤©æ˜¯å¹¾è™Ÿ
+//å‚³å…¥åƒæ•¸ï¼šæœˆï¼Œå¹´
+//å‚³  å›  å€¼ï¼šint æ—¥ï¼ˆæ ¼å¼ç‚ºï¼šï¼‘ï¼ï¼’ï¼.......ï¼‰
+//é™        åˆ¶ï¼šç„¡
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼š
+//ç‰ˆ        æœ¬ï¼š1.0  
+//ä½œã€€ã€€è€…ï¼šYaHsueh,Chienã€€(2005-01-24)
 //*******************************************************************************
 function Calendar_get_daysofmonth(monthNo, p_year) {
     if ((p_year % 4) == 0) {
@@ -872,15 +872,15 @@ function Calendar_get_daysofmonth(monthNo, p_year) {
     } else { return Calendar.DOMonth[monthNo]; }
 }
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GchangeBgColor(newTr,oldColor)
-//¥Ø        ªº¡G·Æ¹««ö¤U¡A§ïÅÜfocus¦C¤§­I´ºÃC¦â
-//°Ñ¼Æ»¡©ú¡Gª«¥óindex¡AÂÂÃC¦â
-//¶Ç  ¦^  ­È¡GµL
-//­­        ¨î¡G
-//³Æ        µù¡G
-//½d        ¨Ò¡G
-//ª©        ¥»¡G1.0
-//§@¡@¡@ªÌ¡GYaHsueh,Chien(2004-08-12)
+//å‡½æ•¸åç¨±ï¼šchangeBgColor(newTr,oldColor)
+//ç›®        çš„ï¼šæ»‘é¼ æŒ‰ä¸‹ï¼Œæ”¹è®Šfocusåˆ—ä¹‹èƒŒæ™¯é¡è‰²
+//åƒæ•¸èªªæ˜ï¼šç‰©ä»¶indexï¼ŒèˆŠé¡è‰²
+//å‚³  å›  å€¼ï¼šç„¡
+//é™        åˆ¶ï¼š
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼š
+//ç‰ˆ        æœ¬ï¼š1.0
+//ä½œã€€ã€€è€…ï¼šYaHsueh,Chien(2004-08-12)
 //*******************************************************************************
 var currentTr= 0;
 function changeBgColor(newTr,oldColor,newColor) {
@@ -905,24 +905,24 @@ function chgTagBgColor(objs,newColor){
 	}
 }
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡GsortNode(SortNode,strTitle,strTable,strType)
-//¥Ø        ªº¡G±N¸ê®Æ¨Ìªí®æÄæ¦ì±Æ§Ç
-//°Ñ¼Æ»¡©ú¡G«ö¤U¤§ª«¥ó¡A±Æ§ÇÄæ¦ì¦Cª«¥óTR¡A±ı±Æ§Çªí®æª«¥ó¡A±ı±Æ§Ç¤§¼ĞÃDÃş«¬(¦p:TD or TH)
-//¶Ç  ¦^  ­È¡GµL
-//­­        ¨î¡G»İ¨Ì¹ê»Ú»İ¨D§ó§ïchangeImage(img1)¤¤imgªº¦WºÙ»P¸ô®|¡]¤£¨Ï¥Î¹Ï¥Ü«h¤£»İÅÜ§ó¡^
-//³Æ        µù¡G
-//½d        ¨Ò¡G1.include KS.js
-//                    2.¦bTRª«¥ó¤W¼W¥[onclick ¨Æ¥ó¡A²Ä¤T­Ó°Ñ¼Æ¥i¯à»İ­nÅÜ§ó¡A¨Ì¹ê»ÚTable©Ò¦bªº¼h¦¸¨Ó§ó°Ê¡C
+//å‡½æ•¸åç¨±ï¼šsortNode(SortNode,strTitle,strTable,strType)
+//ç›®        çš„ï¼šå°‡è³‡æ–™ä¾è¡¨æ ¼æ¬„ä½æ’åº
+//åƒæ•¸èªªæ˜ï¼šæŒ‰ä¸‹ä¹‹ç‰©ä»¶ï¼Œæ’åºæ¬„ä½åˆ—ç‰©ä»¶TRï¼Œæ¬²æ’åºè¡¨æ ¼ç‰©ä»¶ï¼Œæ¬²æ’åºä¹‹æ¨™é¡Œé¡å‹(å¦‚:TD or TH)
+//å‚³  å›  å€¼ï¼šç„¡
+//é™        åˆ¶ï¼šéœ€ä¾å¯¦éš›éœ€æ±‚æ›´æ”¹changeImage(img1)ä¸­imgçš„åç¨±èˆ‡è·¯å¾‘ï¼ˆä¸ä½¿ç”¨åœ–ç¤ºå‰‡ä¸éœ€è®Šæ›´ï¼‰
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼š1.include KS.js
+//                    2.åœ¨TRç‰©ä»¶ä¸Šå¢åŠ onclick äº‹ä»¶ï¼Œç¬¬ä¸‰å€‹åƒæ•¸å¯èƒ½éœ€è¦è®Šæ›´ï¼Œä¾å¯¦éš›Tableæ‰€åœ¨çš„å±¤æ¬¡ä¾†æ›´å‹•ã€‚
 //                       <tr onclick="sortNode(event.srcElement,this,(this.parentElement).parentElement,'TH');" >
-//                    3.¦b¼ĞÃD¦C¤¤ªº¨C­ÓTH¤¤¼W¥[¤@Åã¥Ü±Æ§Çª¬ªpªº¹Ï¥Ü(»¼¼Wor»¼´î)¡]PS¡G¤£¨Ï¥Î¹Ï¥Ü§Y¥i¤£»İ¼W¥[¦¹¦æ«ü¥O¡^
+//                    3.åœ¨æ¨™é¡Œåˆ—ä¸­çš„æ¯å€‹THä¸­å¢åŠ ä¸€é¡¯ç¤ºæ’åºç‹€æ³çš„åœ–ç¤º(éå¢oréæ¸›)ï¼ˆPSï¼šä¸ä½¿ç”¨åœ–ç¤ºå³å¯ä¸éœ€å¢åŠ æ­¤è¡ŒæŒ‡ä»¤ï¼‰
 //                      <TH><img  name="sort" border="0" src="images/down.gif" width="14" height="9" align="texttop"  ></TH>
-//ª©        ¥»¡G1.0
-//§@¡@¡@ªÌ¡GYaHsueh,Chien(2004-08-12)
+//ç‰ˆ        æœ¬ï¼š1.0
+//ä½œã€€ã€€è€…ï¼šYaHsueh,Chien(2004-08-12)
 //*******************************************************************************
 function sortNode(SortNode,strTitle,strTable,strType){
      if(strType==null)  strType="TR";
-   // oTR = eval(strTable).childNodes[1].childNodes;//tbody¤§¤l¶°¦X(§Y§t¦³¸ê®Æ¤§¦C(TR)¶°¦X)
-    oTR = (strTable.childNodes[1]).getElementsByTagName("tr");//tbody¤§¤l¶°¦X(§Y§t¦³¸ê®Æ¤§¦C(TR)¶°¦X)
+   // oTR = eval(strTable).childNodes[1].childNodes;//tbodyä¹‹å­é›†åˆ(å³å«æœ‰è³‡æ–™ä¹‹åˆ—(TR)é›†åˆ)
+    oTR = (strTable.childNodes[1]).getElementsByTagName("tr");//tbodyä¹‹å­é›†åˆ(å³å«æœ‰è³‡æ–™ä¹‹åˆ—(TR)é›†åˆ)
      ary = []; 
      var count=0;
      for(var i=0, j=oTR.length; i<j; i++){//collect TR nodes in Array    
@@ -932,33 +932,33 @@ function sortNode(SortNode,strTitle,strTable,strType){
 	  var time = new Date();
 	  var tempa, tempb, oTD, orders,tmpIndex=0; 
 	  var tmpObj;
-	  tmpObj=SortNode;  // Ä²µo¨Æ¥ó¤§ª«¥ó
-	  //¦pªGÂI¿ï¦bªí®æÄæ¦ì¤W¡A
+	  tmpObj=SortNode;  // è§¸ç™¼äº‹ä»¶ä¹‹ç‰©ä»¶
+	  //å¦‚æœé»é¸åœ¨è¡¨æ ¼æ¬„ä½ä¸Šï¼Œ
 	  if( SortNode.nodeName==strType){   
 	     tmpIndex = SortNode.sourceIndex;
-	  }else{//¦pªGÂI¿ï¦b«Dªí®æÄæ¦ì¤W¡A«h©¹¤W§ä¨ì¤÷¸`ÂI¦WºÙ¬°TD¤§¸`ÂI
+	  }else{//å¦‚æœé»é¸åœ¨éè¡¨æ ¼æ¬„ä½ä¸Šï¼Œå‰‡å¾€ä¸Šæ‰¾åˆ°çˆ¶ç¯€é»åç¨±ç‚ºTDä¹‹ç¯€é»
 	      while(tmpObj.sourceIndex >0){
 	          tmpObj=tmpObj.parentNode;         
 	          if(tmpObj.nodeName==strType){              
-	              tmpIndex = tmpObj.sourceIndex;//¦WºÙ¬°TD¤§¸`ÂI¯Á¤Ş
-	              SortNode = tmpObj;//±N¥Ø«e«ö¤U¤§ª«¥ó§ó§ï¬°¨ä¸`ÂI¦WºÙ¬°TD¤§¤÷¸`ÂI
+	              tmpIndex = tmpObj.sourceIndex;//åç¨±ç‚ºTDä¹‹ç¯€é»ç´¢å¼•
+	              SortNode = tmpObj;//å°‡ç›®å‰æŒ‰ä¸‹ä¹‹ç‰©ä»¶æ›´æ”¹ç‚ºå…¶ç¯€é»åç¨±ç‚ºTDä¹‹çˆ¶ç¯€é»
 	              break;
 	          } 
 	      }
 	   }
-	   //ÅÜ§ó±Æ§Ç¹Ï¥Ü=======================================================
-	   var fireSrcObjs =tmpObj.getElementsByTagName("span");//¨ú±oTD¤¤¤§imgª«¥ó
-	   for (var j=0;j<fireSrcObjs.length;j++){ //¦¹TD¤¤¤§imgª«¥ó°j°é
+	   //è®Šæ›´æ’åºåœ–ç¤º=======================================================
+	   var fireSrcObjs =tmpObj.getElementsByTagName("span");//å–å¾—TDä¸­ä¹‹imgç‰©ä»¶
+	   for (var j=0;j<fireSrcObjs.length;j++){ //æ­¤TDä¸­ä¹‹imgç‰©ä»¶è¿´åœˆ
 	 		changeImage(fireSrcObjs[j]);
 	   }
 	   //===================================================================
-	   //­pºâ«ö¤U¤§TDª«¥ó¬°¸ÓTR¤U¤§²Ä´X­Ó?(±q0¶}©l)
+	   //è¨ˆç®—æŒ‰ä¸‹ä¹‹TDç‰©ä»¶ç‚ºè©²TRä¸‹ä¹‹ç¬¬å¹¾å€‹?(å¾0é–‹å§‹)
 	   for(var m=0;m<strTitle.childNodes.length;m++){
 	        if(strTitle.childNodes[m].sourceIndex==tmpIndex) oTD=m;
 	   }
 	  // oTD = SortNode.sourceIndex-SortNode.parentElement.sourceIndex-1;//which TD we Click
   	   if(SortNode.order==null || SortNode.order==""){SortNode.order=1;} // 93/11/01
-   	   orders = SortNode.order = -SortNode.order;//»¼¼W©Î»¼´îflag
+   	   orders = SortNode.order = -SortNode.order;//éå¢æˆ–éæ¸›flag
 	   //var myary = 'ary'+intCount;
 	  ary.sort(
 	     function(a,b){       
@@ -966,31 +966,31 @@ function sortNode(SortNode,strTitle,strTable,strType){
 	    // tempb = b.getElementsByTagName("td")[oTD];  
 	      // alert(" a.childNodes[oTD]=="+ a.childNodes[oTD].type+"   "+a.childNodes[oTD].tagName);
 	      //  alert(" b.childNodes[oTD]=="+ b.childNodes[oTD].type+"   "+b.childNodes[oTD].tagName);
-	       if(a.childNodes[oTD].getElementsByTagName("input").length>0){ // TD¤¤¤´¥]§ttextªºÄæ¦ì
+	       if(a.childNodes[oTD].getElementsByTagName("input").length>0){ // TDä¸­ä»åŒ…å«textçš„æ¬„ä½
 	            tempa = a.childNodes[oTD].getElementsByTagName("input")[0].value;//you can use   a.childNodes[oTD].innerText.length   or other things to sort
 	      		tempb = b.childNodes[oTD].getElementsByTagName("input")[0].value;  
 	       }else{ 
 	       		tempa = a.childNodes[oTD].innerText;//you can use   a.childNodes[oTD].innerText.length   or other things to sort
 	      		tempb = b.childNodes[oTD].innerText;  
 	       }  
-	    /*  if(isNumber(strTrim(tempa)) || isNumber(strTrim(tempb)) ){ // ¨ä¤¤¤@¶µ¬O¼Æ¦r
+	    /*  if(isNumber(strTrim(tempa)) || isNumber(strTrim(tempb)) ){ // å…¶ä¸­ä¸€é …æ˜¯æ•¸å­—
 		          if(!isNumber(strTrim(tempa))){
 		                temp =-orders;
 		          }else if(!isNumber(strTrim(tempb))){
 		                temp =orders;
-		          }else{ //¨âªÌ¬Ò¬°¼Æ¦r
+		          }else{ //å…©è€…çš†ç‚ºæ•¸å­—
 		             temp = parseInt(eval(strTrim(tempa)),10 )<parseInt(eval(strTrim(tempb)),10)?-orders:tempa==tempb?0:orders;
 		          }
 	       }else */
 	       if(tempa==null){
-	           // alert("tempa ¬Onull");
+	           // alert("tempa æ˜¯null");
 	             temp=orders;
 	       }else if(tempb==null){
-	          // alert("tempb ¬Onull");
+	          // alert("tempb æ˜¯null");
 	             temp=-orders;
 	       }
 	       else{         
-	             //  alert("¨ä¥¦");    
+	             //  alert("å…¶å®ƒ");    
 	         	  temp = tempa<tempb?-orders:tempa==tempb?0:orders;
 	       } 
 	       // temp = tempa<tempb?-orders:tempa==tempb?0:orders;
@@ -1003,17 +1003,17 @@ function sortNode(SortNode,strTitle,strTable,strType){
 }
 
 //*******************************************************************************
-//¨ç¼Æ¦WºÙ¡G changeImage(img1)
-//¥Ø        ªº¡GÅÜ§ó±Æ§Ç¹Ï¥Ü
-//°Ñ¼Æ»¡©ú¡G±Æ§Ç¹Ï¥Üª«¥ó
-//¶Ç  ¦^  ­È¡GµL
-//³Æ        µù¡G
-//½d        ¨Ò¡G
-//ª©        ¥»¡G1.0
-//§@¡@¡@ªÌ¡GYaHsueh,Chien(2004-08-12)
+//å‡½æ•¸åç¨±ï¼š changeImage(img1)
+//ç›®        çš„ï¼šè®Šæ›´æ’åºåœ–ç¤º
+//åƒæ•¸èªªæ˜ï¼šæ’åºåœ–ç¤ºç‰©ä»¶
+//å‚³  å›  å€¼ï¼šç„¡
+//å‚™        è¨»ï¼š
+//ç¯„        ä¾‹ï¼š
+//ç‰ˆ        æœ¬ï¼š1.0
+//ä½œã€€ã€€è€…ï¼šYaHsueh,Chien(2004-08-12)
 //*******************************************************************************
 function changeImage(span){
-   var sortspan=document.getElementsByTagName("span");//sort imageª«¥ó 
+   var sortspan=document.getElementsByTagName("span");//sort imageç‰©ä»¶ 
 	for(var j=0;j<sortspan.length;j++){
 	    sortspan[j].innerHTML = '&nbsp;&nbsp;&nbsp;';
 	}
@@ -1030,7 +1030,7 @@ function changeImage(span){
 
 // EMRQ.js
 
-//function: openPopup(url,top,left,width,height) ¶}±Òµøµ¡¡A¥i¥H«ü©w¦ì¸m
+//function: openPopup(url,top,left,width,height) é–‹å•Ÿè¦–çª—ï¼Œå¯ä»¥æŒ‡å®šä½ç½®
 function openPopup(url,t,l,w,h) {
     var myPopup = '';   
 	var fireId = window.event.srcElement.parentElement.parentElement.id
@@ -1064,7 +1064,7 @@ function openPopupAutoScrol2(url,t,l,w,h) {
    	return false;	
    	 
 }
-//function: doSubmit() ±N§ó§ï¸ê®Æ¶Ç°e¦Ü«áºİ¦øªA¾¹
+//function: doSubmit() å°‡æ›´æ”¹è³‡æ–™å‚³é€è‡³å¾Œç«¯ä¼ºæœå™¨
 function doSubmit(dofrmName,  action, target) {
 	document.all(dofrmName).action=action;
 	document.all(dofrmName).target=target;	
@@ -1078,7 +1078,7 @@ function doDefaultSubmit(url,t) {
 	document.forms[0].action= url;
     document.forms[0].submit();
 }
-//function: count(val) ­pºâ¥H²Å¸¹ c ¤À¹j¤§¤¸¯À­Ó¼Æ
+//function: count(val) è¨ˆç®—ä»¥ç¬¦è™Ÿ c åˆ†éš”ä¹‹å…ƒç´ å€‹æ•¸
 function count(val,c) {
     var i = 0;
 	if (val.length > 0) {
@@ -1090,19 +1090,19 @@ function count(val,c) {
     }
     return i;
 } 
-//function: doClose() ¶}³¬µøµ¡
+//function: doClose() é–‹é–‰è¦–çª—
 function doClose() {
     window.close();    
 } 
 
 //********************************************************************************
-//¨ç¼Æ¦WºÙ¡GchkTimeFormat(tmObj)	
-//¥Ø¡@¡@ªº¡GÀË¬d®É¶¡®æ¦¡¬O§_¥¿½T¡]0800==>08:00¡^
-//°Ñ¼Æ»¡©ú¡G
-//¶Ç¦^­È  ¡G
-//°Æ§@¥Î  ¡GµL
-//³Æ   µù ¡GµL
-//½d   ¨Ò ¡GchkTimeFormat('0800')
+//å‡½æ•¸åç¨±ï¼šchkTimeFormat(tmObj)	
+//ç›®ã€€ã€€çš„ï¼šæª¢æŸ¥æ™‚é–“æ ¼å¼æ˜¯å¦æ­£ç¢ºï¼ˆ0800==>08:00ï¼‰
+//åƒæ•¸èªªæ˜ï¼š
+//å‚³å›å€¼  ï¼š
+//å‰¯ä½œç”¨  ï¼šç„¡
+//å‚™   è¨» ï¼šç„¡
+//ç¯„   ä¾‹ ï¼šchkTimeFormat('0800')
 //*******************************************************************************
 function chkTimeFormat(tmObj){
 	var time = tmObj.value.substring(0,2);
@@ -1115,20 +1115,20 @@ function chkTimeFormat(tmObj){
 	}else if (tmObj.value.length==5){
 		minute = tmObj.value.substring(3);
 	}else{
-		alert("®É¶¡®æ¦¡»İ¬°: ttmm ©Î tt:mm !!");
+		alert("æ™‚é–“æ ¼å¼éœ€ç‚º: ttmm æˆ– tt:mm !!");
 		tmObj.value = "";
 		chk = false;
 	}
 	//alert("chk1"+ chk);
-	//check ®É
+	//check æ™‚
 	if(time>24 || time<0){
-		alert("®É¶¡¼Æ­È»İ¤¶©ó 00 ~ 24");
+		alert("æ™‚é–“æ•¸å€¼éœ€ä»‹æ–¼ 00 ~ 24");
 		chk = false;
 	}
 	
-	//check ¤ÀÄÁ
+	//check åˆ†é˜
 	if(minute>60 || minute<0){
-		alert("¤ÀÄÁ¼Æ­È»İ¤¶©ó 00 ~ 60");
+		alert("åˆ†é˜æ•¸å€¼éœ€ä»‹æ–¼ 00 ~ 60");
 		chk = false;
 	}
 	if(chk){
@@ -1141,7 +1141,7 @@ function chkTimeFormat(tmObj){
 	return chk;
 }
 
-//¦^¶Ç¨â­Ó¤é´Á®t(¶ë¤J«áªÌ¤é´Á¸û¤j)
+//å›å‚³å…©å€‹æ—¥æœŸå·®(å¡å…¥å¾Œè€…æ—¥æœŸè¼ƒå¤§)
 function dayRange1(fromDateId, toDateId){
 	var objFromDate=fromDateId;
 	var objToDate=toDateId;
@@ -1188,4 +1188,45 @@ function replaceDefaultDate(oldDate){
 		newDate=oldDate;
 	}
 	return newDate;
+}
+//*******************************************************************************
+//å‡½æ•¸åç¨±ï¼šisIdNo(strIdno)
+//ç›®    çš„ï¼šæª¢æŸ¥èº«åˆ†è¨¼å­—è™Ÿ
+//å‚³å…¥åƒæ•¸ï¼šidèº«ä»½è¨¼å­—è™Ÿ
+//å‚³ å› å€¼ï¼štrueï¼šèº«ä»½è¨¼å­—è™Ÿæ­£ç¢º/falseï¼šèº«ä»½è¨¼å­—è™ŸéŒ¯èª¤
+//å‰¯ ä½œ ç”¨ï¼šç„¡
+//å‚™    è¨»ï¼š
+//ç¯„    ä¾‹ï¼šIsId('L121478918') ==>>å‚³å›false
+//ç‰ˆ    æœ¬ï¼š1.0  
+//ä½œã€€ã€€è€…ï¼š(2004-08-05)
+//*******************************************************************************
+function isIdNo(id) {
+	if(typeof(id)=='object') {id=id.value;}
+	else if (typeof(id)=='string') {}
+	else {return false;}	
+ check:{
+	if (id.length != 10) break check;
+	var no=id.split("");
+	no[0]=no[0].toUpperCase();
+	if ((no[0]<"A") || (no[0]>"Z")) break check;
+	if ((no[1]<"1") || (no[1]>"2")) break check;
+	for (var i=1;i<10;i++) if ((no[i]<"0" || no[i]>"9")) break check; else no[i]=Number(no[i]);
+	no[0]=no[0].charCodeAt(0);
+	if (no[0]<73) no[0]-=55;
+	   else if (no[0]==73) no[0]=34;
+	      else if (no[0]<79) no[0]-=56;
+	         else if (no[0]==79) no[0]=35;
+	            else if (no[0]<87) no[0]-=57;
+	               else if (no[0]==87) no[0]=32;
+	                  else if (no[0<90]) no[0]-=58; else no[0]=33;
+	var sum=Math.floor((no[0]/10))+(no[0]%10)*9;
+	for (var i=1;i<9;i++) sum+=no[i]*(9-i);
+	sum+=no[9];
+	if (sum%10 != 0) break check;
+	return true;
+ }
+	alert("æ‚¨è¼¸å…¥çš„èº«åˆ†è­‰å­—è™Ÿä¸æ­£ç¢º!\nè«‹é‡æ–°è¼¸å…¥,è¬è¬!!");
+	//id.value="";
+	//id.focus();
+	return false;
 }

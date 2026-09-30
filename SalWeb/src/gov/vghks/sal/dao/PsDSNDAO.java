@@ -20,21 +20,21 @@ import gov.vghks.sal.model.Pscode;
 
 public class PsDSNDAO {
 	String gClassName = PsDSNDAO.class.getName();
-	static Logger log = Logger.getLogger(PsDSNDAO.class);  //©I¥slog4j
+	static Logger log = Logger.getLogger(PsDSNDAO.class);  //å‘¼å«log4j
 	private VGHDataAccess da = null;
 	static ArrayList<Map<String, Object>> result = null;
 	static ArrayList<Object> params = new ArrayList<Object>();
-	private static final int META_TYPE = 2; 			//¦^¶Çmap¤¤Äæ¦ì¦WºÙ¬O¤p¼g
+	private static final int META_TYPE = 2; 			//å›å‚³mapä¸­æ¬„ä½åç¨±æ˜¯å°å¯«
 	private static boolean connFlg = false;
 	static String g_dataSource="";
 	private String hid="";
 	private String sql="";
-	private String tinsu   = "PS.PSINSU";		//­û¤u«OÀI
-	private String tbasic  = "PS.PSBASIC";		//°ò¥»¸ê®ÆÀÉ
-	private String ttab0   = "PS.PSTAB0";		//¤H¨Æ¥N½XÀÉ
-	private String texperi = "PS.PSEXPERI";		//¸g¾ú²§°Ê¸ê®ÆÀÉ
-	private String tnurbas = "PS.PSNURBAS";		//Å@²z¤H­û--°ò¥»¸ê®ÆÀÉ
-	private String tcode   = "PS.PSCODE";		//¤H¨Æ¥N½XÀÉ¡]©ú²Ó¡^
+	private String tinsu   = "PS.PSINSU";		//å“¡å·¥ä¿éšª
+	private String tbasic  = "PS.PSBASIC";		//åŸºæœ¬è³‡æ–™æª”
+	private String ttab0   = "PS.PSTAB0";		//äººäº‹ä»£ç¢¼æª”
+	private String texperi = "PS.PSEXPERI";		//ç¶“æ­·ç•°å‹•è³‡æ–™æª”
+	private String tnurbas = "PS.PSNURBAS";		//è­·ç†äººå“¡--åŸºæœ¬è³‡æ–™æª”
+	private String tcode   = "PS.PSCODE";		//äººäº‹ä»£ç¢¼æª”ï¼ˆæ˜ç´°ï¼‰
 	
 	public PsDSNDAO() {
 		super();
@@ -52,16 +52,16 @@ public class PsDSNDAO {
 		connFlg = true;
 		TablesDSN tabInfo = TablesDSN.getTables(hid);
 		
-		tinsu  = tabInfo.tinsu;			//­û¤u«OÀI
-		tbasic = tabInfo.tbasic;		//°ò¥»¸ê®ÆÀÉ
-		ttab0  = tabInfo.ttab0;			//¤H¨Æ¥N½XÀÉ
-		tcode  = tabInfo.tcode;			//¤H¨Æ¥N½XÀÉ
-		texperi = tabInfo.texperi;		//¸g¾ú²§°Ê¸ê®ÆÀÉ
-		tnurbas = tabInfo.tnurbas;		//Å@²z¤H­û--°ò¥»¸ê®ÆÀÉ
+		tinsu  = tabInfo.tinsu;			//å“¡å·¥ä¿éšª
+		tbasic = tabInfo.tbasic;		//åŸºæœ¬è³‡æ–™æª”
+		ttab0  = tabInfo.ttab0;			//äººäº‹ä»£ç¢¼æª”
+		tcode  = tabInfo.tcode;			//äººäº‹ä»£ç¢¼æª”
+		texperi = tabInfo.texperi;		//ç¶“æ­·ç•°å‹•è³‡æ–™æª”
+		tnurbas = tabInfo.tnurbas;		//è­·ç†äººå“¡--åŸºæœ¬è³‡æ–™æª”
 	}
-	/**¨ú±o«ÌºaÅ@²z«´¬ù­­¨î®Ê¯Åmap ¦bÂ¾,Â¾¸¹=«´¬ù,Â¾Ãş=Å@²z®v,¤£¦C(¥b¤é,°±Á~)§ä¥XÅ@²z³æ¦ì,­n³]¯Å¼Æ½d³ò	
+	/**å–å¾—å±æ¦®è­·ç†å¥‘ç´„é™åˆ¶æ™‰ç´šmap åœ¨è·,è·è™Ÿ=å¥‘ç´„,è·é¡=è­·ç†å¸«,ä¸åˆ—(åŠæ—¥,åœè–ª)æ‰¾å‡ºè­·ç†å–®ä½,è¦è¨­ç´šæ•¸ç¯„åœ	
 	 * @param 		
-	   @return   map(Q004,210|222) ¥d¸¹,¯Å¼Æ½d³ò 
+	   @return   map(Q004,210|222) å¡è™Ÿ,ç´šæ•¸ç¯„åœ 
 	 * @throws SQLException 
 	 */
 	public HashMap<String, HashMap> getNurContLimMap(String hid,VGHDataAccess da) throws SQLException{
@@ -77,7 +77,7 @@ public class PsDSNDAO {
 		sql = "SELECT RTRIM(PBCARDNO) pbcardno,pbnamefd,a.pbidtno,pbupgdat,PBPAGRAD,pbtitcod,COALESCE(PSNDEPTC,'') PSNDEPTC "+
 		 	    "from "+this.tbasic +" a "+
 		 	   " inner JOIN "+ tnurbas +" B ON a.hid=b.hid AND a.PBIDTNO =b.pbidtno " +
-		 	  " WHERE a.hid=? and pbposmsk='Y' AND substr(PBPOSINO,1,2)='DK' AND substr(PBPOSTUS,1,1)<>'3' AND pbtitnme NOT LIKE '¥b¤é%' AND PBPAGRAD<>'H' AND PBCATEGO IN ('04','05','06','24','28')"+
+		 	  " WHERE a.hid=? and pbposmsk='Y' AND substr(PBPOSINO,1,2)='DK' AND substr(PBPOSTUS,1,1)<>'3' AND pbtitnme NOT LIKE 'åŠæ—¥%' AND PBPAGRAD<>'H' AND PBCATEGO IN ('04','05','06','24','28')"+
 		 	  " ORDER BY pbcardno WITH ur ";
 		try{
 			starttime = System.currentTimeMillis();
@@ -93,39 +93,39 @@ public class PsDSNDAO {
 					vMin=0;
 					vMax=0;
 					rngMap=new HashMap<String, Integer>();
-					if ( deptc.equals("01") ) {//01³Â¾KÅ@²z®v(12-24)
+					if ( deptc.equals("01") ) {//01éº»é†‰è­·ç†å¸«(12-24)
 						vMin=212;
 						vMax=224;
 					}	
-					else if ( deptc.matches("02|03|04|05") ){//02 ICU­«¯g¯f©Ğ,03¬~µÇ«Ç,04¤â³N«Ç²£©Ğ,05¯f©Ğ³æ¦ì 10 - 22
+					else if ( deptc.matches("02|03|04|05") ){//02 ICUé‡ç—‡ç—…æˆ¿,03æ´—è…å®¤,04æ‰‹è¡“å®¤ç”¢æˆ¿,05ç—…æˆ¿å–®ä½ 10 - 22
 						vMin=210;
 						vMax=222;
 					}	
-					else if ( deptc.matches("06") ){//06¯S®í³æ¦ìÅ@²z®v 7 - 19
+					else if ( deptc.matches("06") ){//06ç‰¹æ®Šå–®ä½è­·ç†å¸« 7 - 19
 						vMin=207;
 						vMax=219;
 					}
-					else if ( deptc.matches("07") ){//07¤@¯ëªù¶E(ª`®g«Ç¡BÀù¯g¤¤¤ß) 7-15
+					else if ( deptc.matches("07") ){//07ä¸€èˆ¬é–€è¨º(æ³¨å°„å®¤ã€ç™Œç—‡ä¸­å¿ƒ) 7-15
 						vMin=207;
 						vMax=215;
 					}
-					else if ( deptc.matches("08") ){//08½ü¯Z³æ¦ì 3 - 11
+					else if ( deptc.matches("08") ){//08è¼ªç­å–®ä½ 3 - 11
 						vMin=203;
 						vMax=211;
 					}
-					else if ( deptc.matches("09") ){//09«D½ü¯Z³æ¦ì 1 - 8
+					else if ( deptc.matches("09") ){//09éè¼ªç­å–®ä½ 1 - 8
 						vMin=201;
 						vMax=208;
-					}else if ( deptc.matches("10") ){//10±M¬ìÅ@²z®v 12 - 19
+					}else if ( deptc.matches("10") ){//10å°ˆç§‘è­·ç†å¸« 12 - 19
 						vMin=212;
 						vMax=219;
-					}else if ( deptc.matches("11") ){//11°V½m¤¤±M®v 12 - 15
+					}else if ( deptc.matches("11") ){//11è¨“ç·´ä¸­å°ˆå¸« 12 - 15
 						vMin=212;
 						vMax=215;
-					}else if ( deptc.matches("12") ){//12¤@¯ëªù¶EÅ@²z®v 5 - 13
+					}else if ( deptc.matches("12") ){//12ä¸€èˆ¬é–€è¨ºè­·ç†å¸« 5 - 13
 						vMin=205;
 						vMax=213;
-					}else if ( deptc.matches("13") ){//13ÀË¬d«Ç§Ş³N­û 11-21
+					}else if ( deptc.matches("13") ){//13æª¢æŸ¥å®¤æŠ€è¡“å“¡ 11-21
 						vMin=211;
 						vMax=221;
 					}
@@ -134,7 +134,7 @@ public class PsDSNDAO {
 					rtnMap.put(oneKey, rngMap);
 				}
 			}
-			log.info(me+"(size):" + result.size()+" ¦@ªá¶O¡G"+(System.currentTimeMillis()-starttime)+"²@¬í");
+			log.info(me+"(size):" + result.size()+" å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-starttime)+"æ¯«ç§’");
 		}
 		catch(Exception e){
 			log.info(me + " fail, " + e);
@@ -146,9 +146,9 @@ public class PsDSNDAO {
 		
 		return rtnMap;
 	}
-	/**¨ú±o«´¬ù­­¨î®Ê¯Åmap	
+	/**å–å¾—å¥‘ç´„é™åˆ¶æ™‰ç´šmap	
 	 * @param 		
-	   @return   map(HI47,15) ¥d¸¹,¯Å¼Æ¤W­­ 
+	   @return   map(HI47,15) å¡è™Ÿ,ç´šæ•¸ä¸Šé™ 
 	 * @throws SQLException 
 	 */
 	public HashMap<String, Integer> getContLimMap(VGHDataAccess da) throws SQLException{
@@ -209,7 +209,7 @@ public class PsDSNDAO {
 					rtnMap.put(oneKey, intLimit);
 				}
 			}
-			log.info(me+"(size):" + result.size()+" ¦@ªá¶O¡G"+(System.currentTimeMillis()-starttime)+"²@¬í");
+			log.info(me+"(size):" + result.size()+" å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-starttime)+"æ¯«ç§’");
 		}
 		catch(Exception e){
 			log.info(me + " fail, " + e);
@@ -222,7 +222,7 @@ public class PsDSNDAO {
 		return rtnMap;
 	}
 	
-	//¨ú±o°ò¥»¸ê®ÆÀÉ BY idno
+	//å–å¾—åŸºæœ¬è³‡æ–™æª” BY idno
 	public Psbasic getPsBasById(String idtno,String hid,VGHDataAccess da) throws SQLException{
 		String me = getClass().getName() + ".getPsBasById()";
 		ArrayList<Object> params = new ArrayList<Object>();
@@ -255,7 +255,7 @@ public class PsDSNDAO {
 					PropertyUtils.copyProperties(oneObj, data);					
 				}
 			}
-			log.info(me+"(size):" + result.size()+"  ...********* dataaccess:¦@ªá¶O¡G"+(System.currentTimeMillis()-starttime)+"²@¬í");
+			log.info(me+"(size):" + result.size()+"  ...********* dataaccess:å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-starttime)+"æ¯«ç§’");
 		}
 		catch(Exception e){
 			log.info(me + " fail, " + e);
@@ -267,7 +267,7 @@ public class PsDSNDAO {
 	
 		return oneObj;
 	}
-	//¨ú±o«OÀIÀÉ,¨Ì¨­¤ÀÃÒ,¥Ø«e¥u­­°ªºa	
+	//å–å¾—ä¿éšªæª”,ä¾èº«åˆ†è­‰,ç›®å‰åªé™é«˜æ¦®	
 	public PsInsu getInsuByidno(String idtno,String hid,VGHDataAccess da) throws SQLException{
 		String me = getClass().getName() + ".getInsuByidno()";
 		ArrayList<Object> params = new ArrayList<Object>();
@@ -289,7 +289,7 @@ public class PsDSNDAO {
 		
 		if(da==null){
 			connFlg = false;
-			//§ï¥Î¦CÁ|
+			//æ”¹ç”¨åˆ—èˆ‰
 			g_dataSource=hospInfo.dataSourceDSN;
 			da=new VGHDataAccess(g_dataSource);
 		}
@@ -301,7 +301,7 @@ public class PsDSNDAO {
 					PropertyUtils.copyProperties(oneObj, data);					
 				}
 			}
-			log.info(me+"(size):" + result.size()+"  ...********* dataaccess:¦@ªá¶O¡G"+(System.currentTimeMillis()-starttime)+"²@¬í");
+			log.info(me+"(size):" + result.size()+"  ...********* dataaccess:å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-starttime)+"æ¯«ç§’");
 		}
 		catch(Exception e){
 			log.info(me + " fail, " + e);
@@ -313,8 +313,54 @@ public class PsDSNDAO {
 	
 		return oneObj;
 	}
+	//å–å¾—ä¿éšªæª”,åˆ—é€€ä¿=2,ç”Ÿæ•ˆæ—¥=ç•¶æœˆ,ä¸åˆ—(è‡¨æ™‚å·¥QQ,ç ”ç©¶åŠ©ç†ET,é€€ä¿=2,ç”Ÿæ•ˆæ—¥<ç•¶æœˆ),ç›®å‰åªé™é«˜æ¦®	
+	public HashMap<String, PsInsu> getInsuMap(String hid,VGHDataAccess da) throws SQLException{
+		String me = getClass().getName() + ".getInsuMap()";
+		ArrayList<Object> params = new ArrayList<Object>();
+		long starttime =0;
+		PsInsu oneObj=null;
+		String strKey = "";
+		HashMap<String, PsInsu> rtnMap = new HashMap<String, PsInsu>();
+		
+		Hospitals hospInfo = Hospitals.getOneHosp(hid);
+		sql = "SELECT PBIDTNO, INVER, HID, PBSUPFG, PBCARDNO, PBNAMEFD, PBBIRTHD, PBPOSINO, PBPORANK, PBPAGRAD, PBPAPONT, PBPCHIEF, PBTITCOD, PBTITNME, INSTUS, PBLSVDAT, INREAL, LBREAL, DPINIG, LBINIG, WRINIG, OCCINIG, SELFVOL, LBSPFLG, DPSPFLG, INUPDT, INRMK, UPDNM, UPDTM "+
+		 	    "from "+this.tinsu +
+		 	  " where HID= ? and INVER = 0 and (INSTUS <>2 OR (INSTUS=2 AND YEAR(pblsvdat)=YEAR(CURRENT date) AND month(pblsvdat)=month(CURRENT date) )) and substr(PBPOSINO,1,2) not in ('ET','QQ') WITH UR";
+		params.add(hid);
+		starttime = System.currentTimeMillis();
+		log.info(me+"  " + sql+"...params:"+ params.toString());
+		
+		if(da==null){
+			connFlg = false;
+			//æ”¹ç”¨åˆ—èˆ‰
+			g_dataSource=hospInfo.dataSourceDSN;
+			da=new VGHDataAccess(g_dataSource);
+		}
+		try{
+			result = da.arraylistbyQuery(sql,params,META_TYPE);
+			if(result.size()>0){
+				for (Map<String,Object> data :result){
+					oneObj=new PsInsu();
+					PropertyUtils.copyProperties(oneObj, data);	
+					strKey=StringUtil.nullToString(oneObj.getPbidtno());
+
+					rtnMap.put(strKey, oneObj);
+				}
+			}
+			log.info(me+"(size):" + result.size()+"  ...********* dataaccess:å…±èŠ±è²»ï¼š"+(System.currentTimeMillis()-starttime)+"æ¯«ç§’");
+		}
+		catch(Exception e){
+			log.info(me + " fail, " + e);
+			throw new SQLException(me + ", fail!!." + e);
+		}
+		finally{
+			closeAll(da,null,connFlg);
+		}
+	
+		return rtnMap;
+	}
 	/**
-	 * Ãö³¬VGHDataAccess»PResultSet
+	 * é—œé–‰VGHDataAccessèˆ‡ResultSet
 	 * 
 	 * @param da
 	 * @param rs

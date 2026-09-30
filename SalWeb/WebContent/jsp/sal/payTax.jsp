@@ -286,6 +286,11 @@ $(function(){
 	 			msg = '請輸入條件值!!';
 	 		}
 		}
+  		else if (btn== 'btn_qryTaxCard'){	//所得稅查看_找新卡號
+	 		if( $("#qry_viewCard").val()=='' ){
+	 			msg = '請輸入[卡號]!!';
+	 		}
+		}
 		else if (btn== 'btn_qryTaxSum'){	//所得稅彙總_查詢
 	 		if(typeof($("#qry_sumYear option:selected").val())=='undefined' && typeof($("#qry_sumMon option:selected").val())=='undefined' && $("#qry_sumFmt").val()==''  && $("#qry_sumTickno").val()==''  ){
 	 			msg = '請輸入條件值!!';
@@ -480,6 +485,44 @@ $(function(){
 					},
 					error: function(xhr){					
 						alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
+					}
+				});
+			}
+			else{
+				alert(msg);
+				return false;
+			}
+		}
+		else if(id == 'btn_qryTaxCard'){		//所得稅查看_找新卡號 2026.9.24
+			msg = $.checkFields(id);
+			if(msg == ''){
+				cardno=$("#qry_viewCard").val().toUpperCase();
+				
+ 				console.log("所得稅查看_找新卡號=> 卡號:"+cardno);
+ 				//return false;
+				in_data={
+						selEn  : 'find_ocard',
+						cardno : cardno
+		        	};
+				console.log("所得稅查看_找新卡號:code_data:"+JSON.stringify(in_data)+" hid:"+pahid);
+				
+				$.ajax({
+					url:"${pageContext.request.contextPath}/salController.do",
+					data:{
+						method    : 'handelTax',
+						selNm     : '找新卡號',
+						in_data :JSON.stringify(in_data),
+						hid       : pahid,
+						userid    : paUserid,
+					},
+					type:"POST",	//type:POST, GET(default:GET)
+					dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+					contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+					success:function(data) {
+						alert(data.msg);						
+					},
+					error: function(xhr){					
+						alert("所得稅查看_找新卡號 失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
 					}
 				});
 			}
@@ -1556,16 +1599,24 @@ $(function(){
 	$('#payidno').blur(function(){
 		var idno = $(this).val();
 		if (idno !=""){
-			//用正規表達式判斷身分證 舊式居留證
-			//國民身分證：第一碼英文字母，第二碼為 1 或 2，總長 10 碼 ^[A-Z][12]\d{8}$
-			//新式居留證:1碼英文 + 8或9 + 8碼數字                               ^[A-Z][ABCD]\d{8}$
+			//用正規表達式判斷身分證 舊式居留證 --格式檢查（Regex）
+			//國民身分證：第一碼英文字母，第二碼為 1 或 2，總長 10 碼  /^[A-Z][12]\d{8}$/
+			//新式居留證:1碼英文 + 8或9 + 8碼數字                                /^[A-Z][89]\d{8}$/
+			//舊式居留證:1碼英文 + A-D + 8碼數字 			   /^[A-Z][A-D]\d{8}$/
 			//複合型 (全部)                               ^[A-Z][1289ABCD]\d{8}$
+			//第 1 碼：必定為大寫英文字母 [A-Z]
+			//第 2 碼：本國人/新式居留證為數字 [1-28-9]舊式居留證為字母 [A-D]合併後寫法：[A-D1-28-9]後 8 碼：必定為數字 \d{8}
 			reCheckCase = /^[A-Z][1289ABCD]\d{8}$/ ;
 			
 			if(!reCheckCase.test(idno)){
 				alert('輸入的身分證字號格式有誤，請重新輸入');
 				return;
 			}
+			//檢查碼演算法（Mod 10）
+			checkId = isIdNo($(this).val());
+			if (checkId == false){
+				return false;
+			}	
 		}
 	});	
 	//輸入代碼,找是否重複 新增才要檢查
@@ -1992,7 +2043,7 @@ $(function(){
 													</td>
 													<td>
 														<!-- 應稅收入-->
-														<input class="form-control required digits keypay" type="text" style="text-align: right" id="cash_paytaxpay" name="cash_paytaxpay" value="" maxlength="7" size="7">
+														<input class="form-control required number keypay" type="text" style="text-align: right" id="cash_paytaxpay" name="cash_paytaxpay" value="" maxlength="7" size="7">
 													</td>
 													<td>
 														<!-- 已扣稅-->
@@ -2102,7 +2153,7 @@ $(function(){
 	<div class="tab-pane fade" id="byTaxViewMain" role="tabpanel" aria-labelledby="pills-taxview-tab">
 		<div class="container-fluid">
 			<div class="row" id="qryTaxViewItem">
-				<div class="col-10">
+				<div class="col-9">
 					<div class="form-inline">
 		    			<div class="input-group">
 		    				<span class="input-group-text">項目</span>
@@ -2148,8 +2199,9 @@ $(function(){
 						<input type="text" id="qry_viewNamec" size="12" class="form-control " placeholder="姓名" >						
 					</div>
 				</div>
-				<div class="col-2">
+				<div class="col-3">
 					<button id="btn_qryTaxView" class="btn btn-info" type="button" ><i class="fa fa-search"></i>查詢</button>
+					<button id="btn_qryTaxCard" class="btn btn-secondary" type="button" ><i class="fa fa-hand-point-up"></i>找新卡號</button>
 					<button id="btn_clnTaxView" class="btn btn-warning" type="button"><i class="fa fa-eraser"></i>清空</button>
 				</div>
 			</div>

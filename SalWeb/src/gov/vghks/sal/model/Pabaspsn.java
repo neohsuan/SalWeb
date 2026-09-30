@@ -140,6 +140,10 @@ public class Pabaspsn implements Serializable{
     private String servant;
     /** 新制公務員:公保及退撫新制,初任公職日2023-7-1起*/
     private String newServant;
+    /** 階級縮寫*/
+    private String rankabbr;
+    /** 階級...勞退用的*/
+    private String rank;
     
 	public String getPayidno() {
 		return payidno;
@@ -578,6 +582,30 @@ public class Pabaspsn implements Serializable{
 		}
 		return rtnTmp;
 	}
-        
+	public String getRank() {
+		String tmp="";
+		//階別
+		if (!StringUtil.nullToString(this.rankabbr).equals(""))
+			tmp+=this.rankabbr;
+		//職等
+		if (!(this.payrnk2n.equals("") || this.payrnk2n.equals("00")))
+			tmp+=this.payrnk2n;
+		//本功
+		if (this.payrank3 > 0)
+			tmp+=this.payrank3;
+		//級別PAYDEGR2
+		if (this.paydegr2 > 0)
+			tmp+=this.paydegr2;
+		//俸點PAYDEGRE
+		if (this.paydegre > 0)
+			tmp+=" "+this.paydegre;
+		return tmp;
+	}
+	public String getRankabbr() {
+		return rankabbr;
+	}
+	public void setRankabbr(String rankabbr) {
+		this.rankabbr = rankabbr;
+	}
 }
 	

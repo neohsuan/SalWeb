@@ -1431,7 +1431,13 @@ $(function(){
 							    <input type="file" accept=".csv,text/plain"  id="fileInput" name="fileInput">								   
 						    </form> 
 					   	 </div>
-					   	
+					   	<a href="#explan_chkbat" class="btn btn-danger" data-toggle="collapse">注意事項</a>
+						<div id="explan_chkbat" class="collapse">
+				  			<div id="explan_chkbat" class="text-danger">
+					  			檢測說明:<br>
+					  			1.基本檔在職+異動檔(新進1復職2,納實33,職務調整37,[有效期限內--離職21,退休22,留職停薪23,逾期請假24])
+					  		</div>
+					  	</div>
 					</div>
 				</div>
 			</div>

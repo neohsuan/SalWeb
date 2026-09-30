@@ -114,6 +114,11 @@ public class Padatpsn implements Serializable{
     private int patracod;
     /** 額外點數*/
     private int paypfsp;
+    /** 階級縮寫*/
+    private String rankabbr;
+    /** 階級...勞退用的*/
+    private String rank;
+    
     
     public int getSalnum() {
 		return salnum;
@@ -439,6 +444,31 @@ public class Padatpsn implements Serializable{
 	}
 	public void setPayexpfkey2(int payexpfkey2) {
 		this.payexpfkey2 = payexpfkey2;
+	}
+	public String getRank() {
+		String tmp="";
+		//階別
+		if (!StringUtil.nullToString(this.rankabbr).equals(""))
+			tmp+=this.rankabbr;
+		//職等
+		if (!(this.payrnk2n.equals("") || this.payrnk2n.equals("00")))
+			tmp+=this.payrnk2n;
+		//本功
+		if (this.payrank3 > 0)
+			tmp+=this.payrank3;
+		//級別PAYDEGR2
+		if (this.paydegr2 > 0)
+			tmp+=this.paydegr2;
+		//俸點PAYDEGRE
+		if (this.paydegre > 0)
+			tmp+=" "+this.paydegre;
+		return tmp;
+	}
+	public String getRankabbr() {
+		return rankabbr;
+	}
+	public void setRankabbr(String rankabbr) {
+		this.rankabbr = rankabbr;
 	}
 	
         

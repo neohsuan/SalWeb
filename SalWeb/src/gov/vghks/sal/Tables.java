@@ -72,7 +72,8 @@ public enum Tables {
 			"ZPANHIDET",
 			"ZPAREPDETAIL",
 			"ZPAWKRETIR",
-			"ZSALMONT"
+			"ZSALMONT",
+			"ZPARANK"
 	),
 	PTVGH(
 		"2A0", 			//0醫院別
@@ -144,7 +145,8 @@ public enum Tables {
 		"ZPTNHIDET",
 		"ZPTRPDTL",
 		"ZPTWKRETIR",
-		"ZPTLMONT"
+		"ZPTLMONT",
+		"ZPTRANK"
 	),
 	KMUH(
 		"3A0",          //0醫院別
@@ -216,11 +218,11 @@ public enum Tables {
 		"ZLHNHIDET",
 		"ZLHRPDTL",
 		"ZLHWKRETIR",
-		"ZLHLMONT"
+		"ZLHLMONT",
+		"ZLHRANK"			
 	),
 	;
 	
-
 	public final String aa=null;
 	public final String hid;   				//0醫院別
 	public final String tTaxPsn;			//1所得稅個人明細
@@ -292,6 +294,7 @@ public enum Tables {
 	public final String tmpZrpdtl;
 	public final String tmpZwkretir;
 	public final String tmpZlmont;
+	public final String tmpZrank;						  
 	
 	Tables(
 		final String hid, 
@@ -363,7 +366,8 @@ public enum Tables {
 		final String tmpZnhidet,
 		final String tmpZrpdtl,
 		final String tmpZwkretir,
-		final String tmpZlmont
+		final String tmpZlmont,
+		final String tmpZrank
 	)
 	{
         this.hid= hid;
@@ -436,6 +440,7 @@ public enum Tables {
     	this.tmpZrpdtl= tmpZrpdtl; //0907 MP新增時戳
     	this.tmpZwkretir= tmpZwkretir; //0907 MP新增時戳
     	this.tmpZlmont= tmpZlmont; //0907 MP新增時戳
+		this.tmpZrank= tmpZrank; //0922 MP新增時戳											  
     }
 	
 	/**
