@@ -2059,9 +2059,9 @@ public class SalController{
 		//階別
 		String vRank=request.getParameter("rank")==null?"":request.getParameter("rank");
 		//級別
-		String vDegr2=request.getParameter("degr2")==null?"":request.getParameter("degr2");
+		String vDegr2=request.getParameter("degr2")==null?"0": ("").equals(StringUtil.nullToString(request.getParameter("degr2"))) ? "0" : request.getParameter("degr2");
 		//本功別
-		String vRank3=request.getParameter("rank3")==null?"":request.getParameter("rank3");
+		String vRank3=request.getParameter("rank3")==null?"0": ("").equals(StringUtil.nullToString(request.getParameter("rank3"))) ? "0" : request.getParameter("rank3");
 		//發薪日
 		String vTradt=request.getParameter("tradt")==null?"":request.getParameter("tradt");
 		

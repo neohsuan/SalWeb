@@ -582,6 +582,65 @@ $(function(){
 			}  
 		}) 
 	};
+	//[實際支領KEY]對應
+	$(".calCSPF").change(function(){
+		var mrnk2n="";
+		var mrank="";
+		var mrank3="";
+		var mdegr2="";
+		var mjt="";
+		//var mtradt=$("#basPsn_patradt").val();
+		var mtradt="9999-12-31";
+		var mcsflag = $("#pacsflag").val();//工作獎金
+		$("#basPsn_pfkey").val("");
+		$("#basPsn_pfbas").val("");
+		$("#basPsn_pfdat").val("");
+		if (mcsflag=="Y"){
+			mrnk2n = $("#basPsn_payrnk2n").val();
+			mrank  = $("#basPsn_payrank").val();
+			mrank3 = $("#basPsn_payrank3").val();
+			mdegr2 = $("#basPsn_paydegr2").val();
+			mjt    = $("#basPsn_paytitle").val().split("-")[1];
+			$.doCsPf(mjt,mrnk2n,mrank,mdegr2,mrank3,mtradt,'N');
+		}
+	});
+	//實際支領KEY 基本點數 職等點數
+	$.doCsPf = function(mjt,mrnk2n,mrank,mdegr2,mrank3,mtradt,item){
+		$.ajax({
+			url:"${pageContext.request.contextPath}/salController.do",
+				data:{
+					method : 'getCsPfBykey',
+					jt  : mjt,
+					rnk2n  : mrnk2n,
+					rank   : mrank,
+					degr2  : mdegr2,
+					rank3  : mrank3,
+					tradt  : mtradt 
+				},
+
+			type:"POST",		//type:POST, GET(default:GET)
+			dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+			contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+			async:false,
+			success:function(data) {
+				if (data.cspfData!=null){
+					$("#basPsn_pfkey").val(data.cspfData.pfkey);
+					$("#basPsn_pfbas").val(data.cspfData.pfbas);
+					$("#basPsn_pfdat").val(data.cspfData.pfdat);
+					if (data.cspfData.pfbas==""){
+						$("#basPsn_pfbas").addClass('bg-danger');
+						$("#basPsn_pfdat").addClass('bg-danger');
+					}else{
+						$("#basPsn_pfbas").removeClass('bg-danger');
+						$("#basPsn_pfdat").removeClass('bg-danger');
+					}
+				}
+			},
+			error: function(xhr){	
+				alert("搜尋[實際支領KEY]過程中，程式發生錯誤!!!\nerror code:"+ xhr.status);
+			}
+		});
+	};
 	//工作獎金Y,show pfkey 工作獎金N show pfdoc
 	$("#pacsflag").change(function(){
 		$("#div_pfkey").addClass("d-none");
@@ -615,6 +674,7 @@ $(function(){
 		$("#basPsn_paydpno").val(mData.paydpno);
 		$("#basPsn_paytitle").val(mData.patitsub+"-"+mData.paytitle);
 		$("#basPsn_paytitlp").val(mData.paytitlp);
+		$("#basPsn_payrank").val(mData.payrank);
 		$("#basPsn_payrnk2n").val(mData.payrnk2n);
 		$("#basPsn_payrank3").val(mData.rank3name);
 		$("#basPsn_paydegr2").val(mData.paydegr2);
@@ -1097,6 +1157,7 @@ $(function(){
 														<div class="form-row form-row--equal">
 													<div class="form-group">
 														<label for="basPsn_rankname">階別</label>
+														<INPUT type="hidden" id ="basPsn_payrank"  value="">
 														<input type="text" id="basPsn_rankname" readonly  class="form-control" maxlength="8" size="8"  />
 													</div>
 													<div class="form-group">
@@ -1150,7 +1211,7 @@ $(function(){
 														<div class="form-row">
 															<div class="form-group">
 																<label for="pacsflag" class="table-warning">工作獎金</label>
-																<select id="pacsflag" name="pacsflag" class="form-control" >
+																<select id="pacsflag" name="pacsflag" class="form-control calCSPF" >
 																	<option value="">請選擇</option>
 																	<option value="Y">Y</option>
 											     					<option value="N">N</option>

@@ -1765,6 +1765,7 @@ public class SalNTDAO {
 		ArrayList<Object> paramA = new ArrayList<Object>();
 		ArrayList<Object> obj = new ArrayList<Object>();
 		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql 資料
+		ResultSet rs = null;
 		HashMap taxpsnIdMap = new HashMap();
 		HashMap taxpsnCardMap = new HashMap();
 		HashMap baspsnIdMap = new HashMap();
@@ -1819,7 +1820,11 @@ public class SalNTDAO {
 		String sqlTaxCash_ins = "insert into " + this.tTaxCash
 				+ " (PAYIDNO, PAYEAR, PAYMONTH, PAYCATG, PAYFORMAT, PAYCITATION, PAYTAXPAY, PAYTAXDEDUCT, PAYUPDID, PAYUPDTM, PAYFLAG, HID) "
 				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT TIMESTAMP, ?, ?);";
-
+		// 依舊卡號找出新卡號
+		String sqlDatPsnFind_NCard = "select DISTINCT PAYCARD " + 
+									"from "+this.tDatPsn+" where PAYIDNO in (" + 
+								  "select PAYIDNO from "+this.tDatPsn+" where HID=? and PAYCARD=? group by PAYIDNO,PAYCARD) " + 
+								     "and HID=? and PAYCARD<>? with ur ";
 		try {
 			Hospitals hospInfo = Hospitals.getOneHosp(hid);
 			if (da == null) {
@@ -1843,7 +1848,6 @@ public class SalNTDAO {
 			// 建立檔案
 			SmbFile payfile = fileUtil.FileToSmbFile(filePath, hid);
 			bfw = new BufferedWriter(new OutputStreamWriter(new SmbFileOutputStream(payfile, false), "Big5"));
-			// sb.setLength(0);
 
 			da.setAutoCommit(false);
 			params.clear();
@@ -1890,6 +1894,7 @@ public class SalNTDAO {
 			log.info(me + "  3.讀取Pataximp ary,一一寫入pataxpsn pataxcash ");
 			Calendar calendar = Calendar.getInstance();
 			for (Pataximp itm : vobjs) {
+				blnFlag=true;
 				if (itm != null) {
 					++docnt;
 					strIdno = StringUtil.nullToString(itm.getPayidno());
@@ -1903,9 +1908,7 @@ public class SalNTDAO {
 						blnFlag = false;
 						strMsg = "身分證_卡號[空白],";
 						strMsg += itm.getPayidno() + "," + itm.getPaycard() + "," + itm.getPaynamec();
-						/*
-						 * sb.append(strMsg); sb.append(newline);
-						 */
+						
 						bfw.write(strMsg);
 						bfw.newLine();
 						bfw.flush();
@@ -1969,7 +1972,7 @@ public class SalNTDAO {
 							taxpsnobj = (Pataxpsn) taxpsnIdMap.get(strIdno);
 						else
 							taxpsnobj = (Pataxpsn) taxpsnCardMap.get(strCard);
-
+						
 						// 2.所得稅taxpsn個人 無,找基本檔個人
 						if (taxpsnobj == null) {
 							if (!"".equals(strIdno))
@@ -1978,39 +1981,51 @@ public class SalNTDAO {
 								baspsnobj = (Pabaspsn) baspsnCardMap.get(strCard);
 
 							if (baspsnobj == null) {
-								// 所得稅個人(無)+基本檔個人(無)+起訖日期(有)+文字檔IDNO(有),可csv新增
-								if ((!("").equals(StringUtil.nullToString(itm.getPayidno())))
-										&& (!("").equals(StringUtil.nullToString(itm.getPaybegin())))
-										&& (!("").equals(StringUtil.nullToString(itm.getPaybegin())))) {
-									batch_sql.add(sqlTaxPsn_ins);
-									obj = new ArrayList<Object>();
-									obj.add(itm.getPayidno());
-									obj.add(itm.getPayear());
-									obj.add(itm.getPaycard());
-									obj.add(itm.getPaynamec());
-									obj.add(itm.getPaybegin());
-									obj.add(itm.getPayend());
-									obj.add(userid);
-									obj.add(hid);
-									params.add(obj);
-									strMsg = "依身分檔找不到[所得稅個人檔及基本個人檔]_起訖日期[有],";
-									strMsg += itm.getPayidno() + "," + itm.getPaycard() + "," + itm.getPaynamec() + ",";
+								//2026.10.1反找,用舊卡號找新卡號,PGY轉R,更換卡號
+								paramA = new ArrayList<Object>();
+								paramA.add(hid);
+								paramA.add(strCard);
+								paramA.add(hid);
+								paramA.add(strCard);
+								rs = da.query(sqlDatPsnFind_NCard, paramA);
+								String findCard ="";
+								while (rs.next()) {
+									findCard = rs.getString("paycard");
 								}
-								// 所得稅個人(無)+基本檔個人(無)+起訖日期(無)<==log
-								else {
-									blnFlag = false;
-									strMsg = "依身分檔找不到[所得稅個人檔及基本個人檔]_起訖日期[無],";
-									strMsg += itm.getPayidno() + "," + itm.getPaycard() + "," + itm.getPaynamec() + ",";
-									/*
-									 * sb.append(strMsg); sb.append(newline);
-									 */
-									bfw.write(strMsg);
-									bfw.newLine();
-									bfw.flush();
+								if (!findCard.equals("")) {	//找到新卡號,用新卡號找基本檔
+									baspsnobj = (Pabaspsn) baspsnCardMap.get(findCard);
 								}
-							} else {
-								// 所得稅個人(無)+基本檔個人(有)
-								// <==用卡號找,要改用基本檔idno,去找所得稅個人idno(maybe換卡號),update所得稅個人_卡號,else insert用基本檔個人
+								
+								if (baspsnobj == null) {
+									// 所得稅個人(無)+基本檔個人(無)+起訖日期(有)+文字檔IDNO(有),可csv新增
+									if ((!("").equals(StringUtil.nullToString(itm.getPayidno())))
+											&& (!("").equals(StringUtil.nullToString(itm.getPaybegin())))
+											&& (!("").equals(StringUtil.nullToString(itm.getPaybegin())))) {
+										batch_sql.add(sqlTaxPsn_ins);
+										obj = new ArrayList<Object>();
+										obj.add(itm.getPayidno());
+										obj.add(itm.getPayear());
+										obj.add(itm.getPaycard());
+										obj.add(itm.getPaynamec());
+										obj.add(itm.getPaybegin());
+										obj.add(itm.getPayend());
+										obj.add(userid);
+										obj.add(hid);
+										params.add(obj);
+										strMsg = "依身分檔找不到[所得稅個人檔及基本個人檔]_起訖日期[有],";
+										strMsg += itm.getPayidno() + "," + itm.getPaycard() + "," + itm.getPaynamec() + ","+findCard;
+									}
+									// 所得稅個人(無)+基本檔個人(無)+起訖日期(無)<==log
+									else {
+										blnFlag = false;
+										strMsg = "依身分檔找不到[所得稅個人檔及基本個人檔]_起訖日期[無],";
+										strMsg += itm.getPayidno() + "," + itm.getPaycard() + "," + itm.getPaynamec() + ","+findCard;									
+									}
+								}
+							} 
+							// 所得稅個人(無)+基本檔個人(有)
+							// <==用卡號找,要改用基本檔idno,去找所得稅個人idno(maybe換卡號),update所得稅個人_卡號,else insert用基本檔個人
+							if (blnFlag) {
 								if ("".equals(strIdno)) {
 									strIdno = baspsnobj.getPayidno();
 									taxpsnobj = (Pataxpsn) taxpsnIdMap.get(strIdno);
@@ -2027,7 +2042,7 @@ public class SalNTDAO {
 									strMsg = "update--所得稅個人檔卡號,";
 									strMsg += itm.getPayidno() + "," + itm.getPaycard() + "," + itm.getPaynamec() + ","
 											+ taxpsnobj.getPaycard() + ",";
-
+	
 								} else {
 									// 用pabaspsn新增
 									batch_sql.add(sqlTaxPsn_ins);
@@ -2050,9 +2065,9 @@ public class SalNTDAO {
 									strMsg = "用pabaspsn新增,";
 									strMsg += baspsnobj.getPayidno() + "," + itm.getPaycard() + ","
 											+ baspsnobj.getPaynamec() + ",";
-
+	
 								}
-							}
+							}	
 						}
 						// 所得稅個人有找到,更新[所得結束日期]payend
 						else {
@@ -2113,9 +2128,6 @@ public class SalNTDAO {
 									else if ("XX".equals(mCatg)) {
 										blnFlag = false;
 										if (!"".equals(strMsg)) {
-											/*
-											 * sb.append(strMsg); sb.append(newline);
-											 */
 											bfw.write(strMsg);
 											bfw.newLine();
 											bfw.flush();
@@ -2150,43 +2162,29 @@ public class SalNTDAO {
 										+ itm.getCatgcd() + "," + itm.getCatgnm() + "," + itm.getPayformat() + ","
 										+ itm.getPaycitation() + "," + itm.getPaytaxpay() + "," + itm.getPaytaxdeduct()
 										+ ",";
-								;
+								if (++write_cnt % limitcnt == 0 || write_cnt == vobjs.size() || docnt == vobjs.size()) {
+									log.info(batch_sql + " " + batch_sql + " params:" + params);
+									da.batchupdatenocommit(batch_sql, params);
+									da.commit();
+									da.setAutoCommit(false);
+									batch_sql.clear();
+									params.clear();
+								}
 							}
 						}
 						// 寫log
 						if (!"".equals(strMsg)) {
-							/*
-							 * sb.append(strMsg); sb.append(newline);
-							 */
 							bfw.write(strMsg);
 							bfw.newLine();
 							bfw.flush();
 						}
-						// log.info(write_cnt+" "+obj);
-
-						if (++write_cnt % limitcnt == 0 || write_cnt == vobjs.size() || docnt == vobjs.size()) {
-							log.info(batch_sql + " " + batch_sql + " params:" + params);
-							da.batchupdatenocommit(batch_sql, params);
-							da.commit();
-							da.setAutoCommit(false);
-							batch_sql.clear();
-							params.clear();
-						}
+						
 					}
 				}
 			}
 			rtn = "寫入筆數:" + write_cnt;
 			log.info(me + "  ...********* 共花費：" + (System.currentTimeMillis() - starttimeM) + "毫秒");
-
-			/*
-			 * starttime = System.currentTimeMillis();
-			 * log.info(me+"  開始寫出文字檔："+filePath+"..."); outputstring = sb.toString(); File
-			 * file = new File(filePath); output = new BufferedWriter(new FileWriter(file));
-			 * System.out.println("開始寫出文字檔 "+filePath+"..."); output.write(outputstring);
-			 * output.close();
-			 * log.info(me+"  ...********* 寫入成功...共花費："+(System.currentTimeMillis()-
-			 * starttime)+"毫秒");
-			 */
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			log.info(me + " fail, " + e);
@@ -7468,7 +7466,7 @@ public class SalNTDAO {
 				if (bfw != null)
 					bfw.close();
 			}
-			// 找舊卡號
+			// 找新卡號
 			else if ("find_ocard".equals(selEn)) {
 				starttime = System.currentTimeMillis();
 				String cardno=object_in_data.getString("cardno");

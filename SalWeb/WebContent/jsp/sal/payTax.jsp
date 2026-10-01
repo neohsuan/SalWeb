@@ -191,7 +191,7 @@ $(function(){
 			$("#divfield_3").removeClass("d-none");
 			$("#explan_3").removeClass("d-none");
 			var logtmp="log資料夾:\\\\ap_pd1\\Apps_Exe\\SalProd\\" ;
-			logtmp = logtmp.concat(pahid, "\\log\\");	
+			logtmp = logtmp.concat(pahid, "\\log\\人工入稅\\");	
 			$("#explan_3").html(logtmp);			
 		}else if (selCode=="4"){	//4[刪除]批次人工入稅
 			$("#divfield_4").removeClass("d-none");
