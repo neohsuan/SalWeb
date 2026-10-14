@@ -197,6 +197,12 @@ $(function(){
 	 			msg = '請輸入條件值!!';
 	 		}	
  		}
+		else if (btn== 'btn_handelINSUAMT'){ //匯入投保金額(整批更新)
+			var file = $("#fileInput").val();			
+			if (file.length == 0) {
+				msg ='請確認是否有選擇檔案';				
+			}
+		}
   		return msg;	
 	};
 	
@@ -264,9 +270,12 @@ $(function(){
 		return selectedValues;
 	}	
 	//jQuery按紐圖示
-	$(".btn").button().click(
+	$(".btn").not("#lnkSampleFile").button().click(
 		function(event) {event.preventDefault();}
 	);
+	//$(".btn").button().click(
+	//	function(event) {event.preventDefault();}
+	//);
 	$(".btn").click(function(){
 		var id = $(this).attr('id');
 		
@@ -505,7 +514,43 @@ $(function(){
 					return false;
 				}
 		 	}
-		}	
+		
+		}
+		else if (id == 'btn_handelINSUAMT'){ //匯入投保金額(整批更新)
+			msg = $.checkFields(id);
+			if(msg == ''){
+				selCode=(typeof($("#qryType option:selected").val().split(':')[0]) == "undefined" )? "1":$("#qryType option:selected").val().split(':')[0];
+	  	  		console.log("執行："+selCode);
+				
+	  	  		var url="${pageContext.request.contextPath}/salController.do";
+	  	  		var param = '?method=uploadINSUAMTExcelFile' +
+							'&selCode=' + selCode +
+							'&userid=' + userid +
+							'&hid=' + pahid;
+	    		console.log(" 選項:"+selCode+" url:"+url+param);
+	    		
+	    		showPageLoading(); //顯示loading(本頁專屬)
+			 	$("#uploadfileForm").ajaxSubmit({
+					type: "post", //提交方式 
+					dataType:"json", //資料型別 
+					url: url + param, //請求url 
+					success: function (data) { //提交成功的回撥函式 
+						alert(data.msg);
+						hidePageLoading();
+					},
+					error: function(xhr){
+						alert("檔案上傳過程中，程式發生錯誤!!!\nerror code:"+ xhr.status);
+						hidePageLoading();
+					},
+					complete: function(data) {
+						hidePageLoading(); //隱藏loading
+					}
+				});
+			}else{
+				alert(msg);
+			}
+			
+		}//
 				
 	});
 	
@@ -947,17 +992,24 @@ $(function(){
 	$('#TblBasPsnFilter').dataTable(objCopyD);
 	 		      
 });
+
+//開啟loading dialog
+function showPageLoading(){
+	$("#pageLoadingOverlay").css("display", "flex");
+}
+
+//關閉loading dialog
+function hidePageLoading(){
+	$("#pageLoadingOverlay").css("display", "none");
+}
 </script>
 </head>
 <body>
 
 <ul class="nav nav-pills mb-3" id="pills-tab" role="tab">
-  <li class="nav-item">
-    <a class="nav-link active" id="pills-basic-tab" data-toggle="pill" href="#byPsnBaseDetailMain" role="tab" aria-controls="pills-home" aria-selected="true">基本資料</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="pills-query-tab" data-toggle="pill" href="#byPsnBaseFilterMain" role="tab" aria-controls="pills-profile" aria-selected="false">篩選</a>
-  </li>
+  <li class="nav-item"><a class="nav-link active" id="pills-basic-tab"   data-toggle="pill" href="#byPsnBaseDetailMain"  role="tab" aria-controls="pills-home" aria-selected="true">基本資料</a></li>
+  <li class="nav-item"><a class="nav-link"        id="pills-query-tab"   data-toggle="pill" href="#byPsnBaseFilterMain"  role="tab" aria-controls="pills-profile" aria-selected="false">篩選</a></li>
+  <li class="nav-item"><a class="nav-link"        id="pills-handing-tab" data-toggle="pill" href="#byPsnBaseHandingMain" role="tab" aria-controls="pills-profile" aria-selected="false">基本處理</a></li>
 </ul>
 
 <div class="tab-content" id="pills-tabContent">
@@ -1519,7 +1571,59 @@ $(function(){
 		</div>		
  	</div>
   </div>
-  
+
+  <!--異動處理-->
+  <div class="tab-pane fade" id="byPsnBaseHandingMain" role="tabpanel" aria-labelledby="pills-handing-tab">
+  	<div class="row p-1 mb-1 bg-secondary">
+		<div class="col-md-10">
+			<div class="form-inline">
+				<div class="input-group">
+					<span class="input-group-text">選單</span>
+			  	
+					<select id="qryType" class="form-control">
+						<option value="1:[匯入]投保金額:ImpBasINSUAMT">1[匯入]投保金額</option>   					
+					</select>
+				</div>
+				&emsp;
+				<a id="lnkSampleFile" href="${pageContext.request.contextPath}/salController.do?method=downloadSample&type=3" class="btn btn-outline-light">
+					<i class="fa fa-download"></i>下載範例檔案
+                </a>
+                &emsp;
+                <button id="btn_handelINSUAMT" class="btn btn-success" type="button" >
+					<i class="fa fa-cog"></i>執行
+				</button>
+			</div>
+		</div>
+
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-inline" id="rowBatHanding_1">
+				<div class="input-group">
+											
+					<div class="col-md-12 " id="divfield_1">							
+						<label class="form-label mb-1 d-block">匯入檔案（Excel），僅支援 .xlsx / .xls 格式</label>
+						<form id="uploadfileForm" class="mb-0">
+							<div class="custom-file-upload d-flex align-items-center border rounded p-2 bg-light">
+                        		<i class="fa fa-file-excel-o text-success mr-2" style="font-size:1.3rem;"></i>
+                        		<input type="file" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" id="fileInput" name="fileInput" class="form-control-file flex-grow-1">
+                            </div>
+                               
+                        </form>
+                    </div>
+
+					<!-- 訊息提示框 -->
+					<div class="alert alert-info" id="msgHint" style="display:inline-block; vertical-align:middle; background-color:#d9edf7; border-color:#bce8f1; color:#31708f; padding:6px 12px; margin-bottom:0; font-size:14px; line-height:1.6;">
+            			<i class="fa fa-bullhorn"></i><span id="msgHintText">請先[下載範例檔案]置於硬碟,可更名,修正後,再選擇檔案上傳匯入.</span>
+        			</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--  -->
+  </div>
+
 </div>
 
 </body>

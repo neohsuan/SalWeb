@@ -12925,6 +12925,77 @@ public class SalNTDAO {
 		return success;
 	}
 
+	/**
+	 *  
+	 * table:PA.PABASPSN/PA.PTBASPSN/PA.LHBASPSN(基本個人明細)  	 
+	   * 傳出:true/false
+	 */	
+	public String ImpINSUAMT(ArrayList<Pabaspsn> alPabaspsn, String selCode, String userid, String hid, VGHDataAccess da) throws Exception {
+		String me = getClass().getName() + ".prodBat(),userid = " + userid;
+		log.info(me + ",alPabaspsn = " + alPabaspsn+ ",selCode = " + selCode+",userid = " + userid+ ",hid = " + hid);
+		String rtn = "";		
+		int limitcnt = 100;
+		int write_cnt = 0;// 寫入table第N筆
+		
+		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql 資料
+		ArrayList<Object> params  = new ArrayList<Object>();
+		String sqlUpd ="UPDATE "+ this.tBasPsn + " SET INSUAMT=? , PAYDPNO=? , "+tmpZbaspsn+" =current timestamp where HID=? and PAYCARD =? and PAYIDNO=? ";	
+				
+		try{
+			Hospitals hospInfo = Hospitals.getOneHosp(hid);
+			if (da == null) {
+				g_dataSourceNT=hospInfo.dataSourceNT;
+				da=new VGHDataAccess(g_dataSourceNT);
+				connFlg = true;
+			}
+			
+			if (alPabaspsn.isEmpty()) {
+	            rtn = "無資料匯入";
+	        } else {
+	            da.startTransaction();
+	            try {
+	                for (Pabaspsn o : alPabaspsn) {
+	                    ArrayList<Object> paramA = new ArrayList<Object>();
+	                    paramA.add(o.getInsuamt());
+	                    paramA.add(o.getPaydpno());
+	                    paramA.add(hid);
+	                    paramA.add(o.getPaycard());
+	                    paramA.add(o.getPayidno());
+	                    batch_sql.add(sqlUpd);
+	                    params.add(paramA);
+	                    write_cnt++;
+
+	                    if (write_cnt % limitcnt == 0) {          // 每 100 筆送一批
+	                        da.batchupdatenocommit(batch_sql, params);
+	                        batch_sql.clear();
+	                        params.clear();
+	                    }
+	                }
+	                if (!params.isEmpty()) {
+	                    da.batchupdatenocommit(batch_sql, params);
+	                }
+	                da.commit();
+	                rtn = "Excel 更新OK";
+	            } catch (Exception e) {
+	                da.rollback();
+	                rtn = " fail, " + e;
+	                log.info(me + " " + e.toString());
+	            } finally {
+	                da.setAutoCommit(true);
+	            }
+	        }
+						
+		}catch(Exception e){
+			rtn=" fail, "+e;
+			e.printStackTrace();			
+			log.info(me+" "+e.toString());			
+		} finally{
+			closeAll(da,null,connFlg);			
+		}
+		
+		return rtn;
+	}	
+	
 	// 取得相對應卡號之姓名
 	// 2026.5.27 2A0 3A0 查自家的,1A0不限
 	public JSONObject queryNamebyID(String cardno, String Loginhid) throws Exception {
