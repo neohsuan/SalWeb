@@ -2887,8 +2887,8 @@ public class SalController{
 	                    in.close();
 	                }
 					
-					//批次匯入:1投保金額
-					if ("1".equals(selCode)){
+					//批次匯入:3投保金額
+					if ("3".equals(selCode)){
 						strRtn=tDAO.ImpINSUAMT(alPabaspsn, selCode, userid, hid, da);
 						log.info("匯入批次：3投保金額 "+strRtn);
 						jsonObj.put("msg", "匯入批次-投保金額 "+strRtn);
