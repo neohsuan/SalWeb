@@ -948,91 +948,81 @@ public class SYSSettingDAO {
             Map<String, List<Map<String, Object>>> empPayListMap,
             Map<Integer, String> salnumToBankMap,
             String m1, String m2, String m3) {
-List<Map<String, Object>> finalResult = new ArrayList<Map<String, Object>>();
-String[] payCodes = {"FP000","FP010","FP100","FP110","FP120","FP400","VP000","VP010","VP01E","VP040","VP100","VP110","VP200","VP220","VP230","VP457"};
+		List<Map<String, Object>> finalResult = new ArrayList<Map<String, Object>>();
+		String[] payCodes = {"FP000","FP010","FP100","FP110","FP120","FP400","VP000","VP010","VP01E","VP040","VP100","VP110","VP200","VP220","VP230","VP457"};
+		if (psnMap == null || psnMap.isEmpty()) return finalResult;
+		for (Map.Entry<String, Map<String, Object>> entry : psnMap.entrySet()) {
+			String payidno = entry.getKey();
+			Map<String, Object> psn = entry.getValue();
+			// 💡 檢查該員工在近三個月內是否有任何支扣明細
+			List<Map<String, Object>> payList = empPayListMap.get(payidno);
+			if (payList == null || payList.isEmpty()) {
+				continue; // 如果三個月完全沒有薪資紀錄，直接跳過不顯示！
+				}
+			Map<String, Object> rowMap = new LinkedHashMap<String, Object>();
+			rowMap.put("PAYIDNO", payidno);
+			rowMap.put("PAYCARD", psn.get("PAYCARD"));
+			rowMap.put("PAYNAMEC", psn.get("PAYNAMEC"));
+			rowMap.put("PAYTITLE", psn.get("PAYTITLE"));
+			// 預先填入三個月份的發薪日
+			rowMap.put("M1_PAYBANK", m1);
+			rowMap.put("M2_PAYBANK", m2);
+			rowMap.put("M3_PAYBANK", m3);
+			// 初始化所有月份金額欄位為 0.00
+			for (String code : payCodes) {
+				rowMap.put("M1_" + code, 0.00);
+				rowMap.put("M2_" + code, 0.00);
+				rowMap.put("M3_" + code, 0.00);
+				}
+			// 填入並累加實際薪資
+			for (Map<String, Object> payRow : payList) {
+				Object salnumObj = payRow.get("SALNUM");
+				Object codeObj = payRow.get("PAYCODE");
+				Object amtObj = payRow.get("PAYAMT");
+				Integer salnum = null;
+				if (salnumObj != null) {
+					try {
+						salnum = Integer.parseInt(salnumObj.toString().trim());
+						} catch (Exception ignored) {}
+					}
 
-if (psnMap == null || psnMap.isEmpty()) return finalResult;
+				String paycode = StringUtil.nullToString(codeObj).trim();
+				String paybank = (salnum != null) ? salnumToBankMap.get(salnum) : null;
 
-for (Map.Entry<String, Map<String, Object>> entry : psnMap.entrySet()) {
-String payidno = entry.getKey();
-Map<String, Object> psn = entry.getValue();
+				double amt = 0.0;
+				if (amtObj instanceof Number) {
+					amt = ((Number) amtObj).doubleValue();
+					} else if (amtObj != null) {
+						try {
+							amt = Double.parseDouble(amtObj.toString().trim());
+							} catch (Exception ignored) {
+								
+							}
+						}
+				String prefix = "";
+				if (m1.equals(paybank)) prefix = "M1_";
+				else if (m2.equals(paybank)) prefix = "M2_";
+				else if (m3.equals(paybank)) prefix = "M3_";
 
-// 💡 檢查該員工在近三個月內是否有任何支扣明細
-List<Map<String, Object>> payList = empPayListMap.get(payidno);
-if (payList == null || payList.isEmpty()) {
-continue; // 如果三個月完全沒有薪資紀錄，直接跳過不顯示！
-}
+				if (!prefix.equals("") && !paycode.equals("")) {
+					String targetKey = prefix + paycode;
+					double existingAmt = 0.0;
+					Object currentVal = rowMap.get(targetKey);
+					if (currentVal instanceof Number) {
+						existingAmt = ((Number) currentVal).doubleValue();
+						} else if (currentVal != null) {
+							try {
+								existingAmt = Double.parseDouble(currentVal.toString());
+								} catch (Exception ignored) {}
+							}
 
-Map<String, Object> rowMap = new LinkedHashMap<String, Object>();
-rowMap.put("PAYIDNO", payidno);
-rowMap.put("PAYCARD", psn.get("PAYCARD"));
-rowMap.put("PAYNAMEC", psn.get("PAYNAMEC"));
-rowMap.put("PAYTITLE", psn.get("PAYTITLE"));
-
-// 預先填入三個月份的發薪日
-rowMap.put("M1_PAYBANK", m1);
-rowMap.put("M2_PAYBANK", m2);
-rowMap.put("M3_PAYBANK", m3);
-
-// 初始化所有月份金額欄位為 0.00
-for (String code : payCodes) {
-rowMap.put("M1_" + code, 0.00);
-rowMap.put("M2_" + code, 0.00);
-rowMap.put("M3_" + code, 0.00);
-}
-
-// 填入並累加實際薪資
-for (Map<String, Object> payRow : payList) {
-Object salnumObj = payRow.get("SALNUM");
-Object codeObj = payRow.get("PAYCODE");
-Object amtObj = payRow.get("PAYAMT");
-
-Integer salnum = null;
-if (salnumObj != null) {
-try {
-salnum = Integer.parseInt(salnumObj.toString().trim());
-} catch (Exception ignored) {}
-}
-
-String paycode = StringUtil.nullToString(codeObj).trim();
-String paybank = (salnum != null) ? salnumToBankMap.get(salnum) : null;
-
-double amt = 0.0;
-if (amtObj instanceof Number) {
-amt = ((Number) amtObj).doubleValue();
-} else if (amtObj != null) {
-try {
-amt = Double.parseDouble(amtObj.toString().trim());
-} catch (Exception ignored) {}
-}
-
-String prefix = "";
-if (m1.equals(paybank)) prefix = "M1_";
-else if (m2.equals(paybank)) prefix = "M2_";
-else if (m3.equals(paybank)) prefix = "M3_";
-
-if (!prefix.equals("") && !paycode.equals("")) {
-String targetKey = prefix + paycode;
-
-double existingAmt = 0.0;
-Object currentVal = rowMap.get(targetKey);
-if (currentVal instanceof Number) {
-existingAmt = ((Number) currentVal).doubleValue();
-} else if (currentVal != null) {
-try {
-existingAmt = Double.parseDouble(currentVal.toString());
-} catch (Exception ignored) {}
-}
-
-rowMap.put(targetKey, existingAmt + amt);
-}
-}
-
-finalResult.add(rowMap);
-}
-
-return finalResult;
-}
+					rowMap.put(targetKey, existingAmt + amt);
+					}
+				}
+			finalResult.add(rowMap);
+			}
+		return finalResult;
+		}
 	
 	/**
 	 * 關閉VGHDataAccess與ResultSet
