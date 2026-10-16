@@ -78,6 +78,8 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;*/
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class SYSSettingDAO {
 
@@ -653,6 +655,384 @@ public class SYSSettingDAO {
 		return rtn;
 	}	
 	
+	/**
+	 *  
+	 * table:PA.PABASPSN基本檔 PA.PATITLE職稱 PA.PABANK餉單編號對應 PA.PADATPAY月支支扣明細 
+     *查詢近 3 個月投保薪資比對清單
+     **/
+	public List<Map<String, Object>> getInsuPerList(String userid, String hid, String paydate, String paytype) {
+	    List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+	    
+	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	    LocalDate baseDate = LocalDate.now();
+	    try {
+	        if (paydate != null && !paydate.trim().equals("")) {
+	            baseDate = LocalDate.parse(paydate.trim(), dtf);
+	        }
+	    } catch (Exception e) {
+	        baseDate = LocalDate.now();
+	    }
+	    
+	    String m1_date = baseDate.format(dtf);
+	    String m2_date = baseDate.minusMonths(1).format(dtf);
+	    String m3_date = baseDate.minusMonths(2).format(dtf);
+
+	    try {
+	        // 1. 取得近三個月所有對應的 salnum 與日期對照表
+	        Map<Integer, String> salnumToBankMap = getSalnumMapByDates(hid, m1_date, m2_date, m3_date);
+
+	        // 2. 取得人員基本與職稱資料
+	        Map<String, Map<String, Object>> psnMap = getPersonBaseMap(hid, paytype);
+	        if (psnMap == null || psnMap.isEmpty()) {
+	            return list;
+	        }
+
+	        // 3. 抓取這三個月所有相關 salnum 的總支扣明細
+	        Map<String, List<Map<String, Object>>> empPayListMap = getDatPayListBySalnums(hid, salnumToBankMap.keySet());
+
+	        // 4. 💡 恢復以全體員工 (psnMap) 為基底進行轉置，即使當月無發薪也會顯示 0.00
+	        list = mergeAndPivotSalaryData(psnMap, empPayListMap, salnumToBankMap, m1_date, m2_date, m3_date);
+
+	    } catch (Exception e) {
+	        log.error("getInsuPerList 執行失敗: ", e);
+	    }
+
+	    return list;
+	}
+
+	/**
+	 * 1. 取得近三個月對應的 salnum (PTBANK)
+	 * 修正點：改用問號 ? 參數綁定，解決 DB2 DATE 型態與字串比對抓不到資料的問題
+	 */
+	/**
+	 * 修正版：不拘泥單一發薪日，改以「整個月份」為範圍抓取該月所有的 salnum (支援同月份多個發薪日如 235, 236)
+	 */
+	private Map<Integer, String> getSalnumMapByDates(String hid, String m1, String m2, String m3) {
+	    Map<Integer, String> salnumMap = new HashMap<Integer, String>();
+	    StringBuilder sb = new StringBuilder();
+	    ArrayList<Object> params = new ArrayList<Object>();
+
+	    // 💡 取出三個月份的年月字串 (例如 "2026-09", "2026-08", "2026-07")
+	    String m1_ym = (m1 != null && m1.length() >= 7) ? m1.substring(0, 7) : "";
+	    String m2_ym = (m2 != null && m2.length() >= 7) ? m2.substring(0, 7) : "";
+	    String m3_ym = (m3 != null && m3.length() >= 7) ? m3.substring(0, 7) : "";
+
+	    sb.append("SELECT SALNUM, PAYBANK ");
+	    sb.append("FROM PA.PTBANK ");
+	    sb.append("WHERE HID = ? ");
+	    // 💡 改用以年月開頭（或者介於該月月初到月底），這樣同月份的不同發薪日（如 2026-09-01, 2026-09-05）都能被一網打盡
+	    sb.append("  AND (CHAR(PAYBANK) LIKE ? OR CHAR(PAYBANK) LIKE ? OR CHAR(PAYBANK) LIKE ?) ");
+	    sb.append("WITH UR ");
+	    
+	    params.add(hid != null ? hid.trim() : "");
+	    params.add(m1_ym + "%");
+	    params.add(m2_ym + "%");
+	    params.add(m3_ym + "%");
+
+	    log.info("【SQL DEBUG】getSalnumMapByDates (月份範圍) SQL: " + sb.toString());
+	    log.info("【SQL DEBUG】getSalnumMapByDates 參數: " + params);
+
+	    try {
+	        ArrayList<Map<String, Object>> result = da.arraylistbyQuery(sb.toString(), params, META_TYPE);
+	        log.info("【DEBUG】getSalnumMapByDates 實際查詢筆數: " + (result != null ? result.size() : 0));
+
+	        if (result != null) {
+	            for (Map<String, Object> row : result) {
+	                Object sObj = null;
+	                Object bObj = null;
+
+	                for (Map.Entry<String, Object> entry : row.entrySet()) {
+	                    String k = entry.getKey();
+	                    if (k != null) {
+	                        if (k.equalsIgnoreCase("SALNUM")) sObj = entry.getValue();
+	                        else if (k.equalsIgnoreCase("PAYBANK")) bObj = entry.getValue();
+	                    }
+	                }
+
+	                if (sObj != null && bObj != null) {
+	                    try {
+	                        Integer salnum = Integer.parseInt(sObj.toString().trim());
+	                        String paybankStr = bObj.toString().trim();
+	                        if (paybankStr.length() > 10) {
+	                            paybankStr = paybankStr.substring(0, 10);
+	                        }
+	                        
+	                        // 💡 為了讓後續轉置對應到正確的 M1, M2, M3 欄位，我們將其對應回該月的標準 1 號 (或保留原日期)
+	                        // 這裡我們將其歸屬到對應的月份基準日
+	                        if (paybankStr.startsWith(m1_ym)) {
+	                            salnumMap.put(salnum, m1);
+	                        } else if (paybankStr.startsWith(m2_ym)) {
+	                            salnumMap.put(salnum, m2);
+	                        } else if (paybankStr.startsWith(m3_ym)) {
+	                            salnumMap.put(salnum, m3);
+	                        } else {
+	                            salnumMap.put(salnum, paybankStr);
+	                        }
+	                        
+	                        log.info("【DEBUG】成功對應 salnum: " + salnum + " 歸屬月份基準: " + salnumMap.get(salnum));
+	                    } catch (Exception ignored) {}
+	                }
+	            }
+	        }
+	    } catch (Exception e) {
+	        log.error("getSalnumMapByDates 失敗: ", e);
+	    }
+	    log.info("【DEBUG】最終 salnumToBankMap 筆數: " + salnumMap.size());
+	    return salnumMap;
+	}
+
+	/**
+	 * 2. 取得人員基本資料與職稱 (加入 paytype 人員類別篩選)
+	 * @param hid 醫院代碼
+	 * @param paytype 人員類別選項 (例如: "DOCTOR" 醫師, "WORKER" 技工友)
+	 */
+	private Map<String, Map<String, Object>> getPersonBaseMap(String hid, String paytype) {
+	    Map<String, Map<String, Object>> psnMap = new HashMap<String, Map<String, Object>>();
+	    StringBuilder sb = new StringBuilder();
+	    ArrayList<Object> params = new ArrayList<Object>();
+
+	    sb.append("SELECT A.PAYIDNO, A.PAYCARD, A.PAYNAMEC, A.PAYTITLE, T.PAYTITLC ");
+	    sb.append("FROM PA.PTBASPSN A ");
+	    sb.append("LEFT OUTER JOIN PA.PTTITLE T ON A.PAYTITLE = T.PAYTITLK AND A.HID = T.HID ");
+	    sb.append("WHERE A.HID = ? ");
+	    
+	    String cleanHid = (hid != null) ? hid.trim() : "";
+	    params.add(cleanHid);
+
+	    // 💡 根據 paytype 加入對應的 PAYTITLE 職稱代碼過濾條件
+	    String cleanPayType = (paytype != null) ? paytype.trim() : "";
+	    if ("DOCTOR".equalsIgnoreCase(cleanPayType) || "醫師".equals(cleanPayType) || "1".equals(cleanPayType)) {
+	        // 醫師：PAYTITLE 需為 CG 或 CB
+	        sb.append("  AND A.PAYTITLE IN ('CG', 'CB') ");
+	    } else if ("WORKER".equalsIgnoreCase(cleanPayType) || "技工友".equals(cleanPayType) || "2".equals(cleanPayType)) {
+	        // 技工友：PAYTITLE 需為 72 或 73
+	        sb.append("  AND A.PAYTITLE IN ('72', '73') ");
+	    }else if ("CONTRACT".equalsIgnoreCase(cleanPayType) || "契約".equals(cleanPayType) || "約用".equals(cleanPayType) || "3".equals(cleanPayType)) {
+	        // 💡 契約人員：PAYTITLE 開頭為 D, E, 或 F
+	        sb.append("  AND (A.PAYTITLE LIKE 'D%' OR A.PAYTITLE LIKE 'E%' OR A.PAYTITLE LIKE 'F%') ");
+	    }
+	    // 註：後續契約人員可以在此繼續新增 else if 條件
+
+	    sb.append("WITH UR ");
+
+	    log.info("【SQL DEBUG】getPersonBaseMap SQL: " + sb.toString());
+	    log.info("【SQL DEBUG】getPersonBaseMap 參數: " + params + " (paytype: " + cleanPayType + ")");
+
+	    try {
+	        ArrayList<Map<String, Object>> result = da.arraylistbyQuery(sb.toString(), params, META_TYPE);
+	        log.info("【DEBUG】getPersonBaseMap 原始查詢筆數: " + (result != null ? result.size() : 0));
+
+	        if (result != null) {
+	            for (Map<String, Object> row : result) {
+	                Object idObj = null;
+	                Object cardObj = null;
+	                Object nameObj = null;
+	                Object titleObj = null;
+
+	                for (Map.Entry<String, Object> entry : row.entrySet()) {
+	                    String k = entry.getKey();
+	                    if (k != null) {
+	                        if (k.equalsIgnoreCase("PAYIDNO")) idObj = entry.getValue();
+	                        else if (k.equalsIgnoreCase("PAYCARD")) cardObj = entry.getValue();
+	                        else if (k.equalsIgnoreCase("PAYNAMEC")) nameObj = entry.getValue();
+	                        else if (k.equalsIgnoreCase("PAYTITLC")) titleObj = entry.getValue();
+	                    }
+	                }
+
+	                if (idObj != null) {
+	                    String idno = StringUtil.nullToString(idObj).trim();
+	                    if (!idno.equals("")) {
+	                        Map<String, Object> item = new HashMap<String, Object>();
+	                        item.put("PAYCARD", StringUtil.nullToString(cardObj).trim());
+	                        item.put("PAYNAMEC", StringUtil.nullToString(nameObj).trim());
+	                        item.put("PAYTITLE", StringUtil.nullToString(titleObj).trim());
+	                        psnMap.put(idno, item);
+	                    }
+	                }
+	            }
+	        }
+	    } catch (Exception e) {
+	        log.error("getPersonBaseMap 失敗: ", e);
+	    }
+	    log.info("【DEBUG】最終 psnMap 有效筆數: " + psnMap.size());
+	    return psnMap;
+	}
+
+	/**
+	 * 3. 查詢 PTDATPAY 支扣檔 (改為大小寫不拘)
+	 */
+	private Map<String, List<Map<String, Object>>> getDatPayListBySalnums(String hid, Set<Integer> salnums) {
+	    Map<String, List<Map<String, Object>>> payMap = new HashMap<String, List<Map<String, Object>>>();
+	    if (salnums == null || salnums.isEmpty()) return payMap;
+
+	    StringBuilder sb = new StringBuilder();
+	    ArrayList<Object> params = new ArrayList<Object>();
+
+	    sb.append("SELECT PAYIDNO, SALNUM, PAYCODE, SUM(PAYAMT) AS PAYAMT ");
+	    sb.append("FROM ");
+	    sb.append(this.tDatPay);
+	    sb.append(" WHERE HID = ? ");
+	    
+	    String cleanHid = (hid != null) ? hid.trim() : "";
+	    params.add(cleanHid);
+
+	    sb.append(" AND SALNUM IN (");
+	    int idx = 0;
+	    for (Integer salnum : salnums) {
+	        if (idx > 0) sb.append(",");
+	        sb.append("?");
+	        params.add(salnum);
+	        idx++;
+	    }
+	    sb.append(") ");
+
+	    sb.append(" AND PAYCODE IN ('FP000','FP010','FP100','FP110','FP120','FP400','VP000','VP010','VP01E','VP040','VP100','VP110','VP200','VP220','VP230','VP457') ");
+	    sb.append("GROUP BY PAYIDNO, SALNUM, PAYCODE ");
+	    sb.append("WITH UR ");
+	    
+	 // 💡 印出 SQL 與參數（此處 salnums 參數較多，一併印出）
+	    log.info("【SQL DEBUG】getDatPayListBySalnums SQL: " + sb.toString());
+	    log.info("【SQL DEBUG】getDatPayListBySalnums 參數: " + params);
+
+	    try {
+	        ArrayList<Map<String, Object>> result = da.arraylistbyQuery(sb.toString(), params, META_TYPE);
+	        log.info("【DEBUG】getDatPayListBySalnums 原始查詢筆數: " + (result != null ? result.size() : 0));
+
+	        if (result != null) {
+	            for (Map<String, Object> row : result) {
+	                Object idObj = null;
+	                Object salObj = null;
+	                Object codeObj = null;
+	                Object amtObj = null;
+
+	                for (Map.Entry<String, Object> entry : row.entrySet()) {
+	                    String k = entry.getKey();
+	                    if (k != null) {
+	                        if (k.equalsIgnoreCase("PAYIDNO")) idObj = entry.getValue();
+	                        else if (k.equalsIgnoreCase("SALNUM")) salObj = entry.getValue();
+	                        else if (k.equalsIgnoreCase("PAYCODE")) codeObj = entry.getValue();
+	                        else if (k.equalsIgnoreCase("PAYAMT")) amtObj = entry.getValue();
+	                    }
+	                }
+
+	                if (idObj != null) {
+	                    String idno = StringUtil.nullToString(idObj).trim();
+	                    if (!idno.equals("")) {
+	                        Map<String, Object> standardizedRow = new HashMap<String, Object>();
+	                        standardizedRow.put("PAYIDNO", idno);
+	                        standardizedRow.put("SALNUM", salObj);
+	                        standardizedRow.put("PAYCODE", codeObj);
+	                        standardizedRow.put("PAYAMT", amtObj);
+
+	                        List<Map<String, Object>> list = payMap.get(idno);
+	                        if (list == null) {
+	                            list = new ArrayList<Map<String, Object>>();
+	                            payMap.put(idno, list);
+	                        }
+	                        list.add(standardizedRow);
+	                    }
+	                }
+	            }
+	        }
+	    } catch (Exception e) {
+	        log.error("getDatPayListBySalnums 失敗: ", e);
+	    }
+	    log.info("【DEBUG】最終 empPayListMap 有效人數: " + payMap.size());
+	    return payMap;
+	}
+
+	/**
+	 * 4. Java 記憶體轉置整合
+	 */
+	private List<Map<String, Object>> mergeAndPivotSalaryData(Map<String, Map<String, Object>> psnMap,
+            Map<String, List<Map<String, Object>>> empPayListMap,
+            Map<Integer, String> salnumToBankMap,
+            String m1, String m2, String m3) {
+List<Map<String, Object>> finalResult = new ArrayList<Map<String, Object>>();
+String[] payCodes = {"FP000","FP010","FP100","FP110","FP120","FP400","VP000","VP010","VP01E","VP040","VP100","VP110","VP200","VP220","VP230","VP457"};
+
+if (psnMap == null || psnMap.isEmpty()) return finalResult;
+
+for (Map.Entry<String, Map<String, Object>> entry : psnMap.entrySet()) {
+String payidno = entry.getKey();
+Map<String, Object> psn = entry.getValue();
+
+// 💡 檢查該員工在近三個月內是否有任何支扣明細
+List<Map<String, Object>> payList = empPayListMap.get(payidno);
+if (payList == null || payList.isEmpty()) {
+continue; // 如果三個月完全沒有薪資紀錄，直接跳過不顯示！
+}
+
+Map<String, Object> rowMap = new LinkedHashMap<String, Object>();
+rowMap.put("PAYIDNO", payidno);
+rowMap.put("PAYCARD", psn.get("PAYCARD"));
+rowMap.put("PAYNAMEC", psn.get("PAYNAMEC"));
+rowMap.put("PAYTITLE", psn.get("PAYTITLE"));
+
+// 預先填入三個月份的發薪日
+rowMap.put("M1_PAYBANK", m1);
+rowMap.put("M2_PAYBANK", m2);
+rowMap.put("M3_PAYBANK", m3);
+
+// 初始化所有月份金額欄位為 0.00
+for (String code : payCodes) {
+rowMap.put("M1_" + code, 0.00);
+rowMap.put("M2_" + code, 0.00);
+rowMap.put("M3_" + code, 0.00);
+}
+
+// 填入並累加實際薪資
+for (Map<String, Object> payRow : payList) {
+Object salnumObj = payRow.get("SALNUM");
+Object codeObj = payRow.get("PAYCODE");
+Object amtObj = payRow.get("PAYAMT");
+
+Integer salnum = null;
+if (salnumObj != null) {
+try {
+salnum = Integer.parseInt(salnumObj.toString().trim());
+} catch (Exception ignored) {}
+}
+
+String paycode = StringUtil.nullToString(codeObj).trim();
+String paybank = (salnum != null) ? salnumToBankMap.get(salnum) : null;
+
+double amt = 0.0;
+if (amtObj instanceof Number) {
+amt = ((Number) amtObj).doubleValue();
+} else if (amtObj != null) {
+try {
+amt = Double.parseDouble(amtObj.toString().trim());
+} catch (Exception ignored) {}
+}
+
+String prefix = "";
+if (m1.equals(paybank)) prefix = "M1_";
+else if (m2.equals(paybank)) prefix = "M2_";
+else if (m3.equals(paybank)) prefix = "M3_";
+
+if (!prefix.equals("") && !paycode.equals("")) {
+String targetKey = prefix + paycode;
+
+double existingAmt = 0.0;
+Object currentVal = rowMap.get(targetKey);
+if (currentVal instanceof Number) {
+existingAmt = ((Number) currentVal).doubleValue();
+} else if (currentVal != null) {
+try {
+existingAmt = Double.parseDouble(currentVal.toString());
+} catch (Exception ignored) {}
+}
+
+rowMap.put(targetKey, existingAmt + amt);
+}
+}
+
+finalResult.add(rowMap);
+}
+
+return finalResult;
+}
 	
 	/**
 	 * 關閉VGHDataAccess與ResultSet

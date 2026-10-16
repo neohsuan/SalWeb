@@ -9,7 +9,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.List;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -2867,6 +2867,83 @@ public class SalController{
 		out.print(jsonObj.toString());
 		out.flush();
 	}
+	
+	/**
+	 * 取得近 3 個月投保薪資報表資料
+	 */
+	@RequestMapping(params="method=getInsuPerList")
+	public void getInsuPerList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	    String me = getClass().getName() + ".getInsuPerList()";
+	    hid = request.getParameter("hid") == null ? "" : request.getParameter("hid");
+	    userid = request.getParameter("userid") == null ? "" : request.getParameter("userid");
+	    String in_data = request.getParameter("in_data") == null ? "" : request.getParameter("in_data");
+
+	    String dataSourceNT = "";
+	    Hospitals hospInfo = Hospitals.getOneHosp(hid);
+	    dataSourceNT = hospInfo.dataSourceNT;
+
+	    da = new VGHDataAccess(dataSourceNT);
+
+	    jsonObj = new JSONObject();
+
+	    try {
+	        response.setCharacterEncoding("utf-8");
+	        response.setContentType("application/json; charset=utf-8");
+
+	        sysDAO = new SYSSettingDAO(da, hid);
+
+	        try {
+	            // 💡 1. 從 in_data JSON 字串解析出 paydate 與 paytype
+	            String paydate = "";
+	            String paytype = "";
+	            if (in_data != null && !in_data.trim().isEmpty()) {
+	                try {
+	                    // net.sf.json 使用 JSONObject.fromObject(in_data)
+	                    // org.json 使用 new JSONObject(in_data)
+	                    JSONObject jsonParam = JSONObject.fromObject(in_data); 
+	                    if (jsonParam.has("paydate")) {
+	                        paydate = jsonParam.getString("paydate");
+	                    }
+	                    if (jsonParam.has("paytype")) {
+	                        paytype = jsonParam.getString("paytype");
+	                    }
+	                } catch (Exception e) {
+	                    log.error(me + " 解析 in_data 失敗: " + e.getMessage());
+	                }
+	            }
+
+	            // 💡 2. 呼叫 DAO (型態與順序精準對應：userid, hid, paydate, paytype)
+	            List<Map<String, Object>> resultList = sysDAO.getInsuPerList(userid, hid, paydate, paytype);
+
+	            // 💡 3. 將查詢結果存入 jsonObj (JSONObject 會自動將 List 轉為 JSON 陣列)
+	            jsonObj.put("status", "Y");
+	            jsonObj.put("success", true);
+	            jsonObj.put("data", resultList);
+
+	        } catch (Exception e) {
+	            log.info(me + " 失敗==" + e.toString());
+	            e.printStackTrace();
+	            jsonObj.put("status", "N");
+	            jsonObj.put("success", false);
+	            jsonObj.put("msg", "查詢失敗：" + e.getMessage());
+	        } finally {
+	            sysDAO = null;
+	            if (da != null) {
+	                da.close();
+	                da = null;
+	            }
+	        }
+
+	        PrintWriter out = response.getWriter();
+	        out.print(jsonObj.toString());
+	        out.flush();
+
+	    } catch (Exception e) {
+	        log.info(me + " fail, " + e);
+	        e.printStackTrace();
+	    }
+	}
+	
 	/**
 	 * 測試ajax
 	 */
