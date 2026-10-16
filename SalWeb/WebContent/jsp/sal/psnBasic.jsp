@@ -68,6 +68,32 @@ $(function(){
 		$(".cspf").removeClass("d-none");
 	}	
 	
+	//代碼選單切換
+	$("#qryType").change(function(){
+		$(":text,textarea").val("");
+		$("#divfield_1,#divfield_2").addClass("d-none");	//隱藏
+  		selCode=(typeof($("#qryType option:selected").val().split(':')[0]) == "undefined" )? "1":$("#qryType option:selected").val().split(':')[0];
+  		console.log(selCode);
+  		if (selCode=="1" ){			//1:[產生處理]異動及批次資料_匯入主檔
+			$("#divfield_ID").removeClass("d-none");			
+			$('#msgHintText').text('整批更新匯入主檔');
+			$('#btn_handelINSUAMT').text('產生處理');
+			$("#divfield_SALNUM").removeClass("d-none");
+		}
+		else if (selCode=="2"){		//2:[回復]異動及批次資料_回復主檔
+			$("#divfield_CARD").removeClass("d-none");
+			$('#msgHintText').text('回復');
+			$('#btn_handelINSUAMT').text('回復');
+			$("#divfield_SALNUM").removeClass("d-none");
+		}
+		else if (selCode=="3"){		//3:[匯入]投保金額:ImpBasINSUAMT
+			$("#divfield_1,#divfield_2").removeClass("d-none");
+			$('#msgHintText').text('請先[下載範例檔案]置於硬碟,可更名,修正後,再選擇檔案上傳匯入.');
+			$('#btn_handelINSUAMT').text('執行');
+			$("#divfield_SALNUM").addClass("d-none");
+		}
+  	});
+	
 	$.getLoadCodeTbl = function(item,flag){		
 		$.ajax({
 			url:"${pageContext.request.contextPath}/salController.do",
@@ -170,6 +196,18 @@ $(function(){
 					});
 					select.selectpicker('refresh');			 	
 			 	}
+ 				//餉單編號(2個月內)
+				if (data.alBankDtTbl_2M[0]!=null){
+					//其他
+					select = $('#prod_SalNum');
+					select.empty();					
+					options = "<option value=''>";
+					select.append(options);
+					$.each(data.alBankDtTbl_2M, function(idx) {
+						options = "<option value='" + data.alBankDtTbl_2M[idx].salnum +":"+ data.alBankDtTbl_2M[idx].paybank.dts +"'>" + data.alBankDtTbl_2M[idx].paybank.dts+" "+data.alBankDtTbl_2M[idx].salnum ;
+						select.append(options);
+					});
+				}
 			}  
 		});
 	};
@@ -197,6 +235,12 @@ $(function(){
 	 			msg = '請輸入條件值!!';
 	 		}	
  		}
+		else if (btn== 'btn_handelINSUAMT'){ //匯入投保金額(整批更新)
+			var file = $("#fileInput").val();			
+			if (file.length == 0) {
+				msg ='請確認是否有選擇檔案';				
+			}
+		}
   		return msg;	
 	};
 	
@@ -264,9 +308,12 @@ $(function(){
 		return selectedValues;
 	}	
 	//jQuery按紐圖示
-	$(".btn").button().click(
+	$(".btn").not("#lnkSampleFile").button().click(
 		function(event) {event.preventDefault();}
 	);
+	//$(".btn").button().click(
+	//	function(event) {event.preventDefault();}
+	//);
 	$(".btn").click(function(){
 		var id = $(this).attr('id');
 		
@@ -505,7 +552,43 @@ $(function(){
 					return false;
 				}
 		 	}
-		}	
+		
+		}
+		else if (id == 'btn_handelINSUAMT'){ //匯入投保金額(整批更新)
+			msg = $.checkFields(id);
+			if(msg == ''){
+				selCode=(typeof($("#qryType option:selected").val().split(':')[0]) == "undefined" )? "3":$("#qryType option:selected").val().split(':')[0];
+	  	  		console.log("執行："+selCode);
+				
+	  	  		var url="${pageContext.request.contextPath}/salController.do";
+	  	  		var param = '?method=uploadINSUAMTExcelFile' +
+							'&selCode=' + selCode +
+							'&userid=' + userid +
+							'&hid=' + pahid;
+	    		console.log(" 選項:"+selCode+" url:"+url+param);
+	    		
+	    		showPageLoading(); //顯示loading(本頁專屬)
+			 	$("#uploadfileForm").ajaxSubmit({
+					type: "post", //提交方式 
+					dataType:"json", //資料型別 
+					url: url + param, //請求url 
+					success: function (data) { //提交成功的回撥函式 
+						alert(data.msg);
+						hidePageLoading();
+					},
+					error: function(xhr){
+						alert("檔案上傳過程中，程式發生錯誤!!!\nerror code:"+ xhr.status);
+						hidePageLoading();
+					},
+					complete: function(data) {
+						hidePageLoading(); //隱藏loading
+					}
+				});
+			}else{
+				alert(msg);
+			}
+			
+		}//
 				
 	});
 	
@@ -947,17 +1030,24 @@ $(function(){
 	$('#TblBasPsnFilter').dataTable(objCopyD);
 	 		      
 });
+
+//開啟loading dialog
+function showPageLoading(){
+	$("#pageLoadingOverlay").css("display", "flex");
+}
+
+//關閉loading dialog
+function hidePageLoading(){
+	$("#pageLoadingOverlay").css("display", "none");
+}
 </script>
 </head>
 <body>
 
 <ul class="nav nav-pills mb-3" id="pills-tab" role="tab">
-  <li class="nav-item">
-    <a class="nav-link active" id="pills-basic-tab" data-toggle="pill" href="#byPsnBaseDetailMain" role="tab" aria-controls="pills-home" aria-selected="true">基本資料</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="pills-query-tab" data-toggle="pill" href="#byPsnBaseFilterMain" role="tab" aria-controls="pills-profile" aria-selected="false">篩選</a>
-  </li>
+  <li class="nav-item"><a class="nav-link active" id="pills-basic-tab"   data-toggle="pill" href="#byPsnBaseDetailMain"  role="tab" aria-controls="pills-home" aria-selected="true">基本資料</a></li>
+  <li class="nav-item"><a class="nav-link"        id="pills-query-tab"   data-toggle="pill" href="#byPsnBaseFilterMain"  role="tab" aria-controls="pills-profile" aria-selected="false">篩選</a></li>
+  <li class="nav-item"><a class="nav-link"        id="pills-handing-tab" data-toggle="pill" href="#byPsnBaseHandingMain" role="tab" aria-controls="pills-profile" aria-selected="false">基本處理</a></li>
 </ul>
 
 <div class="tab-content" id="pills-tabContent">
@@ -1519,7 +1609,85 @@ $(function(){
 		</div>		
  	</div>
   </div>
-  
+
+  <!--異動處理-->
+  <div class="tab-pane fade" id="byPsnBaseHandingMain" role="tabpanel" aria-labelledby="pills-handing-tab">
+  	<div class="row p-1 mb-1 bg-secondary">
+		<div class="col-md-10">
+			<div class="form-inline">
+				<div class="input-group" style="margin-right:10px;">
+					<span class="input-group-text">選單</span>
+			  	
+					<select id="qryType" class="form-control">
+						<option value="1:[產生處理]異動及批次資料_匯入主檔">1[產生處理]異動及批次資料_匯入主檔</option>
+						<option value="2:[回復]異動及批次資料_回復主檔">2[回復]異動及批次資料_回復主檔</option>
+						<option value="3:[匯入]投保金額:ImpBasINSUAMT">3[匯入]投保金額</option>   					
+					</select>
+				</div>
+                <button id="btn_handelINSUAMT" class="btn btn-success" type="button" >
+					<i class="fa fa-cog"></i>執行
+				</button>
+			</div>
+		</div>
+
+	</div>
+	<div class="row">
+		<div class="col-10">
+			<div class="form-inline" id="rowBatHanding_1">	
+					<!--餉單編號 -->	
+					<div class="col-md-6 mb-3">
+						<div class="basother-panel" id="divfield_SALNUM">
+							<div class="form-row">
+								<div class="form-group">
+									<label for="prod_SalNum" class="table-warning">餉單編號-發薪日</label>
+									<select id="prod_SalNum" class="form-control" title="餉單編號-發薪日"></select>								
+								</div>
+								<div class="alert alert-info" id="msgHint" style="display:inline-block; vertical-align:middle; background-color:#d9edf7; border-color:#bce8f1; color:#31708f; padding:6px 12px; margin-bottom:0; font-size:14px; line-height:1.6;">
+            						<i class="fa fa-bullhorn"></i><span id="msgHintText">整批更新匯入主檔</span>
+        						</div>
+							</div>
+						</div>
+						<!-- 匯入檔案 -->
+						<div class="basother-panel d-none" id="divfield_1">
+							<div class="form-row">
+								<div class="form-group">
+									<label class="form-label d-block">匯入檔案（Excel），</label>
+									<label class="table-warning">僅支援 .xlsx / .xls 格式</label>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group">
+									<form id="uploadfileForm" class="mb-0">
+										<div class="custom-file-upload d-flex align-items-center border rounded p-2 bg-light">
+                        					<i class="fa fa-file-excel-o text-success mr-2" style="font-size:1.3rem;"></i>
+                        					<input type="file" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" id="fileInput" name="fileInput" class="form-control-file flex-grow-1">
+                            			</div>
+                        			</form>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group">
+									<div class="alert alert-info" style="display:inline-block; vertical-align:middle; background-color:#d9edf7; border-color:#bce8f1; color:#31708f; padding:6px 12px; margin-bottom:0; font-size:14px; line-height:1.6;">
+            							<i class="fa fa-bullhorn"></i><span id="msgHintText1">請先[下載範例檔案]置於硬碟，可更名，修正後，再選擇檔案上傳匯入。</span>
+        							</div>
+								</div>								
+							</div>
+							<!--下載範例檔案 -->
+							<div class="form-row">
+								<div class="form-group">
+									<a id="lnkSampleFile" href="${pageContext.request.contextPath}/salController.do?method=downloadSample&type=3" class="btn btn-outline-dark">
+										<i class="fa fa-download"></i>下載範例檔案
+                					</a>
+								</div>								
+							</div>
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
+	<!--  -->
+  </div>
+
 </div>
 
 </body>

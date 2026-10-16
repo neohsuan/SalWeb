@@ -2815,9 +2815,96 @@ public class SalController{
 	        return Globals.gSampleFile+"階級支扣_匯入範本.xls";
 	    } else if ("2".equals(type)) {
 	        return Globals.gSampleFile+"公務員健保_匯入範本.xls"; // 路徑待確認
+	    }else if ("3".equals(type)) {
+	        return Globals.gSampleFile+"投保金額_匯入範本.xls"; // 
 	    } else {
 	        return "";
 	    }
+	}
+	
+	/**
+	 * 上傳Excel檔案-投保金額INSUAMT
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(params="method=uploadINSUAMTExcelFile")
+	public void uploadINSUAMTExcelFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String me = getClass().getName() + ".uploadINSUAMTExcelFile()";
+		String strRtn = "";
+		ArrayList<Pabaspsn> alPabaspsn = new ArrayList<Pabaspsn>();  //
+
+		try {
+			response.setCharacterEncoding("utf-8");
+ 
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+			ServletFileUpload upload = new ServletFileUpload (factory);
+			upload.setFileSizeMax(1024*1024*10);
+			upload.setHeaderEncoding("UTF-8");
+			FileItemIterator iter =  upload.getItemIterator(request);
+			
+			hid = request.getParameter("hid")==null?"":request.getParameter("hid");
+			userid = request.getParameter("userid")==null?"":request.getParameter("userid");
+			String selCode = request.getParameter("selCode")==null?"":request.getParameter("selCode");
+
+			tDAO = new SalNTDAO(da,hid);
+			InputStream in = null;
+			Workbook wb = null;
+			int do_cnt = 0;
+			jsonObj = new JSONObject();
+			
+			while (iter.hasNext()) {
+				FileItemStream fileItem = iter.next();
+				//多個檔案
+				if(!fileItem.isFormField()){
+					String filename = fileItem.getName();
+					filename = filename.substring(filename.lastIndexOf("\\")==-1?0:filename.lastIndexOf("\\"));
+					in = fileItem.openStream();
+					
+					try {
+	                    wb = WorkbookFactory.create(in);
+	                    Sheet sheet = wb.getSheetAt(0);
+
+	                    // i=2 跳過第二列標題（卡號、身分證、姓名...）
+	                    for (int i = 2; i <= sheet.getLastRowNum(); i++) {
+	                        Row row = sheet.getRow(i);
+	                        if (row == null) continue;
+
+	                        Pabaspsn o = new Pabaspsn();   // 基本個人明細
+	                        //卡號
+	                        o.setPaycard(getCellString(row.getCell(0)));
+	                        //身分證
+	                        o.setPayidno(getCellString(row.getCell(1)));	                
+	                        //投保金額
+	                        o.setInsuamt(getCellInt(row.getCell(3)));
+	                        //健保人數
+	                        o.setPaydpno(getCellString(row.getCell(4)));	
+
+	                        alPabaspsn.add(o);
+	                        //log.info("uploadINSUAMTExcelFile:cnt:" + do_cnt++ + " row:" + i + " Paycard:" + getCellString(row.getCell(0)));
+	                    }
+	                } finally {
+	                    if (wb != null) wb.close();
+	                    in.close();
+	                }
+					
+					//批次匯入:3投保金額
+					if ("3".equals(selCode)){
+						strRtn=tDAO.ImpINSUAMT(alPabaspsn, selCode, userid, hid, da);
+						log.info("匯入批次：3投保金額 "+strRtn);
+						jsonObj.put("msg", "匯入批次-投保金額 "+strRtn);
+					}
+					
+				}
+			}
+		}catch(Throwable e){
+			jsonObj.element("msg", e.toString());
+			log.info(me + " fail, " + e);
+		}finally{
+			PrintWriter out = response.getWriter();
+			// 寫出至JSP頁面
+			out.print(jsonObj.toString());
+			out.flush();
+		}
 	}
 	/**
 	 * 系統作業-更新卡號,身份證
@@ -2859,7 +2946,7 @@ public class SalController{
 			jsonObj.element("msg", e.toString());
 			e.printStackTrace();
 		}finally{
-			tDAO=null;
+			sysDAO=null;
 			da.close();
 			da = null;
 		}
