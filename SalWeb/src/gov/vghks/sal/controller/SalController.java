@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.*;
@@ -22,6 +23,7 @@ import gov.vghks.common.util.StringUtil;
 import gov.vghks.common.util.VGHDataAccess;
 import gov.vghks.sal.Globals;
 import gov.vghks.sal.Hospitals;
+import gov.vghks.sal.dao.BonusDAO;
 import gov.vghks.sal.dao.CommDAO;
 import gov.vghks.sal.dao.WkRetirDAO;
 import gov.vghks.sal.dao.PsDSNDAO;
@@ -110,6 +112,7 @@ public class SalController{
 	TranPayDAO tranDAO=null;
 	WkRetirDAO wkDAO=null;
 	SYSSettingDAO sysDAO = null;
+	BonusDAO bDAO = null;
 	String hid="";
 	String userid="";
 	
@@ -315,6 +318,7 @@ public class SalController{
 		alBankDtTbl_3Y= (ArrayList) request.getSession().getAttribute("alBankDtTbl_3Y");
 		alDeptCodeTbl= (ArrayList) request.getSession().getAttribute("alDeptCodeTbl");
 		alDpinTbl= (ArrayList) request.getSession().getAttribute("alDpinTbl");
+		//System.out.println("getLoadCodeTbl.item:"+item);
 		if ("psnBasic".equals(item)){
 			alRnk4Tbl= (ArrayList) request.getSession().getAttribute("alRnk4Tbl");
 			alexpfTbl= (ArrayList) request.getSession().getAttribute("alexpfTbl");
@@ -338,9 +342,13 @@ public class SalController{
 		else if("wkRetir".equals(item)){
 			alLbrpTbl= (ArrayList) request.getSession().getAttribute("alLbrpTbl");
 		}
+		else if ("bonus".equals(item)){
+			alexpfTbl= (ArrayList) request.getSession().getAttribute("alexpfTbl");	
+			altracdTbl= (ArrayList) request.getSession().getAttribute("altracdTbl");
+		}
 		try{			//如果有中文，避免亂碼
 			response.setCharacterEncoding("utf-8");
-			System.out.println("dataSourceNT:"+dataSourceNT);
+			//System.out.println("dataSourceNT:"+dataSourceNT);
 			if (da==null){
 				da=new VGHDataAccess(dataSourceNT);
 				System.out.println("da is null");
@@ -441,12 +449,25 @@ public class SalController{
 						request.getSession().setAttribute("alPayYrTbl", alPayYrTbl);  
 					}
 				}
-				System.out.println("11.wkRetir:");
+				
 				if (item.matches("wkRetir")){	
 					if (alLbrpTbl==null || alLbrpTbl.size()==0 || flag.equals("Y")){	
 						alLbrpTbl=tDAO.getLoadCodeTbl("WKRETIR",userid,hid,da);
-						request.getSession().setAttribute("alLbrpTbl", alLbrpTbl);  
+						request.getSession().setAttribute("alLbrpTbl", alLbrpTbl);						
 					}
+						System.out.println("11.wkRetir:"+alLbrpTbl.size());
+				}
+				
+				if (item.matches("bonus")){	
+					if (alexpfTbl==null||alexpfTbl.size()==0){
+						alexpfTbl=tDAO.getLoadCodeTbl("PAEXPFTBL",userid,hid,da);
+						request.getSession().setAttribute("alexpfTbl", alexpfTbl);						
+					}
+					if (altracdTbl==null||altracdTbl.size()==0){
+						altracdTbl=tDAO.getLoadCodeTbl("PATRACODE",userid,hid,da);
+						request.getSession().setAttribute("altracdTbl", altracdTbl);
+					}
+					System.out.println("12.bonus:"+alexpfTbl.size()+" altracdTbl:"+altracdTbl.size());
 				}
 				jsonObj.element("alRankCodeTbl", alRankCodeTbl);
 				jsonObj.element("alTitleCodeTbl", alTitleCodeTbl);
@@ -474,6 +495,10 @@ public class SalController{
 				}
 				if (item.matches("wkRetir")){
 					jsonObj.element("alLbrpTbl", alLbrpTbl);					
+				}
+				if (item.matches("bonus")){
+					jsonObj.element("alexpfTbl", alexpfTbl);
+					jsonObj.element("altracdTbl", altracdTbl);
 				}
 			}catch(Exception e){	
 				log.info(me+"失敗=="+e.toString());
@@ -857,7 +882,7 @@ public class SalController{
 		}
 	}
 	/**
-	 * 依KEY,取得異動檔個人明細LIST item:1個人明細,2篩選
+	 * 依KEY,取得異動檔個人明細LIST item:1個人明細,2篩選,
 	 */
 	@RequestMapping(params="method=getTranPsnList")
 	public void getTranPsnList(HttpServletRequest request, HttpServletResponse response){
@@ -875,15 +900,12 @@ public class SalController{
 		
 		try{			//如果有中文，避免亂碼
 			response.setCharacterEncoding("utf-8");
-			//tDAO = new SalNTDAO(da,hid);
 			tranDAO= new TranPayDAO(da,hid);
 			try{
-				//jsonArrRtn=tDAO.getTranPsnList(code_data,item,userid,hid,da);
 				jsonArrRtn=tranDAO.getTranPsnList(code_data,item,userid,hid,da);
-				// 用一個root tag將JSONArray包裝起來
 				if ("1".equals(item)){
 					jsonObj.element("traPsnList", jsonArrRtn);
-				}else if ("2".equals(item)){
+				}else if ("2".equals(item)){					
 					jsonObj.element("traPsnFilter", jsonArrRtn);
 				}
 			}catch(Exception e){	
@@ -1088,7 +1110,7 @@ public class SalController{
 		Pabaspsn psnitem=null;
 		HashMap basPayMap=new HashMap();
 		HashMap histListMap=new HashMap();
-		String code_data = request.getParameter("code_data")==null?"":request.getParameter("code_data");//傳入json
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//傳入json
 		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
 		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
 		String tracod = request.getParameter("tracod")==null?"0":request.getParameter("tracod");
@@ -1103,7 +1125,7 @@ public class SalController{
 			try{
 				jsonObj = new JSONObject();
 				//個人明細
-				psnitem=tDAO.getBasPsnBykey(code_data,userid,da);
+				psnitem=tDAO.getBasPsnBykey(in_data,userid,da);
 				jsonObj.element("basPsnItem", psnitem,cfg);
 				//tracod>0是異動檔,不用讀取個人支扣:1新進
 				if ( psnitem != null && !tracod.matches("1") ) {
@@ -1161,7 +1183,6 @@ public class SalController{
 			try{
 				jsonObj = new JSONObject();
 				//個人明細
-				//psnitem=tDAO.getPSBasicById(code_data,userid,da,daDSN);
 				psnitem=tranDAO.getPSBasicById(code_data,userid,da,daDSN);
 				jsonObj.element("basPsnItem", psnitem,cfg);				
 				
@@ -1345,7 +1366,7 @@ public class SalController{
 			blnFlag = tDAO.updSalCodeTbl(item,tabJson,userid,hid,da);
 			if (blnFlag){	//update success,重新reload
 				jsonObj.put("msg", item+"成功");
-				
+				jsonObj.put("status", null);
 			}else{
 				jsonObj.put("msg", item+"失敗");
 				jsonObj.put("status", item+"N");
@@ -1425,6 +1446,7 @@ public class SalController{
 		
 		try{
 			tDAO = new SalNTDAO(da,hid);
+			bDAO = new BonusDAO(da,hid);
 			try{
 				if (in_data!=null && ! in_data.equals("")){
 					object_in_data = JSONObject.fromObject(in_data);
@@ -1436,7 +1458,7 @@ public class SalController{
 				}
 				//績效
 				else if ( ! selEn.equals("") && selEn.matches("Perf_1|Perf_2") ){
-					jsonArrRtn=tDAO.getPerfFileList(in_data,userid,hid,da);
+					jsonArrRtn=bDAO.getPerfFileList(in_data,userid,hid,da);
 				}
 				// 用一個root tag將JSONArray包裝起來
 				jsonObj.element("fileData", jsonArrRtn);  
@@ -2006,14 +2028,17 @@ public class SalController{
 					log.info(userid+user.getUserNm()+ tblname+pk_data+" "+editMode +" blnupd:"+blnupd);
 				}else if (fun.matches("getTraPsnByKey")){
 					//異動個人明細
-					//psnitem=tDAO.getTraPsnBykey(in_data,userid,da);
 					psnitem=tranDAO.getTraPsnBykey(in_data,userid,da);
 					jsonObj.element("traPsnItem", psnitem,cfg);
 					//異動個人支扣
-					//traPayMap=tDAO.getTraPayList(in_data,userid,da);
 					traPayMap=tranDAO.getTraPayList(in_data,userid,da);
 					jsonObj.element("otraPayList", traPayMap.get("otrapay_json"));
 					jsonObj.element("ntraPayList", traPayMap.get("ntrapay_json"));
+				}
+				else if (fun.matches("getTraPsnByNRank")){
+					//異動個人明細,不含薪級異動
+					psnitem=tranDAO.getTraPsnByNRank(in_data,userid,da);
+					jsonObj.element("traPsnItem", psnitem,cfg);
 				}
 				//異動檔各項操作
 				else if (fun.matches("execTra")){
@@ -2332,6 +2357,76 @@ public class SalController{
 					jsonObj.put("msg", strRtn);
 				}					
 	
+			}catch(Exception e){	
+				log.info(me+"失敗=="+e.toString());
+				e.printStackTrace();
+			}finally{
+				tDAO=null;
+				da.close();
+				da = null;
+			}
+			
+			PrintWriter out = response.getWriter();
+			// 寫出至JSP頁面
+			out.print(jsonObj.toString());
+			out.flush();
+		}catch (Exception e) {
+			log.info(me + " fail, " + e);
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 績效組處理
+	 */
+	@RequestMapping(params="method=handelBonus")
+	public void handelBonus(HttpServletRequest request, HttpServletResponse response)throws IOException{
+		String me = getClass().getName() + ".handelBonus()";
+		AmJsonConfig cfg = new AmJsonConfig();
+		hid = request.getParameter("hid")==null?"":request.getParameter("hid");
+		userid = request.getParameter("userid")==null?"":request.getParameter("userid");
+		String in_data = request.getParameter("in_data")==null?"":request.getParameter("in_data");//傳入json
+		String fun = request.getParameter("fun")==null?"":request.getParameter("fun");
+		String selNm = request.getParameter("selNm")==null?"":request.getParameter("selNm");
+		String tblname = request.getParameter("tblname");
+		String editMode = request.getParameter("editMode");
+		String pk_data = request.getParameter("pk_data")==null?"":request.getParameter("pk_data");//傳入json
+		String tabJson = request.getParameter("tabJson");
+		
+		String strRtn = "";
+		boolean blnupd=false;
+		String dataSourceNT="";
+		Hospitals hospInfo = Hospitals.getOneHosp(hid);
+		dataSourceNT=hospInfo.dataSourceNT;
+		da=new VGHDataAccess(dataSourceNT);
+		
+		WPSUser user = (WPSUser)request.getSession().getAttribute("user");
+		jsonObj = new JSONObject();
+		try{			//如果有中文，避免亂碼
+			response.setCharacterEncoding("utf-8");
+			bDAO = new BonusDAO(da,hid);
+			tDAO = new SalNTDAO(da,hid);
+			try{
+				if (fun.equals("bonusBas")){
+					jsonArrRtn=bDAO.getBousBasList(in_data,userid,hid,da);
+					// 用一個root tag將JSONArray包裝起來
+					jsonObj.element("bonusBasList", jsonArrRtn,cfg); //績效組_基本檔_查詢
+				}
+				else if (fun.matches("updBasPsn|updTraPsn")){
+					blnupd = tDAO.updPATblByKey(editMode,tblname,pk_data,tabJson,userid,hid,da);
+					
+					if (blnupd){	//update success,重新reload
+						jsonObj.put("msg", tblname+pk_data+" "+editMode+" 成功");
+					}else{
+						jsonObj.put("msg", tblname+pk_data+" "+editMode+" 失敗");
+					}
+					log.info(userid+user.getUserNm()+ tblname+pk_data+" "+editMode +" blnupd:"+blnupd);
+				}
+				else if (fun.equals("bonusTra")){
+					jsonArrRtn=bDAO.getBousTraList(in_data,userid,hid,da);
+					// 用一個root tag將JSONArray包裝起來
+					jsonObj.element("bonusTraList", jsonArrRtn,cfg); //績效_異動_查詢
+				}
+				
 			}catch(Exception e){	
 				log.info(me+"失敗=="+e.toString());
 				e.printStackTrace();
@@ -2815,9 +2910,97 @@ public class SalController{
 	        return Globals.gSampleFile+"階級支扣_匯入範本.xls";
 	    } else if ("2".equals(type)) {
 	        return Globals.gSampleFile+"公務員健保_匯入範本.xls"; // 路徑待確認
-	    } else {
+	    }else if ("3".equals(type)) {
+	        return Globals.gSampleFile+"投保金額_匯入範本.xls"; //
+		} else {
 	        return "";
 	    }
+	}
+	/**
+	 * 上傳Excel檔案-投保金額INSUAMT
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(params="method=uploadINSUAMTExcelFile")
+	public void uploadINSUAMTExcelFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String me = getClass().getName() + ".uploadINSUAMTExcelFile()";
+		String strRtn = "";
+		ArrayList<Pabaspsn> alPabaspsn = new ArrayList<Pabaspsn>();  //
+
+		try {
+			response.setCharacterEncoding("utf-8");
+ 
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+			ServletFileUpload upload = new ServletFileUpload (factory);
+			upload.setFileSizeMax(1024*1024*10);
+			upload.setHeaderEncoding("UTF-8");
+			FileItemIterator iter =  upload.getItemIterator(request);
+			
+			hid = request.getParameter("hid")==null?"":request.getParameter("hid");
+			userid = request.getParameter("userid")==null?"":request.getParameter("userid");
+			String selCode = request.getParameter("selCode")==null?"":request.getParameter("selCode");
+
+			tDAO = new SalNTDAO(da,hid);
+			InputStream in = null;
+			Workbook wb = null;
+			int do_cnt = 0;
+			jsonObj = new JSONObject();
+			
+			while (iter.hasNext()) {
+				FileItemStream fileItem = iter.next();
+				//多個檔案
+				if(!fileItem.isFormField()){
+					String filename = fileItem.getName();
+					filename = filename.substring(filename.lastIndexOf("\\")==-1?0:filename.lastIndexOf("\\"));
+					in = fileItem.openStream();
+					
+					try {
+						System.out.println(org.apache.commons.collections4.CollectionUtils.class.getName());
+	                    wb = WorkbookFactory.create(in);
+	                    Sheet sheet = wb.getSheetAt(0);
+
+	                    // i=2 跳過第二列標題（卡號、身分證、姓名...）
+	                    for (int i = 2; i <= sheet.getLastRowNum(); i++) {
+	                        Row row = sheet.getRow(i);
+	                        if (row == null) continue;
+	                        if (StringUtil.nullToString(row.getCell(0)).equals("")) continue;
+	                        
+	                        Pabaspsn o = new Pabaspsn();   // 基本個人明細
+	                        //卡號
+	                        o.setPaycard(getCellString(row.getCell(0)));
+	                        //身分證
+	                        o.setPayidno(getCellString(row.getCell(1)));	                
+	                        //投保金額
+	                        o.setInsuamt(getCellInt(row.getCell(3)));
+	                        //健保人數
+	                        o.setPaydpno(getCellString(row.getCell(4)));	
+
+	                        alPabaspsn.add(o);
+	                        //log.info("uploadINSUAMTExcelFile:cnt:" + do_cnt++ + " row:" + i + " Paycard:" + getCellString(row.getCell(0)));
+	                    }
+	                } finally {
+	                    if (wb != null) wb.close();
+	                    in.close();
+	                }
+					
+					//批次匯入:3投保金額
+					if ("3".equals(selCode)){
+						strRtn=tDAO.ImpINSUAMT(alPabaspsn, selCode, userid, hid, da);
+						log.info("匯入批次：3投保金額 "+strRtn);
+						jsonObj.put("msg", "匯入批次-投保金額 "+strRtn);
+					}
+					
+				}
+			}
+		}catch(Throwable e){
+			jsonObj.element("msg", e.toString());
+			log.info(me + " fail, " + e);
+		}finally{
+			PrintWriter out = response.getWriter();
+			// 寫出至JSP頁面
+			out.print(jsonObj.toString());
+			out.flush();
+		}
 	}
 	/**
 	 * 系統作業-更新卡號,身份證
@@ -2859,13 +3042,88 @@ public class SalController{
 			jsonObj.element("msg", e.toString());
 			e.printStackTrace();
 		}finally{
-			tDAO=null;
+			sysDAO=null;
 			da.close();
 			da = null;
 		}
 		// 寫出至JSP頁面
 		out.print(jsonObj.toString());
 		out.flush();
+	}
+	/**
+	 * 取得近 3 個月投保薪資報表資料
+	 */
+	@RequestMapping(params="method=getInsuPerList")
+	public void getInsuPerList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	    String me = getClass().getName() + ".getInsuPerList()";
+	    hid = request.getParameter("hid") == null ? "" : request.getParameter("hid");
+	    userid = request.getParameter("userid") == null ? "" : request.getParameter("userid");
+	    String in_data = request.getParameter("in_data") == null ? "" : request.getParameter("in_data");
+
+	    String dataSourceNT = "";
+	    Hospitals hospInfo = Hospitals.getOneHosp(hid);
+	    dataSourceNT = hospInfo.dataSourceNT;
+
+	    da = new VGHDataAccess(dataSourceNT);
+
+	    jsonObj = new JSONObject();
+
+	    try {
+	        response.setCharacterEncoding("utf-8");
+	        response.setContentType("application/json; charset=utf-8");
+
+	        sysDAO = new SYSSettingDAO(da, hid);
+
+	        try {
+	            // 💡 1. 從 in_data JSON 字串解析出 paydate 與 paytype
+	            String paydate = "";
+	            String paytype = "";
+	            if (in_data != null && !in_data.trim().isEmpty()) {
+	                try {
+	                    // net.sf.json 使用 JSONObject.fromObject(in_data)
+	                    // org.json 使用 new JSONObject(in_data)
+	                    JSONObject jsonParam = JSONObject.fromObject(in_data); 
+	                    if (jsonParam.has("paydate")) {
+	                        paydate = jsonParam.getString("paydate");
+	                    }
+	                    if (jsonParam.has("paytype")) {
+	                        paytype = jsonParam.getString("paytype");
+	                    }
+	                } catch (Exception e) {
+	                    log.error(me + " 解析 in_data 失敗: " + e.getMessage());
+	                }
+	            }
+
+	            // 💡 2. 呼叫 DAO (型態與順序精準對應：userid, hid, paydate, paytype)
+	            List<Map<String, Object>> resultList = sysDAO.getInsuPerList(userid, hid, paydate, paytype);
+
+	            // 💡 3. 將查詢結果存入 jsonObj (JSONObject 會自動將 List 轉為 JSON 陣列)
+	            jsonObj.put("status", "Y");
+	            jsonObj.put("success", true);
+	            jsonObj.put("data", resultList);
+
+	        } catch (Exception e) {
+	            log.info(me + " 失敗==" + e.toString());
+	            e.printStackTrace();
+	            jsonObj.put("status", "N");
+	            jsonObj.put("success", false);
+	            jsonObj.put("msg", "查詢失敗：" + e.getMessage());
+	        } finally {
+	            sysDAO = null;
+	            if (da != null) {
+	                da.close();
+	                da = null;
+	            }
+	        }
+
+	        PrintWriter out = response.getWriter();
+	        out.print(jsonObj.toString());
+	        out.flush();
+
+	    } catch (Exception e) {
+	        log.info(me + " fail, " + e);
+	        e.printStackTrace();
+	    }
 	}
 	/**
 	 * 測試ajax

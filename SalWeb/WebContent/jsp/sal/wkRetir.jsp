@@ -562,7 +562,7 @@ $(function(){
            'excelHtml5' 
         ],
         "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-		 	$('td:eq(6)', nRow).html('<a href = "#wkretirData" class= "wkretirData">'+aData.paycard+'</a>' );
+		 	$('td:eq(3)', nRow).html('<a href = "#wkretirData" class= "wkretirData">'+aData.paycard+'</a>' );
 		 	$('td:eq(0)', nRow).html( '<button type="button" class="delWkretirBtn btn btn-danger"><i class="fa fa-minus"></i></button>');
 		 },
 	 	"fnDrawCallback": function () {

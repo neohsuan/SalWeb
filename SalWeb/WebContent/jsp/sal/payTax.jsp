@@ -1597,27 +1597,64 @@ $(function(){
 	};
 	
 	$('#payidno').blur(function(){
-		var idno = $(this).val();
-		if (idno !=""){
-			//用正規表達式判斷身分證 舊式居留證 --格式檢查（Regex）
-			//國民身分證：第一碼英文字母，第二碼為 1 或 2，總長 10 碼  /^[A-Z][12]\d{8}$/
-			//新式居留證:1碼英文 + 8或9 + 8碼數字                                /^[A-Z][89]\d{8}$/
-			//舊式居留證:1碼英文 + A-D + 8碼數字 			   /^[A-Z][A-D]\d{8}$/
-			//複合型 (全部)                               ^[A-Z][1289ABCD]\d{8}$
-			//第 1 碼：必定為大寫英文字母 [A-Z]
-			//第 2 碼：本國人/新式居留證為數字 [1-28-9]舊式居留證為字母 [A-D]合併後寫法：[A-D1-28-9]後 8 碼：必定為數字 \d{8}
-			reCheckCase = /^[A-Z][1289ABCD]\d{8}$/ ;
-			
-			if(!reCheckCase.test(idno)){
-				alert('輸入的身分證字號格式有誤，請重新輸入');
-				return;
-			}
-			//檢查碼演算法（Mod 10）
-			checkId = isIdNo($(this).val());
-			if (checkId == false){
-				return false;
-			}	
-		}
+	    // 1. 取得數值、去除前後空白、自動轉換為大寫
+	    var idno = $(this).val().trim().toUpperCase();
+
+	    // 如果是空的就不用驗證
+	    if (idno === "") return;
+
+	    // 將處理過的大寫字串塞回 input 欄位
+	    $(this).val(idno);
+
+	    // 2. 正規表達式判斷總格式 (身分證/新式居留/舊式居留)
+	    var reCheckCase = /^[A-Z][1-28-9A-D]\d{8}$/;
+	    if(!reCheckCase.test(idno)){
+	        alert('輸入的身分證或居留證字號格式有誤，請重新輸入');
+	        return;
+	    }
+
+	    // 3. 建立精確的字母加權初始值對應表
+	    // 規則：A=10 -> 1*1 + 0*9 = 1； B=11 -> 1*1 + 1*9 = 10 ...
+	    var alphabetMap = {
+	        'A': 1, 'B': 10, 'C': 19, 'D': 28, 'E': 37, 'F': 46, 'G': 55, 'H': 64, 'I': 39,
+	        'J': 73, 'K': 82, 'L': 2, 'M': 11, 'N': 20, 'O': 48, 'P': 29, 'Q': 38, 'R': 47,
+	        'S': 56, 'T': 65, 'U': 74, 'V': 83, 'W': 21, 'X': 3, 'Y': 12, 'Z': 30
+	    };
+
+	    var sum = 0;
+
+	    // 第一碼字母加權
+	    sum += alphabetMap[idno[0]];
+
+	    // 判斷第二碼是否為舊式居留證字母 (A-D)
+	    var isOldFormat = /^[A-D]$/.test(idno[1]);
+
+	    if (!isOldFormat) {
+	        // === 狀況 A：身分證 或 新式居留證 (第二碼是數字) ===
+	        // 後續數字加權 (第2碼*8, 第3碼*7 ... 第9碼*1)
+	        for (var i = 1; i < 9; i++) {
+	            sum += Number(idno[i]) * (9 - i);
+	        }
+	    } else {
+	        // === 狀況 B：舊式居留證 (第二碼是字母 A-D) ===
+	        // 第二碼字母加權規則：取字母對應值的個位數 * 8
+	        var letterIndex2 = Object.keys(alphabetMap).indexOf(idno[1]) + 10; // A=10, B=11, C=12, D=13
+	        sum += (letterIndex2 % 10) * 8;
+
+	        // 後續 7 碼數字加權 (第3碼*7, 第4碼*6 ... 第9碼*1)
+	        for (var i = 2; i < 9; i++) {
+	            sum += Number(idno[i]) * (9 - i);
+	        }
+	    }
+
+	    // 4. 加上最後一碼檢查碼
+	    sum += Number(idno[9]);
+
+	    // 5. 驗證總和是否能被 10 整除
+	    if (sum % 10 !== 0) {
+	        alert("您輸入的身分證或居留證字號不正確!\n請重新輸入,謝謝!!");
+	        return;
+	    }
 	});	
 	//輸入代碼,找是否重複 新增才要檢查
 	$(".findkey").blur(function(){

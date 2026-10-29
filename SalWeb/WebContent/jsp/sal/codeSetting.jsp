@@ -895,15 +895,15 @@ $(function(){
 							if (data.status!=null||typeof(data.status)!="undefined"){	//show msg,dialog不用關閉
 								alert(data.msg);
 							}else{
+								if (data.msg!=null){
+									alert(data.msg);
+								}
 								$("#addCodeDialog").modal("hide");
 								uTable.fnClearTable(0);		//清空資料
 								
 								$("#btn_qryCode").trigger( "click" );
 								if (currentPage!=null||typeof(currentPage)!="undefined"){  
 									uTable.fnPageChange(currentPage);		//切到原先某碼
-								}
-								if (data.msg!=null){
-									alert(data.msg);
 								}
 							}	
 						},
@@ -920,7 +920,7 @@ $(function(){
 			
 	});
 	
-	//編輯欄位檢查
+	//讀取table欄位內容
   	$.getCodeInfo = function(tblname){
 		var array = new Array();
 		var value = [];
@@ -2877,6 +2877,14 @@ $(function(){
 			        		"degrlow":$('#degrlow').val()
 			        	}	
 		        	}
+		        }else if (tblname=="PADEPT"){						
+					if ($('#padepcod').val()==""){
+						return false;
+					}else{
+			        	code_data={
+			        		"key":$('#padepcod').val()
+			        	}	
+		        	}
 		        }
 		        else{
 		        	code_data={
@@ -2928,9 +2936,9 @@ $(function(){
   <li class="nav-item">
     <a class="nav-link" id="pills-items-tab" data-toggle="pill" href="#byItemsMain" role="tab" aria-controls="pills-items" aria-selected="false">支扣數</a>
   </li>
-  <li class="nav-item">
+  <!-- <li class="nav-item">
     <a class="nav-link" id="pills-wkpf-tab" data-toggle="pill" href="#byWkpfMain" role="tab" aria-controls="pills-wkpf" aria-selected="false">工作獎金</a>
-  </li>  
+  </li> -->  
 </ul>
 <div class="tab-content" id="pills-tabContent">
   <!-- 代碼維護 -->

@@ -234,7 +234,7 @@ public class PsDSNDAO {
 		sql = "SELECT pbidtno ,pbnamefd,pbposino,pbposmsk,pbcardno,pbcatego,pbwkcode,b1.PASNAME pbwkname,pbtitcod,b2.PASNAME pbtitnme,pbpagrad,pbpapont,pblastot,pbporank,pbposdat,pbpostus,pbpchief,PBGOADAT,PBGOCDAT,pbdomadr "+
 		 	    "from "+this.tbasic +" a " + 
 		 	    "LEFT OUTER JOIN "+this.ttab0 +" b1 on  a.pbwkcode = b1.pastbky "+
-		 	    "LEFT OUTER JOIN "+this.ttab0 +" b2 on  a.pbwkcode = b1.pastbky "+
+		 	    "LEFT OUTER JOIN "+this.ttab0 +" b2 on  a.pbwkcode = b2.pastbky "+
 		 	  " where HID= ? " +  
 		 	  " and PBIDTNO =?  WITH UR";
 		params.add(hid);

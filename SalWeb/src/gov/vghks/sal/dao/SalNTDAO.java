@@ -20,7 +20,6 @@ import gov.vghks.sal.model.Padpintbl;
 import gov.vghks.sal.model.Paexpftbl;
 import gov.vghks.sal.model.Pahist;
 import gov.vghks.sal.model.Palbrptbl;
-import gov.vghks.sal.model.Panhical;
 import gov.vghks.sal.model.Panhidet;
 import gov.vghks.sal.model.Papayitm;
 import gov.vghks.sal.model.Paprtdtl;
@@ -35,12 +34,9 @@ import gov.vghks.sal.model.Patitle;
 import gov.vghks.sal.model.Patracode;
 import gov.vghks.sal.model.Patrapay;
 import gov.vghks.sal.model.Patrapsn;
-import gov.vghks.sal.model.Psbasic;
 import gov.vghks.sal.model.RankCode;
-import gov.vghks.sal.util.AmJsonConfig;
 import gov.vghks.sal.util.FileUtil;
 import gov.vghks.sal.util.PaCommUtil;
-import gov.vghks.sal.util.StringUtil2;
 import gov.vghks.sal.util.ldap.LDAPUtil;
 
 import java.math.BigDecimal;
@@ -54,20 +50,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.io.File;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import java.sql.*;
 import java.util.*;
 
 import jcifs.smb.SmbFile;
@@ -97,9 +87,9 @@ public class SalNTDAO {
 	static String g_dataSource = "";
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-	private String tBasPay = "PA.PABASPAY"; // 基本支扣
-	private String tBasPsn = "PA.PABASPSN"; // 基本檔
-	private String tBatPay = "PA.PABATPAY"; // 批次檔
+	private String tBasPay = "PA.PABASPAY"; // 5基本支扣
+	private String tBasPsn = "PA.PABASPSN"; // 4基本檔
+	private String tBatPay = "PA.PABATPAY"; // 6批次檔
 	private String tTraCode = "PA.PATRACODE"; // 1異動代碼
 	private String tDept = "PA.PADEPT"; // 2單位代碼
 	private String tTitle = "PA.PATITLE"; // 3職稱
@@ -116,14 +106,14 @@ public class SalNTDAO {
 	private String tPosiTbl = "PA.PAPOSI"; // 職等支扣--專業加給及主管加給
 	private String tRankTbl = "PA.PARANK"; // 階級支扣
 	private String tCspfTbl = "PA.PACSPF"; // 工作獎金支扣
-	private String tDatPsn = "PA.PADATPSN"; // 月支個人明細
+	private String tDatPsn = "PA.PADATPSN"; // 23月支個人明細
 	private String tDatPsnDw = "PA.PADATPSN_DW"; // 月支個人明細_歷史
-	private String tDatPay = "PA.PADATPAY"; // 月支支扣明細
+	private String tDatPay = "PA.PADATPAY"; // 25月支支扣明細
 	private String tDatPayDw = "PA.PADATPAY_DW"; // 月支支扣明細_歷史
 	private String tPayItm = "PA.PAPAYITM"; // 支扣項目彙總
 	private String tBasAdr = "PA.PABASADR"; // 地址
 	private String tHist = "PA.PAHIST"; // 歷史檔
-	private String tTraPsn = "PA.PATRAPSN"; // 異動個人明細
+	private String tTraPsn = "PA.PATRAPSN"; // 30異動個人明細
 	private String tTraPsnDw = "PA.PATRAPSN_DW"; // 異動個人明細_歷史
 	private String tTraPay = "PA.PATRAPAY"; // 異動支扣明細
 	private String tTraPayDw = "PA.PATRAPAY_DW"; // 異動支扣明細_歷史
@@ -134,7 +124,7 @@ public class SalNTDAO {
 	private String tRPPRT = "PA.PAREPORT"; // 報表檔架構
 	private String tNhiCal = "PA.PANHICAL"; // 二代健保(補充保險費_獎金)
 	private String tNhiDet = "PA.PANHIDET"; // 二代健保申報扣費明細
-	private String tTeaChaw = "PA.PATEACHAW"; // 教職及論文獎勵
+	private String tTeaChaw = "PA.PATEACHAW"; // 38教職及論文獎勵
 	private String tLMONT = "PA.PALMONT";				//39製作報表明細
 	private String tWKRETIR = "PA.PAWKRETIR";				//40勞工退休金檔
 	
@@ -703,10 +693,10 @@ public class SalNTDAO {
 				strKey = StringUtil.nullToString(object_pk_data.getString("payidno"));
 				hid = StringUtil.nullToString(object_pk_data.getString("hid"));
 				if (editMode.equals("update")) {
-					// 基本檔
+					// 基本檔 2026.10.19加健保人數
 					sql = " update " + this.tBasPsn
-							+ " set (PAYEMPNO,PAYNAMEC, PAYDEPT,PAYSGNDT,PAYTAXNO, INSUAMT,PACSFLAG, PARETENTION,PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3,PAYPFSP1, PAYPFSP2, PAYPFSP3,PAYCTCBACNO,PAYCTCBGEDNO,PAYUPDID, PAYUPDTM) "
-							+ "= (?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,current timestamp) where PAYIDNO=? and HID=? ";
+							+ " set (PAYEMPNO,PAYNAMEC, PAYDEPT,PAYSGNDT,PAYTAXNO, INSUAMT,PAYPFDOC,PACSFLAG, PARETENTION,PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3,PAYPFSP1, PAYPFSP2, PAYPFSP3,PAYCTCBACNO,PAYCTCBGEDNO,PAYDPNO,PAYUPDID, PAYUPDTM) "
+							+ "= (?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?,?, ?,?,?,current timestamp) where PAYIDNO=? and HID=? ";
 				}
 				// 地址空白不處理
 				paramA = new ArrayList<Object>();
@@ -717,6 +707,20 @@ public class SalNTDAO {
 					log.info(me + " 地址-> " + rs.getString("PAYIDNO"));
 					blnAdr = true;
 				}
+			}
+			else if ("PABASPSN_Bonus".equals(tblname)) {	//績效_修改基本檔
+				if (editMode.equals("update")) {
+					sql = " update " + this.tBasPsn
+							+ " set (PAYPFDOC,PACSFLAG, PARETENTION,PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3,PAYPFSP1, PAYPFSP2, PAYPFSP3,PAYUPDID, PAYUPDTM) "
+							+ "= (?,?,?,?,?, ?,?,?,?,?, current timestamp) where PAYIDNO=? and HID=? ";
+				}			
+			}
+			else if ("PATRAPSN_Bonus".equals(tblname)) {	//績效_修改異動檔
+				if (editMode.equals("update")) {
+					sql = " update " + this.tTraPsn
+							+ " set (PAYPFDOC,PACSFLAG, PAYEXPFKEY1, PAYEXPFKEY2, PAYEXPFKEY3,PAYPFSP1, PAYPFSP2, PAYPFSP3,PAOPFDOC,PAOCSFLA, PAOEXPFKEY1, PAOEXPFKEY2, PAOEXPFKEY3,PAOPFSP1, PAOPFSP2, PAOPFSP3,PAYUPDID, PAYUPDTM) "
+							+ "= (?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,current timestamp) where PAYIDNO=? and PATRADT=? and PATRACOD=? and HID=? "; 
+				}			
 			}
 			// 勞工退休金 , PATRADT PAYIDNO,PAYSORT, HID 
 			else if ("PAWKRETIR".equals(tblname)) {
@@ -910,6 +914,9 @@ public class SalNTDAO {
 									param.add((!obj_item.has("insuamt")) ? ""
 											: ("").equals(StringUtil.nullToString(obj_item.getString("insuamt"))) ? "0"
 													: StringUtil.nullToString(obj_item.getString("insuamt")));
+									param.add((!obj_item.has("paypfdoc")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paypfdoc"))) ? "0"
+													: StringUtil.nullToString(obj_item.getString("paypfdoc")));
 									param.add((!obj_item.has("pacsflag")) ? ""
 											: ("").equals(StringUtil.nullToString(obj_item.getString("pacsflag"))) ? "N"
 													: StringUtil.nullToString(obj_item.getString("pacsflag")));
@@ -938,9 +945,14 @@ public class SalNTDAO {
 									param.add((!obj_item.has("paypfsp3")) ? ""
 											: ("").equals(StringUtil.nullToString(obj_item.getString("paypfsp3"))) ? "0"
 													: StringUtil.nullToString(obj_item.getString("paypfsp3")));
-									param.add((!obj_item.has("payctcbacno")) ? "" : obj_item.getString("payctcbacno"));
+									param.add((!obj_item.has("payctcbacno")) ? "" : StringUtil.nullToString(obj_item.getString("payctcbacno")));
 									param.add(
-											(!obj_item.has("payctcbgedno")) ? "" : obj_item.getString("payctcbgedno"));
+											(!obj_item.has("payctcbgedno")) ? "" : StringUtil.nullToString(obj_item.getString("payctcbgedno")));
+									param.add((!obj_item.has("paydpno")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paydpno")))
+													? "0"
+													: StringUtil.nullToString(obj_item.getString("paydpno")));
+									
 									param.add(userid);
 									param.add(strKey);
 									param.add(hid);
@@ -963,6 +975,129 @@ public class SalNTDAO {
 								}
 							}
 						} 
+						//績效_基本檔
+						else if ("PABASPSN_Bonus".equals(formnm)) {
+							array = obj.getJSONArray("value");
+							if (null != array && array.size() > 0) {
+								for (int j = 0; j < array.size(); j++) {
+									obj_item = array.getJSONObject(j);
+
+									param = new ArrayList<Object>();
+									param.add((!obj_item.has("paypfdoc")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paypfdoc"))) ? "0"
+													: StringUtil.nullToString(obj_item.getString("paypfdoc")));
+									param.add((!obj_item.has("pacsflag")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("pacsflag"))) ? "N"
+													: StringUtil.nullToString(obj_item.getString("pacsflag")));
+									param.add((!obj_item.has("paretention")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paretention")))
+													? ""
+													: StringUtil.nullToString(obj_item.getString("paretention")));
+									param.add((!obj_item.has("payexpfkey1")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("payexpfkey1")))
+													? "0"
+													: StringUtil.nullToString(obj_item.getString("payexpfkey1")));
+									param.add((!obj_item.has("payexpfkey2")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("payexpfkey2")))
+													? "0"
+													: StringUtil.nullToString(obj_item.getString("payexpfkey2")));
+									param.add((!obj_item.has("payexpfkey3")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("payexpfkey3")))
+													? "0"
+													: StringUtil.nullToString(obj_item.getString("payexpfkey3")));
+									param.add((!obj_item.has("paypfsp1")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paypfsp1"))) ? "0"
+													: StringUtil.nullToString(obj_item.getString("paypfsp1")));
+									param.add((!obj_item.has("paypfsp2")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paypfsp2"))) ? "0"
+													: StringUtil.nullToString(obj_item.getString("paypfsp2")));
+									param.add((!obj_item.has("paypfsp3")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paypfsp3"))) ? "0"
+													: StringUtil.nullToString(obj_item.getString("paypfsp3")));
+									param.add(userid);
+									//key
+									param.add(StringUtil.nullToString(object_pk_data.getString("payidno")));
+									param.add(StringUtil.nullToString(object_pk_data.getString("hid")));
+									
+									sql_stmts.add(sql);
+									params.add(param);									
+								}
+							}
+						}
+						//績效_異動檔
+						else if ("PATRAPSN_Bonus".equals(formnm)) {
+							array = obj.getJSONArray("value");
+							if (null != array && array.size() > 0) {
+								for (int j = 0; j < array.size(); j++) {
+									obj_item = array.getJSONObject(j);
+
+									param = new ArrayList<Object>();
+									param.add((!obj_item.has("paypfdoc")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paypfdoc"))) ? "0"
+													: StringUtil.nullToString(obj_item.getString("paypfdoc")));
+									param.add((!obj_item.has("pacsflag")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("pacsflag"))) ? "N"
+													: StringUtil.nullToString(obj_item.getString("pacsflag")));
+									param.add((!obj_item.has("payexpfkey1")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("payexpfkey1")))
+													? "0"
+													: StringUtil.nullToString(obj_item.getString("payexpfkey1")));
+									param.add((!obj_item.has("payexpfkey2")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("payexpfkey2")))
+													? "0"
+													: StringUtil.nullToString(obj_item.getString("payexpfkey2")));
+									param.add((!obj_item.has("payexpfkey3")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("payexpfkey3")))
+													? "0"
+													: StringUtil.nullToString(obj_item.getString("payexpfkey3")));
+									param.add((!obj_item.has("paypfsp1")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paypfsp1"))) ? "0"
+													: StringUtil.nullToString(obj_item.getString("paypfsp1")));
+									param.add((!obj_item.has("paypfsp2")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paypfsp2"))) ? "0"
+													: StringUtil.nullToString(obj_item.getString("paypfsp2")));
+									param.add((!obj_item.has("paypfsp3")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paypfsp3"))) ? "0"
+													: StringUtil.nullToString(obj_item.getString("paypfsp3")));
+									param.add((!obj_item.has("paopfdoc")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paopfdoc"))) ? "0"
+													: StringUtil.nullToString(obj_item.getString("paopfdoc")));
+									param.add((!obj_item.has("paocsfla")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paocsfla"))) ? "N"
+													: StringUtil.nullToString(obj_item.getString("paocsfla")));
+									param.add((!obj_item.has("paoexpfkey1")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paoexpfkey1")))
+													? "0"
+													: StringUtil.nullToString(obj_item.getString("paoexpfkey1")));
+									param.add((!obj_item.has("paoexpfkey2")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paoexpfkey2")))
+													? "0"
+													: StringUtil.nullToString(obj_item.getString("paoexpfkey2")));
+									param.add((!obj_item.has("paoexpfkey3")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paoexpfkey3")))
+													? "0"
+													: StringUtil.nullToString(obj_item.getString("paoexpfkey3")));
+									param.add((!obj_item.has("paopfsp1")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paopfsp1"))) ? "0"
+													: StringUtil.nullToString(obj_item.getString("paopfsp1")));
+									param.add((!obj_item.has("paopfsp2")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paopfsp2"))) ? "0"
+													: StringUtil.nullToString(obj_item.getString("paopfsp2")));
+									param.add((!obj_item.has("paopfsp3")) ? ""
+											: ("").equals(StringUtil.nullToString(obj_item.getString("paopfsp3"))) ? "0"
+													: StringUtil.nullToString(obj_item.getString("paopfsp3")));
+									param.add(userid);
+									//key
+									param.add(StringUtil.nullToString(object_pk_data.getString("payidno")));
+									param.add(StringUtil.nullToString(object_pk_data.getString("patradt")));
+									param.add(StringUtil.nullToString(object_pk_data.getString("patracod")));
+									param.add(StringUtil.nullToString(object_pk_data.getString("hid")));
+									
+									sql_stmts.add(sql);
+									params.add(param);									
+								}
+							}
+						}
 						// 勞工退休金
 						else if ("PAWKRETIR".equals(formnm)) {
 							array = obj.getJSONArray("value");
@@ -1701,7 +1836,7 @@ public class SalNTDAO {
 			log.info(me + "  2.找出alPrtDtl,沒註記 ");
 			// 使用 foreach 迴圈遍歷 HashMap
 			for (Map.Entry<String, Paprtdtl> entry : prtdtlMap.entrySet()) {
-				System.out.println(entry.getKey() + " : " + entry.getValue());
+				//System.out.println(entry.getKey() + " : " + entry.getValue());
 				Paprtdtl data = entry.getValue();
 				if (data != null) {
 					if (!"Y".equals(data.getComp())) {
@@ -1904,6 +2039,7 @@ public class SalNTDAO {
 					strMon = StringUtil.nullToString(itm.getPaymonth());
 					strCatg = StringUtil.nullToString(itm.getCatgcd());
 					strMsg = "";
+					baspsnobj=null;
 					if ("".equals(strIdno) && "".equals(strCard)) {
 						blnFlag = false;
 						strMsg = "身分證_卡號[空白],";
@@ -1958,10 +2094,14 @@ public class SalNTDAO {
 
 							blnTaxPsn = false;
 						}
+						log.info(me + "  3.人工入稅 idno:" + strIdno + "card:"+strCard+"...params:" + paramA.toString());
+						/*if (strCard.matches("9462|9D16")) {
+							System.out.println(strCard);
+						}*/
 						int_month = itm.getPaymonth() - 1;
 						calendar.set(int_year, int_month, 1);
 						mBegin = java.sql.Date.valueOf(formatter.format(calendar.getTime()));
-						;
+						
 						// 找出[訖]
 						calendar.add(Calendar.MONTH, 1);
 						calendar.add(Calendar.DATE, -1);
@@ -1973,13 +2113,14 @@ public class SalNTDAO {
 						else
 							taxpsnobj = (Pataxpsn) taxpsnCardMap.get(strCard);
 						
-						// 2.所得稅taxpsn個人 無,找基本檔個人
+						// 2.所得稅taxpsn個人 無,找基本檔個人,助理不找pabaspsn
 						if (taxpsnobj == null) {
-							if (!"".equals(strIdno))
-								baspsnobj = (Pabaspsn) baspsnIdMap.get(strIdno);
-							else
-								baspsnobj = (Pabaspsn) baspsnCardMap.get(strCard);
-
+							if (!strCard.startsWith("9")) {
+								if (!"".equals(strIdno))
+									baspsnobj = (Pabaspsn) baspsnIdMap.get(strIdno);
+								else
+									baspsnobj = (Pabaspsn) baspsnCardMap.get(strCard);
+							}
 							if (baspsnobj == null) {
 								//2026.10.1反找,用舊卡號找新卡號,PGY轉R,更換卡號
 								paramA = new ArrayList<Object>();
@@ -2044,28 +2185,29 @@ public class SalNTDAO {
 											+ taxpsnobj.getPaycard() + ",";
 	
 								} else {
-									// 用pabaspsn新增
-									batch_sql.add(sqlTaxPsn_ins);
-									obj = new ArrayList<Object>();
-									obj.add(baspsnobj.getPayidno());
-									obj.add(itm.getPayear());
-									obj.add(baspsnobj.getPaycard());
-									obj.add(baspsnobj.getPaynamec());
-									if ((!("").equals(StringUtil.nullToString(itm.getPaybegin())))
-											&& (!("").equals(StringUtil.nullToString(itm.getPayend())))) {
-										obj.add(itm.getPaybegin());
-										obj.add(itm.getPayend());
-									} else {
-										obj.add(mBegin);
-										obj.add(mEnd);
-									}
-									obj.add(userid);
-									obj.add(hid);
-									params.add(obj);
-									strMsg = "用pabaspsn新增,";
-									strMsg += baspsnobj.getPayidno() + "," + itm.getPaycard() + ","
-											+ baspsnobj.getPaynamec() + ",";
-	
+									if (baspsnobj != null) {
+										// 用pabaspsn新增
+										batch_sql.add(sqlTaxPsn_ins);
+										obj = new ArrayList<Object>();
+										obj.add(baspsnobj.getPayidno());
+										obj.add(itm.getPayear());
+										obj.add(baspsnobj.getPaycard());
+										obj.add(baspsnobj.getPaynamec());
+										if ((!("").equals(StringUtil.nullToString(itm.getPaybegin())))
+												&& (!("").equals(StringUtil.nullToString(itm.getPayend())))) {
+											obj.add(itm.getPaybegin());
+											obj.add(itm.getPayend());
+										} else {
+											obj.add(mBegin);
+											obj.add(mEnd);
+										}
+										obj.add(userid);
+										obj.add(hid);
+										params.add(obj);
+										strMsg = "用pabaspsn新增,";
+										strMsg += baspsnobj.getPayidno() + "," + itm.getPaycard() + ","
+												+ baspsnobj.getPaynamec() + ",";
+									}	
 								}
 							}	
 						}
@@ -2163,7 +2305,7 @@ public class SalNTDAO {
 										+ itm.getPaycitation() + "," + itm.getPaytaxpay() + "," + itm.getPaytaxdeduct()
 										+ ",";
 								if (++write_cnt % limitcnt == 0 || write_cnt == vobjs.size() || docnt == vobjs.size()) {
-									log.info(batch_sql + " " + batch_sql + " params:" + params);
+									//log.info(batch_sql + " " + batch_sql + " params:" + params);
 									da.batchupdatenocommit(batch_sql, params);
 									da.commit();
 									da.setAutoCommit(false);
@@ -2669,28 +2811,6 @@ public class SalNTDAO {
 		// 報表產製(績效組)_產生,取得月支支扣檔 (VP01,VP049,FD440)key=salnum+hid,回傳 id,payamt
 		// 2014-12-5 改成不讀的項目排除,VP01*全部,排除VP013 VP010
 		// VP049專二補發,FP440專勤獎金一培訓補助,FP80工作-住宿津貼
-		// 教職及論文獎勵 key=hid+paybank
-		String sqlDatdoc_inq = "SELECT a.payidno,'VP01' PAYCODE,SUM(PAYAMT) AS PAYAMT " + "FROM " + this.tDatPsn + " a "
-				+ "LEFT OUTER JOIN " + this.tDatPay + " b ON a.hid=b.hid AND a.payidno=b.payidno AND a.salnum=b.salnum "
-				+ "where a.hid=? and a.salnum=? " + tmp
-				+ " AND SUBSTR(PAYCODE,1,4)='VP01' AND PAYCODE NOT IN ('VP013','VP010')" + " GROUP BY a.payidno "
-				+ " UNION ALL " + "SELECT a.payidno,'FP80' PAYCODE,SUM(PAYAMT) AS PAYAMT " + "FROM " + this.tDatPsn
-				+ " a " + "LEFT OUTER JOIN " + this.tDatPay
-				+ " b ON a.hid=b.hid AND a.payidno=b.payidno AND a.salnum=b.salnum " + "where a.hid=? and a.salnum=? "
-				+ tmp + " AND SUBSTR(PAYCODE,1,4)='FP80' " + " GROUP BY a.payidno " + " UNION ALL "
-				+ " SELECT a.payidno, PAYCODE,SUM(PAYAMT) AS PAYAMT " + " FROM " + this.tDatPsn + " a "
-				+ " LEFT OUTER JOIN " + this.tDatPay
-				+ " b ON a.hid=b.hid AND a.payidno=b.payidno AND a.salnum=b.salnum " + " where a.hid=? and a.salnum=? "
-				+ tmp + " AND PAYCODE IN('VP049','FP440') " + " GROUP BY a.payidno,PAYCODE " + " UNION ALL "
-				+ " SELECT payidno,PAYITEM PAYCODE,SUM(PAYAMT) AS PAYAMT " + " FROM " + this.tTeaChaw + " a "
-				+ " where a.hid=? " + tmp
-				+ " AND ? BETWEEN PABDATE AND PAVDATE GROUP BY payidno,PAYITEM ORDER BY payidno,paycode with ur ";
-		// 找出醫師.職務調整,2個月前發薪明細的職等
-		String sqlDatdoc_Adj = "SELECT SALNUM, PAYBANK, SALNUM, PAYBANK, PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PAYUPDID, PAYUPDTM, PAYRANK4, HID, "+tmpZdatpsn+", INSUAMT, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYTITLE, PAYRNK2N, PAYRANK3, PAYDEGR2, PAYDEGRE, PAYRANK, PAYRANK2, PAYRANKC, PAYPFDOC, PACSFLAG, PAYPFSP1, PAYPFSP2, PAYPFSP3, PAYUPDID, PAYUPDTM, PAYRANK4, HID, INSUAMT"
-				+ " FROM " + this.tDatPsn + " WHERE hid=? AND payidno IN (SELECT payidno FROM " + this.tTraPsn + " a "
-				+ " LEFT OUTER JOIN " + this.tTitle + " b ON a.hid=b.hid and a.PAYTITLE=b.PAYTITLK "
-				+ " WHERE patradt BETWEEN ? AND ? AND patracod in (37) AND b.PATITSUB IN ('V') )"
-				+ " and paybank=? with ur";
 		// 論文及教職獎勵_取基本支扣FP420教職獎勵 FP430論文獎勵
 		String sqlBaspay_Tea = "select a.PAYIDNO, PAYCODE, PAYAMT, PAYAUTH, PAYIFTAX, a.HID " + "from " + this.tBasPay
 				+ " a " + " inner join ( select PAYIDNO,HID from " + this.tBasPsn
@@ -2731,10 +2851,6 @@ public class SalNTDAO {
 				sql = sqlPrtDatpay_inq;
 			else if (tblNm.equals("DATPAY"))
 				sql = sqlDatpay_inq;
-			else if (tblNm.equals("DATDOC"))
-				sql = sqlDatdoc_inq;
-			else if (tblNm.equals("DATDOCAdj"))
-				sql = sqlDatdoc_Adj;
 			else if (tblNm.equals("PrtRpt"))
 				sql = sqlPrtRpt;
 			else if (tblNm.equals("TEACHAWBas"))
@@ -2817,7 +2933,7 @@ public class SalNTDAO {
 						}
 						dpayAry.add(datpayobj);
 						preKey = strKey;
-					} else if (tblNm.matches("DATPAY|DATDOC")) {
+					} else if (tblNm.matches("DATPAY")) {
 						datpayobj = new Padatpay();
 						PropertyUtils.copyProperties(datpayobj, data);
 						strKey = StringUtil.nullToString(datpayobj.getPayidno());
@@ -2827,12 +2943,7 @@ public class SalNTDAO {
 						}
 						dpayAry.add(datpayobj);
 						preKey = strKey;
-					} else if (tblNm.equals("DATDOCAdj")) {
-						datpsnobj = new Padatpsn();
-						PropertyUtils.copyProperties(datpsnobj, data);
-						strKey = StringUtil.nullToString(datpsnobj.getPayidno());
-						rtnMap.put(strKey, datpsnobj);
-					} else if (tblNm.equals("PrtRpt")) {
+					}  else if (tblNm.equals("PrtRpt")) {
 						parptobj = new Pareport();
 						PropertyUtils.copyProperties(parptobj, data);
 						strKey = StringUtil.nullToString(parptobj.getPaycode());
@@ -2848,7 +2959,7 @@ public class SalNTDAO {
 				if (tblNm.equals("BASPAY")) {
 					rtnMap.put(preKey, bpayAry);
 				}
-				if (tblNm.matches("PrtDATPAY|DATPAY|DATDOC")) {
+				if (tblNm.matches("PrtDATPAY|DATPAY")) {
 					rtnMap.put(preKey, dpayAry);
 				}
 				if (tblNm.equals("TRAPAY")) {
@@ -2980,7 +3091,7 @@ public class SalNTDAO {
 						valMap = data.getValMap();
 						batch_sql.add(sqlRptDtl_ins);
 						param = new ArrayList<Object>();
-						System.out.println(data.getPayidno());
+						//System.out.println(data.getPayidno());
 						param.add(data.getPayidno());
 						param.add(data.getPaybank());
 						param.add(data.getPaycard());
@@ -3660,7 +3771,7 @@ public class SalNTDAO {
 					l_duduct = 0; // 總扣得額
 					l_paycode = "";
 					l_Idtno = Entry.getKey();
-					System.out.println(l_Idtno);
+					//System.out.println(l_Idtno);
 					/*
 					 * if ("R224869259".equals(l_Idtno)){ System.out.println(l_Idtno); }
 					 */
@@ -4796,6 +4907,9 @@ public class SalNTDAO {
 					}
 					strCard = StringUtil.nullToString(data.get("userid"));
 					jsonOne.put("paycard", strCard);
+//					if ("H973".equals(strCard)) {
+//						System.out.println(strCard);
+//					}
 					empname = StringUtil.trimWideEmpty(StringUtil.nullToString(data.get("empname")));
 					jsonOne.put("empname", empname);
 					strpos = StringUtil.nullToString(data.get("pos"));
@@ -4881,8 +4995,7 @@ public class SalNTDAO {
 											dblNoDay = vOffDay.doubleValue();
 										} else {
 											dblNoDay = dblOffDay - tEffMaxdt;
-											dblHalfDay = (dblOffDay - tEffMaxdt)
-													- (vOffDaySum.doubleValue() + vOffDay.doubleValue());
+											dblHalfDay = vOffDay.doubleValue() - dblNoDay;
 										}
 									} else {
 										// view在1月,OFFDAYSUM的小計是前年度1-12月,可能有>30
@@ -4909,7 +5022,7 @@ public class SalNTDAO {
 					jsonOne.put("dsalary", intDaySalay);
 					jsonOne.put("hsalary", intHalfDS);
 					jsonOne.put("rtn", strRtn);
-					jsonOne.put("nopay", dblNoDay);
+					jsonOne.put("c_nopay", dblNoDay);
 					jsonOne.put("halfpay", dblHalfDay);
 					dblLeaAmt = Math.floor(intDaySalay * dblNoDay + intHalfDS * dblHalfDay);
 					jsonOne.put("payamt", dblLeaAmt);
@@ -5257,6 +5370,81 @@ public class SalNTDAO {
 						da.batchupdatenocommit(batch_sql, params);
 						da.commit();
 						rtn = "事病假寫入批次檔:" + updCnt + " ********* 共花費：" + (System.currentTimeMillis() - starttime)
+								+ "毫秒";
+						log.info(me + "  " + selNm + " Cnt:" + updCnt + " 共花費："
+								+ (System.currentTimeMillis() - starttime) + "毫秒");
+					} catch (Exception e) {
+						da.rollback();
+						rtn = " fail, " + e;
+						da.setAutoCommit(true);
+						e.printStackTrace();
+						log.info(me + " " + formnm + " " + e.toString());
+					} finally {
+						closeAll(da, null, connFlg);
+					}
+				}
+
+			}
+			// 教職及論文獎勵
+			else if ("writeBatByTeach".equals(selEn)) {
+				starttime = System.currentTimeMillis();
+
+				JSONArray tabJsonary = JSONArray.fromObject(tabJson);
+				for (int i = 0; i < tabJsonary.size(); ++i) {
+					JSONObject obj = tabJsonary.getJSONObject(i);
+					if (obj != null && obj.has("formnm")) {
+						formnm = StringUtil.nullToString(obj.getString("formnm"));
+						if ("PABATPAY".equals(formnm)) {
+							String sqlBatPay_ins = " insert into " + this.tBatPay
+									+ " (PAYCARD, PAUPBAS, PAYAMT, PADUTYID, PAYUPDAT, PAYFLAG, UPMASTDT, "+tmpZbatpay+", PATRADT, PAYIDNO, SALNUM, PAYCODE, HID)"
+									+ " values( ?,?,?,?,current timestamp,?, ?,current timestamp,?,?,?,?,?) ";
+							array = obj.getJSONArray("value");
+							if (null != array && array.size() > 0) {
+								for (int j = 0; j < array.size(); j++) {
+									JSONObject obj_item = array.getJSONObject(j);
+
+									Set<Map.Entry> entries = obj_item.entrySet();
+									for (Map.Entry entry : entries) {
+										JSONObject value = (JSONObject) entry.getValue();
+										//檢測<>""才寫入
+										if ( ! StringUtil.nullToString(value.getString("rtn")).equals("") ) {
+											patradt = !value.has("patradt") ? "" : value.getString("patradt");
+											paycard = !value.has("paycard") ? "" : value.getString("paycard");
+											payupbas = !value.has("payupbas") ? "" : value.getString("payupbas");
+											payamt = !value.has("payamt") ? 0 : value.getInt("payamt");
+											payidno = !value.has("payidno") ? "" : value.getString("payidno");
+											salnum = !value.has("salnum") ? 0 : value.getInt("salnum");
+											paycode = !value.has("paycode") ? "" : value.getString("paycode");
+											
+											paramA = new ArrayList<Object>();
+											paramA.add(paycard);
+											paramA.add(payupbas);
+											paramA.add(payamt);
+											paramA.add("O" + userid);
+											paramA.add("");
+											paramA.add("");
+											paramA.add(patradt);
+											paramA.add(payidno);
+											paramA.add(salnum);
+											paramA.add(paycode);
+											paramA.add(hid);
+											updCnt++;
+											params.add(paramA);
+											batch_sql.add(sqlBatPay_ins);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				log.info(me + "sql:" + batch_sql + " ...params:" + params.toString());
+				if (batch_sql.size() > 0) {
+					da.startTransaction();
+					try {
+						da.batchupdatenocommit(batch_sql, params);
+						da.commit();
+						rtn = "教職及論文獎勵 寫入批次檔:" + updCnt + " ********* 共花費：" + (System.currentTimeMillis() - starttime)
 								+ "毫秒";
 						log.info(me + "  " + selNm + " Cnt:" + updCnt + " 共花費："
 								+ (System.currentTimeMillis() - starttime) + "毫秒");
@@ -6261,9 +6449,9 @@ public class SalNTDAO {
 						for (Map<String, Object> data : result) {
 							docnt++;
 							strIdno = (String) data.get("payidno");
-							if (strIdno.equals("Y220517839")) {
+							/*if (strIdno.equals("Y220517839")) {
 								System.out.println(strIdno);
-							}
+							}*/
 							strPaycard = StringUtil.nullToString((String) data.get("paycard"));
 							strPAYNAMEC = StringUtil.trimWideEmpty(StringUtil.nullToString((String) data.get("paynamec")));
 							strRankAbbr = StringUtil.trimWideEmpty(StringUtil.nullToString((String) data.get("rankabbr")));
@@ -8141,8 +8329,7 @@ public class SalNTDAO {
 			params.add(lvefg);
 		}
 		if (!"".equals(paret)) {// 留職留薪,支領專2(Y/N)
-			subsql += " and PARETENTION=? ";
-			params.add(paret);
+			subsql += " and PARETENTION not in ('','N') ";
 		}
 		if (!"".equals(tracod)) {// 異動原因
 			subsql += " and PATRACOD=? ";
@@ -8155,8 +8342,10 @@ public class SalNTDAO {
 		if (!"".equals(inflg)) {// 保險補助比例
 			subsql += " and PAYINFLG<>0 ";
 		}
-		if (!"".equals(expfsp)) {// 額外點數1 2 3有值皆要列入
+		if ("Y".equals(expfsp)) {// 額外點數1 2 3有值皆要列入
 			subsql += " and (PAYPFSP1<>0 or PAYPFSP2<>0 or PAYPFSP3<>0) ";
+		}else if ("N".equals(expfsp)) {
+			subsql += " and (PAYPFSP1=0 and PAYPFSP2=0 and PAYPFSP3=0) ";
 		}
 		if (!(patradt == null || (patradt != null && patradt.length == 0))) { // 異動日期
 			subsql += " and PATRADT in ( ";
@@ -8318,7 +8507,7 @@ public class SalNTDAO {
 						jsonOne.put("paypfsp1", StringUtil.nullToString(data.get("paypfsp1")));
 						jsonOne.put("paypfsp2", StringUtil.nullToString(data.get("paypfsp2")));
 						jsonOne.put("paypfsp3", StringUtil.nullToString(data.get("paypfsp3")));
-						jsonOne.put("paretention", baspsnObj.getParetention());
+						jsonOne.put("paretention", PaCommUtil.getRetenNm((String) StringUtil.nullToString(data.get("paretention")))) ;
 						jsonOne.put("paypfdoc", StringUtil.nullToString(data.get("paypfdoc")));
 						// 工作獎金=Y,找基本績分 俸級績分
 						pfbas = 0;
@@ -8487,7 +8676,7 @@ public class SalNTDAO {
 				param.add(paramA.get(j));
 			}
 		}
-		if ("3".equals(typ)) {
+		if ("3".equals(typ) && blnTran ) {
 			sql += " union all ";
 		}
 		if (typ.matches("2|3")) {
@@ -9877,436 +10066,6 @@ public class SalNTDAO {
 
 					jsonRtn.add(jsonOne);
 				}
-			}
-			log.info(me + "  ...********* dataaccess:共花費：" + (System.currentTimeMillis() - starttime) + "毫秒");
-		} catch (Exception e) {
-			log.info(me + " fail, " + e);
-			throw new SQLException(me + ", fail!!." + e);
-		} finally {
-			if (bfw != null)
-				bfw.close();
-			closeAll(da, null, connFlg);
-		}
-
-		return jsonRtn;
-	}
-
-	// 檔案產製 selCode:selNm:selEn
-	// 1:績效組_醫師:Perf_1 2:績效組_員工:Perf_2
-	public JSONArray getPerfFileList(String in_data, String userid, String hid, VGHDataAccess da) throws Exception {
-		String me = getClass().getName() + ".getPerfFileList(),userid = " + userid;
-		log.info(me + " in_data = " + in_data + " hid = " + hid);
-		JSONArray jsonRtn = new JSONArray();
-		JSONObject jsonOne = null;
-		JSONObject object_in_data = null;
-		CommDAO cDAO = null;
-		HashMap CspfMap = new HashMap(); // 工作獎金支扣 對照表
-		long starttime = 0;
-		String selEn = "";
-		String selCode = "";
-		String selNm = "";
-		String patradt = "";
-		int salnum = 0;
-		int i = 0;
-		String jsonStr = "";
-		String l_Idtno = ""; // 身分證
-		String l_paycode = ""; // 支扣代碼
-
-		int l_Pfdoc = 0; // 專勤額度
-		String l_Rnk2n = "";// 職稱
-		String l_Title = "";// 職稱
-		String l_TitSub = "";// 職稱分類
-		int l_DEGR2 = 0; // 級別
-		int l_Open = 0; // 不開業獎金 專二/工二
-		String l_Csflag = "";// 工作獎金(Y/N)
-		int l_Tracod = 0;
-
-		boolean blnflag = false;
-		String l_Paretention = "";// [專一]0,[專二]Y/N
-		HashMap datpsnAdjMap = new HashMap();
-		Padatpsn padatpsn = null;
-		Padatpsn padatpsnadj = null;
-		Padatpay padatpay = null;
-		int l_VP01 = 0; // 專一
-		int l_FP80 = 0; // 工作獎金_住宿津貼
-		int l_VP049 = 0; // 專二_補
-		int l_FP440 = 0; // 專一_培訓補助
-		int l_teach_00 = 0; // 教職獎勵
-		int l_teach_09 = 0; // 教職獎勵_補
-		int l_thesis_10 = 0; // 論文獎勵第1篇
-		int l_thesis_19 = 0; // 論文獎勵第1篇_補
-		int l_thesis_20 = 0; // 論文獎勵第2篇
-		int l_thesis_29 = 0; // 論文獎勵第2篇_補
-		String l_pfcr = ""; // 總醫師
-		String l_pfbas = ""; // 基本績分
-		String l_pfdat = ""; // 俸級績分
-		String l_Paysgndt = ""; // 現職日
-		String l_Paybank = ""; // 發薪日
-		String vDate = "";
-		long starttime9 = 0;
-		HashMap datdocMap = new HashMap(); // 月支支扣檔 map
-		TreeMap<Integer, Integer> valMap = new TreeMap();
-		ArrayList<Padatpay> datpayAry = null;// 月支支扣檔 Array
-		ArrayList<Object> param = new ArrayList<Object>();
-		ResultSet rs = null;
-		BufferedWriter bfw = null;
-		String strLine = "";
-		String strTmp = "";
-		String tmp = "";
-		String folderPath = "";
-		String filename = "";
-		String filePath = "";
-		starttime = System.currentTimeMillis();
-		ArrayList<Object> params = new ArrayList<Object>();
-		ArrayList<Object> paramsub = new ArrayList<Object>();
-		if (in_data != null && !in_data.equals("")) {
-			object_in_data = JSONObject.fromObject(in_data);
-			selEn = (!object_in_data.has("selEn")) ? "" : object_in_data.getString("selEn");
-			selCode = (!object_in_data.has("selCode")) ? "" : object_in_data.getString("selCode");
-			selNm = (!object_in_data.has("selNm")) ? "" : object_in_data.getString("selNm");
-			patradt = (!object_in_data.has("patradt")) ? "" : object_in_data.getString("patradt");
-			salnum = (!object_in_data.has("salnum")) ? 0 : object_in_data.getInt("salnum");
-		}
-
-		String sqlDatpsn_inq = "";
-
-		try {
-			cDAO = new CommDAO(da, hid);
-			Hospitals hospInfo = Hospitals.getOneHosp(hid);
-			if (da == null) {
-				g_dataSourceNT = hospInfo.dataSourceNT;
-				da = new VGHDataAccess(g_dataSourceNT);
-				connFlg = true;
-			}
-			starttime9 = System.currentTimeMillis();
-			// 寫入資料夾設定
-			FileUtil fileUtil = new FileUtil();
-			if (selEn.matches("Perf_1")) { // Perf_1績效組_醫師
-				//folderPath = hospInfo.fileSRV+"bak\\";
-				folderPath = hospInfo.fileSALPPF;
-				filename = "DocBas";
-				if (hid.matches("2A0")) { // 屏榮,檔名加HID 聯醫沒有用
-					filename += hid;
-				}
-			} else if (selEn.matches("Perf_2")) { // Perf_2績效組_員工
-				//folderPath = hospInfo.fileSRV+"bak\\";
-				folderPath = hospInfo.fileSALEPF;
-				filename = "EmpEff";
-				if (hid.matches("2A0")) { // 屏榮,檔名加HID 聯醫沒有用
-					filename += hid;
-				}
-			}
-			filename += ".txt";
-			filePath = folderPath + filename;
-
-			if (!FileUtil.FileToSmbFile(folderPath, hid).exists()) {
-				fileUtil.FileToSmbFile(folderPath, hid).mkdirs();
-			}
-			// 建立檔案 難字要用utf8
-			SmbFile payfile = fileUtil.FileToSmbFile(filePath, hid);
-			//bfw = new BufferedWriter(new OutputStreamWriter(new SmbFileOutputStream(payfile, false), "utf-8"));
-			bfw = new BufferedWriter(new OutputStreamWriter(new SmbFileOutputStream(payfile, false), "big5"));
-			
-			starttime9 = System.currentTimeMillis();
-			param = new ArrayList<Object>();
-			param.add(hid);
-			param.add(salnum);
-			param.add(hid);
-			param.add(salnum);
-			param.add(hid);
-			param.add(salnum);
-			param.add(hid);
-			param.add(patradt);
-			datdocMap = this.getPaItmMap(param, "DATDOC", hid, da);
-			log.info(me + "  1-1.讀取月支明細VP01專一補發項+VP04專二補發項+FP80工作獎金_住宿津貼+FP440+讀取教職及論文獎勵,筆數:" + datdocMap.size()
-					+ "共花費：" + (System.currentTimeMillis() - starttime9) + "毫秒");
-			if (selEn.matches("Perf_1")) {
-				starttime9 = System.currentTimeMillis();
-				param = new ArrayList<Object>();
-				param.add(hid);
-				java.sql.Date dd = java.sql.Date.valueOf(patradt);
-				vDate = formatter.format(DateUtil.add(dd, Calendar.MONTH, -1));
-				param.add(vDate);
-				param.add(patradt);
-				vDate = formatter.format(DateUtil.add(dd, Calendar.MONTH, -2));
-				param.add(vDate);
-				datpsnAdjMap = this.getPaItmMap(param, "DATDOCAdj", hid, da);
-				log.info(me + "  1-2.讀取醫師有職務異動,筆數:" + datdocMap.size() + "共花費："
-						+ (System.currentTimeMillis() - starttime9) + "毫秒");
-
-				// 績效組_醫師
-				// 1.專勤額度>0
-				// 2.專勤額度=0 and 專勤獎金細項>0,不含(VP010 VP013)
-				// 3.專1=0,專2=Y(PARETENTION)
-				// 4.paeffdt 離職2個月內的醫師
-				strTmp = " (DAT.PAYPFDOC >0 "
-						+ " or  (DAT.PAYPFDOC = 0 AND DAT.PACSFLAG = 'N' AND DAT.PAYPFSP1+DAT.PAYPFSP2+DAT.PAYPFSP3 = 0 "
-						+ " AND (DAT.PAYIDNO IN (SELECT PAYIDNO FROM " + this.tDatPay + " WHERE HID=? AND SALNUM = ? "
-						+ " AND SUBSTR(PAYCODE,1,4)='VP01' AND PAYCODE NOT IN ('VP013','VP010'))) ) "
-						+ " OR (BAS.PARETENTION='Y')) " + 
-						" UNION "+
-					   " select TRA.PATRADT PAYBANK, tra.PAYDEPT, D.PADEPNMC, tra.PAYCARD, tra.PAYNAMEC, bas.PAYTITLE, T.PAYTITLP,bas.PAYRNK2N, bas.PAYRANK3, bas.PAYDEGR2,bas.PAYDEGRE, "
-						+ "COALESCE(tra.PAYEMPDT, BAS.PAYSGNDT) PAYEMPDT, tra.PAYIDNO, bas.PAYRANK2, bas.PAYRANK, bas.PAYPFDOC, bas.PACSFLAG,bas.PAYPFSP1+tra.PAYPFSP2+tra.PAYPFSP3 as PAYPFSP,"
-						+ "PATITSUB, bas.PARETENTION,tra.PAYEMPNO,COALESCE(TRA.PAYRSGDT,BAS.PAYRSGDT) PAYRSGDT,COALESCE(TRA.PAYEMPDT,BAS.PAYEMPDT) PAYEMPDT, COALESCE(tra.PAYSGNDT,bas.PAYSGNDT) PAYSGNDT,"
-						+ "COALESCE(tra.PATRACOD,0) patracod,tra.PAYMONNO,tra.PAYDAYNO,case WHEN tra.patracod IN(21,22) then tra.payrsgdt WHEN tra.patracod IN (23) THEN tra.PAEFFDT else '9999-12-31' end payrsgdt,"
-						+ "COALESCE(tra.PAYPFSP2,bas.PAYPFSP2)PAYPFSP2,COALESCE(tra.PAYEXPFKEY2,bas.PAYEXPFKEY2) PAYEXPFKEY2 "
-						+ " from " + this.tTraPsn + " Tra " + 
-						" left outer join " + this.tDept + " d on tra.PAYDEPT = D.PADEPCOD AND tra.HID=D.HID " + 
-						" left outer join " + this.tTitle+ " t on tra.PAOTITLE = T.PAYTITLK and tra.hid=t.hid " + 
-						" left outer join " + this.tBasPsn+ " bas on tra.PAYIDNO = Bas.PAYIDNO and tra.hid=Bas.hid "+
-				       " where tra.HID=? and (t.PATITSUB IN ('A','V') OR TRA.PAOTITLE IN ('CG') )"+
-						  "AND tra.patracod IN (21,22,23) " + 
-				         " AND TRA.PaeffDT BETWEEN DATE('" + patradt+ "') - 2 MONTH + 1 DAY AND DATE('" + patradt + "') + 1 MONTH - 1 DAY "+
-						 " AND tra.payidno NOT IN (SELECT payidno FROM " + this.tDatPsn + " WHERE hid=? AND salnum=?) ";
-
-			} else if (selEn.matches("Perf_2")) { // Perf_2績效組_員工 1.員工獎金=Y,2.員工獎金=N and 其他點數>0
-				strTmp = " (DAT.PACSFLAG = 'Y' "
-						+ "OR (DAT.PACSFLAG = 'N' AND DAT.PAYPFSP1+DAT.PAYPFSP2+DAT.PAYPFSP3>0) ) ";
-			}
-
-			// 讀取pa.padatpsn,異動檔抓1新進33職務調整 21離職22退休23停薪
-
-			//tmp=" and dat.paycard in ('0133','0168') ";
-			sql = "select DAT.PAYBANK, DAT.PAYDEPT, D.PADEPNMC, DAT.PAYCARD, DAT.PAYNAMEC, DAT.PAYTITLE, T.PAYTITLP,DAT.PAYRNK2N, DAT.PAYRANK3, DAT.PAYDEGR2, DAT.PAYDEGRE, "
-					+ "COALESCE(tra.PAYEMPDT, BAS.PAYSGNDT) PAYEMPDT, DAT.PAYIDNO, DAT.PAYRANK2, DAT.PAYRANK, DAT.PAYPFDOC, DAT.PACSFLAG, DAT.PAYPFSP1+DAT.PAYPFSP2+DAT.PAYPFSP3 as PAYPFSP,"
-					+ "PATITSUB, bas.PARETENTION,DAT.PAYEMPNO,COALESCE(TRA.PAYRSGDT,BAS.PAYRSGDT) PAYRSGDT,COALESCE(TRA.PAYEMPDT,BAS.PAYEMPDT) PAYEMPDT, COALESCE(tra.PAYSGNDT,bas.PAYSGNDT) PAYSGNDT,"
-					+ "COALESCE(tra.PATRACOD,0) patracod,tra.PAYMONNO,tra.PAYDAYNO,case WHEN tra.patracod IN(21,22) then tra.payrsgdt WHEN tra.patracod IN (23) THEN tra.PAEFFDT else '9999-12-31' end payrsgdt,"
-					+ "COALESCE(tra.PAYPFSP2,bas.PAYPFSP2)PAYPFSP2,COALESCE(tra.PAYEXPFKEY2,bas.PAYEXPFKEY2) PAYEXPFKEY2 "
-					+ " from " + this.tDatPsn + " DAT " + 
-					  " left outer join " + this.tDept + " d on DAT.PAYDEPT = D.PADEPCOD AND DAT.HID=D.HID " + 
-					  " left outer join " + this.tTitle+ " t on DAT.PAYTITLE = T.PAYTITLK and DAT.hid=t.hid " + 
-					  " left outer join " + this.tBasPsn+ " bas on DAT.PAYIDNO = Bas.PAYIDNO and DAT.hid=Bas.hid " + 
-					  " left outer join " + this.tTraPsn+ " tra on DAT.PAYIDNO = tra.PAYIDNO and DAT.hid=tra.hid and DAT.salnum=tra.salnum and tra.patracod in (1,33,21,22,23,31,36,37,38)  "
-				   + " where dat.HID=? and dat.SALNUM =? " + tmp + " AND " + strTmp + " order by 4 with ur";
-
-			params.add(hid);
-			params.add(salnum);
-			if (selEn.matches("Perf_1")) {
-				params.add(hid);
-				params.add(salnum);
-				params.add(hid);
-				params.add(hid);
-				params.add(salnum);
-			}
-			log.info(me + "  2-2.讀取pa.padatpsn:" + sql + "...params:" + params.toString());
-			log.info(me + "  " + sql + "...params:" + params.toString());
-
-			result = da.arraylistbyQuery(sql, params, META_TYPE);
-			log.info(me + "...size:" + result.size());
-			// 員工
-			// 發薪日;單位代碼;單位中文;卡號;姓名;職稱代碼;職稱中文;官職等;本功;級別;現職日;基本績分;俸級績分;額外績分;工二;獎勵_教職獎勵FP420;教職獎勵補發扣;獎勵_論文獎勵第1篇;論文獎勵第1篇補發扣;獎勵_論文獎勵第2篇;論文獎勵第2篇補發扣;工作_住宿津貼FP800;獎金差額;總醫師
-			// DAT.PAYBANK, DAT.PAYDEPT, D.PADEPNMC, DAT.PAYCARD, DAT.PAYNAMEC,
-			// DAT.PAYTITLE, T.PAYTITLP,DAT.PAYRNK2N, DAT.PAYRANK3, DAT.PAYDEGR2,
-			// DAT.PAYDEGRE, COALESCE(tra.PAYEMPDT, BAS.PAYSGNDT) PAYEMPDT, DAT.PAYIDNO,
-			// DAT.PAYRANK2, DAT.PAYRANK, DAT.PAYPFDOC, DAT.PACSFLAG,
-			// DAT.PAYPFSP1+DAT.PAYPFSP2+DAT.PAYPFSP3 as PAYPFSP,PATITSUB,
-			// bas.PARETENTION,DAT.PAYEMPNO,COALESCE(TRA.PAYRSGDT,BAS.PAYRSGDT)
-			// PAYRSGDT,COALESCE(TRA.PAYEMPDT,BAS.PAYEMPDT) PAYEMPDT,
-			// COALESCE(tra.PAYSGNDT,bas.PAYSGNDT)
-			// PAYSGNDT,tra.PATRACOD,tra.PAYMONNO,tra.PAYDAYNO
-			// 醫師
-			// '0發薪日1單位代碼 2單位中文 3卡號 4姓名 5職稱代碼 6職稱中文 7職等 8本功 9級別 10現職日期 11專勤醫師基本額度 12專2額度
-			// '13新進補發 值班費 補發繳回'VP01' AND <>('VP013','VP010') 14專勤獎金2 VP049 15專勤獎金一培訓補助VP049
-			// '16教職獎勵FP420 17 FP429 18論文-1 FP430-1 19 FP439-1 20論文-2 FP430-2 21 FP430-2
-			// 22離職日
-			if (result.size() > 0) {
-				for (Map<String, Object> data : result) {
-					padatpsn = new Padatpsn();
-					datpayAry = null;
-					blnflag = false;
-					strLine = "";
-					l_VP01 = 0;
-					l_VP049 = 0;
-					l_FP440 = 0;
-					l_FP80 = 0;
-					l_teach_00 = 0; // 教職獎勵
-					l_teach_09 = 0; // 教職獎勵_補
-					l_thesis_10 = 0; // 論文獎勵第1篇
-					l_thesis_19 = 0; // 論文獎勵第1篇_補
-					l_thesis_20 = 0; // 論文獎勵第2篇
-					l_thesis_29 = 0; // 論文獎勵第2篇_補
-					l_pfbas = "0"; // 基本績分
-					l_pfdat = "0"; // 俸級績分
-					l_Open = 0;
-					l_pfcr = "    "; // 總醫師
-					jsonOne = new JSONObject();
-					PropertyUtils.copyProperties(padatpsn, data);
-
-					// 專勤額度
-					l_Pfdoc = padatpsn.getPaypfdoc();
-					// [專一]0,[專二]Y/N
-					l_Paretention = StringUtil.nullToString(padatpsn.getParetention());
-					l_Title = StringUtil.nullToString(padatpsn.getPaytitle());
-					l_TitSub = StringUtil.nullToString(padatpsn.getPatitsub());
-					l_Rnk2n = StringUtil.nullToString(padatpsn.getPayrnk2n());
-					l_DEGR2 = padatpsn.getPaydegr2();
-					l_Csflag = StringUtil.nullToString(padatpsn.getPacsflag());
-					l_Idtno = StringUtil.nullToString(padatpsn.getPayidno());
-					l_Tracod = padatpsn.getPatracod();
-					l_Paysgndt = StringUtil.nullToString(padatpsn.getPaysgndt());
-					l_Paybank = StringUtil.nullToString(padatpsn.getPaybank());
-					// 不開業獎金(專二/工二) 6
-					// 職務調整,找發薪前2個月的padatpsn
-					padatpsnadj = (Padatpsn) datpsnAdjMap.get(l_Idtno);
-					if (padatpsnadj != null) {
-						l_Rnk2n = padatpsnadj.getPayrnk2n();
-						l_DEGR2 = padatpsnadj.getPaydegr2();
-					}
-
-					l_Open = cDAO.getOpenBonus(l_Title, l_TitSub, l_Rnk2n, l_DEGR2, l_Pfdoc, l_Paretention, l_Csflag);
-
-					strLine = l_Paybank.substring(0, 4) + l_Paybank.substring(5, 7) + l_Paybank.substring(8, 10);
-					jsonOne.put("paybank", StringUtil.nullToString(padatpsn.getPaybank()));
-					strLine += StringUtil.fillChar(StringUtil.nullToString(padatpsn.getPaydept()), 4, " ", true);
-					jsonOne.put("paydept", StringUtil.nullToString(padatpsn.getPaydept()));
-					strLine += StringUtil.strFillWideWhite(StringUtil.nullToString(padatpsn.getPadepnmc()), 11, true);
-					jsonOne.put("padepnmc", StringUtil.nullToString(padatpsn.getPaynamec()));
-					strLine += StringUtil.nullToString(padatpsn.getPaycard());
-					jsonOne.put("paycard", StringUtil.nullToString(padatpsn.getPaycard()));
-					//中文姓名,要檢測難字,是難字轉換成□
-					strLine += StringUtil2.decodeTxtEntity(StringUtil.strFillWideWhite(StringUtil.nullToString(padatpsn.getPaynamec()), 6, true));
-					jsonOne.put("paynamec", StringUtil.nullToString(padatpsn.getPaynamec()));
-					strLine += StringUtil.nullToString(padatpsn.getPaytitle());
-					jsonOne.put("paytitle", StringUtil.nullToString(padatpsn.getPaytitle()));
-					strLine += StringUtil.strFillWideWhite(StringUtil.nullToString(padatpsn.getPaytitlp()), 11, true);
-					jsonOne.put("paytitlp", StringUtil.nullToString(padatpsn.getPaytitlp()));
-					strLine += StringUtil.fillChar(StringUtil.nullToString(padatpsn.getPayrnk2n()), 2, "0", true);
-					jsonOne.put("payrnk2n", StringUtil.nullToString(padatpsn.getPayrnk2n()));
-					strLine += StringUtil.nullToString(padatpsn.getPayrank3());
-					jsonOne.put("payrank3", StringUtil.nullToString(padatpsn.getPayrank3()));
-					strLine += StringUtil.fillChar(StringUtil.nullToString(padatpsn.getPaydegr2()), 2, "0", false);
-					jsonOne.put("paydegr2", StringUtil.nullToString(padatpsn.getPaydegr2()));
-					strTmp = StringUtil.nullToString(padatpsn.getPaysgndt());
-					strLine += strTmp.substring(0, 4) + strTmp.substring(5, 7) + strTmp.substring(8, 10);
-					jsonOne.put("paysgndt", StringUtil.nullToString(padatpsn.getPaysgndt()));
-					// VP01專一_補 8 VP049專二_補 8 FP440專一_培訓補助(8) l_teach_00教職獎勵(6) l_teach_09教職獎勵_補(6)
-					// l_thesis_10論文獎勵第1篇(6) l_thesis_19論文獎勵第1篇_補(6) l_thesis_20論文獎勵第2篇(6)
-					// l_thesis_29論文獎勵第2篇_補(6)
-					datpayAry = (ArrayList) datdocMap.get(l_Idtno);
-					if (datpayAry != null) {
-						for (Padatpay dataP : datpayAry) {
-							l_paycode = dataP.getPaycode();
-							if (l_paycode.equals("VP01"))
-								l_VP01 = dataP.getPayamt();
-							if (l_paycode.equals("FP80"))
-								l_FP80 = dataP.getPayamt();
-							else if (l_paycode.equals("VP049"))
-								l_VP049 = dataP.getPayamt();
-							else if (l_paycode.equals("FP440"))
-								l_FP440 = dataP.getPayamt();
-							else if (l_paycode.equals("00"))
-								l_teach_00 = dataP.getPayamt();
-							else if (l_paycode.equals("09"))
-								l_teach_09 = dataP.getPayamt();
-							else if (l_paycode.equals("10"))
-								l_thesis_10 = dataP.getPayamt();
-							else if (l_paycode.equals("19"))
-								l_thesis_19 = dataP.getPayamt();
-							else if (l_paycode.equals("20"))
-								l_thesis_20 = dataP.getPayamt();
-							else if (l_paycode.equals("29"))
-								l_thesis_29 = dataP.getPayamt();
-						}
-					}
-					if (selEn.matches("Perf_1")) {
-						// 專一額度 7
-						strLine += StringUtil.fillChar(StringUtil.nullToString(padatpsn.getPaypfdoc()), 7, " ", false);
-						jsonOne.put("pfdoc", StringUtil.nullToString(padatpsn.getPaypfdoc()));
-						strLine += StringUtil.fillChar((l_Open == 0 ? "" : String.valueOf(l_Open)), 6, " ", false);
-						jsonOne.put("pfopen", l_Open);
-						strLine += StringUtil.fillChar((l_VP01 == 0 ? "" : String.valueOf(l_VP01)), 8, " ", false);
-						jsonOne.put("vp019", l_VP01);
-						strLine += StringUtil.fillChar((l_VP049 == 0 ? "" : String.valueOf(l_VP049)), 8, " ", false);
-						jsonOne.put("vp049", l_VP049);
-						strLine += StringUtil.fillChar((l_FP440 == 0 ? "" : String.valueOf(l_FP440)), 8, " ", false);
-						jsonOne.put("fp440", l_FP440);
-						strLine += StringUtil.fillChar((l_teach_00 == 0 ? "" : String.valueOf(l_teach_00)), 6, " ",
-								false);
-						jsonOne.put("teach_00", l_teach_00);
-						strLine += StringUtil.fillChar((l_teach_09 == 0 ? "" : String.valueOf(l_teach_09)), 6, " ",
-								false);
-						jsonOne.put("teach_09", l_teach_09);
-						strLine += StringUtil.fillChar((l_thesis_10 == 0 ? "" : String.valueOf(l_thesis_10)), 6, " ",
-								false);
-						jsonOne.put("thesis_10", l_thesis_10);
-						strLine += StringUtil.fillChar((l_thesis_19 == 0 ? "" : String.valueOf(l_thesis_19)), 6, " ",
-								false);
-						jsonOne.put("thesis_19", l_thesis_19);
-						strLine += StringUtil.fillChar((l_thesis_20 == 0 ? "" : String.valueOf(l_thesis_20)), 6, " ",
-								false);
-						jsonOne.put("thesis_20", l_thesis_20);
-						strLine += StringUtil.fillChar((l_thesis_29 == 0 ? "" : String.valueOf(l_thesis_29)), 6, " ",
-								false);
-						jsonOne.put("thesis_29", l_thesis_29);
-						if (l_Tracod >= 21 && l_Tracod <= 23) {
-							strTmp = StringUtil.nullToString(padatpsn.getPayrsgdt());
-							strLine += strTmp.substring(0, 4) + strTmp.substring(5, 7) + strTmp.substring(8, 10);
-							jsonOne.put("payrsgdt", StringUtil.nullToString(padatpsn.getPayrsgdt()));
-						} else {
-							strLine += "";
-							jsonOne.put("payrsgdt", "");
-						}
-					} else if (selEn.matches("Perf_2")) {
-						// 工作獎金=Y,找基本績分 俸級績分
-						if ("Y".equals(padatpsn.getPacsflag())) {
-							CspfMap = cDAO.getCsPfByKey(padatpsn.getPayrank3(), padatpsn.getPaytitle(),
-									padatpsn.getPayrank(), padatpsn.getPayrnk2n(), padatpsn.getPaydegr2(),
-									padatpsn.getStrbank(), hid, da);
-							l_pfbas = (String) CspfMap.get("pfbas");
-							l_pfdat = (String) CspfMap.get("pfdat");
-						}
-						strLine += StringUtil.fillChar(l_pfbas, 4, "0", false);
-						jsonOne.put("pfbas", l_pfbas);
-						strLine += StringUtil.fillChar(l_pfdat, 4, "0", false);
-						jsonOne.put("pfdat", l_pfdat);
-						
-						//2026.9.22有負值呈現,0-36,改為-036
-						if ( padatpsn.getPaypfsp() < 0) {
-							strLine += "-" + StringUtil.fillChar(StringUtil.nullToString(Math.abs(padatpsn.getPaypfsp())), 3, "0", false);
-						}else {
-							strLine += StringUtil.fillChar(StringUtil.nullToString(padatpsn.getPaypfsp()), 4, "0", false);
-						}
-						jsonOne.put("pfsp", StringUtil.nullToString(padatpsn.getPaypfsp()));
-						
-						strLine += StringUtil.fillChar((l_Open == 0 ? "" : String.valueOf(l_Open)), 6, " ", false);
-						jsonOne.put("pfopen", l_Open);
-						// 教職 論文
-						strLine += StringUtil.fillChar((l_teach_00 == 0 ? "" : String.valueOf(l_teach_00)), 6, " ",
-								false);
-						jsonOne.put("teach_00", l_teach_00);
-						strLine += StringUtil.fillChar((l_teach_09 == 0 ? "" : String.valueOf(l_teach_09)), 6, " ",
-								false);
-						jsonOne.put("teach_09", l_teach_09);
-						strLine += StringUtil.fillChar((l_thesis_10 == 0 ? "" : String.valueOf(l_thesis_10)), 6, " ",
-								false);
-						jsonOne.put("thesis_10", l_thesis_10);
-						strLine += StringUtil.fillChar((l_thesis_19 == 0 ? "" : String.valueOf(l_thesis_19)), 6, " ",
-								false);
-						jsonOne.put("thesis_19", l_thesis_19);
-						strLine += StringUtil.fillChar((l_thesis_20 == 0 ? "" : String.valueOf(l_thesis_20)), 6, " ",
-								false);
-						jsonOne.put("thesis_20", l_thesis_20);
-						strLine += StringUtil.fillChar((l_thesis_29 == 0 ? "" : String.valueOf(l_thesis_29)), 6, " ",
-								false);
-						jsonOne.put("thesis_29", l_thesis_29);
-						strLine += StringUtil.fillChar((l_FP80 == 0 ? "" : String.valueOf(l_FP80)), 6, " ", false);
-						jsonOne.put("fp80", l_FP80);
-						strLine += StringUtil.fillChar("", 6, " ", false);
-						jsonOne.put("pfdiff", 0);
-						// 總醫師
-						strTmp = StringUtil.nullToString(padatpsn.getPayexpfkey2());
-						if (strTmp.equals("6")) {
-							l_pfcr = "  20";
-						}
-						strLine += StringUtil.fillChar(l_pfcr, 4, " ", false);
-						jsonOne.put("pfcr", l_pfcr);
-					}
-					bfw.write(strLine);
-					bfw.newLine();
-					bfw.flush();
-					jsonRtn.add(jsonOne);
-				}
-
 			}
 			log.info(me + "  ...********* dataaccess:共花費：" + (System.currentTimeMillis() - starttime) + "毫秒");
 		} catch (Exception e) {
@@ -12027,9 +11786,9 @@ public class SalNTDAO {
 	}
 
 	// 依KEY(idtno,cardno),取得pa.pabasPSN
-	public Pabaspsn getBasPsnBykey(String code_data, String userid, VGHDataAccess da) throws Exception {
+	public Pabaspsn getBasPsnBykey(String in_data, String userid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getBasPsnBykey(),userid = " + userid;
-		log.info(me + " code_data = " + code_data + " hid = " + hid);
+		log.info(me + " in_data = " + in_data + " hid = " + hid);
 		CommDAO cDAO = null;
 		HashMap CspfMap = new HashMap(); // 工作獎金支扣 對照表
 		JSONArray jsonRtn = new JSONArray();
@@ -12044,8 +11803,8 @@ public class SalNTDAO {
 
 		ArrayList<Object> params = new ArrayList<Object>();
 
-		if (code_data != null && !code_data.equals("")) {
-			object_code_data = JSONObject.fromObject(code_data);
+		if (in_data != null && !in_data.equals("")) {
+			object_code_data = JSONObject.fromObject(in_data);
 			idtno = (!object_code_data.has("idtno")) ? "" : object_code_data.getString("idtno");
 			cardno = (!object_code_data.has("cardno")) ? "" : object_code_data.getString("cardno");
 			hid = (!object_code_data.has("hid")) ? "" : object_code_data.getString("hid");
@@ -12068,8 +11827,8 @@ public class SalNTDAO {
 		if (!idtno.equals("")) {
 			sql += "A.PAYIDNO=? order by A.payrsgdt desc with ur ";
 			params.add(idtno);
-		} else if (!cardno.equals("")) {
-			sql += "A.PAYCARD=? order by A.payrsgdt desc with ur ";
+		} else if (!cardno.equals("")) {	//2026.10.2 卡號會有重複,取最新1筆
+			sql += "A.PAYCARD=? order by A.payrsgdt desc FETCH FIRST 1 ROWS ONLY with ur ";
 			params.add(cardno);
 		}
 
@@ -12724,9 +12483,9 @@ public class SalNTDAO {
 								params.add((!obj_item.has("pacstno")) ? "" : obj_item.getString("pacstno"));
 								params.add((!obj_item.has("padepnmc")) ? "" : obj_item.getString("padepnmc"));
 								params.add(userid);
-								params.add(hid);
-								params.add((!obj_item.has("padepcod")) ? "" : obj_item.getString("padepcod"));
 								params.add((!obj_item.has("pbwkcode")) ? "" : obj_item.getString("pbwkcode"));
+								params.add(hid);
+								params.add((!obj_item.has("padepcod")) ? "" : obj_item.getString("padepcod"));								
 							} else if ("PARANKCODE".equals(formnm)) {// 階別
 								params.add((!obj_item.has("rankname")) ? "" : obj_item.getString("rankname"));
 								params.add((!obj_item.has("rankabbr")) ? "" : obj_item.getString("rankabbr"));
@@ -12924,7 +12683,85 @@ public class SalNTDAO {
 		}
 		return success;
 	}
+/**
+	 *  
+	 * table:PA.PABASPSN/PA.PTBASPSN/PA.LHBASPSN(基本個人明細)  	 
+	   * 傳出:true/false
+	 */	
+	public String ImpINSUAMT(ArrayList<Pabaspsn> alPabaspsn, String selCode, String userid, String hid, VGHDataAccess da) throws Exception {
+		String me = getClass().getName() + ".prodBat(),userid = " + userid;
+		log.info(me + ",alPabaspsn = " + alPabaspsn+ ",selCode = " + selCode+",userid = " + userid+ ",hid = " + hid);
+		String rtn = "";		
+		int limitcnt = 100;
+		int write_cnt = 0;// 寫入table第N筆
+		
+		ArrayList<Object> batch_sql = new ArrayList<Object>(); // batch_update sql 資料
+		ArrayList<Object> params  = new ArrayList<Object>();
+		String sqlUpd ="UPDATE "+ this.tBasPsn + " SET INSUAMT=? , PAYDPNO=? , "+tmpZbaspsn+" =current timestamp where HID=? and PAYCARD =? and PAYIDNO=? ";	
+				
+		try{
+			Hospitals hospInfo = Hospitals.getOneHosp(hid);
+			if (da == null) {
+				g_dataSourceNT=hospInfo.dataSourceNT;
+				da=new VGHDataAccess(g_dataSourceNT);
+				connFlg = true;
+			}
+			
+			if (alPabaspsn.isEmpty()) {
+	            rtn = "無資料匯入";
+	        } else {
+	            da.startTransaction();
+	            try {
+	                for (Pabaspsn o : alPabaspsn) {
+	                	sqlUpd ="UPDATE "+ this.tBasPsn + " SET INSUAMT=? , ";
+	                    ArrayList<Object> paramA = new ArrayList<Object>();
+	                    paramA.add(o.getInsuamt());
+	                    if (! "".equals(o.getPaydpno()) ) {
+	                    	sqlUpd += "PAYDPNO=? , ";
+	                    	paramA.add(o.getPaydpno());
+	                    }
+	                    paramA.add(hid);
+	                    paramA.add(o.getPaycard());
+	                    sqlUpd += tmpZbaspsn+" =current timestamp where HID=? and PAYCARD =? ";
+	                    if (! "".equals(o.getPayidno()) ) {
+	                    	sqlUpd += " and PAYIDNO=?  ";
+	                    	paramA.add(o.getPayidno());
+	                    }
+	                    
+	                    batch_sql.add(sqlUpd);
+	                    params.add(paramA);
+	                    write_cnt++;
 
+	                    if (write_cnt % limitcnt == 0) {          // 每 100 筆送一批
+	                        da.batchupdatenocommit(batch_sql, params);
+	                        batch_sql.clear();
+	                        params.clear();
+	                    }
+	                }
+	                if (!params.isEmpty()) {
+	                    da.batchupdatenocommit(batch_sql, params);
+	                }
+	                da.commit();
+	                rtn = "Excel 更新OK";
+	            } catch (Exception e) {
+	                da.rollback();
+	                rtn = " fail, " + e;
+	                log.info(me + " " + e.toString());
+	            } finally {
+	                da.setAutoCommit(true);
+	            }
+	        }
+						
+		}catch(Exception e){
+			rtn=" fail, "+e;
+			e.printStackTrace();			
+			log.info(me+" "+e.toString());			
+		} finally{
+			closeAll(da,null,connFlg);			
+		}
+		
+		return rtn;
+	}
 	// 取得相對應卡號之姓名
 	// 2026.5.27 2A0 3A0 查自家的,1A0不限
 	public JSONObject queryNamebyID(String cardno, String Loginhid) throws Exception {

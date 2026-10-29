@@ -217,7 +217,7 @@ public class TranPayDAO {
 				+ "COALESCE(A.PAOPFSP1,0) as PAOPFSP1, COALESCE(A.PAOPFSP2,0) as PAOPFSP2, COALESCE(A.PAOPFSP3,0) as PAOPFSP3, COALESCE(A.PAYTAXNO,0) as PAYTAXNO,"
 				+ "A.PAYUPDID, A.PAYUPDTM,PAYFLAG, TRANUM, UPMASTDT, PAYPSW, PAOEXPFKEY1, PAOEXPFKEY2, PAOEXPFKEY3, PAYEXPFKEY1, PAYEXPFKEY2, "
 				+ "PAYEXPFKEY3, COALESCE(A.PAORANK4,0) as PAORANK4, COALESCE(A.PAYRANK4,0) as PAYRANK4, PAYCTCBACNO, PAYCTCBGEDNO, INSUAMT, A.HID, "
-				+ "B.PADEPNMC,B.PACSTNO,C.PAYTITLP,C.PATITSUB,D.RANKNAME,E.RNK4NAME RNK4NM,C1.PAYTITLP PAOTITLP,C1.PATITSUB PAOTITSUB,D1.RANKNAME ORANKNM,E1.RNK4NAME ORNK4NM,F.TRANAME ";
+				+ "B.PADEPNMC,B.PACSTNO,C.PAYTITLP,C.PATITSUB,D.RANKNAME,E.RNK4NAME RNK4NM,C1.PAYTITLP PAYTITLO,C1.PATITSUB PAOTITSUB,D1.RANKNAME ORANKNM,E1.RNK4NAME ORNK4NM,F.TRANAME ";
 
 		sqlA = " A " + " left outer join " + this.tDept + " B on A.PAYDEPT=B.PADEPCOD and A.HID=B.HID "
 				+ " left outer join " + this.tTitle + " C on A.PAYTITLE=C.PAYTITLK and A.HID=C.HID "
@@ -496,7 +496,7 @@ public class TranPayDAO {
 						jsonOne.put("pfdat", pfdat);
 						// 原
 						jsonOne.put("paotitle", StringUtil.nullToString(data.get("paotitle")));
-						jsonOne.put("paotitlp", StringUtil.nullToString(data.get("paotitlp")));
+						jsonOne.put("paytitlo", StringUtil.nullToString(data.get("paytitlo")));
 						jsonOne.put("paornk2n", StringUtil.nullToString(data.get("paornk2n")));
 						rank3 = (Integer) (data.get("paorank3"));
 						jsonOne.put("paorank3", rank3);
@@ -546,7 +546,89 @@ public class TranPayDAO {
 
 		return jsonRtn;
 	}
-	
+	// 依KEY(id/name,tradt),取得pa.patraPSN(不含薪級異動)
+	public Patrapsn getTraPsnByNRank(String in_data, String userid, VGHDataAccess da) throws Exception {
+		String me = getClass().getName() + ".getTraPsnByNRank(),userid = " + userid;
+		log.info(me + " in_data = " + in_data + " hid = " + hid);
+
+		JSONObject object_code_data = null;
+		Patrapsn patrapsn = null;
+		Date start = new Date();
+		Date end = new Date();
+		String strSelect = "";
+		String idtno = "";
+		String cardno = "";
+		String patradt = "";
+		
+		ArrayList<Object> params = new ArrayList<Object>();
+
+		if (in_data != null && !in_data.equals("")) {
+			object_code_data = JSONObject.fromObject(in_data);
+			patradt = (!object_code_data.has("tradt")) ? "" : object_code_data.getString("tradt");
+			cardno = (!object_code_data.has("cardno")) ? "" : object_code_data.getString("cardno");
+			idtno = (!object_code_data.has("idtno")) ? "" : object_code_data.getString("idtno");
+			hid = (!object_code_data.has("hid")) ? "" : object_code_data.getString("hid");
+		}
+		// 讀取pa.patrapsn(不含12考績獎金 41支扣 51年終獎金    
+		// 讀取pa.patrapsn 因要判定新舊制,要join patitle
+		strSelect = "PATRACOD, PATRADT, COALESCE(PAEFFDT,'9999-12-31') as PAEFFDT, SALNUM, PAYLVEFG, A.PAYIDNO, PAYCARD, PAYEMPNO, PAYNAMEC, PAYDEPT, PAYGOVDT, "
+				+ "PAYEMPDT, PAYSGNDT, COALESCE(PAYRSGDT,'9999-12-31') as PAYRSGDT, PAYBKID, PAYACNO, PAYGEDNO, COALESCE(A.PAYINFLG,0) as PAYINFLG,COALESCE(PAYDPNO,'0') as PAYDPNO, PAYPFLAG, PAYTITLE, "
+				+ "PAYRNK2N, COALESCE(A.PAYRANK3,0) as PAYRANK3, COALESCE(A.PAYDEGR2,0) as PAYDEGR2, COALESCE(A.PAYDEGRE,0) as PAYDEGRE, PAYRANK, COALESCE(A.PAYRANK2,'') as PAYRANK2, "
+				+ "COALESCE(A.PAYRANKC,'') as PAYRANKC, COALESCE(A.PAYPFDOC,0) as PAYPFDOC, PACSFLAG, COALESCE(A.PAYPFSP1,0) as PAYPFSP1, "
+				+ "COALESCE(A.PAYPFSP2,0) as PAYPFSP2, COALESCE(A.PAYPFSP3,0) as PAYPFSP3, COALESCE(A.PAYMONNO,0) as PAYMONNO, COALESCE(A.PAYDAYNO,0) as PAYDAYNO, PAYPFLAG,PAOTITLE, PAORNK2N, COALESCE(A.PAORANK3,0) as PAORANK3, "
+				+ "COALESCE(A.PAODEGR2,0) as PAODEGR2, COALESCE(A.PAODEGRE,0) as PAODEGRE, PAORANK, COALESCE(A.PAORANK2,'') as PAORANK2, COALESCE(A.PAYRANKC,'') as PAORANKC, COALESCE(A.PAOPFDOC,0) as PAOPFDOC, PAOCSFLA, "
+				+ "COALESCE(A.PAOPFSP1,0) as PAOPFSP1, COALESCE(A.PAOPFSP2,0) as PAOPFSP2, COALESCE(A.PAOPFSP3,0) as PAOPFSP3, COALESCE(A.PAYTAXNO,0) as PAYTAXNO,"
+				+ "A.PAYUPDID, A.PAYUPDTM,PAYFLAG, TRANUM, UPMASTDT, PAYPSW, PAOEXPFKEY1, PAOEXPFKEY2, PAOEXPFKEY3, PAYEXPFKEY1, PAYEXPFKEY2, "
+				+ "PAYEXPFKEY3, COALESCE(A.PAORANK4,0) as PAORANK4, COALESCE(A.PAYRANK4,0) as PAYRANK4, PAYCTCBACNO, PAYCTCBGEDNO, INSUAMT, A.HID, "
+				+ "B.PADEPNMC,B.PACSTNO,C.PAYTITLP,H.PAYTITLP PAYTITLO,C.PATITSUB,H.PATITSUB PATITSUO";
+
+		sql = "select " + strSelect + " from " + this.tTraPsn + " A " + 
+			   " left outer join " + this.tDept     + " B on A.PAYDEPT=B.PADEPCOD and A.HID=B.HID " + 
+			   " left outer join " + this.tTitle    + " C on A.PAYTITLE=C.PAYTITLK and A.HID=C.HID " +
+			   " left outer join " + this.tTitle    + " H on A.PAOTITLE=H.PAYTITLK and A.HID=H.HID " + 
+			   " where A.HID=? and PATRADT=? and PATRACOD not in (12,41,51) "; 
+		params.add(hid);
+		params.add(patradt);
+		if (!"".equals(cardno)) {// 卡號
+			sql += " and PAYCARD=? with ur";
+			params.add(cardno);			
+		} else if (!"".equals(idtno)) {// 身分證
+			sql += " and PAYIDNO=?  with ur";
+			params.add(idtno);			
+		}		
+		
+		log.info(me + "  " + sql + "...params:" + params.toString());
+		try {
+			if (da == null) {
+				// 改用列舉
+				Hospitals hospInfo = Hospitals.getOneHosp(hid);
+				g_dataSourceNT = hospInfo.dataSourceNT;
+				da = new VGHDataAccess(g_dataSourceNT);
+				connFlg = true;
+			}
+			
+			start = new Date();
+			log.info(me + "  " + sql + "...params:" + params.toString());
+			result = da.arraylistbyQuery(sql, params, META_TYPE);
+			log.info(me + "...size:" + result.size());
+			if (result.size() > 0) {
+				for (Map<String, Object> data : result) {
+					patrapsn = new Patrapsn();
+					PropertyUtils.copyProperties(patrapsn, data);					
+				}
+			}
+
+			end = new Date();
+			log.info(me + "  ...********* dataaccess:" + (end.getTime() - start.getTime()));
+		} catch (Exception e) {
+			log.info(me + " fail, " + e);
+			throw new SQLException(me + ", fail!!." + e);
+		} finally {
+			closeAll(da, null, connFlg);			
+		}
+
+		return patrapsn;
+	}
 	// 依KEY,取得pa.patraPSN
 	public Patrapsn getTraPsnBykey(String code_data, String userid, VGHDataAccess da) throws Exception {
 		String me = getClass().getName() + ".getTraPsnBykey(),userid = " + userid;
@@ -577,7 +659,7 @@ public class TranPayDAO {
 				+ "PAYRNK2N, COALESCE(A.PAYRANK3,0) as PAYRANK3, COALESCE(A.PAYDEGR2,0) as PAYDEGR2, COALESCE(A.PAYDEGRE,0) as PAYDEGRE, PAYRANK, COALESCE(A.PAYRANK2,'') as PAYRANK2, "
 				+ "COALESCE(A.PAYRANKC,'') as PAYRANKC, COALESCE(A.PAYPFDOC,0) as PAYPFDOC, PACSFLAG, COALESCE(A.PAYPFSP1,0) as PAYPFSP1, "
 				+ "COALESCE(A.PAYPFSP2,0) as PAYPFSP2, COALESCE(A.PAYPFSP3,0) as PAYPFSP3, COALESCE(A.PAYMONNO,0) as PAYMONNO, COALESCE(A.PAYDAYNO,0) as PAYDAYNO, PAYPFLAG,PAOTITLE, PAORNK2N, COALESCE(A.PAORANK3,0) as PAORANK3, "
-				+ "COALESCE(A.PAODEGR2,0) as PAODEGR2, COALESCE(A.PAODEGRE,0) as PAODEGRE, PAORANK, COALESCE(A.PAORANK2,'') as PAORANK2, COALESCE(A.PAYRANKC,'') as PAORANKC, COALESCE(A.PAOPFDOC,0) as PAOPFDOC, PAOCSFLA, "
+				+ "COALESCE(A.PAODEGR2,0) as PAODEGR2, COALESCE(A.PAODEGRE,0) as PAODEGRE, PAORANK, COALESCE(A.PAORANK2,'') as PAORANK2, COALESCE(A.PAORANKC,'') as PAORANKC, COALESCE(A.PAOPFDOC,0) as PAOPFDOC, PAOCSFLA, "
 				+ "COALESCE(A.PAOPFSP1,0) as PAOPFSP1, COALESCE(A.PAOPFSP2,0) as PAOPFSP2, COALESCE(A.PAOPFSP3,0) as PAOPFSP3, COALESCE(A.PAYTAXNO,0) as PAYTAXNO,"
 				+ "A.PAYUPDID, A.PAYUPDTM,PAYFLAG, TRANUM, UPMASTDT, PAYPSW, PAOEXPFKEY1, PAOEXPFKEY2, PAOEXPFKEY3, PAYEXPFKEY1, PAYEXPFKEY2, "
 				+ "PAYEXPFKEY3, COALESCE(A.PAORANK4,0) as PAORANK4, COALESCE(A.PAYRANK4,0) as PAYRANK4, PAYCTCBACNO, PAYCTCBGEDNO, INSUAMT, A.HID, "
@@ -918,7 +1000,7 @@ public class TranPayDAO {
 					a_rnk2n = (String) degrMap.get("rnk2n");
 					a_rank3 = (Integer) degrMap.get("rank3");
 					a_degr2 = (Integer) degrMap.get("degr2");
-					System.out.println("papont:" + StringUtil.nullToString(psbasic.getPbpapont()) + "aa");
+					//System.out.println("papont:" + StringUtil.nullToString(psbasic.getPbpapont()) + "aa");
 					if (!"".equals(StringUtil.nullToString(psbasic.getPbpapont())))
 						a_degre = Integer.parseInt(psbasic.getPbpapont());
 
@@ -1115,7 +1197,7 @@ public class TranPayDAO {
 					// ex.2026.9.1發薪,找基本檔2026年8月晉級,高榮滿年晉級依[到職月份],屏榮每年1月晉,依[到職日],寫入異動個人.現職日+1year
 					String strNewEff = formatter.format(calendar.getTime());
 					int intNewM = 1 + calendar.get(Calendar.MONTH);
-					System.out.println("發薪日:" + patradt + " 月尾薪: " + strNewEff + " 月份:" + intNewM);
+					//System.out.println("發薪日:" + patradt + " 月尾薪: " + strNewEff + " 月份:" + intNewM);
 
 					// 找契約限制級數名單
 					if (hid.equals("1A0")) {

@@ -186,9 +186,9 @@ public class Patrapsn implements Serializable{
     /** 階別中文*/
     private String ranknamo;
     /** 職稱中文*/
-    private String paytitlo;
+    private String paytitlo="";
     /** 職稱類別*/
-    private String patitsuo;
+    private String patitsuo="";
     /** 適用專業加給表中文*/
     private String rnk4namo;
     /** 異動日期_String*/

@@ -220,7 +220,7 @@ public class CommDAO {
 			degre=(!object_in_data.has("degre")) ? ""  : object_in_data.getString("degre");
 			odegre=(!object_in_data.has("odegre")) ? ""  : object_in_data.getString("odegre");
 			inflg=(!object_in_data.has("inflg")) ? ""  : object_in_data.getString("inflg");
-			pflag=(!object_in_data.has("pflag")) ? 0  : ("").equals(StringUtil.nullToString(object_in_data.getString("pflag"))) ? 0 : object_in_data.getInt("pflag");
+			pflag=(!object_in_data.has("pflag")) ? 0  : ("").equals(StringUtil.nullToString(object_in_data.getString("pflag"))) ? 0 : ("null").equals(StringUtil.nullToString(object_in_data.getString("pflag"))) ? 0 : object_in_data.getInt("pflag");
 			dpno=(!object_in_data.has("dpno")) ? ""  : object_in_data.getString("dpno");
 			tracod=(!object_in_data.has("tracod")) ? 0  : object_in_data.getInt("tracod");
 			taxno=(!object_in_data.has("taxno")) ? 0  : object_in_data.getInt("taxno");
@@ -451,7 +451,7 @@ public class CommDAO {
 								}
 								if (!"".equals(strPaycode) && intvalue >0 ){
 									itmMap.put(strPaycode, intvalue);
-									System.out.println("parank各項欄位=>"+strPaycode+":"+intvalue);
+									//System.out.println("parank各項欄位=>"+strPaycode+":"+intvalue);
 								}
 							}	
 						}
@@ -558,7 +558,7 @@ public class CommDAO {
 		                            }
 									n_FP010=intvalue;
 									itmMap.put(strPaycode, intvalue);
-									System.out.println("paposi專業加給=>"+strPaycode+":"+intvalue);
+									//System.out.println("paposi專業加給=>"+strPaycode+":"+intvalue);
 								}
 								
 							}	
@@ -592,7 +592,7 @@ public class CommDAO {
 								
 							if (!"".equals(strPaycode)){
 								itmMap.put(strPaycode, intvalue);
-								System.out.println("主管加給=>"+strPaycode+":"+intvalue);
+								//System.out.println("主管加給=>"+strPaycode+":"+intvalue);
 							}
 						}
  						
@@ -612,7 +612,7 @@ public class CommDAO {
 	 									l_lbinig  = l_lbinMap.get("lbinig");
 	 									if (intvalue > 0) {
 	 	 									itmMap.put(strPaycode, intvalue);
-	 	 									System.out.println("勞保費=>"+strPaycode+":"+intvalue);
+	 	 									//System.out.println("勞保費=>"+strPaycode+":"+intvalue);
 	 	 								}
 	 								}
 	 								//健保費FD020
@@ -626,7 +626,7 @@ public class CommDAO {
 	 									intvalue = l_dpinMap.get("dpinamt");
 	 									if (intvalue > 0) {
 	 	 									itmMap.put(strPaycode, intvalue);
-	 	 									System.out.println("健保費=>"+strPaycode+":"+intvalue);
+	 	 									//System.out.println("健保費=>"+strPaycode+":"+intvalue);
 	 	 								}
 	 									rtnMap.put("insu_dpin", l_dpinMap.get("dpinig"));	//存放投保級距
 	 								}
@@ -641,7 +641,7 @@ public class CommDAO {
 	 									intvalue  = l_lbinMap.get("lbinamt");
 	 									l_lbinig  = l_lbinMap.get("lbinig");
 	 									itmMap.put(strPaycode, intvalue);
-	 									System.out.println("勞保費=>"+strPaycode+":"+intvalue);
+	 									//System.out.println("勞保費=>"+strPaycode+":"+intvalue);
 	 								}
 	 								//健保
 	 								l_dpinMap  = GetHealthInsuRelief(inflg, dpno,n_FP000 + n_FP010 + o_FP090 + o_FP100, da);	
@@ -650,7 +650,7 @@ public class CommDAO {
 	 									intvalue = l_dpinMap.get("dpinamt");
 	 									if (intvalue > 0) {
 	 	 									itmMap.put(strPaycode, intvalue);
-	 	 									System.out.println("健保費=>"+strPaycode+":"+intvalue);
+	 	 									//System.out.println("健保費=>"+strPaycode+":"+intvalue);
 	 	 								}
 	 									rtnMap.put("insu_dpin", l_dpinMap.get("dpinig"));	//存放投保級距
 	 								}
@@ -699,7 +699,7 @@ public class CommDAO {
  							if (intvalue != 0) {
  								strPaycode="FD210";
  								itmMap.put(strPaycode, intvalue);
- 								System.out.println("醫療互助金=>"+strPaycode+":"+intvalue);
+ 								//System.out.println("醫療互助金=>"+strPaycode+":"+intvalue);
  							}
  						}
 
@@ -756,7 +756,7 @@ public class CommDAO {
 								    		}
 								    			
 									    	jsonRtn.add(n_basPay);
-									    	System.out.println("原支=>"+strPaycode+":"+o_basPay.getString("payamt"));
+									    	//System.out.println("原支=>"+strPaycode+":"+o_basPay.getString("payamt"));
 									    }
 						    		}	
 							    }
@@ -767,7 +767,7 @@ public class CommDAO {
 					// 使用 foreach 迴圈遍歷 itmMap
 					l_Insu=0;
 					for (Map.Entry<String, Integer> entry : itmMap.entrySet()) {
-					    System.out.println("itmMap=>"+entry.getKey() + " : " + entry.getValue());
+					    //System.out.println("itmMap=>"+entry.getKey() + " : " + entry.getValue());
 					    strPaycode = entry.getKey();
 					    intvalue  =  entry.getValue();
 					    //
@@ -925,7 +925,7 @@ public class CommDAO {
 		calendar.set(Calendar.YEAR, Integer.parseInt(effdt.substring(0,	4)));
 		calendar.set(Calendar.MONTH, Integer.parseInt(effdt.substring(5, 7))- 1);
 		int l_caldt = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-		System.out.println("有效日期的當月實際日數:"+l_caldt);
+		//System.out.println("有效日期的當月實際日數:"+l_caldt);
 		
 		//2A0:屏榮,一律用30日 3A0:契約30日,其他用實際日數 1A0:高榮,契約不含醫師,30日計算 ,其他用實際日數
 		if (hid.matches("2A0")) {
@@ -945,7 +945,7 @@ public class CommDAO {
 			else
 				l_effdt=l_caldt;
 		}
-		System.out.println("依身份的有效日數:"+l_effdt);
+		//System.out.println("依身份的有效日數:"+l_effdt);
 		//原俸點
 		if (odegre.equals(""))
 			l_degre=0;
@@ -1114,7 +1114,7 @@ public class CommDAO {
 				    }
 				    
 				    if (r_payamt != 0) {
-				    	System.out.println("補發扣:"+l_paycode+" "+ o_payamt+" l_payamt:"+l_payamt+" r_payamt:"+r_payamt);
+				    	//System.out.println("補發扣:"+l_paycode+" "+ o_payamt+" l_payamt:"+l_payamt+" r_payamt:"+r_payamt);
 				    	//取得支扣代碼
 					    jsonOne = new JSONObject();
 					    jsonOne=getPayitemBycode(r_paycode,r_payamt,payitmMap);
@@ -1133,7 +1133,7 @@ public class CommDAO {
 		//31晉級調薪,FP000本薪,FD040退撫,要依前一段,後一段計算實際金額
 		else if ( tracod ==31 ) {
 			l_effdt=l_caldt;	//依實際日數
-			System.out.println("更改後.有效日期的當月實際日數:"+l_effdt);
+			//System.out.println("更改後.有效日期的當月實際日數:"+l_effdt);
 			if (nPay != null) {
 				jsonString = nPay.toString();
 				l_Pay= JSONArray.fromObject(jsonString);
@@ -1166,7 +1166,7 @@ public class CommDAO {
 				    }
 				    
 				    if (r_payamt != 0) {
-				    	System.out.println("補發扣:"+l_paycode+" "+ o_payamt+" l_payamt:"+l_payamt+" r_payamt:"+r_payamt);
+				    	//System.out.println("補發扣:"+l_paycode+" "+ o_payamt+" l_payamt:"+l_payamt+" r_payamt:"+r_payamt);
 				    	//取得支扣代碼
 					    jsonOne = new JSONObject();
 					    jsonOne=getPayitemBycode(r_paycode,r_payamt,payitmMap);
@@ -2407,34 +2407,39 @@ public class CommDAO {
 	}
 	/**傳回 不開業獎金(專二/工二)
 	 * tracod=33(職務調整)升主管,職等有調整,要抓原先,2個月 2026/5/1 A152 3/30更換,5月
-	4650(4/2) 3633(4/1),5月及6月
+		4650(4/2) 3633(4/1),5月及6月
 	 * @param jt職稱,jtsub職稱分類,rnk2n職等,degr2級數,pfdoc專勤額度,reten(專一=0,專二YN) csflag(工獎YN)
 	 * @return 
 	 * Ex: getOpenBonus('CB','H','',6,0,'','Y') return 20000 
-	 * @throws Exception 
+	 * @throws Exception
+	 * 2026.10.19 reten 空白:專1=Y,專2=Y 2:專1=Y,專2=N 3:專1=N,專2=Y 4:專1=N,專2=N 
 	 */
 	public int getOpenBonus(String jt,String jtsub,String rnk2n,int degr2,int pfdoc,String reten,String csfg) throws Exception{		
 		int rtnAmt = 0;
-		if (jt.matches("AL|CB|CH|CK")){//AL不分科住院醫師(證書) CB聘用住院醫師 CH契約住院醫師(證書) CK PGY
-			if (degr2==1 ||degr2==2)
-				rtnAmt=20000;
-			else if (degr2==3 ||degr2==4)
-				rtnAmt=25000;
-			else if (degr2==5 ||degr2==6)
-				rtnAmt=30000;
-		}
-		else if (jt.matches("CG") || jtsub.matches("V|A")){//CG契主治 職稱分類=V醫師/A兼職
-			if ( pfdoc == 0 && !reten.equals("Y") && csfg.equals("N") )
-				rtnAmt=0;
-			else{
-				if (rnk2n.equals("P1"))
-					rtnAmt=36000;
-				else if (rnk2n.equals("P2"))
-					rtnAmt=33000;
-				else if (rnk2n.matches("P3|07"))	//16公職住院醫師職等=07
+		if (reten.matches("2|4"))	//專二/功二,空白:專1=Y,專2=Y 2:專1=Y,專2=N 3:專1=N,專2=Y 4:專1=N,專2=N 
+			rtnAmt=0;
+		else {
+			if (jt.matches("AL|CB|CH|CK") ){//AL不分科住院醫師(證書) CB聘用住院醫師 CH契約住院醫師(證書) CK二年有證不分科住院醫師 PGY
+				if (degr2==1 ||degr2==2)
+					rtnAmt=20000;
+				else if (degr2==3 ||degr2==4)
 					rtnAmt=25000;
+				else if (degr2==5 ||degr2==6)
+					rtnAmt=30000;
 			}
-		}
+			else if (jt.matches("CG") || jtsub.matches("V|A")){//CG契主治 職稱分類=V醫師/A兼職
+				if (( pfdoc == 0 && !reten.matches("Y|1|3") && csfg.equals("N") ) )
+					rtnAmt=0;
+				else{
+					if (rnk2n.equals("P1"))
+						rtnAmt=36000;
+					else if (rnk2n.equals("P2"))
+						rtnAmt=33000;
+					else if (rnk2n.matches("P3|07"))	//16公職住院醫師職等=07
+						rtnAmt=25000;
+				}
+			}
+		}	
 			
 		return rtnAmt;
 	}

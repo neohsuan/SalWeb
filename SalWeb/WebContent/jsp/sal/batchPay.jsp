@@ -675,7 +675,7 @@ $(function(){
 				itmTbl="tblTeacherawList";
 				
 				jsonString = $.getDataInfo(itmTbl); //取得目前的資料
-				return false;
+				//return false;
 				in_data={
 						selEn   : "writeBatByTeach"
 		        };					
@@ -847,7 +847,7 @@ $(function(){
 		var data_nm;
 		var data_val;
 		
-		if (formnm=="tblPayLeaveList"){//事病假寫入批次檔
+		if (formnm=="tblPayLeaveList" || formnm=="tblTeacherawList"){//事病假寫入批次檔 教職及論文獎勵寫入批次檔
 			tableID="PABATPAY";
 			oTable = $('#' + formnm ).dataTable().api();
 			//oTable.$("input:checked", {"page": "all"}).each(function(index,rows){
@@ -1101,13 +1101,13 @@ $(function(){
 							{ "sTitle":"假別",	  "mData": null },
 							{ "sTitle":"日數",	  "mData": "offday" },
 							{ "sTitle":"累計日數<BR>(不含當月)",  "mData": "offdaysum" },
-							{ "sTitle":"不發給工資<BR>天數", "mData": "nopay" },
+							{ "sTitle":"不發給<BR>天數", "mData": "nopay" },
 							{ "sTitle":"折半天數", "mData": "payhalf" },	
 							{ "sTitle":"檢測", 	  "mData": "rtn" },
 							{ "sTitle":"月薪", 	  "mData": "msalary" },
 							{ "sTitle":"日薪", 	  "mData": "dsalary" },
 							{ "sTitle":"折半日薪", "mData": "hsalary" },
-							{ "sTitle":"不發給工資<br>天數", 	  "mData": "nopay" },
+							{ "sTitle":"不發給工資<br>天數", 	  "mData": "c_nopay" },
 							{ "sTitle":"折半工資<br>天數", 	  "mData": "halfpay" },
 							{ "sTitle":"金額", 	  "mData": "payamt" },
 						 ];
@@ -1276,7 +1276,7 @@ $(function(){
 							<input type="text" id="qry_pabatpay_patradt" size="10"
 								class="form-control-sm gclsCalTxt" placeholder="異動日">
 							
-							<select id="qry_pabatpay_paycode" class="selectpicker" data-width="fit" data-live-search="true" multiple title="支扣項目 ">
+							<select id="qry_pabatpay_paycode" class="selectpicker" data-width="fit" data-live-search="true" title="支扣項目 ">
 								<option value=""></option>
 			     				<c:forEach var="uitem" items="${alpayitmTbl}" varStatus="loop">
 									<option value="${uitem.paycode}-${uitem.pacodnmc}">${uitem.paycode}-${uitem.pacodnmc}</option>
@@ -1365,7 +1365,7 @@ $(function(){
 										</select>
 			            			<th>金額</th>
 			            			<td colspan=3>
-										<input type="text" id="batpay_payamt" name="payamt" class="form-control required" maxlength="10" size="10"  />
+										<input type="text" id="batpay_payamt" name="payamt" class="form-control number required" maxlength="10" size="10"  />
 			            			</td>
 			            		</tr>
 			            		<tr>	
@@ -1497,10 +1497,11 @@ $(function(){
 					<a href="#explan_teacheraw" class="btn btn-danger" data-toggle="collapse">注意事項</a>
 					<div id="explan_teacheraw" class="collapse">
 			  			<div id="explan_teach" class="text-danger">
-				  			檢測說明:<br>
-				  			1.[金額更新]:教職檔期限內,和基本支扣[FP420,FP430]比對金額不同<br>				  			
-				  			2.[新增一筆]:教職檔期限內,找不到基本支扣[FP420,FP430]<br>
-				  			3.[期限已到,新增金額=0]:以基本支扣[FP420,FP430],找教職檔期限內,找不到<br>
+				  			操作步驟:查詢[N次]->[金額]欄位往左邊,是績效組來源->檢測[要排序]->檢查無誤->寫入[一次性]
+				  			<br>檢測說明:<br>
+				  			1.[金額更新]:教職檔期限內,和薪資基本支扣[FP420,FP430]比對金額不同<br>				  			
+				  			2.[新增一筆]:教職檔期限內,找不到薪資基本支扣[FP420,FP430]<br>
+				  			3.[期限已到,新增金額=0]:以薪資基本支扣[FP420,FP430],找教職檔期限內,找不到<br>
 				  		</div>
 				  	</div>
 				</div>	

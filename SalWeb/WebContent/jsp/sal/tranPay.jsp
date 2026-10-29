@@ -606,9 +606,9 @@ $(function(){
 			$('.selectpicker').selectpicker('refresh');
 			
 			//key
-			$("#patradt").attr("readOnly",false);	
-			$("#patracod").attr("disabled",false);	
-			$("#payidno").attr("readOnly",false);
+			$("#patradt").prop("disabled",false);	
+			$("#patracod").prop("disabled",false);	
+			$("#payidno").prop("readOnly",false);
 			$("#hid").val(pahid);
 			
 			$("label.error").hide();
@@ -1982,28 +1982,64 @@ $(function(){
 	};
 	//用正規表達式判斷身分證
 	$('#payidno').blur(function(){
-		$(this).val( $(this).val().toUpperCase() ) ;
-		var tmp = $(this).val();
-		if (tmp !=""){
-			//用正規表達式判斷身分證 舊式居留證 --格式檢查（Regex）
-			//國民身分證：第一碼英文字母，第二碼為 1 或 2，總長 10 碼  /^[A-Z][12]\d{8}$/
-			//新式居留證:1碼英文 + 8或9 + 8碼數字                                /^[A-Z][89]\d{8}$/
-			//舊式居留證:1碼英文 + A-D + 8碼數字 			   /^[A-Z][A-D]\d{8}$/
-			//複合型 (全部)                               ^[A-Z][1289ABCD]\d{8}$
-			//第 1 碼：必定為大寫英文字母 [A-Z]
-			//第 2 碼：本國人/新式居留證為數字 [1-28-9]舊式居留證為字母 [A-D]合併後寫法：[A-D1-28-9]後 8 碼：必定為數字 \d{8}
-			reCheckCase = /^[A-Z][1289ABCD]\d{8}$/ ;
-			
-			if(!reCheckCase.test(tmp)){
-				alert('輸入的身分證字號格式有誤，請重新輸入');
-				return;
-			}
-			//檢查碼演算法（Mod 10）
-			checkId = isIdNo($(this).val());
-			if (checkId == false){
-				return false;
-			}
-		}
+	    // 1. 取得數值、去除前後空白、自動轉換為大寫
+	    var idno = $(this).val().trim().toUpperCase();
+	
+	    // 如果是空的就不用驗證
+	    if (idno === "") return;
+	
+	    // 將處理過的大寫字串塞回 input 欄位
+	    $(this).val(idno);
+	
+	    // 2. 正規表達式判斷總格式 (身分證/新式居留/舊式居留)
+	    var reCheckCase = /^[A-Z][1-28-9A-D]\d{8}$/;
+	    if(!reCheckCase.test(idno)){
+	        alert('輸入的身分證或居留證字號格式有誤，請重新輸入');
+	        return;
+	    }
+	
+	    // 3. 建立精確的字母加權初始值對應表
+	    // 規則：A=10 -> 1*1 + 0*9 = 1； B=11 -> 1*1 + 1*9 = 10 ...
+	    var alphabetMap = {
+	        'A': 1, 'B': 10, 'C': 19, 'D': 28, 'E': 37, 'F': 46, 'G': 55, 'H': 64, 'I': 39,
+	        'J': 73, 'K': 82, 'L': 2, 'M': 11, 'N': 20, 'O': 48, 'P': 29, 'Q': 38, 'R': 47,
+	        'S': 56, 'T': 65, 'U': 74, 'V': 83, 'W': 21, 'X': 3, 'Y': 12, 'Z': 30
+	    };
+	
+	    var sum = 0;
+	
+	    // 第一碼字母加權
+	    sum += alphabetMap[idno[0]];
+	
+	    // 判斷第二碼是否為舊式居留證字母 (A-D)
+	    var isOldFormat = /^[A-D]$/.test(idno[1]);
+	
+	    if (!isOldFormat) {
+	        // === 狀況 A：身分證 或 新式居留證 (第二碼是數字) ===
+	        // 後續數字加權 (第2碼*8, 第3碼*7 ... 第9碼*1)
+	        for (var i = 1; i < 9; i++) {
+	            sum += Number(idno[i]) * (9 - i);
+	        }
+	    } else {
+	        // === 狀況 B：舊式居留證 (第二碼是字母 A-D) ===
+	        // 第二碼字母加權規則：取字母對應值的個位數 * 8
+	        var letterIndex2 = Object.keys(alphabetMap).indexOf(idno[1]) + 10; // A=10, B=11, C=12, D=13
+	        sum += (letterIndex2 % 10) * 8;
+	
+	        // 後續 7 碼數字加權 (第3碼*7, 第4碼*6 ... 第9碼*1)
+	        for (var i = 2; i < 9; i++) {
+	            sum += Number(idno[i]) * (9 - i);
+	        }
+	    }
+	
+	    // 4. 加上最後一碼檢查碼
+	    sum += Number(idno[9]);
+	
+	    // 5. 驗證總和是否能被 10 整除
+	    if (sum % 10 !== 0) {
+	        alert("您輸入的身分證或居留證字號不正確!\n請重新輸入,謝謝!!");
+	        return;
+	    }
 	});
 	//用正規表達式判斷卡號
 	$('#paycard').blur(function(){
@@ -2018,11 +2054,20 @@ $(function(){
 			}
 		}
 	});	
-	//輸入ID/CARD,找基本檔  異動代碼要先KEY,才能找
-	$(".findkey").blur(function(){
+	//輸入ID/CARD, 異動代碼要先KEY,才能找,
+	//1.先找異動檔是否有跟薪級無關的異動碼,[有]要alert,
+	//2.找薪資基本檔 3.[新進]找人事基本檔 
+	$(".findkey").change(function(){
 		patracod=getInt($("#patracod option:selected").val());
+		patradt=$("#patradt").val();
 		if (patracod == 0){
 			alert("請先勾選【異動代碼】");
+			$("#patracod").focus();
+			return false;
+		}
+		if (patradt == ""){
+			alert("請輸入【發薪日】");
+			$("#patradt").focus();
 			return false;
 		}
 		var blnHave=false;
@@ -2036,74 +2081,108 @@ $(function(){
 			var code_data="";
 			if ( key != ""){
 				if(f_id=="payidno"){
-					code_data={
-		        		idtno      :key,
-		        		hid        :pahid
-		        	};
+					in_data={
+			        		idtno      :key,
+			        		hid        :pahid,
+			        		tracod     :patracod,
+							tradt      :patradt
+			        	};
 	        	}else if(f_id=="paycard"){
 	        		if ( $("#payidno").val()=="" ){
-		        		code_data={
-			        		cardno     :key,
-			        		hid        :pahid
-			        	};
+		        		in_data={
+				        		cardno     :key,
+				        		hid        :pahid,
+				        		tracod     :patracod,
+								tradt      :patradt
+				        	};
 			        }else
 			        	return false;	
 		        }	
-	        	console.log("基本檔findkey:code_data:"+JSON.stringify(code_data));	
+	        	console.log("基本檔findkey:in_data:"+JSON.stringify(in_data));	
 		    
-		        //return false;	
+		        //return false;
+		        
 		        //有按[新增一筆]->[存檔]disable=false
 				if (!$("#subPATRAPSN_Insbtn").prop("disabled")){
+					//1.先找異動檔是否有跟薪級無關的異動碼,[有]要alert,
 					$.ajax({				
-							url:"${pageContext.request.contextPath}/salController.do",
-							data:{
-								method  : 'getBasPsnByKey',
-								code_data :JSON.stringify(code_data),
-								hid     : pahid,
-								userid  : paUserid,
-								tracod  : patracod
-							},
-			
-							type:"POST",		//type:POST, GET(default:GET)
-							dataType:"json",	//dataType: text, xml, html, script, json, jsonp
-							contentType: "application/x-www-form-urlencoded;charset=utf-8",  
-							async: false,
-							cache: false,			
-							success:function(data) {
-								if ( data.basPsnItem!=null ){
-									blnHave=true;
-									//薪資基本檔有找到
-									if (data.basPsnItem.paylvefg=="Y" && data.basPsnItem.payrsgdt.dts != "9999-12-31" ){
-										alert("此員曾離職過");
-										blnHave=false;
-									}
-									if (patracod >= 1 && patracod < 10){//新進
-										if (data.basPsnItem.paylvefg=="N" && patracod==1){
-											alert("重複");
+						url:"${pageContext.request.contextPath}/salController.do",
+						data:{
+							method	: "handelTran",
+							fun     : 'getTraPsnByNRank',
+							in_data : JSON.stringify(in_data),
+							hid     : pahid,
+							userid  : paUserid
+						},
+		
+						type:"POST",		//type:POST, GET(default:GET)
+						dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+						contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+						async: false,
+						cache: false,			
+						success:function(data) {
+							if ( data.traPsnItem!=null ){
+								blnHave=true;
+								alert("已有異動代碼:"+data.traPsnItem.patracod);
+							}	
+						},
+						error: function(xhr){	
+							alert("搜尋[輸入 KEY,找異動檔是否有跟薪級無關的異動碼]過程中，程式發生錯誤!!!\nerror code:"+ xhr.status);
+						}
+					});	
+		        
+					if ( (!blnHave )  )  {
+						//2.找薪資基本檔 
+						$.ajax({				
+								url:"${pageContext.request.contextPath}/salController.do",
+								data:{
+									method  : 'getBasPsnByKey',
+									in_data :JSON.stringify(in_data),
+									hid     : pahid,
+									userid  : paUserid,
+									tracod  : patracod
+								},
+				
+								type:"POST",		//type:POST, GET(default:GET)
+								dataType:"json",	//dataType: text, xml, html, script, json, jsonp
+								contentType: "application/x-www-form-urlencoded;charset=utf-8",  
+								async: false,
+								cache: false,			
+								success:function(data) {
+									if ( data.basPsnItem!=null ){
+										blnHave=true;
+										//薪資基本檔有找到
+										if (data.basPsnItem.paylvefg=="Y" && data.basPsnItem.payrsgdt.dts != "9999-12-31" ){
+											alert("此員曾離職過");
 											blnHave=false;
-											//return false;
-										}	
-										else if (data.basPsnItem.patracod==23 && patracod==1){
-											alert("基本檔_留停,請確認【異動代碼】");						
-											return false;		
-										}			
-									}
-									//顯示異動個人明細
-									$.doTraPsnDetail(data.basPsnItem,"bas",patracod);
-									//pa.paTrapay異動支扣明細--原
-									cleanTable("TraPayO");
-									o_basPay=data.basPayList
-									$.doTraPayTbl("TraPayO",o_basPay);									
-								}	
-							},
-							error: function(xhr){	
-								alert("搜尋[輸入 KEY,找是否重複]過程中，程式發生錯誤!!!\nerror code:"+ xhr.status);
-							}
-						});
-						
-					if ((!blnHave && patracod == 1 )  )  {	
-					//找人事基本檔1.薪資基本檔[沒]找到+1新進
-					//         2.薪資基本檔[有]找到+33納實37職務調整 || ( blnHave && (patracod == 33 || patracod == 37 
+										}
+										if (patracod >= 1 && patracod < 10){//新進
+											if (data.basPsnItem.paylvefg=="N" && patracod==1){
+												alert("重複");
+												blnHave=false;
+												//return false;
+											}	
+											else if (data.basPsnItem.patracod==23 && patracod==1){
+												alert("基本檔_留停,請確認【異動代碼】");						
+												return false;		
+											}			
+										}
+										//顯示異動個人明細
+										$.doTraPsnDetail(data.basPsnItem,"bas",patracod);
+										//pa.paTrapay異動支扣明細--原
+										cleanTable("TraPayO");
+										o_basPay=data.basPayList
+										$.doTraPayTbl("TraPayO",o_basPay);									
+									}	
+								},
+								error: function(xhr){	
+									alert("搜尋[輸入 KEY,找是否重複]過程中，程式發生錯誤!!!\nerror code:"+ xhr.status);
+								}
+							});
+					}	
+					//3.找人事基本檔1.薪資基本檔[沒]找到+1新進
+					//           2.薪資基本檔[有]找到+33納實37職務調整<==先mark 	
+					if ((!blnHave && patracod == 1 )  )  {
 // 						if(patracod == 33 || patracod == 37){
 // 							code_data={
 // 				        		idtno      :data.basPsnItem.payidno,
@@ -2432,7 +2511,7 @@ $(function(){
 							{ "sTitle":"扶養數","mData": "paytaxno" },
 							{ "sTitle":"保險補助","mData": "payinflg" },
 							{ "sTitle":"投保級距","mData": "insuamt" },
-							{ "sTitle":"原職稱","mData": "paotitlp" },
+							{ "sTitle":"原職稱","mData": "paytitlo" },
 							{ "sTitle":"原階別","mData": "oranknm" },
 							{ "sTitle":"原職等","mData": "paornk2n" },
 							{ "sTitle":"原本功","mData": "orank3nm" },
@@ -2447,7 +2526,7 @@ $(function(){
 							{ "sTitle":"原額外1","mData": "paopfsp1" },
 							{ "sTitle":"原額外2","mData": "paopfsp2" },
 							{ "sTitle":"原額外3","mData": "paopfsp3" },
-							{ "sTitle":"專勤額度","mData": "paypfdoc" },
+							{ "sTitle":"專勤額度","mData": "paopfdoc" },
 							{ "sTitle":"新職稱","mData": "paytitlp" },
 							{ "sTitle":"新階別","mData": "rankname" },
 							{ "sTitle":"新職等","mData": "payrnk2n" },
@@ -2590,7 +2669,7 @@ $(function(){
 																	<div class="form-inline">
 																		<div class="form-group">
 																			<label for="patradt"class="form-inline table-warning">*發薪日:</label> 
-																			<input type="text" id="patradt" class="form-control dateT table-warning required" maxlength="10" size="10" /> 
+																			<input type="text" id="patradt" name="patradt" class="form-control dateT table-warning required" maxlength="10" size="10" /> 
 																			<label for="patracod" class="form-inline table-warning">*異動原因:</label> 
 																			<select id="patracod" name="patracod" class="form-control required" data-width="fit" title="異動原因">
 																			</select> 
@@ -2607,31 +2686,19 @@ $(function(){
 																	<div class="form-inline">
 																		<div class="form-group">
 																			<label for="payidno" class="table-warning">*身份證字號:</label>
-																			<input type="text" id="payidno"
-																				class="text-uppercase form-control required findkey"
-																				maxlength="10" size="10" />
+																			<input type="text" id="payidno" name="payidno" class="text-uppercase form-control required findkey" maxlength="10" size="10" />
 																		</div>
 																		<div class="form-group">
-																			<label for="paycard"
-																				class="form-inline table-warning">卡號:</label> <input
-																				type="text" id="paycard"
-																				class="text-uppercase form-control required findkey"
-																				maxlength="4" size="4"
-																				style="font-weight: bold; font-size: 30px;" />
+																			<label for="paycard" class="form-inline table-warning">卡號:</label> 
+																			<input type="text" id="paycard" name="paycard" class="text-uppercase form-control required findkey" maxlength="4" size="4" style="font-weight: bold; font-size: 30px;" />
 																		</div>
 																		<div class="form-group">
-																			<label for="payempno"
-																				class="form-inline table-warning">職號:</label> <input
-																				type="text" id="payempno"
-																				class="text-uppercase form-control required"
-																				maxlength="7" size="7" />
+																			<label for="payempno" class="form-inline table-warning">職號:</label> 
+																			<input type="text" id="payempno" name="payempno" class="text-uppercase form-control required" maxlength="7" size="7" />
 																		</div>
 																		<div class="form-group">
-																			<label for="paynamec"
-																				class="form-inline table-warning">姓名:</label> <input
-																				type="text" id="paynamec"
-																				class="form-control required" maxlength="12"
-																				size="12" />
+																			<label for="paynamec" class="form-inline table-warning">姓名:</label> 
+																			<input type="text" id="paynamec" name="paynamec" class="form-control required" maxlength="12" size="12" />
 																		</div>
 
 																	</div>
@@ -2642,19 +2709,19 @@ $(function(){
 																	<div class="form-inline">
 																		<div class="form-group">
 																			<label for="paygovdt" class="table-warning">初任公職日:</label>
-																			<input type="text" id="paygovdt" class="gclsCalTxt form-control required" maxlength="10" size="10" />
+																			<input type="text" id="paygovdt" name="paygovdt" class="gclsCalTxt form-control required" maxlength="10" size="10" />
 																		</div>
 																		<div class="form-group">
 																			<label for="payempdt" class="table-warning">到院日:</label>
-																			<input type="text" id="payempdt" class="gclsCalTxt form-control required" maxlength="10" size="10" />
+																			<input type="text" id="payempdt" name="payempdt" class="gclsCalTxt form-control required" maxlength="10" size="10" />
 																		</div>
 																		<div class="form-group">
 																			<label for="paysgndt" class="table-warning">現職日:</label>
-																			<input type="text" id="paysgndt" class="gclsCalTxt form-control required" maxlength="10" size="10" />
+																			<input type="text" id="paysgndt" name="paysgndt" class="gclsCalTxt form-control required" maxlength="10" size="10" />
 																		</div>
 																		<div class="form-group">
 																			<label for="payrsgdt" class="table-warning">離職日:</label>
-																			<input type="text" id="payrsgdt" class="gclsCalTxt form-control" maxlength="10" size="10" />
+																			<input type="text" id="payrsgdt" name="payrsgdt" class="gclsCalTxt form-control" maxlength="10" size="10" />
 																		</div>
 																	</div>
 																</td>
@@ -2665,22 +2732,16 @@ $(function(){
 																	<div class="form-inline">
 																		<div class="form-group">
 																			<label for="paeffdt" class="table-warning">生效日:</label>
-																			<input type="text" id="paeffdt"
-																				class="gclsCalTxt form-control required"
-																				maxlength="10" size="10" />
+																			<input type="text" id="paeffdt" name="paeffdt" class="gclsCalTxt form-control required" maxlength="10" size="10" />
 																		</div>
 																		<div class="form-group">
-																			<label for="paymonno" id="paymonno_lbl"
-																				class="table-warning">追補扣日數:</label> <input
-																				type="text" id="paymonno" class="form-control"
-																				maxlength="3" size="3" />月 <input type="text"
-																				id="paydayno" class="form-control" maxlength="3"
-																				size="3" />日
+																			<label for="paymonno" id="paymonno_lbl" class="table-warning">追補扣日數:</label> 
+																			<input type="text" id="paymonno" class="form-control" maxlength="3" size="3" />月 
+																			<input type="text" id="paydayno" class="form-control" maxlength="3" size="3" />日
 																		</div>
 																		<div class="form-group" id="div_paypflag">
-																			<label for="paypflag" id="paypflag_lbl"
-																				class="table-warning">發放考績獎金月數:</label> <select
-																				id="paypflag" name="paypflag" class="form-control selectpicker">
+																			<label for="paypflag" id="paypflag_lbl" class="table-warning">發放考績獎金月數:</label> 
+																			<select id="paypflag" name="paypflag" class="form-control selectpicker">
 																				<option value="">請選擇</option>
 																				<option value="0">0</option>
 																				<option value="1">0.5</option>
@@ -2697,18 +2758,15 @@ $(function(){
 																	<div class="form-inline">
 																		<div class="form-group">
 																			<label for="paytaxno" class="table-warning">扶養人數:</label>
-																			<input type="text" id="paytaxno" class="form-control"
-																				maxlength="2" size="2" />
+																			<input type="text" id="paytaxno" class="form-control" maxlength="2" size="2" />
 																		</div>
 																		<div class="form-group">
 																			<label for="paydpno" class="table-warning">健保人數:</label>
-																			<input type="text" id="paydpno" class="form-control"
-																				maxlength="7" size="7" />
+																			<input type="text" id="paydpno" class="form-control" maxlength="7" size="7" />
 																		</div>
 																		<div class="form-group">
 																			<label id="lblInsuamt" class="table-warning bgcol">投保級距:</label>
-																			<select id="insuamt" name="insuamt"
-																				class="form-control " title="投保級距"></select>
+																			<select id="insuamt" name="insuamt" class="form-control " title="投保級距"></select>
 																		</div>
 																		<div class="form-group">
 																			<label for="payinflg" class="table-warning">保險費比率:</label>
@@ -2736,9 +2794,7 @@ $(function(){
 																	<div class="form-inline">
 																		<div class="form-group">
 																			<label for="paydept" class="table-warning">單位:</label>
-																			<select id="paydept" name="paydept"
-																				class="form-control selectpicker required"
-																				data-width="fit" data-live-search="true" title="單位"></select>
+																			<select id="paydept" name="paydept" class="form-control selectpicker required" data-width="fit" data-live-search="true" title="單位"></select>
 																		</div>
 																	</div>
 																</td>
@@ -2750,42 +2806,33 @@ $(function(){
 																	<div class="form-inline">
 																		<div class="form-group">
 																			<label for="paotitle" class="table-warning">職稱:</label>
-																			<select id="paotitle" name="paotitle"
-																				class="form-control selectpicker" data-width="fit"
-																				title="職稱" disabled></select>
+																			<select id="paotitle" name="paotitle" class="form-control selectpicker" data-width="fit" title="職稱" disabled></select>
 																		</div>
 																	</div>
 																	<div class="form-inline">
 																		<div class="form-group">
 																			<label for="paorank" class="table-warning">階別:</label>
-																			<select id="paorank" name="paorank"
-																				class="form-control " title="階別" disabled></select>
+																			<select id="paorank" name="paorank" class="form-control " title="階別" disabled></select>
 																		</div>
 																		<div class="form-group">
 																			<label for="paornk2n" class="table-warning">職等:</label>
-																			<select id="paornk2n" name="paornk2n"
-																				class="form-control " data-width="fit" title="職等"
-																				disabled></select>
+																			<select id="paornk2n" name="paornk2n" class="form-control " data-width="fit" title="職等" disabled></select>
 																		</div>
 																		<div class="form-group">
 																			<label for="paorank3" class="table-warning">本功別:</label>
-																			<select id="paorank3" name="paorank3"
-																				class="form-control " title="本功別" disabled></select>
+																			<select id="paorank3" name="paorank3" class="form-control " title="本功別" disabled></select>
 																		</div>
 																		<div class="form-group">
 																			<label for="paodegr2" class="table-warning">級別:</label>
-																			<select id="paodegr2" name="paodegr2"
-																				class="form-control " title="級別" disabled></select>
+																			<select id="paodegr2" name="paodegr2" class="form-control " title="級別" disabled></select>
 																		</div>
 																		<div class="form-group">
 																			<label for="paodegre" class="table-warning">俸點:</label>
-																			<input type="text" id="paodegre" class="bgcol form-control"
-																				maxlength="2" size="2" readonly />
+																			<input type="text" id="paodegre" class="bgcol form-control" maxlength="2" size="2" readonly />
 																		</div>
 																		<div id="div_contraco" class="form-group d-none">
-																			<label for="TranPsn_contraco">月尾薪Y/月頭薪N:</label> <input
-																				type="text" id="TranPsn_contraco" readonly
-																				class="form-control" maxlength="1" size="1" />
+																			<label for="TranPsn_contraco">月尾薪Y/月頭薪N:</label> 
+																			<input type="text" id="TranPsn_contraco" readonly class="form-control" maxlength="1" size="1" />
 																		</div>
 																	</div>
 																</td>
@@ -2795,18 +2842,15 @@ $(function(){
 																	<div class="form-inline d-none" id="div_authorito">
 																		<div class="form-group">
 																			<label for="paorank2" class="table-warning">權理:</label>
-																			<select id="paorank2" name="paorank2"
-																				class="form-control " title="權理" disabled></select>
+																			<select id="paorank2" name="paorank2" class="form-control " title="權理" disabled></select>
 																		</div>
 																		<div class="form-group">
 																			<label for="paorankc" class="table-warning">主管(權理):</label>
-																			<select id="paorankc" name="paorankc"
-																				class="form-control " title="主管(權理)" disabled></select>
+																			<select id="paorankc" name="paorankc" class="form-control " title="主管(權理)" disabled></select>
 																		</div>
 																		<div class="form-group">
 																			<label for="paorank4" class="table-warning">適用專業加給表:</label>
-																			<select id="paorank4" name="paorank4"
-																				class="form-control " title="適用專業加給表" disabled></select>
+																			<select id="paorank4" name="paorank4" class="form-control " title="適用專業加給表" disabled></select>
 																		</div>
 																	</div>
 																</td>
@@ -2823,20 +2867,16 @@ $(function(){
 																			</select>
 																		</div>
 																		<div class="form-group" id="div_pokey">
-																			<label for="TranPsn_pokey">實際支領KEY:</label> <input
-																				type="text" id="TranPsn_pokey" readonly
-																				class="form-control" maxlength="7" size="7" /> <label
-																				for="TranPsn_pobas">基本點數:</label> <input
-																				type="text" id="TranPsn_pobas" readonly
-																				class="form-control" maxlength="3" size="3" /> <label
-																				for="TranPsn_podat">職等點數:</label> <input
-																				type="text" id="TranPsn_podat" readonly
-																				class="form-control" maxlength="3" size="3" />
+																			<label for="TranPsn_pokey">實際支領KEY:</label> 
+																			<input type="text" id="TranPsn_pokey" readonly class="form-control" maxlength="7" size="7" /> 
+																			<label for="TranPsn_pobas">基本點數:</label> 
+																			<input type="text" id="TranPsn_pobas" readonly class="form-control" maxlength="3" size="3" /> 
+																			<label for="TranPsn_podat">職等點數:</label> 
+																			<input type="text" id="TranPsn_podat" readonly class="form-control" maxlength="3" size="3" />
 																		</div>
 																		<div class="form-group" id="div_podoc">
 																			<label for="paopfdoc" class="table-warning">專勤基本額度:</label>
-																			<input type="text" id="paopfdoc" class="form-control"
-																				maxlength="8" size="8" />
+																			<input type="text" id="paopfdoc" class="form-control" maxlength="8" size="8" />
 																		</div>
 																	</div>
 																<TD>
@@ -2848,11 +2888,11 @@ $(function(){
 																			<div class="form-group ">
 																				<label for="paopfsp1" class="table-warning">額外點數:</label>
 																				<select id="paoexpfkey1" name="paoexpfkey1"  class="selectpicker" data-width="fit" title="額外1"></select> 
-																				<input type="text" id="paopfsp1" class="form-control number" maxlength="3" size="3" /> 
+																				<input type="text" id="paopfsp1" name="paopfsp1" class="form-control number" maxlength="3" size="3" /> 
 																				<select id="paoexpfkey2" name="paoexpfkey2" class="selectpicker" data-width="fit" title="額外2"> </select> 
-																				<input type="text" id="paopfsp2" class="form-control number" maxlength="3" size="3" /> 
+																				<input type="text" id="paopfsp2" name="paopfsp2" class="form-control number" maxlength="3" size="3" /> 
 																				<select id="paoexpfkey3" name="paoexpfkey3" class="selectpicker" data-width="fit" title="額外3"> </select> 
-																				<input type="text" id="paopfsp3" class="form-control number" maxlength="3" size="3" />
+																				<input type="text" id="paopfsp3" name="paopfsp3" class="form-control number" maxlength="3" size="3" />
 																			</div>
 																		</div>
 																	</div>
@@ -2866,9 +2906,7 @@ $(function(){
 																	<div class="form-inline">
 																		<div class="form-group">
 																			<label for="paytitle" class="table-warning">職稱:</label>
-																			<select id="paytitle" name="paytitle"
-																				class="form-control selectpicker calRank calCSPF "
-																				data-width="fit" data-live-search="true" title="職稱">
+																			<select id="paytitle" name="paytitle" class="form-control selectpicker calRank calCSPF " data-width="fit" data-live-search="true" title="職稱">
 																			</select>
 																			<button type="button" class="btn btn-info roleQry" id="btn_calDegre" disabled> <i class="fa fa-arrows-alt"></i>取得新支扣</button>
 																		</div>
@@ -2876,36 +2914,29 @@ $(function(){
 																	<div class="form-inline">
 																		<div class="form-group">
 																			<label for="payrank" class="table-warning">階別:</label>
-																			<select id="payrank" name="payrank"
-																				class="form-control calCSPF calRank" title="階別"></select>
+																			<select id="payrank" name="payrank" class="form-control calCSPF calRank" title="階別"></select>
 
 																		</div>
 																		<div class="form-group">
 																			<label for="payrnk2n" class="table-warning">職等:</label>
-																			<select id="payrnk2n" name="payrnk2n"
-																				class="form-control calCSPF calRank"
-																				data-width="fit" title="職等"></select>
+																			<select id="payrnk2n" name="payrnk2n" class="form-control calCSPF calRank" data-width="fit" title="職等"></select>
 																			<!--<input type="text" id="payrnk2n" class="form-control" maxlength="2" size="2"  /> -->
 																		</div>
 																		<div class="form-group">
 																			<label for="payrank3" class="table-warning">本功別:</label>
-																			<select id="payrank3" name="payrank3"
-																				class="form-control calCSPF calRank" title="本功別"></select>
+																			<select id="payrank3" name="payrank3" class="form-control calCSPF calRank" title="本功別"></select>
 																		</div>
 																		<div class="form-group">
 																			<label for="paydegr2" class="table-warning">級別:</label>
-																			<select id="paydegr2" name="paydegr2"
-																				class="form-control calCSPF calRank" title="級別"></select>
+																			<select id="paydegr2" name="paydegr2" class="form-control calCSPF calRank" title="級別"></select>
 																		</div>
 																		<div class="form-group">
 																			<label for="paydegre" class="table-warning">俸點:</label>
-																			<input type="text" id="paydegre" class="bgcol form-control"
-																				maxlength="2" size="2" />
+																			<input type="text" id="paydegre" class="bgcol form-control" maxlength="2" size="2" />
 																		</div>
 																		<div id="div_contract" class="form-group d-none">
-																			<label for="TranPsn_contract">月尾薪Y/月頭薪N:</label> <input
-																				type="text" id="TranPsn_contract" readonly
-																				class="form-control" maxlength="1" size="1" />
+																			<label for="TranPsn_contract">月尾薪Y/月頭薪N:</label> 
+																			<input type="text" id="TranPsn_contract" readonly class="form-control" maxlength="1" size="1" />
 																		</div>
 																	</div>
 																</td>
@@ -2915,20 +2946,15 @@ $(function(){
 																	<div class="form-inline" id="div_authority">
 																		<div class="form-group">
 																			<label for="payrank2" class="table-warning">權理:</label>
-																			<select id="payrank2" name="payrank2"
-																				class="form-control " data-width="fit" title="權理"></select>
+																			<select id="payrank2" name="payrank2" class="form-control " data-width="fit" title="權理"></select>
 																		</div>
 																		<div class="form-group">
 																			<label for="payrankc" class="table-warning">主管(權理):</label>
-																			<select id="payrankc" name="payrankc"
-																				class="form-control " data-width="fit"
-																				title="主管(權理)"></select>
+																			<select id="payrankc" name="payrankc" class="form-control " data-width="fit" title="主管(權理)"></select>
 																		</div>
 																		<div class="form-group">
 																			<label for="payrank4" class="table-warning">適用專業加給表:</label>
-																			<select id="payrank4" name="payrank4"
-																				class="form-control " data-width="fit"
-																				title="適用專業加給表"></select>
+																			<select id="payrank4" name="payrank4" class="form-control " data-width="fit" title="適用專業加給表"></select>
 																		</div>
 																	</div>
 																</td>
@@ -2955,8 +2981,7 @@ $(function(){
 																		</div>
 																		<div class="form-group" id="div_pfdoc">
 																			<label for="paypfdoc" class="table-warning">專勤基本額度:</label>
-																			<input type="text" id="paypfdoc" class="form-control"
-																				maxlength="8" size="8" />
+																			<input type="text" id="paypfdoc" class="form-control" maxlength="8" size="8" />
 																		</div>
 																	</div>
 																<TD>
@@ -2967,13 +2992,12 @@ $(function(){
 																		<div class="form-inline">
 																			<div class="form-group ">
 																				<label for="payexpfkey1" class="table-warning">額外點數:</label>
-																				<select id="payexpfkey1" name="payexpfkey1" class="selectpicker"
-																					data-width="fit" title="額外1"></select> 
-																				<input type="text" id="paypfsp1" class="form-control number" maxlength="3" size="3" /> 
+																				<select id="payexpfkey1" name="payexpfkey1" class="selectpicker" data-width="fit" title="額外1"></select> 
+																				<input type="text" id="paypfsp1" name="paypfsp1" class="form-control number" maxlength="3" size="3" /> 
 																				<select id="payexpfkey2" name="payexpfkey2" class="selectpicker" data-width="fit" title="額外2"></select>
-																				<input type="text" id="paypfsp2" class="form-control number" maxlength="3" size="3" /> 
+																				<input type="text" id="paypfsp2" name="paypfsp2" class="form-control number" maxlength="3" size="3" /> 
 																				<select id="payexpfkey3" name="payexpfkey3" class="selectpicker" data-width="fit" title="額外3"></select> 
-																				<input type="text" id="paypfsp3" class="form-control number" maxlength="3" size="3" />
+																				<input type="text" id="paypfsp3" name="paypfsp3" class="form-control number" maxlength="3" size="3" />
 																			</div>
 																		</div>
 
@@ -2987,28 +3011,23 @@ $(function(){
 																		<div class="form-inline">
 																			<div class="form-group">
 																				<label for="payctcbacno" class="table-warning">薪資帳號:</label>
-																				<input type="text" id="payctcbacno"
-																					class="form-control number" maxlength="14" size="14" />
+																				<input type="text" id="payctcbacno" name="payctcbacno" class="form-control number" maxlength="14" size="14" />
 																				<label for="payctcbgedno" class="table-warning">公儲帳號:</label>
-																				<input type="text" id="payctcbgedno"
-																					class="form-control number" maxlength="14" size="14" />
+																				<input type="text" id="payctcbgedno" name="payctcbgedno" class="form-control number" maxlength="14" size="14" />
 																			</div>
 																		</div>
 																		<div class="form-inline">
 																			<div class="form-group">
 																				<label for="payaddrs" class="table-warning">戶籍地址:</label>
-																				<input type="text" id="payaddrs"
-																					class="form-control" maxlength="62" size="62" />
+																				<input type="text" id="payaddrs" class="form-control" maxlength="62" size="62" />
 																			</div>
 																		</div>
 																		<div class="form-inline">
 																			<div class="form-group">
-																				<label for="TranPsn_payupdid">更改者:</label> <input
-																					type="text" id="TranPsn_payupdid" readonly
-																					class="form-control" maxlength="4" size="4" /> <label
-																					for="TranPsn_updtm">更改時間:</label> <input
-																					type="text" id="TranPsn_updtm" readonly
-																					class="form-control" maxlength="20" size="20" />
+																				<label for="TranPsn_payupdid">更改者:</label> 
+																				<input type="text" id="TranPsn_payupdid" readonly class="form-control" maxlength="4" size="4" /> 
+																				<label for="TranPsn_updtm">更改時間:</label> 
+																				<input type="text" id="TranPsn_updtm" readonly class="form-control" maxlength="20" size="20" />
 																			</div>
 																		</div>
 																	</div>

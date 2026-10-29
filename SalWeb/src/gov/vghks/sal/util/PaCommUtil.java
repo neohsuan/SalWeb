@@ -14,8 +14,23 @@ import org.apache.log4j.Logger;
  */
 public class PaCommUtil {
 	static String className = PaCommUtil.class.getName();
-	static Logger log = Logger.getLogger(PaCommUtil.class); //呼叫log4j	
-
+	static Logger log = Logger.getLogger(PaCommUtil.class); //呼叫log4j
+	
+	/**傳回 專二/工二 中文名稱 ,有YN,到時拿掉
+	 * @param itm 
+	 * @return  
+	 * Ex: getRetenNm(2) return 專1(Y)專二(N) 
+	 */
+	public static String getRetenNm(String itm){		
+		String itmName = "";
+		if (itm.equals("")) return "";
+		if (itm.equals("2")) return "專1(Y)專二(N)";
+		if (itm.equals("3")) return "專1(N)專二(Y)";
+		if (itm.equals("4")) return "專1(N)專二(N)";
+		if (itm.equals("Y")) return "Y";
+		if (itm.equals("N")) return "N";
+		return itmName;
+	}
 	/**傳回 本功 中文名稱
 	 * @param itm 
 	 * @return  

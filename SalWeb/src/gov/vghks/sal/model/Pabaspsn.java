@@ -95,7 +95,7 @@ public class Pabaspsn implements Serializable{
     private String payctcbgedno;
     /** 投保金額*/
     private int insuamt;
-    /** 留職留薪,支領專2(Y/N)*/
+    /** 留職留薪,支領專2(Y/N)==>專2/工2 空白:專1=Y,專2=Y 2:專1=Y,專2=N 3:專1=N,專2=Y 4:專1=N,專2=N*/
     private String paretention;
     /** 醫院別*/
     private String hid;
@@ -469,13 +469,14 @@ public class Pabaspsn implements Serializable{
 		this.insuamt = insuamt;
 	}
 	public String getParetention() {
-		String tmp="";	
+		/*String tmp="";	
 		if ("Y".equals(paretention))
 			tmp=paretention;
-		return tmp;
+		return tmp;*/
+		return paretention;
 	}
 	public void setParetention(String paretention) {
-		this.paretention = paretention;
+		this.paretention = StringUtil.nullToString(paretention);
 	}
 	public java.sql.Timestamp getZpabaspsn() {
 		return zpabaspsn;

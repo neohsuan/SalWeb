@@ -59,7 +59,7 @@ $(function(){
 	  if (tabid=="pills-nhiprod-tab"){
 	  	var logtmp="log資料夾:\\\\ap_pd1\\Apps_Exe\\SalProd\\" ;
 	  	logtmp = logtmp.concat(pahid,"\\log\\");
-		logtmp = logtmp.concat(" ", "data資料夾:\\\\ap_pd1\\Apps_Exe\\SalProd\\");
+		logtmp = logtmp.concat(" ", "data資料夾:\\\\ap_pd1\\Apps_Exe\\SalProd\\補充費\\");
 		logtmp = logtmp.concat(pahid,"\\data\\");
 		$("#explanProd_1").html(logtmp);
 	  }
@@ -1684,7 +1684,7 @@ $(function(){
 		            			<Td><input type="text" id="nhical_jackpot" name="jackpot"class="form-control required digits chgnhi" maxlength="7" size="7"  /></Td>
 		            		</tr>
 		            		<tr>
-		            			<th>累積逾4倍投保額</br>(E)=D-B</th>
+		            			<th>累積逾4倍投保額<br>(E)=D-B</th>
 		            			<Td><input type="text" id="nhical_mtinsu" name="mtinsu"class="form-control required digits" maxlength="7" size="7"  /></Td>
 		            			<th>費基(F)min(E,C)</th>
 		            			<Td><input type="text" id="nhical_suplybase" name="suplybase"class="form-control required digits" maxlength="7" size="7"  /></Td>

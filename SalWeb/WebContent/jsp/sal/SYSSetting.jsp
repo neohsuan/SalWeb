@@ -64,6 +64,85 @@ var rowData;
 var msg;
 var patradt;
 var blnCheck;
+var oTableInsu = null;
+
+// DataTables 55 欄位 mapping
+var objCopyInsu = {
+    "bDestroy": true,
+    "bAutoWidth": false,
+    "bPaginate": true,
+    "bLengthChange": true,
+    "bFilter": true,
+    "bSort": true,
+    "bInfo": true,
+    "iDisplayLength": 25,
+    "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "全部"]],
+    "sDom": 'B<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-tl ui-corner-tr"lfr>t<"fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix ui-corner-bl ui-corner-br"ip>',
+    "buttons": ['excelHtml5'],
+    
+    // 💡 關鍵新增：開啟橫向捲動，讓表格總寬度超出時自動產生下方捲軸橫幅
+    "sScrollX": "100%",
+    "sScrollXInner": "2200px", // 可依實際顯示微調，例如 2000px ~ 2500px
+    "bScrollCollapse": true,
+    "aoColumns": [
+        { "mData": "PAYIDNO", "sClass": "text-center", "sDefaultContent": "" },
+        { "mData": "PAYCARD", "sClass": "text-center", "sDefaultContent": "" },
+        { "mData": "PAYNAMEC", "sClass": "text-center", "sDefaultContent": "" },
+        { "mData": "PAYTITLE", "sClass": "text-center", "sDefaultContent": "" },
+        { "mData": "M1_PAYBANK", "sClass": "text-center", "sDefaultContent": "" },
+        { "mData": "M1_FP000", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M1_FP010", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M1_FP100", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M1_FP110", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M1_FP120", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M1_FP400", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M1_VP000", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M1_VP010", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M1_VP01E", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M1_VP040", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M1_VP100", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M1_VP110", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M1_VP200", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M1_VP220", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M1_VP230", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M1_VP457", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_PAYBANK", "sClass": "text-center", "sDefaultContent": "" },
+        { "mData": "M2_FP000", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_FP010", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_FP100", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_FP110", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_FP120", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_FP400", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_VP000", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_VP010", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_VP01E", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_VP040", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_VP100", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_VP110", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_VP200", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_VP220", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_VP230", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M2_VP457", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_PAYBANK", "sClass": "text-center", "sDefaultContent": "" },
+        { "mData": "M3_FP000", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_FP010", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_FP100", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_FP110", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_FP120", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_FP400", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_VP000", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_VP010", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_VP01E", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_VP040", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_VP100", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_VP110", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_VP200", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_VP220", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_VP230", "sClass": "text-right", "sDefaultContent": "0" },
+        { "mData": "M3_VP457", "sClass": "text-right", "sDefaultContent": "0" }
+    ]
+};
+
 $(function(){
 	$('#collapseOne').collapse('show');
 		
@@ -105,10 +184,10 @@ $(function(){
 		$(".roleQry").addClass("d-none");
 	}
 	//
-	if (pahid=="2A0" || pahid=="3A0") {
-		$("#pills-teacheraw-tab").hide();
-	}else if (pahid=="1A0") {
-		$("#pills-teacheraw-tab").show();
+	if (pahid=="1A0" || pahid=="3A0") {
+		$("#pills-pay-tab").hide();
+	}else if (pahid=="2A0") {
+		$("#pills-pay-tab").show();
 	}
 	
 
@@ -201,7 +280,7 @@ $(function(){
 						if (data.msg!=null){
 							alert(data.msg);
 						}else{
-							alert("TEST");		
+							alert("更新成功！");		
 						}
 					},
 					error: function(xhr){					
@@ -221,7 +300,7 @@ $(function(){
 	  	  		var url="${pageContext.request.contextPath}/salController.do";
 	  	  		var param = '?method=uploadExcelFile' +
 							'&selCode=' + selCode +
-							'&userid=' + userid +
+							'&userid=' + paUserid +
 							'&hid=' + pahid;
 	    		console.log(" 選項:"+selCode+" url:"+url+param);
 	    		
@@ -246,10 +325,115 @@ $(function(){
 				alert(msg);
 			}
 		}
-	});
-	
+		else if(id == 'btn_qryInsuPer'){ 
+		    var qryDate = $("#qry_insu_date").val(); // 純日期字號，例如 "2026-10-01"
+		    var qryType = $("#qry_insu_type").val(); // 身分類別
 
-	//清除指定頁面資料
+		    if (qryDate == '') {
+		        alert("請選擇發薪日！");
+		        return false;
+		    }
+		    
+		    var baseDate = new Date(qryDate);
+		    var d1 = new Date(baseDate);
+		    var d2 = new Date(baseDate); d2.setMonth(d2.getMonth() - 1);
+		    var d3 = new Date(baseDate); d3.setMonth(d3.getMonth() - 2);
+
+		    var formatDate = function(d) {
+		        var year = d.getFullYear();
+		        var month = ('0' + (d.getMonth() + 1)).slice(-2);
+		        return year + '-' + month + '-01';
+		    };
+
+		    $("#th_mon1_title").text("發薪日 (" + formatDate(d1) + ")");
+		    $("#th_mon2_title").text("發薪日 (" + formatDate(d2) + ")");
+		    $("#th_mon3_title").text("發薪日 (" + formatDate(d3) + ")");
+
+		    var in_data = {
+		        paydate : qryDate,
+		        paytype : qryType
+		    };
+		    console.log("送出查詢參數：", in_data);
+		    
+		    showPageLoading(); 
+
+		    $.ajax({
+		        url: "${pageContext.request.contextPath}/salController.do",
+		        data: {
+		            method  : 'getInsuPerList', 
+		            in_data : JSON.stringify(in_data),
+		            hid     : pahid,
+		            userid  : paUserid
+		        },
+		        type: "POST",
+		        dataType: "json",
+		        contentType: "application/x-www-form-urlencoded;charset=utf-8",
+		        success: function(data) {
+		        console.log("後端實際回傳的資料：", data);
+		            hidePageLoading(); 
+		            if (data.msg != null && data.msg != "") {
+		                alert(data.msg);
+		            } else {
+                        $(".dataTables_wrapper").hide(); 
+                        $('#tblInsuPerList').show();
+                        
+                        var listData = data.data || data.insuList || [];
+                        var currentConfig = $.extend(true, {}, objCopyInsu, {
+                            "aaData": listData
+                        });
+                        oTableInsu = $('#tblInsuPerList').dataTable(currentConfig);
+
+                        if (listData.length === 0) {
+                            alert("查無符合條件的發薪資料！");
+                        }
+                    }
+                },
+		        error: function(xhr){
+		            hidePageLoading();
+		            alert("查詢失敗!!!程式發生錯誤!!!\nerror code:"+ xhr.status);		
+		        }
+		    });
+		}
+
+	});
+
+	// 初始化動態發薪日選單
+	initPayDateDropdown();
+});
+
+/**
+ * 動態產生發薪日下拉選單 (恢復為純日期格式)
+ */
+function initPayDateDropdown() {
+	var selectElem = document.getElementById("qry_insu_date");
+	if (!selectElem) return;
+
+	var today = new Date();
+	var currentYear = today.getFullYear();
+	var currentMonth = today.getMonth() + 1;
+	var startYear = currentYear - 1;
+
+	var optionsHtml = '<option value="">-- 請選擇發薪日 --</option>';
+
+	for (var y = currentYear; y >= startYear; y--) {
+		for (var m = 12; m >= 1; m--) {
+			if (y === currentYear && m > currentMonth) continue;
+
+			var monthStr = (m < 10) ? '0' + m : '' + m;
+			var dateVal = y + '-' + monthStr + '-01';
+			optionsHtml += '<option value="' + dateVal + '">' + dateVal + '</option>';
+		}
+	}
+
+	selectElem.innerHTML = optionsHtml;
+	
+	var thisMonthStr = (currentMonth < 10) ? '0' + currentMonth : '' + currentMonth;
+	var defaultVal = currentYear + '-' + thisMonthStr + '-01';
+	selectElem.value = defaultVal;
+}
+
+
+//清除指定頁面資料
 	function cleanTable(table_id){
 		$(":checkbox,:radio").prop("checked", false);
 		//清除所有頁面的內容(enable)，disable的不清除
@@ -276,10 +460,6 @@ $(function(){
 	    $('.selectpicker').selectpicker('refresh'); 	    
 	}
 	
-	
-     
-});
-
 //開啟loading dialog
 function showPageLoading(){
 	$("#pageLoadingOverlay").css("display", "flex");
@@ -300,7 +480,9 @@ function hidePageLoading(){
   <li class="nav-item">
     <a class="nav-link" id="pills-bathanding-tab" data-toggle="pill" href="#byBatHandingMain" role="tab" aria-controls="pills-home" aria-selected="true">批次匯入</a>
   </li>
-
+  <li class="nav-item">
+    <a class="nav-link" id="pills-pay-tab" data-toggle="pill" href="#byPayDetailMain2Mon" role="tab" aria-controls="pills-home" aria-selected="false">產生投保資料</a>
+  </li>
 </ul>
 
 <div class="tab-content" id="pills-tabContent">
@@ -398,7 +580,67 @@ function hidePageLoading(){
 		<!--  -->
   	</div>
 
+   <!-- 產生給人事室發薪資料(發薪日-2個月) -->
+    <div class="tab-pane fade" id="byPayDetailMain2Mon" role="tabpanel" aria-labelledby="pills-pay-tab">
+        <div class="container-fluid">
+            <div class="row" style="margin-bottom: 15px;">
+                <div class="col-12">
+                    <div class="form-inline basother-filterbar">
+                    
+ 				
+                        <div class="input-group" style="margin-right:10px;">
+                            <span class="input-group-text">發薪日</span>         
+                            <select id="qry_insu_date" class="form-control">
+                                <option value="">-- 請選擇發薪日 --</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group" style="margin-right:10px;">
+                            <span class="input-group-text">身分選擇:</span>         
+                            <select id="qry_insu_type" class="form-control">
+                                <option value="contract">契約人員</option>
+                                <option value="doctor">醫師</option>
+                                <option value="worker">技工友</option>
+                            </select>
+                        </div>
+                        
 
+                        <button type="button" id="btn_qryInsuPer" class="btn btn-primary">
+                            <i class="fa fa-search"></i> 查詢
+                        </button>
+                        <div class="alert alert-info" id="msgHint" style="display:inline-block; vertical-align:middle; background-color:#d9edf7; border-color:#bce8f1; color:#31708f; padding:6px 12px; margin-bottom:0; font-size:14px; line-height:1.6;">
+ 				<i class="fa fa-bullhorn"></i><span id="msgHintText">產生給人事室發薪資料(發薪日-2個月)</span>
+ 				</div>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12" style="overflow-x: auto;">
+                    <table id="tblInsuPerList" class="table table-bordered table-striped" style="width:100%; display:none;">
+                        <thead>
+                            <tr class="text-center">
+                                <th rowspan="2" style="vertical-align: middle;">身分證字號</th>
+                                <th rowspan="2" style="vertical-align: middle;">卡號</th>
+                                <th rowspan="2" style="vertical-align: middle;">姓名</th>
+                                <th rowspan="2" style="vertical-align: middle;">職稱</th>
+                                <th colspan="17" id="th_mon1_title" class="bg-primary text-white">發薪日(當月)</th>
+                                <th colspan="17" id="th_mon2_title" class="bg-info text-white">發薪日(前1個月)</th>
+                                <th colspan="17" id="th_mon3_title" class="bg-secondary text-white">發薪日(前2個月)</th>
+                            </tr>
+                            <tr class="text-center">
+                                <th>發薪日</th><th>本薪FP000</th><th>專業加給FP010</th><th>院區加給FP100</th><th>身心障礙FP110</th><th>特別津貼FP120</th><th>計畫補助FP400</th><th>工作獎金VP000</th><th>專勤醫師費VP010</th><th>專勤獎金-科經營VP01E</th><th>專勤醫師費2VP040</th><th>夜班費VP100</th><th>不休假加班費VP110</th><th>加班費VP200</th><th>未休完特休假工資VP220</th><th>未補休轉加班費VP230</th><th>津貼--專科護理師VP457</th>
+                                <th>發薪日</th><th>本薪FP000</th><th>專業加給FP010</th><th>院區加給FP100</th><th>身心障礙FP110</th><th>特別津貼FP120</th><th>計畫補助FP400</th><th>工作獎金VP000</th><th>專勤醫師費VP010</th><th>專勤獎金-科經營VP01E</th><th>專勤醫師費2VP040</th><th>夜班費VP100</th><th>不休假加班費VP110</th><th>加班費VP200</th><th>未休完特休假工資VP220</th><th>未補休轉加班費VP230</th><th>津貼--專科護理師VP457</th>
+                                <th>發薪日</th><th>本薪FP000</th><th>專業加給FP010</th><th>院區加給FP100</th><th>身心障礙FP110</th><th>特別津貼FP120</th><th>計畫補助FP400</th><th>工作獎金VP000</th><th>專勤醫師費VP010</th><th>專勤獎金-科經營VP01E</th><th>專勤醫師費2VP040</th><th>夜班費VP100</th><th>不休假加班費VP110</th><th>加班費VP200</th><th>未休完特休假工資VP220</th><th>未補休轉加班費VP230</th><th>津貼--專科護理師VP457</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="pageLoadingOverlay">

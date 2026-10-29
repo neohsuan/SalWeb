@@ -5,6 +5,7 @@ encoding//WebContent/resources/components/js/MEBEUtil.js=UTF-8
 encoding//src/gov/vghks/sal/Globals.java=UTF-8
 encoding//src/gov/vghks/sal/Tables.java=UTF-8
 encoding//src/gov/vghks/sal/controller/SalController.java=UTF-8
+encoding//src/gov/vghks/sal/dao/BonusDAO.java=UTF-8
 encoding//src/gov/vghks/sal/dao/CommDAO.java=UTF-8
 encoding//src/gov/vghks/sal/dao/PsDSNDAO.java=UTF-8
 encoding//src/gov/vghks/sal/dao/SYSSettingDAO.java=UTF-8

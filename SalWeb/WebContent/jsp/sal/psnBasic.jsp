@@ -19,7 +19,7 @@ var padeptno = ("" != agent) ? "${sessionScope.agentdeptno}" : deptno;          
 
 var tabid="";
 var objCopy;
-
+var in_data;
 var code_data;
 var itmTbl;
 var oTable;
@@ -67,7 +67,33 @@ $(function(){
 	if (pahid=='1A0' || pahid=='2A0'){
 		$(".cspf").removeClass("d-none");
 	}	
-	
+
+	//代碼選單切換
+	$("#qryType").change(function(){
+		$(":text,textarea").val("");
+		$("#divfield_1,#divfield_2").addClass("d-none");	//隱藏
+  		selCode=(typeof($("#qryType option:selected").val().split(':')[0]) == "undefined" )? "1":$("#qryType option:selected").val().split(':')[0];
+  		console.log(selCode);
+  		if (selCode=="1" ){			//1:[產生處理]異動及批次資料_匯入主檔
+			$("#divfield_ID").removeClass("d-none");			
+			$('#msgHintText').text('整批更新匯入主檔');
+			$('#btn_handelINSUAMT').text('產生處理');
+			$("#divfield_SALNUM").removeClass("d-none");
+		}
+		else if (selCode=="2"){		//2:[回復]異動及批次資料_回復主檔
+			$("#divfield_CARD").removeClass("d-none");
+			$('#msgHintText').text('回復');
+			$('#btn_handelINSUAMT').text('回復');
+			$("#divfield_SALNUM").removeClass("d-none");
+		}
+		else if (selCode=="3"){		//3:[匯入]投保金額:ImpBasINSUAMT
+			$("#divfield_1,#divfield_2").removeClass("d-none");
+			$('#msgHintText').text('請先[下載範例檔案]置於硬碟,可更名,修正後,再選擇檔案上傳匯入.');
+			$('#btn_handelINSUAMT').text('執行');
+			$("#divfield_SALNUM").addClass("d-none");
+		}
+  	});
+
 	$.getLoadCodeTbl = function(item,flag){		
 		$.ajax({
 			url:"${pageContext.request.contextPath}/salController.do",
@@ -170,6 +196,18 @@ $(function(){
 					});
 					select.selectpicker('refresh');			 	
 			 	}
+				//餉單編號(2個月內)
+				if (data.alBankDtTbl_2M[0]!=null){
+					//其他
+					select = $('#prod_SalNum');
+					select.empty();					
+					options = "<option value=''>";
+					select.append(options);
+					$.each(data.alBankDtTbl_2M, function(idx) {
+						options = "<option value='" + data.alBankDtTbl_2M[idx].salnum +":"+ data.alBankDtTbl_2M[idx].paybank.dts +"'>" + data.alBankDtTbl_2M[idx].paybank.dts+" "+data.alBankDtTbl_2M[idx].salnum ;
+						select.append(options);
+					});
+				}
 			}  
 		});
 	};
@@ -197,6 +235,12 @@ $(function(){
 	 			msg = '請輸入條件值!!';
 	 		}	
  		}
+		else if (btn== 'btn_handelINSUAMT'){ //匯入投保金額(整批更新)
+			var file = $("#fileInput").val();			
+			if (file.length == 0) {
+				msg ='請確認是否有選擇檔案';				
+			}
+		}
   		return msg;	
 	};
 	
@@ -264,9 +308,12 @@ $(function(){
 		return selectedValues;
 	}	
 	//jQuery按紐圖示
-	$(".btn").button().click(
+	$(".btn").not("#lnkSampleFile").button().click(
 		function(event) {event.preventDefault();}
 	);
+	//$(".btn").button().click(
+	//	function(event) {event.preventDefault();}
+	//);
 	$(".btn").click(function(){
 		var id = $(this).attr('id');
 		
@@ -506,7 +553,41 @@ $(function(){
 				}
 		 	}
 		}	
+		else if (id == 'btn_handelINSUAMT'){ //匯入投保金額(整批更新)
+			msg = $.checkFields(id);
+			if(msg == ''){
+				selCode=(typeof($("#qryType option:selected").val().split(':')[0]) == "undefined" )? "3":$("#qryType option:selected").val().split(':')[0];
+	  	  		console.log("執行："+selCode);
 				
+	  	  		var url="${pageContext.request.contextPath}/salController.do";
+	  	  		var param = '?method=uploadINSUAMTExcelFile' +
+							'&selCode=' + selCode +
+							'&userid=' + userid +
+							'&hid=' + pahid;
+	    		console.log(" 選項:"+selCode+" url:"+url+param);
+	    		
+	    		showPageLoading(); //顯示loading(本頁專屬)
+			 	$("#uploadfileForm").ajaxSubmit({
+					type: "post", //提交方式 
+					dataType:"json", //資料型別 
+					url: url + param, //請求url 
+					success: function (data) { //提交成功的回撥函式 
+						alert(data.msg);
+						hidePageLoading();
+					},
+					error: function(xhr){
+						alert("檔案上傳過程中，程式發生錯誤!!!\nerror code:"+ xhr.status);
+						hidePageLoading();
+					},
+					complete: function(data) {
+						hidePageLoading(); //隱藏loading
+					}
+				});
+			}else{
+				alert(msg);
+			}
+			
+		}		
 	});
 	
 	//個人明細
@@ -546,24 +627,24 @@ $(function(){
 		var hid=rowData.hid;
 		
 		//找pa.pabaspsn及pa.pabaspay
-		code_data="";
-		code_data={
+		in_data="";
+		in_data={
         		idtno      :idtno,
         		hid        :hid
         	};
-		console.log("基本資料pabaspsn查詢:code_data:"+code_data);
+		console.log("基本資料pabaspsn查詢:in_data:"+JSON.stringify(in_data));
 		
-		$.getBasPsnByKey(code_data);
+		$.getBasPsnByKey(in_data);
 		
 	});
 	
 	//依KEY找出pa.pabaspsn
-	$.getBasPsnByKey = function(code_data){
+	$.getBasPsnByKey = function(in_data){
 		$.ajax({
 			url:"${pageContext.request.contextPath}/salController.do",
 			data:{
-				method    : 'getBasPsnByKey',
-				code_data :JSON.stringify(code_data),
+				method  : 'getBasPsnByKey',
+				in_data :JSON.stringify(in_data),
         		hid     : pahid,
 				userid  : paUserid,
 			},
@@ -671,7 +752,6 @@ $(function(){
 		$("#basPsn_payacno").val(mData.payacno);
 		$("#basPsn_paygedno").val(mData.paygedno);
 		$("#basPsn_payinflg").val(mData.payinflg);
-		$("#basPsn_paydpno").val(mData.paydpno);
 		$("#basPsn_paytitle").val(mData.patitsub+"-"+mData.paytitle);
 		$("#basPsn_paytitlp").val(mData.paytitlp);
 		$("#basPsn_payrank").val(mData.payrank);
@@ -699,7 +779,7 @@ $(function(){
 		$("#basPsn_inflgnm").val(mData.inflgnm);
 		$("#insuamt").val(mData.insuamt);
 		$("#paytaxno").val(mData.paytaxno);
-		$("#basPsn_paydpno").val(mData.paydpno);
+		$("#paydpno").val(mData.paydpno);
 		$("#paretention").val(mData.paretention);
 		
 		$("#payaddrs").val(mData.payaddrs);
@@ -739,8 +819,8 @@ $(function(){
 			$("#div_contract").addClass("d-none");
 		}
 			
-		//總院才需列出
-		if (mData.hid=='1A0'){
+		//1A0 2A0列出工獎
+		if (mData.hid=='1A0' || mData.hid=='2A0'){
 			$(".cspf").removeClass("d-none");
 		}else if (mData.pacsflag=='N'){
 			$(".cspf").addClass("d-none");
@@ -947,6 +1027,15 @@ $(function(){
 	$('#TblBasPsnFilter').dataTable(objCopyD);
 	 		      
 });
+//開啟loading dialog
+function showPageLoading(){
+	$("#pageLoadingOverlay").css("display", "flex");
+}
+
+//關閉loading dialog
+function hidePageLoading(){
+	$("#pageLoadingOverlay").css("display", "none");
+}
 </script>
 </head>
 <body>
@@ -957,6 +1046,9 @@ $(function(){
   </li>
   <li class="nav-item">
     <a class="nav-link" id="pills-query-tab" data-toggle="pill" href="#byPsnBaseFilterMain" role="tab" aria-controls="pills-profile" aria-selected="false">篩選</a>
+  </li>
+  <li class="nav-item">
+	<a class="nav-link" id="pills-handing-tab" data-toggle="pill" href="#byPsnBaseHandingMain" role="tab" aria-controls="pills-profile" aria-selected="false">基本處理</a>
   </li>
 </ul>
 
@@ -969,19 +1061,15 @@ $(function(){
 					<div class="form-inline basother-filterbar">
 		    			<div class="d-flex flex-wrap align-items-end basother-filter-group">
 							<div class="filter-item">
-								<!-- <input type="text" id="base_card" size="4" class="form-control-sm text-uppercase" placeholder="卡號" > -->
 								<input type="text" id="base_card" class="form-control form-control-sm text-uppercase" placeholder="卡號" maxlength="4" size="4">
 							</div>
 							<div class="filter-item">
-								<!-- <input type="text" id="base_idno" size="10" class="form-control-sm text-uppercase" placeholder="身分證" >-->				
 								<input type="text" id="base_idno" class="form-control form-control-sm text-uppercase" placeholder="身分證" maxlength="10" size="10">
 							</div>
 							<div class="filter-item">
-								<!-- <input type="text" id="base_namec" size="12" class="form-control-sm " placeholder="姓名" > -->
 								<input type="text" id=base_namec class="form-control form-control-sm" placeholder="姓名" maxlength="12" size="12">
 							</div>
 							<div class="filter-item">
-								<!-- <input type="text" id="base_empno" size="7" class="form-control-sm text-uppercase" placeholder="職號" >-->
 								<input type="text" id="base_empno" class="form-control form-control-sm text-uppercase" placeholder="職號" maxlength="7" size="7">
 							</div>							
 							<div class="filter-item">							
@@ -1063,123 +1151,127 @@ $(function(){
 												<td>
 													<div class="basother-panel">
 														<div class="form-row form-row--equal">													
-													<div class="form-group">
-														<label for="basPsn_paycard" >卡號</label>
-														<input type="text" id="basPsn_paycard" readonly class="text-uppercase form-control" maxlength="4" size="4"  />
-													</div>
-													<div class="form-group">
-														<label for="paynamec" class="table-warning">姓名</label>
-														<input type="text" id="paynamec" class="form-control required" maxlength="12" size="12"  />
-													</div>
-													<div class="form-group">
-														<label for="payempno" class="table-warning required">職號</label>
-														<input type="text" id="payempno" class="text-uppercase form-control" maxlength="7" size="7"  />
-													</div>
-													<div class="form-group">
-														<label for="basPsn_paylvefg" >離職</label>
-														<input type="text" id="basPsn_paylvefg" readonly class="form-control"  maxlength="1" size="1"  />
-													</div>
+															<div class="form-group">
+																<label for="basPsn_paycard" >卡號</label>
+																<input type="text" id="basPsn_paycard" readonly class="text-uppercase form-control" maxlength="4" size="4"  />
+															</div>
+															<div class="form-group">
+																<label for="paynamec" class="table-warning">姓名</label>
+																<input type="text" id="paynamec" class="form-control required" maxlength="12" size="12"  />
+															</div>
+															<div class="form-group">
+																<label for="payempno" class="table-warning required">職號</label>
+																<input type="text" id="payempno" class="text-uppercase form-control" maxlength="7" size="7"  />
+															</div>															
 														</div>
 													</div>
 												
 													<div class="basother-panel">
 														<div class="form-row form-row--equal">	
-													<div class="form-group">
-														<label for="basPsn_payidno" >身份證字號</label>
-														<input type="text" id="basPsn_payidno" readonly class="text-uppercase form-control" maxlength="10" size="10"  />
-													</div>
-													<div class="form-group">
-														<label for="basPsn_paygovdt" >初任公職日</label>
-														<input type="text" id="basPsn_paygovdt" readonly class="form-control"  maxlength="10" size="10"  />
-													</div>
-													<div class="form-group">
-														<label for="basPsn_payempdt" >到院日</label>
-														<input type="text" id="basPsn_payempdt" readonly class="form-control"  maxlength="10" size="10"  />
-													</div>
+															<div class="form-group">
+																<label for="basPsn_payidno" >身份證字號</label>
+																<input type="text" id="basPsn_payidno" readonly class="text-uppercase form-control" maxlength="10" size="10"  />
+															</div>
+															<div class="form-group">
+																<label for="basPsn_paygovdt" >初任公職日</label>
+																<input type="text" id="basPsn_paygovdt" readonly class="form-control"  maxlength="10" size="10"  />
+															</div>
+															<div class="form-group">
+																<label for="basPsn_payempdt" >到院日</label>
+																<input type="text" id="basPsn_payempdt" readonly class="form-control"  maxlength="10" size="10"  />
+															</div>
 														</div>
 													</div>
 											
 													<div class="basother-panel">
 														<div class="form-row form-row--equal">
-													<div class="form-group">
-														<label for="paysgndt" class="table-warning">現職日</label>
-														<input type="text" id="paysgndt" class="gclsCalTxt form-control required"  maxlength="10" size="10"  />
-													</div>
-													<div class="form-group">
-														<label for="basPsn_payrsgdt" >離職日</label>
-														<input type="text" id="basPsn_payrsgdt" readonly class="form-control"  maxlength="10" size="10"  />
-													</div>
-													<div class="form-group">
-														<label for="basPsn_patradt" >異動日</label>
-														<input type="text" id="basPsn_patradt" readonly class="form-control"  maxlength="10" size="10"  />
-														<input type="text" id="basPsn_traname" readonly class="form-control"  maxlength="8" size="8"  />
-													</div>
+															<div class="form-group">
+																<label for="paysgndt" class="table-warning">現職日</label>
+																<input type="text" id="paysgndt" class="gclsCalTxt form-control required"  maxlength="10" size="10"  />
+															</div>
+															<div class="form-group">
+																<label for="basPsn_payrsgdt" >離職日</label>
+																<input type="text" id="basPsn_payrsgdt" readonly class="form-control"  maxlength="10" size="10"  />
+															</div>
+															<div class="form-group">
+																<label for="basPsn_patradt" >異動日</label>
+																<input type="text" id="basPsn_patradt" readonly class="form-control"  maxlength="10" size="10"  />
+																<input type="text" id="basPsn_traname" readonly class="form-control"  maxlength="8" size="8"  />
+															</div>
 														</div>
 													</div>
 											
 													<div class="basother-panel">
 														<div class="form-row form-row--equal">		
-													<div class="form-group">
-														<label for="paytaxno" class="table-warning">扶養人數</label>
-														<input type="text" id="paytaxno" class="form-control" maxlength="2" size="2"  />
-													</div>
-													<div class="form-group">
-														<label for="basPsn_paydpno" >健保人數</label>
-														<input type="text" id="basPsn_paydpno" readonly class="form-control" maxlength="2" size="2"  />
-													</div>
-													<div class="form-group">
-														<label for="insuamt" class="table-warning">投保金額</label>
-														<input type="text" id="insuamt" class="form-control" maxlength="6" size="6"  />
-													</div>
-													<div class="form-group">
-														<label for="basPsn_inflgnm" >保險費比率</label>
-														<input type="text" id="basPsn_inflgnm" readonly class="form-control" maxlength="13" size="13"  />
-													</div>
+															<div class="form-group">
+																<label for="paytaxno" class="table-warning">扶養人數</label>
+																<input type="text" id="paytaxno" class="form-control" maxlength="2" size="2"  />
+															</div>
+															<div class="form-group">
+																<label for="paydpno" class="table-warning">健保人數</label>
+																<input type="text" id="paydpno" class="form-control" maxlength="7" size="7"  />
+															</div>
+															<div class="form-group">
+																<label for="insuamt" class="table-warning">投保金額</label>
+																<input type="text" id="insuamt" class="form-control" maxlength="6" size="6"  />
+															</div>
+															
 														</div>
 													</div>
-										
+													<div class="basother-panel">
+														<div class="form-row form-row--equal">
+															<div class="form-group">
+																<label for="basPsn_inflgnm" >保險費比率</label>
+																<input type="text" id="basPsn_inflgnm" readonly class="form-control" maxlength="13" size="13"  />
+															</div>
+															<div class="form-group">
+																<label for="basPsn_paylvefg" >離職</label>
+																<input type="text" id="basPsn_paylvefg" readonly class="form-control"  maxlength="1" size="1"  />
+															</div>
+														</div>
+													</div>
 													<div class="basother-panel">
 														<div class="form-row form-row--equal">				
-													<div class="form-group">
-														<label for="paydept" class="table-warning">單位</label>
-														<select id="paydept" name="paydept" class="form-control" data-width="fit">
-														</select>
-													</div>
-													<div class="form-group">
-														<label for="basPsn_paytitle" >職稱</label>
-														<input type="text" id="basPsn_paytitle" readonly class="form-control" maxlength="4" size="4"  />
-														<input type="text" id="basPsn_paytitlp" readonly class="form-control" maxlength="22" size="22"  />
-													</div>
+															<div class="form-group">
+																<label for="paydept" class="table-warning">單位</label>
+																<select id="paydept" name="paydept" class="form-control" data-width="fit">
+																</select>
+															</div>
+															<div class="form-group">
+																<label for="basPsn_paytitle" >職稱</label>
+																<input type="text" id="basPsn_paytitle" readonly class="form-control" maxlength="4" size="4"  />
+																<input type="text" id="basPsn_paytitlp" readonly class="form-control" maxlength="22" size="22"  />
+															</div>
 														</div>
 													</div>
 										
 													<div class="basother-panel">
 														<div class="form-row form-row--equal">
-													<div class="form-group">
-														<label for="basPsn_rankname">階別</label>
-														<INPUT type="hidden" id ="basPsn_payrank"  value="">
-														<input type="text" id="basPsn_rankname" readonly  class="form-control" maxlength="8" size="8"  />
-													</div>
-													<div class="form-group">
-														<label for="basPsn_payrnk2n" >職等</label>
-														<input type="text" id="basPsn_payrnk2n" readonly class="form-control" maxlength="2" size="2"  />
-													</div>
-													<div class="form-group">
-														<label for="basPsn_payrank3" >本功別</label>
-														<input type="text" id="basPsn_payrank3" readonly class="form-control" maxlength="1" size="1"  />
-													</div>
-													<div class="form-group">
-														<label for="basPsn_paydegr2" >級別</label>
-														<input type="text" id="basPsn_paydegr2" readonly class="form-control" maxlength="2" size="2"  />
-													</div>
-													<div class="form-group">
-														<label for="basPsn_paydegre" >俸點</label>
-														<input type="text" id="basPsn_paydegre" readonly class="form-control" maxlength="2" size="2"  />
-													</div>
-													<div id="div_contract" class="form-group d-none">
-														<label for="basPsn_contract" >新Y/舊N</label>
-														<input type="text" id="basPsn_contract" readonly class="form-control" maxlength="1" size="1"  />
-													</div>
+															<div class="form-group">
+																<label for="basPsn_rankname">階別</label>
+																<INPUT type="hidden" id ="basPsn_payrank"  value="">
+																<input type="text" id="basPsn_rankname" readonly  class="form-control" maxlength="8" size="8"  />
+															</div>
+															<div class="form-group">
+																<label for="basPsn_payrnk2n" >職等</label>
+																<input type="text" id="basPsn_payrnk2n" readonly class="form-control" maxlength="2" size="2"  />
+															</div>
+															<div class="form-group">
+																<label for="basPsn_payrank3" >本功別</label>
+																<input type="text" id="basPsn_payrank3" readonly class="form-control" maxlength="1" size="1"  />
+															</div>
+															<div class="form-group">
+																<label for="basPsn_paydegr2" >級別</label>
+																<input type="text" id="basPsn_paydegr2" readonly class="form-control" maxlength="2" size="2"  />
+															</div>
+															<div class="form-group">
+																<label for="basPsn_paydegre" >俸點</label>
+																<input type="text" id="basPsn_paydegre" readonly class="form-control" maxlength="2" size="2"  />
+															</div>
+															<div id="div_contract" class="form-group d-none">
+																<label for="basPsn_contract" >新Y/舊N</label>
+																<input type="text" id="basPsn_contract" readonly class="form-control" maxlength="1" size="1"  />
+															</div>
 														</div>
 													</div>
 												</td>
@@ -1255,8 +1347,16 @@ $(function(){
 																<label for="paypfdoc" class="table-warning">專勤基本額度</label>
 																<input type="text" id="paypfdoc" class="form-control" maxlength="8" size="8"  />
 																&emsp;
-																<label for="paretention" class="table-warning">專1=0,支領專2(Y/N)</label>
-																<input type="text" id="paretention" class="form-control text-uppercase" maxlength="1" size="1"  />
+																<label for="paretention" class="table-warning">專2/工2</label>
+<!--		 													<input type="text" id="paretention" name="paretention" class="form-control text-uppercase" maxlength="1" size="1"  /> -->
+																<select id="paretention"  name="paretention"  title="專2/工2">
+																	<option value="">專1(Y)專2(Y)</option>
+																	<option value="2">專1(Y)專2(N)</option>
+																	<option value="3">專1(N)專2(Y)</option>
+																	<option value="4">專1(N)專2(N)</option>
+																	<option value="Y">Y</option>
+																	<option value="N">N</option>																
+																</select>
 															</div>
 														</div>
 													</div>
@@ -1271,11 +1371,11 @@ $(function(){
 											  				<div class="form-row">
 											  					<div class="form-group">
 																	<label for="payctcbacno" class="table-warning" id="label_acno"></label>
-																	<input type="text" id="payctcbacno" class="form-control" maxlength="12" size="12"  />
+																	<input type="text" id="payctcbacno" class="form-control" maxlength="14" size="14"  />
 																</div>
 																<div class="form-group">
 																	<label for="payctcbgedno" class="table-warning" id="label_gedno"></label>
-																	<input type="text" id="payctcbgedno" class="form-control" maxlength="12" size="12"  />
+																	<input type="text" id="payctcbgedno" class="form-control" maxlength="14" size="14"  />
 																</div>	
 											  				</div>
 												  			<div class="form-row">
@@ -1519,7 +1619,83 @@ $(function(){
 		</div>		
  	</div>
   </div>
-  
+  <!--基本處理-->
+  <div class="tab-pane fade" id="byPsnBaseHandingMain" role="tabpanel" aria-labelledby="pills-handing-tab">
+  	<div class="row p-1 mb-1 bg-secondary">
+		<div class="col-md-10">
+			<div class="form-inline">
+				<div class="input-group" style="margin-right:10px;">
+					<span class="input-group-text">選單</span>
+			  	
+					<select id="qryType" class="form-control">
+						<option value="1:[產生處理]異動及批次資料_匯入主檔">1[產生處理]異動及批次資料_匯入主檔</option>
+						<option value="2:[回復]異動及批次資料_回復主檔">2[回復]異動及批次資料_回復主檔</option>
+						<option value="3:[匯入]投保金額:ImpBasINSUAMT">3[匯入]投保金額</option>   					
+					</select>
+				</div>
+                <button id="btn_handelINSUAMT" class="btn btn-success" type="button" >
+					<i class="fa fa-cog"></i>執行
+				</button>
+			</div>
+		</div>
+
+	</div>
+	<div class="row">
+		<div class="col-10">
+			<div class="form-inline" id="rowBatHanding_1">	
+					<!--餉單編號 -->	
+					<div class="col-md-6 mb-3">
+						<div class="basother-panel" id="divfield_SALNUM">
+							<div class="form-row">
+								<div class="form-group">
+									<label for="prod_SalNum" class="table-warning">餉單編號-發薪日</label>
+									<select id="prod_SalNum" class="form-control" title="餉單編號-發薪日"></select>								
+								</div>
+								<div class="alert alert-info" id="msgHint" style="display:inline-block; vertical-align:middle; background-color:#d9edf7; border-color:#bce8f1; color:#31708f; padding:6px 12px; margin-bottom:0; font-size:14px; line-height:1.6;">
+            						<i class="fa fa-bullhorn"></i><span id="msgHintText">整批更新匯入主檔</span>
+        						</div>
+							</div>
+						</div>
+						<!-- 匯入檔案 -->
+						<div class="basother-panel d-none" id="divfield_1">
+							<div class="form-row">
+								<div class="form-group">
+									<label class="form-label d-block">匯入檔案（Excel），</label>
+									<label class="table-warning">僅支援 .xlsx / .xls 格式</label>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group">
+									<form id="uploadfileForm" class="mb-0">
+										<div class="custom-file-upload d-flex align-items-center border rounded p-2 bg-light">
+                        					<i class="fa fa-file-excel-o text-success mr-2" style="font-size:1.3rem;"></i>
+                        					<input type="file" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" id="fileInput" name="fileInput" class="form-control-file flex-grow-1">
+                            			</div>
+                        			</form>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group">
+									<div class="alert alert-info" style="display:inline-block; vertical-align:middle; background-color:#d9edf7; border-color:#bce8f1; color:#31708f; padding:6px 12px; margin-bottom:0; font-size:14px; line-height:1.6;">
+            							<i class="fa fa-bullhorn"></i><span id="msgHintText1">請先[下載範例檔案]置於硬碟，可更名，修正後，再選擇檔案上傳匯入。</span>
+        							</div>
+								</div>								
+							</div>
+							<!--下載範例檔案 -->
+							<div class="form-row">
+								<div class="form-group">
+									<a id="lnkSampleFile" href="${pageContext.request.contextPath}/salController.do?method=downloadSample&type=3" class="btn btn-outline-dark">
+										<i class="fa fa-download"></i>下載範例檔案
+                					</a>
+								</div>								
+							</div>
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
+	<!--  -->
+  </div>
 </div>
 
 </body>
